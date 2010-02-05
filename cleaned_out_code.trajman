@@ -1,0 +1,187 @@
+! This file contains code that can be reused, but that's not currently active
+
+! Cleaned out comments from module_input: Mostly autofilename constructions
+
+        ! set-flagga eller operator med en datakälla (sqrt, norm etc.)!{{{
+!           case('set','readgro','exit')           
+
+!                arg1=trim(stringconv(arguments(:,1)))
+!                if ((arg1/='set' .AND. arg1/='exit').AND. arg1/='readgro')then
+!               
+!                    arg2=stringconv(arguments(:,2))
+!                    read(unit=arg2,fmt=*,iostat=ios)scal1
+!
+!                    if (ios>0)then
+!                        call  readfile(arguments(:,2),datafile1)
+!                    endif
+!                    
+!                    if (.NOT. associated(datafile1))then
+!                        allocate(datafile1(1,1))
+!                        datafile1=scal1
+!                    endif
+!                    
+!                    allocate(res(size(datafile1,1),size(datafile1,2)))
+!                endif
+!                f2=stringconv(arguments(:,2))
+!                p=3
+!               select case(trim(stringconv(arguments(:,1)))) ! Arg 1!}}}
+
+!                    case('sqrt','SQRT')!{{{
+!                       res=sqrt(datafile1)
+!                       f1="sqrt"
+!
+!                    case('exp','EXP')
+!                       res=exp(datafile1)
+!                       f1="exp"
+!
+!                    case('log','LOG','ln','LN')
+!                       res=log(datafile1)
+!                       f1="log"
+!
+!                    case('norm','NORM','Norm')
+!                        do i=1,size(datafile1,2)
+!                            res(:,i)=datafile1(:,i)/(sum(datafile1(:,i))/size(datafile1,1))
+!                        end do
+!                        f1="norm"
+!                    case('size','Size','SIZE')
+!                        if (associated(res))deallocate(res)
+!                        allocate(res(1,2))
+!                        res(1,1:2)=shape(datafile1)
+!                        f1="size"
+!                    case('extract','Extract','EXTRACT')
+!
+!                        arg4=stringconv(arguments(:,4))
+!                        read(unit=arg4,fmt=*,iostat=iosb)b
+!
+!                        arg3=stringconv(arguments(:,3))
+!                        read(unit=arg3,fmt=*,iostat=ios)a
+!                        if(iosb==0)then
+!                        
+!                        arg4="to"//arg4
+!                        p=5
+!                        else
+!                            b=a
+!                            iosb=0
+!                            p=4
+!                            arg4=''
+!                       endif
+!
+!                        if(ios/=0 .OR. iosb/=0)then
+!                            write(*,*)'ERROR, you need at least',&
+!                            ' one column to extract'
+!                            stop
+!                        endif
+!
+!
+!                        if (associated(res))deallocate(res)
+!                        allocate(res(size(datafile1,1),1:b-a+1))
+!                        res(:,1:b-a+1)=datafile1(:,a:b)
+!                        f1="extract"
+!                        f3=trim(arg3)//trim(arg4)
+!                        
+!                    case('combine','Combine','COMBINE')
+!                        call readfile(arguments(:,3),datafile2)
+!                        if(associated(res))deallocate(res)
+!                        allocate(res(size(datafile1,1),size(datafile1,2)+size(datafile2,2)))
+!
+!                        res(:,1:size(datafile1,2))=datafile1(:,:)
+!                        res(:,size(datafile1,2)+1:size(datafile1,2)+size(datafile2,2))=datafile2(:,:)
+!                        f1="combine"
+!                        f3=stringconv(arguments(:,3))
+!                        p=4 !}}}
+
+                ! Kolla om skalär, annars läs fil:!{{{
+!                arg1=stringconv(arguments(:,1))
+!                read(unit=arg1,fmt=*,iostat=ios)scal1
+!
+!                if (ios>0)then
+!                   call  readfile(arguments(:,1),datafile1)
+!                endif
+!
+!                ! en andra fil eller skalär skall läsas:
+!                arg3=stringconv(arguments(:,3))
+!                read(unit=arg3,fmt=*,iostat=ios)scal2
+!                if (ios>0)then
+!                   call readfile(arguments(:,3),datafile2)
+!                endif
+!
+!                ! Kolla vilken som är skalär och vilken som är matris
+!               
+!                if (associated(datafile1))then
+!                    if (associated(datafile2))then
+!                    else
+!                        !datafile2%m=>datafile1%m*0+scal2
+!                        allocate(datafile2(size(datafile1,1),size(datafile1,2)))
+!                        datafile2=scal2
+!                    endif
+!                else
+!                    if (associated(datafile2))then
+!
+!                        allocate(datafile1(size(datafile2,1),size(datafile2,2)))
+!                        datafile1=scal1
+!                    else
+!
+!                        allocate(datafile1(1,1))
+!                        datafile1=scal1
+!
+!                        allocate(datafile2(1,1))
+!                        datafile2=scal2
+!                    endif
+!                 endif
+!
+!                allocate(res(size(datafile1,1),size(datafile1,2)))
+!
+!                ! För autofilename
+!                f1=stringconv(arguments(:,1))
+!                f3=stringconv(arguments(:,3))
+!                p=4
+!                select case(trim(stringconv(arguments(:,2)))) ! Arg2!{{{
+!                    
+!                    case('-','sub','SUB','Sub')
+!
+!                        call subtract(datafile1,datafile2,res)
+!                        f2="sub" 
+!                    case('+','plus','PLUS','Plus')
+!                        res=datafile1+datafile2
+!                        f2="plus"
+!                    case(char(47),'div','Div','DIV')
+!                        res=datafile1/datafile2
+!                        f2="div"
+!                    case('*','mult','Mult','MULT')
+!                        res=datafile1*datafile2
+!                        f2="mult"
+!                    case default
+!                        write(*,*)'ERROR!',trim(stringconv(charvector(:)))
+!                        stop
+!                end select!}}}
+! 
+!                
+!                
+                ! Om tre argument: Autofilename måste vara TRUE annars skriv ut
+                ! till STDOUT.
+                ! Om fyra argument: Sista argumentet är utfilnamn och används om
+                ! autofilename är satt till FALSE
+
+                !if(size(arguments(1,:))==3)then
+                !    if(.NOT. autofilename)then
+                !        write(*,*)"No filename to write."
+!
+!                        call utdata(res)
+!                    else
+!                        
+!                        outfilename="auto_"//trim(arg1)//"_"//&
+!                                    trim(op)//"_"//trim(arg3)//"_"//".out"
+!                        call utdata(res,outfilename)
+!
+!                    ! call utdata utan filnamnsargument. utdata skriver till fil
+!                    ! om autofilename är TRUE eller till stdout om FALSE
+!                    endif                    
+!                else
+!             
+!                    if(size(arguments(1,:))==4)then
+!                        outfilename=stringconv(arguments(:,4)) 
+!                        call utdata(res,outfilename)
+!                    endif
+!
+!                endif!}}}
+! End from module_input

@@ -1,0 +1,582 @@
+module input
+    use kinds
+    use util
+    use readtraj
+    implicit none ! Routines for input file treatment
+!    integer(kind=ik) :: maxmols
+    interface reallocate
+        module procedure reallocatepointerchar,reallocateint,reallocatemoltype
+    end interface
+
+    contains
+
+    subroutine arguments(runit)
+        integer(kind=ik) :: i,ios,runit
+        character(kind=1,len=255) :: carg,carg2,ctime
+        !write(*,*)command_argument_count()
+        !do i=0,command_argument_count()
+        !    call get_command_argument(i,carg)
+        !    write(*,*)carg,i
+        !end do
+        !read(5,*)carg
+        !write(*,*)carg
+        !stop
+
+        !If no arguments, print help info
+        if(command_argument_count()==0)then
+            call print_help
+        end if
+
+        i=1
+        do !Loop over command line arguments 
+           call get_command_argument(i,carg)
+           if (len_trim(carg)==0)exit
+           select case(trim(carg))
+            case('-i','--input')
+                call get_command_argument(i+1,carg2)
+                if(len_trim(carg2)==0)stop 'Input flag needs a filename!'
+                i=i+1
+                runit=14
+                open(runit,file=trim(carg2),status='old',iostat=ios)
+                if(ios/=0)then
+                    write(*,*)'Cannot open inputfile :',trim(carg2),':'
+                    stop
+                end if
+            case('-v','--version')
+                !ctime is set by the compiler using c type macro and cpp. Make
+                !sure the file is suffixed with capital F or that the compiler
+                !is flagged to use the preprocessor.
+                ctime=CINFO
+                write(*,*)'     Trajman experimental :: ',trim(ctime)
+                write(*,*)'     (c) Jon Kapla, 2009  :: Contact: jon.kapla@mmk.su.se'
+                stop
+            case('-h','--help')
+               call print_help 
+            case('-')
+                runit=stdin
+
+            case default
+                write(*,*)':',trim(carg),':'
+                write(*,*)'I cannot do that! Try "trajman -h" for more information.'
+                stop
+           end select
+           i=i+1
+
+        end do
+    end subroutine arguments
+
+    subroutine print_help
+        character(len=100) :: pid
+        integer(kind=ik) :: p
+        write(*,*)
+        write(*,*)'Usage: trajman [FLAGS] [FILE]'
+        write(*,*)
+        write(*,*)' FLAGS:'
+        write(*,*)
+        write(*,*)'  -v, --version'
+        write(*,*)'          Print program version information.'
+        write(*,*)'  -h, --help'       
+        write(*,*)'          Print this help and quit.'
+        write(*,*)'  -i, --input FILE'
+        write(*,*)'          Use FILE as inputfile'
+        write(*,*)'  -'         
+        write(*,*)'          Read from standard input, STDIN'
+        write(*,*)
+        p=getpid()
+        write(pid,*)p
+        call system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
+        stop
+    end subroutine print_help
+
+    subroutine readline(onerow,ios,runit)!{{{
+        character(kind=1,len=1),pointer :: onerow(:) 
+        integer(kind=ik) :: n,ios,readunit
+        integer(kind=ik),optional,intent(in) :: runit
+        readunit=stdin
+        !if (.NOT. associated(onerow))allocate(onerow(1:1))
+        if (present(runit))readunit=runit
+            comment:do
+                n=0
+                do
+                    if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
+                    read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
+                    if(ios==endf)exit comment
+                    !write(*,*)'readline',n,'n',ios,'ios',onerow(1:n+1),'onerow'!RM
+                 
+                    if(onerow(n+1)=='#' .or. ios==endr )then
+
+                        if(n==0)then
+
+                            if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
+                            cycle comment
+                        else
+                            exit comment
+                        endif
+                       
+                    end if
+                    
+                n=n+1
+                enddo
+       
+            end do comment
+        if(ios==endf)return       
+        n=max(n,1)
+        
+       call reallocate(onerow,n)
+    end subroutine readline !}}}
+
+    subroutine reallocatepointerchar(vector,n)!{{{
+        character(kind=1,len=1),pointer,intent(inout) :: vector(:)
+        character(kind=1,len=1),pointer :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (associated(vector))then
+        
+            allocate(copy(1:min(size(vector),n)))
+            copy=vector(1:size(copy))
+            deallocate(vector)
+
+            allocate(vector(1:n))
+            vector(1:size(copy))=copy
+            deallocate(copy)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatepointerchar !}}}
+
+    subroutine reallocatechar(vector,n)!{{{
+        character(kind=1,len=1),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=1),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+        
+            allocate(copy(1:n))
+            copy=''
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatechar !}}}
+
+    subroutine reallocateint(vector,n)!{{{
+        integer(kind=ik),allocatable,intent(inout) :: vector(:)
+        integer(kind=ik),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+        
+            allocate(copy(1:n))
+            copy=0
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocateint !}}}
+
+    subroutine reallocatemoltype(v,i)!{{{
+        type(moltype),intent(inout),allocatable :: v(:)
+        type(moltype),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocatemoltype!}}}
+
+    function wordcount(onerow) result(words)!{{{
+        character(kind=1,len=1) :: onerow(:)
+        integer :: i,words
+        logical :: whitespace
+        whitespace=.TRUE.
+        words=0
+        do i=1,size(onerow)
+            select case(iachar(onerow(i)))
+                case(iachar(' '),iachar(','),9,0) ! char(9) är tab
+                    whitespace=.TRUE.
+                    onerow(i)=" "
+                case default
+                    if(whitespace)words=words+1
+                    whitespace=.FALSE.
+            end select
+        end do
+    end function wordcount!}}}
+
+    subroutine getwords(vector,words)!{{{
+        character(len=1),pointer :: vector(:)
+        character(len=1),pointer :: words(:,:)
+        integer :: i,nwords,k
+        logical :: whitespace
+        nwords=wordcount(vector)
+        
+        if (associated(words))deallocate(words)
+        allocate(words(1:size(vector),1:nwords))
+        words(:,:)=" "
+        whitespace=.TRUE.
+        nwords=0
+        do i=1,size(vector)
+            select case(iachar(vector(i)))
+                case(iachar(' '),iachar(','),9) ! char(9) är tab
+                    whitespace=.TRUE.
+                    vector(i)=" "
+                case default
+                    if(whitespace)then
+                        nwords=nwords+1
+                        k=1
+                    else
+                        k=k+1
+                    endif
+                    words(k,nwords)=vector(i)
+                    whitespace=.FALSE.
+            end select
+        end do
+ 
+    end subroutine getwords!}}}
+
+    function concatargs(charmat) result(st)!{{{
+        integer(kind=ik) :: i
+        character(kind=1,len=1) :: charmat(:,:)
+        character(kind=1,len=size(charmat,2)*(size(charmat,1)+1)) :: st
+        st=""
+        do i=1,size(charmat,2)
+            st=trim(st)//trim(.str.charmat(:,i))//"-"
+        end do
+        i=len(trim(st))
+        st(i:)=""
+    end function concatargs!}}}
+
+    subroutine procinp(charvector,trajop)!{{{
+        implicit none    
+        character(kind=1,len=1),pointer ::charvector(:),arguments(:,:)
+        character(kind=1,len=3) :: funcstr
+        character(kind=1,len=20) :: arg2
+        !character(kind=1,len=size(charvector)) :: arg1,arg2,arg3,arg4,f1,f2,f3
+        !character(kind=1,len=size(charvector)*5+100) :: outfilename
+        !real(kind=rk),pointer :: datafile1(:,:),datafile2(:,:),res(:,:)
+        !real(kind=rk) :: scal1,scal2
+        integer(kind=ik) ::&
+        ios,i,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
+        type(instruct) :: trajop
+        !f1='';f2='';f3='';arg4='' ! För autofilename
+        call getwords(charvector,arguments)
+        trajop%findex=0
+        trajop%set=global_setflags
+        trajop%atoms=0
+        select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+            case('traj')
+                call initgro(arguments(:,2))
+                allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
+                trajfile=arguments(1:size(trajfile),2)
+
+            case('set','SET')
+                !call set(trim(stringconv(arguments(:,2))),trim(stringconv(arguments(:,3))))
+                call set(arguments)
+
+            case('dirangle','DIRANGLE','da','DA')
+
+                !findex=1 ! Funktionsindex, för att kunna kalla på rätt funktion
+                trajop%findex=1
+                p=3 ! Antalet argument (operation, atomnamn etc.).
+                ! Argument p+1 är filnamn för output
+                funcstr='DA_'
+
+            case('valenceangle','VALENCEANGLE','va','VA')
+
+                trajop%findex=2
+                p=4
+                funcstr='VA_'
+
+            case('torsionangle','ta','TA')
+
+                trajop%findex=3
+                p=5
+                funcstr='TA_'
+
+            case('bondlength','BL','bl')
+
+                trajop%findex=4
+                p=3 ! Antalet argument (operation, atomnamn etc.).
+                ! Argument p+1 är filnamn för output
+                funcstr='BL_'
+
+            case('orderparameter','Sv','SV')
+                trajop%findex=5
+                p=3
+                funcstr='SV_'
+
+            case('membraneposition','MP')
+                trajop%findex=6
+                p=2
+                funcstr='MP_'
+            case('corr','co','CO')
+                trajop%findex=7
+                p=1
+                funcstr='CO_'
+            case('dc','DC','dipolecoupling')
+                trajop%findex=8
+                p=3
+                funcstr='DC_'
+            case('average')
+                trajop%findex=9
+                p=2 !faktiskt 2, men andra arg ej molekylnamn
+                funcstr='AV_'
+            case('exit')
+                stop
+                    
+                        
+                !end select
+
+            case default 
+                write(*,*)"Not a valid input, ",":",&
+                trim(stringconv(arguments(:,1))),":"
+                stop
+            end select
+            trajop%instructionstring=''
+            if(trajop%findex/=0)then
+                if(trajop%findex/=9)then
+                do i=1,p-1
+                    trajop%atoms(i)=atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
+                    +atomindex(trim(stringconv(arguments(:,i+1))))
+                    if(trajop%atoms(i)==0)then
+                        write(*,*)'Input is not an atom or a molecule '&
+                        ,trim(stringconv(arguments(:,i+1)))
+                        stop
+                    endif
+                end do
+                end if
+                if(p>=2)then
+                    if(trajop%findex==9)then
+                    trajop%instructionstring=funcstr//&
+                    trim(concatargs(arguments(:,2:size(arguments,2))))
+                        arg2=trim(stringconv(arguments(:,p)))
+                        read(arg2,*,iostat=ios)trajop%average_count
+                        if(ios/=0)then
+                            write(*,*)'Input is not an integer',&
+                            trim(stringconv(arguments(:,p-1)))
+                            stop
+                        endif
+                    else
+                        trajop%instructionstring=funcstr//trim(concatargs(arguments(:,2:p)))
+                    endif
+
+                else
+                    trajop%instructionstring=trim(funcstr)
+                endif
+            end if
+
+    end subroutine procinp!}}}
+
+    subroutine set(args)!arg2,arg3)!{{{
+        character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
+        character(kind=1,len=1) :: args(:,:)
+        integer(kind=ik) :: i,j,p,ios
+        arg2='';arg3='';arg4='';arg5=''
+        if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
+        if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
+        if(size(args,2)>=4)arg4=trim(stringconv(args(:,4)))
+        if(size(args,2)>=5)arg5=trim(stringconv(args(:,5)))
+
+        select case(arg2)
+            case ('autofilename','AUTOFILENAME','Autofilename')
+                select case(arg3)
+                    case('on','On','ON')
+                        global_setflags%autofilename=.TRUE.
+                    case('off','Off','OFF')
+                        global_setflags%autofilename=.FALSE.
+                    case default
+                        global_setflags%autofilename=.TRUE.
+                end select
+
+            case('maxframes','mf')
+                read(arg3,*,iostat=ios)maxframes
+                if (ios/=0)stop 'SET: maxframes should be of type integer'
+
+            case('atomnames')
+                !do i=1,size(atomnames)
+                !write(33,*)atomnames(i)
+                !end do
+                open(nunit,file=arg3,action='read',status='old',iostat=ios)
+                if(ios/=0)then
+                    write(*,*)"Error, cannot open ",&
+                    "file ",":",arg3,":"
+                    stop
+                endif
+                do i=1,size(atomnames)
+                read(nunit,*,iostat=ios)atomnames(i)
+                if(ios/=0)then
+                    write(*,*)"ERROR: (",i,")",arg3,ios
+                    stop
+                endif
+                end do
+                !do i=1,size(atomnames)
+                !write(34,*)atomnames(i)
+                !end do
+
+                close(nunit)
+
+            case('filename')
+                if(arg3=='off')then
+                    global_setflags%filename=''
+                else
+                    global_setflags%filename=''
+                    global_setflags%filename=arg3
+                endif
+                !if(trim(global_setflags%filename)=='off')
+
+            case('calc')
+
+                if (allocated(global_setflags%calc))deallocate(global_setflags%calc)
+                allocate(global_setflags%calc(size(args,2)-2))
+
+                do i=1,size(global_setflags%calc)
+                    global_setflags%calc(i)=trim(stringconv(args(:,i+2)))
+                end do
+
+            case('distbin')
+                read(arg3,*,iostat=ios)global_setflags%distbin
+                if (ios/=0 .OR. global_setflags%distbin<=0)&
+                stop 'SET: distbin should be of type integer >0'
+
+            case('atommasses')
+                open(nunit,file=arg3,action='read', status='old',iostat=ios)
+                if(ios==0)then
+                    !Läs in atommassor från fil:
+                    j=size(atomd)
+                    i=j
+                    !Räkna rader i filen
+                    do while(ios/=endf)
+                      read(nunit,*,iostat=ios)
+                      i=i+1
+                    end do
+                    allocate(atomd(i))
+                    call globals
+                    i=j+1
+                    
+                    do while(ios/=endf)
+                      read(nunit,*,iostat=ios)atomd(i)%aname,atomd(i)%mass,atomd(i)%mgratio
+                      if(ios>0)stop 'Cannot read atom masses'
+                      i=i+1
+                    end do
+                end if
+                close(nunit,iostat=ios)
+                !Ge varje unikt atomnamn en massa: 
+                do i=1,size(atomd)
+                    p=len_trim(atomd(i)%aname)
+                    do j=1,size(atomnames)
+                        if(atomd(i)%aname(1:p)==atomnames(j)(1:p))then
+                            masses(j)=atomd(i)%mass
+                            mgratios(j)=atomd(i)%mgratio
+                        endif
+                     end do
+                end do
+            case('centerofmembrane')
+               allocate(common_setflags%membrane_moltypes(size(args,2)-2))
+               do i=1,size(common_setflags%membrane_moltypes)
+                   common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(args(:,2+i))),molt(:)%molname,size(molt))
+               end do
+            case('constant_bondlength','cbl')
+                select case(arg3)
+                    case('on','ON')
+                       global_setflags%cbl_switch=.TRUE.
+                       read(arg4,*,iostat=ios)global_setflags%constant_bl
+                       if(ios/=0)stop 'SET: cannot read constant bond length'
+                    case('off','OFF')
+                        global_setflags%cbl_switch=.FALSE.
+                        global_setflags%constant_bl=0
+                end select
+            case('fileprefix')
+                if(size(args,2)>=3)then
+                    global_setflags%fileprefix=arg3
+                else
+                    global_setflags%fileprefix=''
+                end if
+            case('filesuffix')
+                if(size(args,2)>=3)then
+                    global_setflags%filesuffix=arg3
+                else
+                    global_setflags%filesuffix=''
+                end if
+            case('writeframe')
+                if(size(args,2)>=3)then
+                    read(arg3,*)global_setflags%writeframe
+                else
+                    write(*,*)'ERROR:SET:writeframe: Needs an integer'
+                    stop
+                end if
+            case('area_per_lipid','apl')
+               !allocate(common_setflags%apl_moltypes(size(args,2)-2))
+            case('newmoltype')
+                write(*,*)size(molt)
+                call reallocate(molt,size(molt)+1)
+                mols=mols+1
+                write(*,*)size(molt)
+
+                molt(size(molt))%molname=arg3
+                if(arg4=='')stop 'ERROR:SET:NEWMOLTYPE: Needs start atom!'
+                if(arg5=='')stop 'ERROR:SET:NEWMOLTYPE: Needs end atom!'
+                if(moltypeofuatom(atomindex(arg4))/=moltypeofuatom(atomindex(arg5)))stop &
+                'ERROR:SET:NEWMOLTYPE: You cannot mix atoms from different &
+                molecules'
+                molt(size(molt))%firstatom=atomindex(arg4)
+                molt(size(molt))%lastatom=atomindex(arg5)
+                molt(size(molt))%nmol=&
+                molt(moltypeofuatom(molt(size(molt))%firstatom))%nmol
+                if(molt(size(molt))%firstatom > molt(size(molt))%lastatom)then
+                    write(*,*)'ERROR:SET:NEWMOLTYPE: Illegal atom order!'
+                    stop
+                endif
+
+            case default
+                if(size(args,2)>=2)then
+                    write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'
+                else
+                    write(*,*)'SET: No valid arguments'
+                end if
+                stop
+        end select
+    end subroutine set!}}}
+
+!    subroutine readfile(infil,datafil)!{{{
+!        character(kind=1,len=1) :: infil(:)
+!        integer(kind=ik) :: ios,i,j,n,runit=1,m
+!        real(kind=rk),pointer :: datafil(:,:)
+!        real(kind=rk),allocatable :: columns(:)
+!        character(kind=1,len=1),pointer :: onerow(:)
+!        open (unit=runit,file=trim(stringconv(infil)),iostat=ios)
+!        if(ios/=0)then
+!           write(*,*)'Error, cannot open', &
+!           ' file, :',trim(stringconv(infil)),":"
+!           stop
+!        endif
+!        n=0
+!
+!        call readline(onerow,ios,runit)
+!
+!        m=wordcount(onerow) ! kollar antalet kolumner i infil. TODO!!
+!        do 
+!            if (ios==endf)exit 
+!            read(unit=runit,fmt=*,iostat=ios)
+!            !call readline(onerow,ios,runit)
+!            n=n+1
+!        enddo 
+!        if (associated(datafil))deallocate(datafil)
+!        allocate(datafil(1:n,1:m),columns(1:m)) 
+!        ! n är antal rader, m är antal kolumner in
+!        ! infil
+!        rewind(runit)
+!
+!        do i=1,n
+!            read(unit=runit,fmt=*,iostat=ios)(columns(j),j=1,m) !loop
+!            datafil(i,1:m)=columns(1:m)
+!        enddo
+!
+!        close(runit) 
+!        deallocate(columns)
+!        !call op(func,vector=val)
+!    end subroutine readfile!}}}
+
+end module input
