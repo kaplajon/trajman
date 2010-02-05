@@ -1,5 +1,5 @@
 program trajman
-
+!TESTTESTTEST
     use util
     use kinds
     use input
