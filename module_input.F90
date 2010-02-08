@@ -510,10 +510,10 @@ module input
             case('area_per_lipid','apl')
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('newmoltype')
-                write(*,*)size(molt)
+                !write(*,*)size(molt)
                 call reallocate(molt,size(molt)+1)
                 mols=mols+1
-                write(*,*)size(molt)
+                !write(*,*)size(molt)
 
                 molt(size(molt))%molname=arg3
                 if(arg4=='')stop 'ERROR:SET:NEWMOLTYPE: Needs start atom!'
