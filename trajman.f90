@@ -26,7 +26,7 @@ program trajman
     !allocate(nmolop(size(trop(1,:))))
     troptype(:)%nmolop=0
     do i=1,size(troptype)
-        if(troptype(i)%findex/=0)troptype(i)%nmolop=nmols(troptype(i)%atoms(1))
+        if(troptype(i)%findex/=0)troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
     end do
 !    maxmols=maxval(troptype(:)%nmolop)
 
@@ -85,7 +85,7 @@ program trajman
            write(37,*)size(atomnames)
            write(37,*)
            do i=1,size(atomnames)
-                write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,atoms),1_ik))
+                write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
            end do
            close(37)
        end if

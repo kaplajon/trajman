@@ -6,9 +6,9 @@ module readtraj
     character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
     character(kind=1, len=1),allocatable :: trajfile(:)
-    integer (kind=ik) :: mols=0,atoms=0,tunit=12,nunit=13,atot,rowsperframe
+    integer (kind=ik) :: mols=0,tunit=12,nunit=13,atot,rowsperframe
     integer (kind=ik),allocatable ::&
-    nmols(:),natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
+    natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
     private :: atomindex_a,atomindex_b
     
@@ -24,6 +24,10 @@ module readtraj
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl
     end type setflags
+
+    type natom
+        character(kind=1,len=100) :: atomname,from_mol_prop,molecule
+    end type natom
 
     type setcommon
         integer(kind=ik),allocatable :: membrane_moltypes(:)
@@ -43,6 +47,7 @@ module readtraj
         real(kind=rk),allocatable :: datam(:,:)
         type(setflags) :: set
         type(calcval) :: cv
+        type(natom) :: newatom
 
     end type instruct
 
@@ -54,7 +59,7 @@ module readtraj
     type(atomdata),allocatable :: atomd(:)
 
     type moltype
-        integer(kind=ik) :: firstatom,lastatom,nmol
+        integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         character(kind=1,len=255) :: molname
     end type moltype
 
@@ -236,9 +241,9 @@ end subroutine globals!}}}
    !     character(kind=1,len=11),allocatable :: temp(:)
         character(kind=1,len=5),allocatable ::&
         temp2(:),temp3(:),moltype_atom(:,:)
-        integer(kind=ik),allocatable :: natomsoftype(:)
+        integer(kind=ik),allocatable :: natomsoftype(:),nmols(:)
         character(kind=1, len=5),allocatable :: moltypenames(:)
-        integer(kind=ik) :: ia,i,j        
+        integer(kind=ik) :: ia,i,j,atoms=0       
         allocate(coor(3,atot),box(1:3),atomnames(atot),moltypenames(atot),temp(atot),temp2(atot),temp3(atot))
         atomnames="";moltypenames="";temp="";temp2="";temp3=""
         do ia=1,atot
@@ -300,6 +305,7 @@ end subroutine globals!}}}
         molt(j)%lastatom=molt(j)%firstatom+natomsoftype(j)-1
         molt(j)%nmol=nmols(molt(j)%lastatom)
         molt(j)%molname=moltypenames(j)
+        molt(j)%natoms=natomsoftype(j)
         !write(*,*)molt(j)%molname
         end do
         

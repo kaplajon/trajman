@@ -126,6 +126,15 @@ module trajop
                     end do
                  case(9) ! AVERAGE
                          ! Allt sköts i postproc
+
+                 case(10) !DEFINE ATOM
+                     select case(instr(i)%newatom%from_mol_prop)
+                        case('com','center_of_mass')
+                            do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                                coor(:,cind(instr(i)%atoms(1),imol))=&
+                                center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                            end do
+                     end select
             end select
 
            
@@ -492,11 +501,13 @@ module trajop
         integer(kind=ik) :: umol,i,j,imol
         real(kind=rk) :: centerofmolecule(3)
         centerofmolecule=0
+        !write(*,*)'START',umol,imol
         j=umol
         do i=molt(j)%firstatom,molt(j)%lastatom
             centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
         end do
         centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
+        !write(*,*)'STOP'
     end function center_of_molecule!}}}
 
     function moi(umol,imol) result(tensor)!{{{
@@ -560,7 +571,7 @@ module trajop
         open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
         do i=1,size(instr) ! Loop över instruktionsrader
         select case(instr(i)%findex)
-            case(0)
+            case(0,10)
             case(7) ! CORRELATE
                 corr1=0
                 corr2=0
@@ -675,7 +686,7 @@ module trajop
         end do
         do i=1,size(instr) ! Loop över instruktionsrader
             select case(instr(i)%findex)
-                case(0,7)
+                case(0,7,10)
                 case default
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         if(instr(i)%set%autofilename)then
@@ -697,7 +708,7 @@ module trajop
                     end do
 
                     select case(instr(i)%findex)
-                        case(0,7)
+                        case(0,7,10)
                         case(1)
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi))),&

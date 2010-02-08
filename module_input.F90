@@ -144,8 +144,8 @@ module input
     end subroutine reallocatepointerchar !}}}
 
     subroutine reallocatechar(vector,n)!{{{
-        character(kind=1,len=1),allocatable,intent(inout) :: vector(:)
-        character(kind=1,len=1),allocatable :: copy(:)
+        character(kind=1,len=*),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=len(vector)),allocatable :: copy(:)
         integer(kind=ik),intent(in) :: n
         if (allocated(vector))then
         
@@ -157,6 +157,22 @@ module input
             allocate(vector(1:n))
         endif
     end subroutine reallocatechar !}}}
+
+    subroutine reallocatecharle(vector,n,le)!{{{
+    integer(kind=ik) :: le    
+    character(kind=1,len=le),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=le),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+        
+            allocate(copy(1:n))
+            copy=''
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatecharle !}}}
 
     subroutine reallocateint(vector,n)!{{{
         integer(kind=ik),allocatable,intent(inout) :: vector(:)
@@ -259,7 +275,7 @@ module input
         !real(kind=rk),pointer :: datafile1(:,:),datafile2(:,:),res(:,:)
         !real(kind=rk) :: scal1,scal2
         integer(kind=ik) ::&
-        ios,i,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
+        ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
         type(instruct) :: trajop
         !f1='';f2='';f3='';arg4='' ! För autofilename
         call getwords(charvector,arguments)
@@ -324,6 +340,12 @@ module input
                 trajop%findex=9
                 p=2 !faktiskt 2, men andra arg ej molekylnamn
                 funcstr='AV_'
+            case('define')
+                 select case(trim(stringconv(arguments(:,2))))
+                    case('atom')
+                        trajop%findex=10
+                        p=4
+                 end select
             case('exit')
                 stop
                     
@@ -337,7 +359,7 @@ module input
             end select
             trajop%instructionstring=''
             if(trajop%findex/=0)then
-                if(trajop%findex/=9)then
+                if(trajop%findex/=9 .AND. trajop%findex/=10)then
                 do i=1,p-1
                     trajop%atoms(i)=atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
                     +atomindex(trim(stringconv(arguments(:,i+1))))
@@ -359,6 +381,30 @@ module input
                             trim(stringconv(arguments(:,p-1)))
                             stop
                         endif
+                    else if(trajop%findex==10)then
+                        trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
+                        trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
+                        trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
+                       ! This indexing works for one and only one atom per
+                       ! submolecule!
+                        call reallocatechar(atomnames,size(atomnames)+1)
+                        call reallocate(shift,size(shift)+1)
+                        call reallocate(natoms,size(natoms)+1)
+                        call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
+
+                        i=size(atomnames)
+                        j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
+                        moltypeofuatom(i)=j
+                        molt(j)%natoms=molt(j)%natoms+1
+                        natoms(size(atomnames))=molt(j)%natoms
+                        atomnames(size(atomnames))=trajop%newatom%atomname
+                        trajop%atoms(1)=size(atomnames)
+                        atot=atot+molt(j)%nmol
+                        shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
+                        deallocate(coor)
+                        allocate(coor(1:3,atot))
+
+
                     else
                         trajop%instructionstring=funcstr//trim(concatargs(arguments(:,2:p)))
                     endif
@@ -509,7 +555,7 @@ module input
                 end if
             case('area_per_lipid','apl')
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
-            case('newmoltype')
+            case('submoltype')
                 !write(*,*)size(molt)
                 call reallocate(molt,size(molt)+1)
                 mols=mols+1
@@ -525,6 +571,7 @@ module input
                 molt(size(molt))%lastatom=atomindex(arg5)
                 molt(size(molt))%nmol=&
                 molt(moltypeofuatom(molt(size(molt))%firstatom))%nmol
+                molt(size(molt))%natoms=0
                 if(molt(size(molt))%firstatom > molt(size(molt))%lastatom)then
                     write(*,*)'ERROR:SET:NEWMOLTYPE: Illegal atom order!'
                     stop
