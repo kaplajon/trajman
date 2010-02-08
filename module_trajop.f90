@@ -472,30 +472,30 @@ module trajop
 
     end subroutine center_of_membrane!}}}
 
-    subroutine test(a)
-    use f95_lapack
-!    use solver
-    integer(kind=ik) :: a,imol
-    integer(kind=4) ::info=0,lwork=102
-    real(kind=rk) :: tens(3,3),eigenvalues(3),work(1:102)
-    imol=1
-    tens=moi(a,imol)
-    write(*,*)tens
-    eigenvalues=0;work=0
-   ! tens=reshape([1,0,0,0,2,0,0,0,3],[3,3])
-    call&
-!    DSYEV('V','U',size(tens,1),tens,size(tens,2),eigenvalues,work,lwork,info)
-    LA_SYEVD(tens,eigenvalues,'V','U',info)
-    write(*,*)eigenvalues,info
-    write(*,*)tens
-    write(*,*)'**************************************************'
-    eigenvalues=0;tens=0
-!    call automatic_evd2_noorder(moi(a,imol),eigenvalues,tens)
-    write(*,*)eigenvalues
-    write(*,*)tens
-
-    stop
-    end subroutine test
+!    subroutine test(a)
+!    use f95_lapack
+!!    use solver
+!    integer(kind=ik) :: a,imol
+!    integer(kind=4) ::info=0,lwork=102
+!    real(kind=rk) :: tens(3,3),eigenvalues(3),work(1:102)
+!    imol=1
+!    tens=moi(a,imol)
+!    write(*,*)tens
+!    eigenvalues=0;work=0
+!   ! tens=reshape([1,0,0,0,2,0,0,0,3],[3,3])
+!    call&
+!!    DSYEV('V','U',size(tens,1),tens,size(tens,2),eigenvalues,work,lwork,info)
+!    LA_SYEVD(tens,eigenvalues,'V','U',info)
+!    write(*,*)eigenvalues,info
+!    write(*,*)tens
+!    write(*,*)'**************************************************'
+!    eigenvalues=0;tens=0
+!!    call automatic_evd2_noorder(moi(a,imol),eigenvalues,tens)
+!    write(*,*)eigenvalues
+!    write(*,*)tens
+!
+!    stop
+!    end subroutine test
    
     function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
         integer(kind=ik) :: umol,i,j,imol

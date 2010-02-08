@@ -417,8 +417,8 @@ module input
     end subroutine procinp!}}}
 
     subroutine set(args)!arg2,arg3)!{{{
-        character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
         character(kind=1,len=1) :: args(:,:)
+        character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
         integer(kind=ik) :: i,j,p,ios
         arg2='';arg3='';arg4='';arg5=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))

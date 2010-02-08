@@ -11,9 +11,11 @@ OBJS =	module_input.o module_kinds.o module_readtraj.o module_trajop.o \
 
 LIBS =  #/usr/lib64/liblapack.so.3
 
-INCLUDES = -I/data/jon/src/LAPACK95/lapack95_modules/ 
+#INCLUDES = -I/data/jon/src/LAPACK95/lapack95_modules/ 
+INCLUDES = #-I/home/jon/src/LAPACK95/lapack95_modules/ 
 #LIBSPATH = -L/usr/common/sprng2.0/lib
-LIBSPATH = /data/jon/src/LAPACK95/lapack95.a /usr/lib64/liblapack.so.3 
+#LIBSPATH = /data/jon/src/LAPACK95/lapack95.a /usr/lib64/liblapack.so.3 
+LIBSPATH =# /home/jon/src/LAPACK95/lapack95.a /usr/lib/liblapack.so.3 
 CC = gcc
 CFLAGS = -03
 F90 = gfortran 
