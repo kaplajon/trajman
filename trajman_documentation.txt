@@ -49,29 +49,35 @@ set
 				    acorr writes autocorrelations 
 				    (WARNING! Autocorrelation can take a very long time!)
 
+    submolecule NAME startatom endatom :: Define a submolecule of an existing molecule, defined 
+					  by the atoms between startatom and endatom.
+
 INPUTFILE: FUNCTIONS
 ----------------------------------
+define atom NAME SUBMOLPROP SUBMOL :: Define a new atom with name, NAME, from a property (SUBMOLPROP)
+				      of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
+				      be set to 'com', which is the center of mass of the submolecule.
 
-DA Atom1 Atom2		    :: Director angle: Angle between the vector Atom1-Atom2
-			       against the director
+DA Atom1 Atom2		           :: Director angle: Angle between the vector Atom1-Atom2
+			              against the director
 
-VA Atom1 Atom2 Atom3	    :: Valence angle. First atom is the central atom.
+VA Atom1 Atom2 Atom3	           :: Valence angle. First atom is the central atom.
 
-TA Atom1 Atom2 Atom3 Atom4  :: Torsion angle of atoms 1-4
+TA Atom1 Atom2 Atom3 Atom4         :: Torsion angle of atoms 1-4
 
-BL Atom1 Atom2		    :: Bond length (or distance) between two atoms
+BL Atom1 Atom2		           :: Bond length (or distance) between two atoms
 
-SV Atom1 Atom2	    	    :: Order parameter
+SV Atom1 Atom2	    	           :: Order parameter
 
-MP Atom1		    :: Distance of atom1 from the centerofmembrane
+MP Atom1		           :: Distance of atom1 from the centerofmembrane
 
-corr	 		    :: Correlate the two following functions in a correlation
-			       distribution.
+corr	 		           :: Correlate the two following functions in a correlation
+			              distribution.
 
-DC Atom1 Atom2		    :: Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
+DC Atom1 Atom2		           :: Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
 
-average N		    :: Calculate an average of the following N (int) functions
-			       (e.g. averaging a CH3 group)
+average N		           :: Calculate an average of the following N (int) functions
+			              (e.g. averaging a CH3 group)
 
 
 TRAJMAN DEFAULT FILES:

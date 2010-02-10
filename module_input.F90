@@ -371,7 +371,7 @@ module input
                 end do
                 end if
                 if(p>=2)then
-                    if(trajop%findex==9)then
+                    if(trajop%findex==9)then ! AVERAGE
                     trajop%instructionstring=funcstr//&
                     trim(concatargs(arguments(:,2:size(arguments,2))))
                         arg2=trim(stringconv(arguments(:,p)))
@@ -381,17 +381,18 @@ module input
                             trim(stringconv(arguments(:,p-1)))
                             stop
                         endif
-                    else if(trajop%findex==10)then
+                    else if(trajop%findex==10)then ! DEFINE ATOM
                         trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
                         trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
                         trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
                        ! This indexing works for one and only one atom per
                        ! submolecule!
+                       ! Reallocate indexing vectors to add one atom:
                         call reallocatechar(atomnames,size(atomnames)+1)
                         call reallocate(shift,size(shift)+1)
                         call reallocate(natoms,size(natoms)+1)
                         call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
-
+                        ! Handle the indexing for the new atom:
                         i=size(atomnames)
                         j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
                         moltypeofuatom(i)=j

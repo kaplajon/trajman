@@ -130,6 +130,7 @@ module trajop
                  case(10) !DEFINE ATOM
                      select case(instr(i)%newatom%from_mol_prop)
                         case('com','center_of_mass')
+                           ! Define atom from center of mass of a defined submolecule.
                             do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
                                 coor(:,cind(instr(i)%atoms(1),imol))=&
                                 center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
