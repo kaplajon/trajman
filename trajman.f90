@@ -8,7 +8,7 @@ program trajman
     implicit none
     character(kind=1,len=1),pointer :: inputrad(:),words(:,:)
     character(kind=1,len=255) :: sysstr,pid,wf
-    integer(kind=ik) :: i,j,k,m,n,ios,p,frame,runit
+    integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame,runit
     integer(kind=8) :: trs,frs
     type(instruct),allocatable :: troptype(:)
     call arguments(runit)
@@ -30,17 +30,12 @@ program trajman
     end do
 !    maxmols=maxval(troptype(:)%nmolop)
 
-!write(*,fmt='(1A11)')(atomnames(i),i=1,size(atomnames));stop
-
     ! Allokera datamatris till storlek baserad på input
     if(maxframes==0)then !maxframes=1001
         p=getpid() ! Returns pid of the running instance of trajman
         write(pid,*)p
         !Make a system call to stat to get filesize of trajectory file
         write(sysstr,*)'stat -c%s '//stringconv(trajfile)//' >',trim(adjustl(pid)),'trsize'
-        !write(*,*)sysstr
-        !call fstat(tunit,buff)
-        !write(*,*)buff(8),'buffert(8)'
         call system(trim(sysstr))
         !Make a system call to extract one frame from trajectory file (based on
         !rowsperframe)
@@ -53,11 +48,8 @@ program trajman
         open(42,file=trim(adjustl(pid))//'trsize')
         read(42,*)trs
         read(42,*)frs
-        !write(*,*)trs,frs
-        !stopa
         maxframes=(trs-mod(trs,frs))/frs+nint(real(mod(trs,frs),8)/real(frs,8))
         if(trs==0)maxframes=0
-        !maxframes=nint(real(trs,8)/real(frs,8))
         close(42)
         ! Remove temporary files
         call system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
@@ -93,28 +85,41 @@ program trajman
 
        if(frame==global_setflags%writeframe)then
            write(wf,*)global_setflags%writeframe
-           open(37,file='frame'//trim(adjustl(wf))//'.xyz')
-           write(37,*)atot
-           write(37,*)
-            do i=1,size(molt)
-                do j=1,molt(i)%nmol
-                    do k=molt(i)%firstatom,molt(i)%lastatom
-                        write(37,*)atomnames(k),10*getatom(k,j)
-                    end do
-                end do
-            end do
-            close(37)
+!           if(global_setflags%writeframe%xyz)then
+!               open(37,file='frame'//trim(adjustl(wf))//'.xyz')
+!               write(37,*)atot
+!               write(37,*)
+!                do i=1,size(molt)
+!                    do j=1,molt(i)%nmol
+!                        do k=molt(i)%firstatom,molt(i)%lastatom
+!                            write(37,*)atomnames(k),10*getatom(k,j)
+!                        end do
+!                    end do
+!                end do
+!                close(37)
+!            else if(global_setflags%writeframe%gro)then
+               open(37,file='frame'//trim(adjustl(wf))//'.gro')
+               write(37,*)'frame=',trim(wf)
+               write(37,*)atot
+               l=1
+               do i=1,size(molt)
+                   do j=1,molt(i)%nmol
+                       do k=molt(i)%firstatom,molt(i)%lastatom
+                           !write(*,'(i5,a5,a10,i5,3F10.7)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
+                           write(37,'(i5,2a5,i5,3F8.3)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
+                           l=l+1
+                       end do
+                   end do
+               end do
+               write(37,'(3F8.3)')box
+               close(37)
+!            end if              
         end if
                 
-      
-      ! flush(6)
        if (frame==maxframes)exit
     end do
     write(*,*)
     write(*,'(5x,A)')'Postprocessing...'
-!            do i=1,size(atomnames)
-!        write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,atoms),1_ik))
-!        end do
     call postproc(troptype)
     write(*,'(5X,A5)')'Done!'
 end program trajman

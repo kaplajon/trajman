@@ -6,7 +6,7 @@ PROG =	trajman
 SRCS =	module_input.F90 module_kinds.f90 module_readtraj.f90 \
 	module_trajop.f90 module_util.f90 trajman.f90
 
-OBJS =	module_input.o module_kinds.o module_readtraj.o module_trajop.o \
+OBJS =	module_input.o module_version.o module_kinds.o module_readtraj.o module_trajop.o \
 	module_util.o trajman.o
 
 LIBS =  #/usr/lib64/liblapack.so.3
@@ -27,8 +27,19 @@ LDFLAGS =
 
 all: $(PROG)
 
-$(PROG): $(OBJS)
+
+$(PROG): version $(OBJS)
 	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LIBS)
+
+.PHONY: version
+version: 
+ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5)")
+	
+    else
+	@echo "A new revision detected, removing old version module."
+	rm module_version.f90 module_version.o version.mod
+endif
+
 clean:
 	rm -f $(PROG) $(OBJS) *.mod
 
@@ -37,19 +48,23 @@ clean:
 .f90.o:
 	$(F90) $(F90FLAGS) -c $< $(LIBS) $(INCLUDES)
 
-.SUFFIXES: $(SUFFIXES) .f90
-
-.f.o:
-	$(F90) $(F90FLAGS) -c $< $(LIBS)
+#.SUFFIXES: $(SUFFIXES) .f90
+#
+#.f.o:
+#	$(F90) $(F90FLAGS) -c $< $(LIBS)
 
 .SUFFIXES: $(SUFFIXES) .F90 
 
 .F90.o:
 	$(F90) $(FC90FLAGS) -c $< $(LIBS) $(INCLUDES)
 
-module_input.o: module_kinds.o module_readtraj.o module_util.o
-module_readtraj.o: module_kinds.o
-module_trajop.o: module_kinds.o
-module_util.o: module_kinds.o module_readtraj.o
+module_version.f90:
+	bzr version-info --custom --template="!{revno}\nmodule version\n    use kinds\n    character(kind=1,len=*),parameter :: branch=\"{branch_nick}\",revision=\"{revno}\",revdate=\"{date}\"\nend module version\n" >module_version.f90
+
+#module_input.o: module_kinds.o module_readtraj.o module_util.o module_version.o
+module_input.o: module_util.o module_version.o
+module_readtraj.o module_version.o module_trajop.o: module_kinds.o
+#module_trajop.o: module_kinds.o
+module_util.o: module_readtraj.o
 trajman.o: module_input.o module_kinds.o module_readtraj.o module_trajop.o \
 	module_util.o
