@@ -25,10 +25,10 @@ F90FLAGS =  -O3 -g
 FC90FLAGS = -D "CINFO='$$(date)'" $(F90FLAGS)
 LDFLAGS = 
 
-all: $(PROG)
+all: version $(PROG)
 
 
-$(PROG): version $(OBJS)
+$(PROG): $(OBJS)
 	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LIBS)
 
 .PHONY: version
