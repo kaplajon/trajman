@@ -32,12 +32,14 @@ $(PROG): $(OBJS)
 	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LIBS)
 
 .PHONY: version
-version: 
-ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5)")
+version:
+ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell if [ -f module_version.f90 ];then sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5;else echo '0';fi)")
 	
     else
 	@echo "A new revision detected, removing old version module."
-	rm module_version.f90 module_version.o version.mod
+	@if [ -f module_version.f90 ];then rm module_version.f90;fi
+	@if [ -f module_version.o ];then rm module_version.o;fi
+	@if [ -f version.mod ];then rm version.mod;fi
 endif
 
 clean:
