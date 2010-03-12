@@ -1,5 +1,6 @@
 module input
     use kinds
+    use version
     use util
     use readtraj
     implicit none ! Routines for input file treatment
@@ -13,14 +14,6 @@ module input
     subroutine arguments(runit)
         integer(kind=ik) :: i,ios,runit
         character(kind=1,len=255) :: carg,carg2,ctime
-        !write(*,*)command_argument_count()
-        !do i=0,command_argument_count()
-        !    call get_command_argument(i,carg)
-        !    write(*,*)carg,i
-        !end do
-        !read(5,*)carg
-        !write(*,*)carg
-        !stop
 
         !If no arguments, print help info
         if(command_argument_count()==0)then
@@ -48,6 +41,8 @@ module input
                 !is flagged to use the preprocessor.
                 ctime=CINFO
                 write(*,*)'     Trajman experimental :: ',trim(ctime)
+                write(*,*)'                   Branch :: ',branch
+                write(*,*)'                 Revision :: r',revision,', committed ',revdate
                 write(*,*)'     (c) Jon Kapla, 2009  :: Contact: jon.kapla@mmk.su.se'
                 stop
             case('-h','--help')
