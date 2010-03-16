@@ -140,11 +140,6 @@ module trajop
 
            
         end do 
-!Postprocessing
-!        do i=1,size(trop,2)
-!        call getprob(datat(trop(5,i),:,i),trop(-1,i))
-!        write(outunit,*)trim(stringconv(atomname(trop(2:trop(0,i),i)))),getmymean(datat(:,:,i))
-!        end do
     end subroutine procop!}}}
 
     subroutine mean_var(vec,mean,var)!{{{
@@ -502,13 +497,11 @@ module trajop
         integer(kind=ik) :: umol,i,j,imol
         real(kind=rk) :: centerofmolecule(3)
         centerofmolecule=0
-        !write(*,*)'START',umol,imol
         j=umol
         do i=molt(j)%firstatom,molt(j)%lastatom
             centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
         end do
         centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
-        !write(*,*)'STOP'
     end function center_of_molecule!}}}
 
     function moi(umol,imol) result(tensor)!{{{
@@ -568,7 +561,6 @@ module trajop
         do i=1,size(instr)
             if(instr(i)%findex/=0)n=max(len(trim(instr(i)%instructionstring)),n)
         end do
-!write(*,'(20x,a50)')'compactmean,    ,mean, dev,    entropy  entdev'
         open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
         do i=1,size(instr) ! Loop över instruktionsrader
         select case(instr(i)%findex)
@@ -617,7 +609,7 @@ module trajop
                 if(instr(i)%set%filename/='')then
                     instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)
                     j=i;k=0
-                    do !j=i+1,i+instr(i)%average_count
+                    do 
                         j=j+1
                         if(instr(j)%findex/=0)then
                             k=k+1
@@ -632,7 +624,7 @@ module trajop
                     instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring(1:2))&
                                 //"_"
                     j=i;k=0
-                    do !j=i+1,i+instr(i)%average_count
+                    do 
                         j=j+1
                         if(instr(j)%findex/=0)then
                             k=k+1
@@ -642,14 +634,13 @@ module trajop
                             if(k>=instr(i)%average_count)exit
                         endif
                     end do
-                    !filename=trim(filename)//'.out'
                     instr(i)%set%ounit=nunit
                 else
                     write(*,*)'Average HEJ!'
                     instr(i)%set%ounit=stdout
                     filename="stdout"
                     j=i;k=0
-                    do !j=i+1,i+instr(i)%average_count
+                    do 
                         j=j+1
                         if(instr(j)%findex/=0)then
                             k=k+1
@@ -658,9 +649,6 @@ module trajop
                     end do
                 end if
                 end if
-
-                !allocate(instr(i)%datam(size(instr(j)%datam,1),size(instr(j)%datam,2)))
-                !instr(i)%datam=0
                call instruction_average(instr,instr(i)%set%ounit,i,j)
                instr(i)%findex=instr(j)%findex
 
@@ -668,17 +656,14 @@ module trajop
             case default ! DEFAULT
 
                     if(instr(i)%set%filename/='')then
-                        !filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)
                         instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)
                         instr(i)%set%ounit=nunit
                         
                     else
                         if(instr(i)%set%autofilename)then
-                        instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)!&
-        !                            //'_'//trim(instr(i)%set%calc(j))//'.out'
+                        instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)
                         instr(i)%set%ounit=nunit
                     else
-                    write(*,*)'Default HEJ!'
                         instr(i)%set%ounit=stdout
                         filename="stdout"
                     end if
@@ -699,11 +684,11 @@ module trajop
                         if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
                         select case(trim(instr(i)%set%calc(j)))
                             case('distrib')
-                                call distrib(instr(i))!,instr(i)%set%ounit)            
+                                call distrib(instr(i))
                             case('traj')
-                                call traj(instr(i))!,instr(i)%set%ounit)
+                                call traj(instr(i))
                             case('acorr')
-                                call autocorr(instr(i))!,instr(i)%set%ounit)
+                                call autocorr(instr(i))
                         end select
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do

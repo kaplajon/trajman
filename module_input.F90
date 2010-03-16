@@ -4,9 +4,9 @@ module input
     use util
     use readtraj
     implicit none ! Routines for input file treatment
-!    integer(kind=ik) :: maxmols
     interface reallocate
-        module procedure reallocatepointerchar,reallocateint,reallocatemoltype
+        module procedure &
+        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe
     end interface
 
     contains
@@ -88,7 +88,6 @@ module input
         integer(kind=ik) :: n,ios,readunit
         integer(kind=ik),optional,intent(in) :: runit
         readunit=stdin
-        !if (.NOT. associated(onerow))allocate(onerow(1:1))
         if (present(runit))readunit=runit
             comment:do
                 n=0
@@ -96,27 +95,19 @@ module input
                     if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
                     read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
                     if(ios==endf)exit comment
-                    !write(*,*)'readline',n,'n',ios,'ios',onerow(1:n+1),'onerow'!RM
-                 
                     if(onerow(n+1)=='#' .or. ios==endr )then
-
                         if(n==0)then
-
                             if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
                             cycle comment
                         else
                             exit comment
                         endif
-                       
                     end if
-                    
                 n=n+1
                 enddo
-       
             end do comment
         if(ios==endf)return       
         n=max(n,1)
-        
        call reallocate(onerow,n)
     end subroutine readline !}}}
 
@@ -125,11 +116,9 @@ module input
         character(kind=1,len=1),pointer :: copy(:)
         integer(kind=ik),intent(in) :: n
         if (associated(vector))then
-        
             allocate(copy(1:min(size(vector),n)))
             copy=vector(1:size(copy))
             deallocate(vector)
-
             allocate(vector(1:n))
             vector(1:size(copy))=copy
             deallocate(copy)
@@ -143,7 +132,6 @@ module input
         character(kind=1,len=len(vector)),allocatable :: copy(:)
         integer(kind=ik),intent(in) :: n
         if (allocated(vector))then
-        
             allocate(copy(1:n))
             copy=''
             copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
@@ -159,7 +147,6 @@ module input
         character(kind=1,len=le),allocatable :: copy(:)
         integer(kind=ik),intent(in) :: n
         if (allocated(vector))then
-        
             allocate(copy(1:n))
             copy=''
             copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
@@ -174,7 +161,6 @@ module input
         integer(kind=ik),allocatable :: copy(:)
         integer(kind=ik),intent(in) :: n
         if (allocated(vector))then
-        
             allocate(copy(1:n))
             copy=0
             copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
@@ -198,6 +184,21 @@ module input
         
         end if
     end subroutine reallocatemoltype!}}}
+
+    subroutine reallocatewriteframe(v,i)!{{{
+        type(write_frame),intent(inout),allocatable :: v(:)
+        type(write_frame),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocatewriteframe!}}}
 
     function wordcount(onerow) result(words)!{{{
         character(kind=1,len=1) :: onerow(:)
@@ -265,14 +266,9 @@ module input
         character(kind=1,len=1),pointer ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2
-        !character(kind=1,len=size(charvector)) :: arg1,arg2,arg3,arg4,f1,f2,f3
-        !character(kind=1,len=size(charvector)*5+100) :: outfilename
-        !real(kind=rk),pointer :: datafile1(:,:),datafile2(:,:),res(:,:)
-        !real(kind=rk) :: scal1,scal2
         integer(kind=ik) ::&
         ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
         type(instruct) :: trajop
-        !f1='';f2='';f3='';arg4='' ! För autofilename
         call getwords(charvector,arguments)
         trajop%findex=0
         trajop%set=global_setflags
@@ -284,7 +280,6 @@ module input
                 trajfile=arguments(1:size(trajfile),2)
 
             case('set','SET')
-                !call set(trim(stringconv(arguments(:,2))),trim(stringconv(arguments(:,3))))
                 call set(arguments)
 
             case('dirangle','DIRANGLE','da','DA')
@@ -438,9 +433,6 @@ module input
                 if (ios/=0)stop 'SET: maxframes should be of type integer'
 
             case('atomnames')
-                !do i=1,size(atomnames)
-                !write(33,*)atomnames(i)
-                !end do
                 open(nunit,file=arg3,action='read',status='old',iostat=ios)
                 if(ios/=0)then
                     write(*,*)"Error, cannot open ",&
@@ -454,10 +446,6 @@ module input
                     stop
                 endif
                 end do
-                !do i=1,size(atomnames)
-                !write(34,*)atomnames(i)
-                !end do
-
                 close(nunit)
 
             case('filename')
@@ -467,7 +455,6 @@ module input
                     global_setflags%filename=''
                     global_setflags%filename=arg3
                 endif
-                !if(trim(global_setflags%filename)=='off')
 
             case('calc')
 
@@ -544,7 +531,14 @@ module input
                 end if
             case('writeframe')
                 if(size(args,2)>=3)then
-                    read(arg3,*)global_setflags%writeframe
+                    global_setflags%wftot=global_setflags%wftot+1
+                    call reallocate(global_setflags%writeframe,global_setflags%wftot)
+                    read(arg3,*)global_setflags%writeframe(global_setflags%wftot)%framenumber
+                    if(size(args,2)==4)then
+                        read(arg4,*)global_setflags%writeframe(global_setflags%wftot)%outformat
+                    else
+                        global_setflags%writeframe(global_setflags%wftot)%outformat='xyz'
+                    end if
                 else
                     write(*,*)'ERROR:SET:writeframe: Needs an integer'
                     stop
@@ -552,11 +546,8 @@ module input
             case('area_per_lipid','apl')
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
-                !write(*,*)size(molt)
                 call reallocate(molt,size(molt)+1)
                 mols=mols+1
-                !write(*,*)size(molt)
-
                 molt(size(molt))%molname=arg3
                 if(arg4=='')stop 'ERROR:SET:NEWMOLTYPE: Needs start atom!'
                 if(arg5=='')stop 'ERROR:SET:NEWMOLTYPE: Needs end atom!'
@@ -582,44 +573,4 @@ module input
                 stop
         end select
     end subroutine set!}}}
-
-!    subroutine readfile(infil,datafil)!{{{
-!        character(kind=1,len=1) :: infil(:)
-!        integer(kind=ik) :: ios,i,j,n,runit=1,m
-!        real(kind=rk),pointer :: datafil(:,:)
-!        real(kind=rk),allocatable :: columns(:)
-!        character(kind=1,len=1),pointer :: onerow(:)
-!        open (unit=runit,file=trim(stringconv(infil)),iostat=ios)
-!        if(ios/=0)then
-!           write(*,*)'Error, cannot open', &
-!           ' file, :',trim(stringconv(infil)),":"
-!           stop
-!        endif
-!        n=0
-!
-!        call readline(onerow,ios,runit)
-!
-!        m=wordcount(onerow) ! kollar antalet kolumner i infil. TODO!!
-!        do 
-!            if (ios==endf)exit 
-!            read(unit=runit,fmt=*,iostat=ios)
-!            !call readline(onerow,ios,runit)
-!            n=n+1
-!        enddo 
-!        if (associated(datafil))deallocate(datafil)
-!        allocate(datafil(1:n,1:m),columns(1:m)) 
-!        ! n är antal rader, m är antal kolumner in
-!        ! infil
-!        rewind(runit)
-!
-!        do i=1,n
-!            read(unit=runit,fmt=*,iostat=ios)(columns(j),j=1,m) !loop
-!            datafil(i,1:m)=columns(1:m)
-!        enddo
-!
-!        close(runit) 
-!        deallocate(columns)
-!        !call op(func,vector=val)
-!    end subroutine readfile!}}}
-
 end module input
