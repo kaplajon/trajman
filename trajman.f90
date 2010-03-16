@@ -1,5 +1,4 @@
 program trajman
-!TESTTESTTEST
     use util
     use kinds
     use input
@@ -22,15 +21,12 @@ program trajman
         call reallocinstruct(troptype,i)
         call procinp(inputrad,troptype(i))
     end do
-    ! Maximala antalet molekyler som processas per frame är maxmols
-    !allocate(nmolop(size(trop(1,:))))
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         if(troptype(i)%findex/=0)troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
     end do
-!    maxmols=maxval(troptype(:)%nmolop)
 
-    ! Allokera datamatris till storlek baserad på input
+    ! Allocate data matrix to a size based on input
     if(maxframes==0)then !maxframes=1001
         p=getpid() ! Returns pid of the running instance of trajman
         write(pid,*)p
@@ -82,10 +78,10 @@ program trajman
            end do
            close(37)
        end if
-
-       if(frame==global_setflags%writeframe)then
-           write(wf,*)global_setflags%writeframe
-           if(trim(global_setflags%writeframe_format)=='gro')then
+       do m=1,global_setflags%wftot !BEGIN WRITEFRAME: Write specified frame to file
+       if(allocated(global_setflags%writeframe) .AND. frame==global_setflags%writeframe(m)%framenumber)then
+           write(wf,*)global_setflags%writeframe(m)%framenumber
+           if(trim(global_setflags%writeframe(m)%outformat)=='gro')then
                open(37,file='frame'//trim(adjustl(wf))//'.gro')
                write(37,*)'frame=',trim(wf)
                write(37,*)atot
@@ -100,8 +96,8 @@ program trajman
                    end do
                end do
                write(37,'(3F8.3)')box
-            else
-!           if(trim(global_setflags%writeframe_format)=='xyz')then
+            else ! Defaults to writing a .xyz file with long filenames,
+                 ! viewable by gOpenmol. 
                open(37,file='frame'//trim(adjustl(wf))//'.xyz')
                write(37,*)atot
                write(37,*)
@@ -115,9 +111,9 @@ program trajman
             end if
             close(37)
         end if
-                
+        end do !END WRITEFRAME       
        if (frame==maxframes)exit
-    end do
+       end do 
     write(*,*)
     write(*,'(5x,A)')'Postprocessing...'
     call postproc(troptype)

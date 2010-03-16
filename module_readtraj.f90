@@ -16,15 +16,20 @@ module readtraj
         module procedure atomindex_a,atomindex_b
     end interface
 
+    type write_frame
+        integer(kind=ik) :: framenumber
+        character(kind=1,len=3) :: outformat
+    end type write_frame
+
     type setflags
         logical :: autofilename,cbl_switch
-        integer(kind=ik) :: distbin,writeframe,ounit
+        integer(kind=ik) :: distbin,ounit,wftot !,writeframe
         character(kind=1,len=255) :: filename,fileprefix,filesuffix
-        character(kind=1,len=3) :: writeframe_format
+        type(write_frame),allocatable :: writeframe(:)
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl
     end type setflags
-
+    
     type natom
         character(kind=1,len=100) :: atomname,from_mol_prop,molecule
     end type natom
@@ -41,14 +46,12 @@ module readtraj
     end type calcval
 
     type instruct
-
         integer(kind=ik) :: atoms(20),findex,nmolop,average_count
         character(kind=1, len=50) :: instructionstring
         real(kind=rk),allocatable :: datam(:,:)
         type(setflags) :: set
         type(calcval) :: cv
         type(natom) :: newatom
-
     end type instruct
 
     type atomdata
@@ -64,12 +67,6 @@ module readtraj
     end type moltype
 
     type(moltype),allocatable :: molt(:)
-
-
-    !global_setflags%autofilename=.FALSE. 
-
-   ! private :: stringconv
-   ! public :: str
 
     interface operator(.str.)
         module procedure stringconv
@@ -114,7 +111,8 @@ subroutine globals!{{{
     global_setflags%distbin=100
     global_setflags%fileprefix='auto_'
     global_setflags%filesuffix='.out'
-    global_setflags%writeframe=0
+!    global_setflags%writeframe%framenumber=0
+    global_setflags%wftot=0
     ! Default atom masses
     allocate(defmass(5))
     if(.not.allocated(atomd))allocate(atomd(size(defmass)))
