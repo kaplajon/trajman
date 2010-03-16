@@ -545,6 +545,11 @@ module input
             case('writeframe')
                 if(size(args,2)>=3)then
                     read(arg3,*)global_setflags%writeframe
+                    if(size(args,2)==4)then
+                        read(arg4,*)global_setflags%writeframe_format
+                    else
+                        global_setflags%writeframe_format='xyz'
+                    end if
                 else
                     write(*,*)'ERROR:SET:writeframe: Needs an integer'
                     stop

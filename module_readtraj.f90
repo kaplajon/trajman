@@ -19,8 +19,8 @@ module readtraj
     type setflags
         logical :: autofilename,cbl_switch
         integer(kind=ik) :: distbin,writeframe,ounit
-        character(kind=1,len=255) :: filename
-        character(kind=1,len=255) :: fileprefix,filesuffix
+        character(kind=1,len=255) :: filename,fileprefix,filesuffix
+        character(kind=1,len=3) :: writeframe_format
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl
     end type setflags

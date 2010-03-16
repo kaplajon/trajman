@@ -85,19 +85,7 @@ program trajman
 
        if(frame==global_setflags%writeframe)then
            write(wf,*)global_setflags%writeframe
-!           if(global_setflags%writeframe%xyz)then
-!               open(37,file='frame'//trim(adjustl(wf))//'.xyz')
-!               write(37,*)atot
-!               write(37,*)
-!                do i=1,size(molt)
-!                    do j=1,molt(i)%nmol
-!                        do k=molt(i)%firstatom,molt(i)%lastatom
-!                            write(37,*)atomnames(k),10*getatom(k,j)
-!                        end do
-!                    end do
-!                end do
-!                close(37)
-!            else if(global_setflags%writeframe%gro)then
+           if(trim(global_setflags%writeframe_format)=='gro')then
                open(37,file='frame'//trim(adjustl(wf))//'.gro')
                write(37,*)'frame=',trim(wf)
                write(37,*)atot
@@ -112,8 +100,20 @@ program trajman
                    end do
                end do
                write(37,'(3F8.3)')box
-               close(37)
-!            end if              
+            else
+!           if(trim(global_setflags%writeframe_format)=='xyz')then
+               open(37,file='frame'//trim(adjustl(wf))//'.xyz')
+               write(37,*)atot
+               write(37,*)
+                do i=1,size(molt)
+                    do j=1,molt(i)%nmol
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            write(37,*)atomnames(k),10*getatom(k,j)
+                        end do
+                    end do
+                end do
+            end if
+            close(37)
         end if
                 
        if (frame==maxframes)exit

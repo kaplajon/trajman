@@ -40,8 +40,9 @@ set
 
     cbl R			:: Set constant bondlength, R (real), with same unit as the trajectory.
 
-    writeframe N		:: Write frame N (int) to a file with name frameN.xyz in xyz format
-				   (plottable by e.g. gOpenmol).
+    writeframe N [gro]		:: Write frame N (int) to a file with name frameN.xyz in xyz format
+				   (plottable by e.g. gOpenmol). If gro is added to the end of the
+				   command, the output will be in .gro-format. 
 
     calc [distrib,traj,acorr]	:: Defines postprocessing of the calculated FUNCTIONS (see below).
 				    distrib writes distributions
