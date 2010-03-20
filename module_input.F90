@@ -3,6 +3,7 @@ module input
     use version
     use util
     use readtraj
+    use apl
     implicit none ! Routines for input file treatment
     interface reallocate
         module procedure &
@@ -11,7 +12,7 @@ module input
 
     contains
 
-    subroutine arguments(runit)
+    subroutine arguments(runit)!{{{
         integer(kind=ik) :: i,ios,runit
         character(kind=1,len=255) :: carg,carg2,ctime
 
@@ -58,9 +59,9 @@ module input
            i=i+1
 
         end do
-    end subroutine arguments
+    end subroutine arguments!}}}
 
-    subroutine print_help
+    subroutine print_help!{{{
         character(len=100) :: pid
         integer(kind=ik) :: p
         write(*,*)
@@ -81,7 +82,7 @@ module input
         write(pid,*)p
         call system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
         stop
-    end subroutine print_help
+    end subroutine print_help!}}}
 
     subroutine readline(onerow,ios,runit)!{{{
         character(kind=1,len=1),pointer :: onerow(:) 
@@ -544,6 +545,12 @@ module input
                     stop
                 end if
             case('area_per_lipid','apl')
+                if(size(args,2)>=3)then
+                    call apl_atomlist(args(:,3:))
+                else
+                    write(*,*)'SET: Area per lipid: Requires atomnames'
+                end if
+                
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
                 call reallocate(molt,size(molt)+1)
@@ -563,6 +570,8 @@ module input
                     write(*,*)'ERROR:SET:NEWMOLTYPE: Illegal atom order!'
                     stop
                 endif
+            case('folding')
+                global_setflags%folding=.TRUE.
 
             case default
                 if(size(args,2)>=2)then

@@ -6,7 +6,7 @@ program trajman
     use trajop
     implicit none
     character(kind=1,len=1),pointer :: inputrad(:),words(:,:)
-    character(kind=1,len=255) :: sysstr,pid,wf
+    character(kind=1,len=255) :: sysstr,pid,wf,filename
     integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame,runit
     integer(kind=8) :: trs,frs
     type(instruct),allocatable :: troptype(:)
@@ -60,60 +60,48 @@ program trajman
 
     write(*,*)"input done"
     write(*,'(5X,A19,I4)')'Frames to process: ',maxframes
+!#######################################################################################    
     frame=0
     do while (readgro(tunit)==0)! Trajectory processing
-       frame=frame+1
-       if(modulo(frame-1,max(maxframes/100,1))==0)then
-           write(*,'(5X,A10,I3,2A)',advance='no')'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
-       end if
-       call procop(troptype,frame) ! Perform instructions on frame
+        frame=frame+1
+        if(modulo(frame-1,max(maxframes/100,1))==0)then
+            write(*,'(5X,A10,I3,2A)',advance='no')'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
+        end if
+        if(global_setflags%folding)call foldmol
+        if(allocated(common_setflags%membrane_moltypes))&
+        call center_of_membrane(common_setflags%membrane_moltypes)
+        call apl_grid
+        call procop(troptype,frame) ! Perform instructions on frame
 
-       if(frame==1)then !Write atomnames and coordinates for the first molecules
+        if(frame==1)then !Write atomnames and coordinates for the first molecules
                         !to a .xyz file
-           open(37,file='atoms.xyz')
-           write(37,*)size(atomnames)
-           write(37,*)
-           do i=1,size(atomnames)
-                write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
-           end do
-           close(37)
-       end if
-       do m=1,global_setflags%wftot !BEGIN WRITEFRAME: Write specified frame to file
-       if(allocated(global_setflags%writeframe) .AND. frame==global_setflags%writeframe(m)%framenumber)then
-           write(wf,*)global_setflags%writeframe(m)%framenumber
-           if(trim(global_setflags%writeframe(m)%outformat)=='gro')then
-               open(37,file='frame'//trim(adjustl(wf))//'.gro')
-               write(37,*)'frame=',trim(wf)
-               write(37,*)atot
-               l=1
-               do i=1,size(molt)
-                   do j=1,molt(i)%nmol
-                       do k=molt(i)%firstatom,molt(i)%lastatom
-                           !write(*,'(i5,a5,a10,i5,3F10.7)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
-                           write(37,'(i5,2a5,i5,3F8.3)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
-                           l=l+1
-                       end do
-                   end do
-               end do
-               write(37,'(3F8.3)')box
-            else ! Defaults to writing a .xyz file with long filenames,
-                 ! viewable by gOpenmol. 
-               open(37,file='frame'//trim(adjustl(wf))//'.xyz')
-               write(37,*)atot
-               write(37,*)
-                do i=1,size(molt)
-                    do j=1,molt(i)%nmol
-                        do k=molt(i)%firstatom,molt(i)%lastatom
-                            write(37,*)atomnames(k),10*getatom(k,j)
-                        end do
-                    end do
-                end do
-            end if
+            open(37,file='atoms.xyz')
+            write(37,*)size(atomnames)
+            write(37,*)
+            do i=1,size(atomnames)
+                    write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+            end do
             close(37)
         end if
+
+        do m=1,global_setflags%wftot !BEGIN WRITEFRAME: Write specified frame to file
+            if(allocated(global_setflags%writeframe) .AND. frame==global_setflags%writeframe(m)%framenumber)then
+                write(wf,*)global_setflags%writeframe(m)%framenumber
+                
+                if(trim(global_setflags%writeframe(m)%outformat)=='gro')then
+                    filename='frame'//trim(adjustl(wf))//'.gro'
+                    call wf_gro(trim(filename),wf,37)
+                else ! Defaults to writing a .xyz file with long atomnames,
+                     ! viewable by gOpenmol.
+                    filename='frame'//trim(adjustl(wf))//'.xyz'
+                    call wf_xyz(trim(filename),37)
+                end if
+
+            end if
         end do !END WRITEFRAME       
-       if (frame==maxframes)exit
-       end do 
+        if (frame==maxframes)exit
+        end do
+!#######################################################################################    
     write(*,*)
     write(*,'(5x,A)')'Postprocessing...'
     call postproc(troptype)

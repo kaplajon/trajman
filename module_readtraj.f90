@@ -22,7 +22,7 @@ module readtraj
     end type write_frame
 
     type setflags
-        logical :: autofilename,cbl_switch
+        logical :: autofilename,cbl_switch,folding
         integer(kind=ik) :: distbin,ounit,wftot !,writeframe
         character(kind=1,len=255) :: filename,fileprefix,filesuffix
         type(write_frame),allocatable :: writeframe(:)
@@ -73,6 +73,7 @@ module readtraj
     end interface operator(.str.)
 
 contains
+
 subroutine reallocinstruct(v,i)!{{{
     type(instruct),intent(inout),allocatable :: v(:)
     type(instruct),allocatable ::copy(:)
@@ -107,6 +108,7 @@ subroutine globals!{{{
     character(kind=1, len=30),allocatable :: defmass(:)
     integer(kind=ik) :: i,ios
     global_setflags%autofilename=.TRUE.
+    global_setflags%folding=.FALSE.
     global_setflags%filename=''
     global_setflags%distbin=100
     global_setflags%fileprefix='auto_'
@@ -208,7 +210,7 @@ end subroutine globals!}}}
         integer (kind=ik) :: i,ind
         ind=0
         do i=1,size(atomnames)
-            if(atomnames(i)==a)then
+            if(trim(atomnames(i))==trim(a))then
                 if(len_trim(atomnames(i))==len_trim(a))then
                     ind=i
                     exit

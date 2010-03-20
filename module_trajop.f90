@@ -61,12 +61,12 @@ module trajop
 
     end function distance_com!}}}
 
-    function order_parameter(a,b,imol) result(c)
+    function order_parameter(a,b,imol) result(c)!{{{
         integer(kind=ik) :: a,b,imol
         real(kind=rk) :: c
         c=1.5_rk*cos(pi/180._rk*&
         dirangle(a,b,imol))**2-0.5
-    end function order_parameter
+    end function order_parameter!}}}
 
     subroutine procop(instr,frame)!{{{
     ! Hanterar operationerna hämtade från input
@@ -74,8 +74,6 @@ module trajop
         integer(kind=ik) :: imol,i,frame
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
-        if(allocated(common_setflags%membrane_moltypes))&
-        call center_of_membrane(common_setflags%membrane_moltypes)
           do i=1,size(instr)
            
             select case(instr(i)%findex)
@@ -174,7 +172,7 @@ module trajop
         string2=trim(adjustl(string))//" "//trim(string2)
     end function average!}}}
 
-    function test_var(vector) result(var)
+    function test_var(vector) result(var)!{{{
         real(kind=rk) :: vector(:),vector2(size(vector)),var,mean
         integer(kind=ik) :: imol
         mean=sum(vector)
@@ -183,7 +181,7 @@ module trajop
         end do
         mean=sum(vector(:))/real(size(vector),rk)
         var=sum((vector2(:)-mean)**2)*real(size(vector)-1,rk)/real(size(vector),rk)
-    end function test_var
+    end function test_var!}}}
 
     subroutine instruction_average(instr,ounit,ind,lastind)!{{{
         type(instruct),intent(inout) :: instr(:)
@@ -437,22 +435,8 @@ module trajop
     end subroutine corr_distrib!}}}
 
     subroutine center_of_membrane(molecules)!{{{
-        integer(kind=ik) :: molecules(:),i,imol,j,k
-        real(kind=rk) :: com(3),shift,n
-        ! Fold back molecules that is outside the box
-        do i=1,size(molt)
-            do imol=1,molt(i)%nmol
-                com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
-                do j=1,3
-                    shift=com(j)-modulo(com(j),box(j))
-                    if(abs(shift)>box(j)/2._rk)then
-                        do k=molt(i)%firstatom,molt(i)%lastatom
-                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
-                        end do
-                    end if
-                end do
-            end do
-        end do
+        integer(kind=ik) :: molecules(:),i,imol,j
+        real(kind=rk) :: n
         ! Calculate center of membrane based on mass density of
         ! all atoms between atom a and b
         centerofmembrane=0;n=0
@@ -468,7 +452,28 @@ module trajop
 
     end subroutine center_of_membrane!}}}
 
-!    subroutine test(a)
+    subroutine foldmol!{{{
+        integer(kind=ik) :: i,imol,j,k
+        real(kind=rk) :: com(3),shift
+        ! Fold back molecules that is outside the box
+        do i=1,size(molt)
+            do imol=1,molt(i)%nmol
+                com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                do j=1,3
+                    shift=com(j)-modulo(com(j),box(j))
+                    if(abs(shift)>box(j)/2._rk)then
+                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                        end do
+                       ! write(*,*)'COM',center_of_molecule(i,imol)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine foldmol!}}}
+
+!    subroutine test(a)!{{{
 !    use f95_lapack
 !!    use solver
 !    integer(kind=ik) :: a,imol
@@ -491,7 +496,7 @@ module trajop
 !    write(*,*)tens
 !
 !    stop
-!    end subroutine test
+!    end subroutine test!}}}
    
     function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
         integer(kind=ik) :: umol,i,j,imol
@@ -714,7 +719,7 @@ module trajop
         
     end subroutine postproc!}}}
     
-    subroutine autocorr(instr)
+    subroutine autocorr(instr)!{{{
         type(instruct) :: instr
         integer(kind=ik) :: i,j,imol
         real(kind=rk) :: acorr(size(instr%datam,1),0:size(instr%datam,2)-1),norm
@@ -792,6 +797,6 @@ module trajop
 
 
 
-    end subroutine autocorr
+    end subroutine autocorr!}}}
 
 end module trajop
