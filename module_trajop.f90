@@ -1,7 +1,7 @@
 module trajop
     use kinds
     use readtraj
-    use input
+!    use input
     use util
     implicit none
     

@@ -62,6 +62,7 @@ module_version.f90:
 
 #module_input.o: module_kinds.o module_readtraj.o module_util.o module_version.o
 module_input.o: module_util.o module_version.o module_apl.o
+module_apl.o: module_trajop.o
 module_readtraj.o module_version.o module_trajop.o: module_kinds.o
 #module_trajop.o: module_kinds.o
 module_util.o: module_readtraj.o

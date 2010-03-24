@@ -4,6 +4,12 @@ module util
 !    use input
     implicit none
     integer(kind=ik) :: maxframes
+
+    interface reallocate
+        module procedure &
+        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe
+    end interface
+
     contains
 
     subroutine subtract(a,b,c)!{{{
@@ -83,6 +89,95 @@ module util
         end do
         close(funit)
     end subroutine wf_xyz!}}}
+
+    subroutine reallocatepointerchar(vector,n)!{{{
+        character(kind=1,len=1),pointer,intent(inout) :: vector(:)
+        character(kind=1,len=1),pointer :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (associated(vector))then
+            allocate(copy(1:min(size(vector),n)))
+            copy=vector(1:size(copy))
+            deallocate(vector)
+            allocate(vector(1:n))
+            vector(1:size(copy))=copy
+            deallocate(copy)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatepointerchar !}}}
+
+    subroutine reallocatechar(vector,n)!{{{
+        character(kind=1,len=*),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=len(vector)),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+            allocate(copy(1:n))
+            copy=''
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatechar !}}}
+
+    subroutine reallocatecharle(vector,n,le)!{{{
+    integer(kind=ik) :: le    
+    character(kind=1,len=le),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=le),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+            allocate(copy(1:n))
+            copy=''
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatecharle !}}}
+
+    subroutine reallocateint(vector,n)!{{{
+        integer(kind=ik),allocatable,intent(inout) :: vector(:)
+        integer(kind=ik),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+            allocate(copy(1:n))
+            copy=0
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocateint !}}}
+
+    subroutine reallocatemoltype(v,i)!{{{
+        type(moltype),intent(inout),allocatable :: v(:)
+        type(moltype),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocatemoltype!}}}
+
+    subroutine reallocatewriteframe(v,i)!{{{
+        type(write_frame),intent(inout),allocatable :: v(:)
+        type(write_frame),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocatewriteframe!}}}
 
 !    subroutine APL(grid,apl_atoms)
 !        integer(kind=ik) :: grid(200,200),apl_atoms(:)
