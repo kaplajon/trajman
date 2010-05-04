@@ -5,7 +5,7 @@ program trajman
     use readtraj
     use trajop
     implicit none
-    character(kind=1,len=1),pointer :: inputrad(:),words(:,:)
+    character(kind=1,len=1),allocatable :: inputrad(:),words(:,:)
     character(kind=1,len=255) :: sysstr,pid,wf,filename
     integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame,runit
     integer(kind=8) :: trs,frs
@@ -15,7 +15,8 @@ program trajman
     call globals
     i=0
     do !Input processing 
-        call readline(inputrad,ios,runit)   
+        call readline(inputrad,ios,runit)
+        write(*,*)inputrad
         if(ios==endf)exit
         i=i+1
         call reallocinstruct(troptype,i)
@@ -32,14 +33,14 @@ program trajman
         write(pid,*)p
         !Make a system call to stat to get filesize of trajectory file
         write(sysstr,*)'stat -c%s '//stringconv(trajfile)//' >',trim(adjustl(pid)),'trsize'
-        call system(trim(sysstr))
+        ios=system(trim(sysstr))
         !Make a system call to extract one frame from trajectory file (based on
         !rowsperframe)
         write(sysstr,*)'tail ',-rowsperframe,' ',stringconv(trajfile),' >',trim(adjustl(pid)),'oneframe'
-        call system(trim(sysstr))
+        ios=system(trim(sysstr))
         ! Make a system call to get the size of one frame
         sysstr='stat -c%s '//trim(adjustl(pid))//'oneframe >>'//trim(adjustl(pid))//'trsize'
-        call system(trim(sysstr))
+        ios=system(trim(sysstr))
         !Get sizes and calculate number of frames
         open(42,file=trim(adjustl(pid))//'trsize')
         read(42,*)trs
@@ -48,7 +49,7 @@ program trajman
         if(trs==0)maxframes=0
         close(42)
         ! Remove temporary files
-        call system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
+        ios=system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
     end if
 
     do i=1,size(troptype)
@@ -70,7 +71,7 @@ program trajman
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-        call apl_grid
+!        call apl_grid
         call procop(troptype,frame) ! Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules

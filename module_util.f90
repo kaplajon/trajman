@@ -91,10 +91,10 @@ module util
     end subroutine wf_xyz!}}}
 
     subroutine reallocatepointerchar(vector,n)!{{{
-        character(kind=1,len=1),pointer,intent(inout) :: vector(:)
-        character(kind=1,len=1),pointer :: copy(:)
+        character(kind=1,len=1),allocatable,intent(inout) :: vector(:)
+        character(kind=1,len=1),allocatable :: copy(:)
         integer(kind=ik),intent(in) :: n
-        if (associated(vector))then
+        if (allocated(vector))then
             allocate(copy(1:min(size(vector),n)))
             copy=vector(1:size(copy))
             deallocate(vector)

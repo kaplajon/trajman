@@ -76,12 +76,12 @@ module input
         write(*,*)
         p=getpid()
         write(pid,*)p
-        call system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
+        p=system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
         stop
     end subroutine print_help!}}}
 
     subroutine readline(onerow,ios,runit)!{{{
-        character(kind=1,len=1),pointer :: onerow(:) 
+        character(kind=1,len=1),allocatable :: onerow(:) 
         integer(kind=ik) :: n,ios,readunit
         integer(kind=ik),optional,intent(in) :: runit
         readunit=stdin
@@ -127,13 +127,13 @@ module input
     end function wordcount!}}}
 
     subroutine getwords(vector,words)!{{{
-        character(len=1),pointer :: vector(:)
-        character(len=1),pointer :: words(:,:)
+        character(len=1),allocatable :: vector(:)
+        character(len=1),allocatable :: words(:,:)
         integer :: i,nwords,k
         logical :: whitespace
         nwords=wordcount(vector)
         
-        if (associated(words))deallocate(words)
+        if (allocated(words))deallocate(words)
         allocate(words(1:size(vector),1:nwords))
         words(:,:)=" "
         whitespace=.TRUE.
@@ -171,7 +171,7 @@ module input
 
     subroutine procinp(charvector,trajop)!{{{
         implicit none    
-        character(kind=1,len=1),pointer ::charvector(:),arguments(:,:)
+        character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2
         integer(kind=ik) ::&
@@ -253,6 +253,7 @@ module input
             case default 
                 write(*,*)"Not a valid input, ",":",&
                 trim(stringconv(arguments(:,1))),":"
+                write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
             trajop%instructionstring=''
@@ -379,6 +380,7 @@ module input
                 stop 'SET: distbin should be of type integer >0'
 
             case('atommasses')
+                if(len_trim(arg3)/=0)then
                 open(nunit,file=arg3,action='read', status='old',iostat=ios)
                 if(ios==0)then
                     !Läs in atommassor från fil:
@@ -400,6 +402,7 @@ module input
                     end do
                 end if
                 close(nunit,iostat=ios)
+                end if
                 !Ge varje unikt atomnamn en massa: 
                 do i=1,size(atomd)
                     p=len_trim(atomd(i)%aname)

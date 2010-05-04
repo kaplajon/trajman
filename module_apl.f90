@@ -54,7 +54,6 @@ module apl
         call reallocate(apl_lower_inv,kl)
         call reallocate(apl_upper,ku)
         call reallocate(apl_upper_inv,ku)
-
         call mindist(apl_upper)
         !allocate(grid(1:ceiling((box(1)/rmin)*(sqrt(12._rk)+2)),1:ceiling((box(2)/rmin)*(sqrt(12._rk)+2))))
         allocate(grid(1:1000,1:1000))
@@ -70,8 +69,8 @@ module apl
                 end if
             end do
         end do
-        write(*,*)'AREA DMPC: ',(box(1)*box(2)*(real(dmpc,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/48._rk
-        write(*,*)'AREA MGDG: ',(box(1)*box(2)*(real(mgdg,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/40._rk
+        write(*,*)'AREA DMPC: ',(box(1)*box(2)*(real(dmpc,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/72._rk
+        write(*,*)'AREA MGDG: ',(box(1)*box(2)*(real(mgdg,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/18._rk
 
         do i=1,size(grid,2)
             write(42,*)real(grid(:,i),rk)

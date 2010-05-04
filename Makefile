@@ -21,23 +21,24 @@ FFLAGS =  -O3
 F90FLAGS =  -O3 -g 
 FC90FLAGS = -D "CINFO='$$(date)'" $(F90FLAGS)
 LDFLAGS = 
+ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell if [ -f module_version.f90 ];then sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5;else echo '0';fi)")
+A := 
+    else
+A := $(shell if [ -f module_version.f90 ];then rm module_version.f90;fi)
+B := $(shell echo "A new revision detected, creating new version module.")
+C := $(shell if [ -f module_version.o ];then rm module_version.o;fi)
+D := $(shell if [ -f version.mod ];then rm version.mod;fi)
+endif
 
-all: version $(PROG)
+#all: version $(PROG)
+all: $(PROG)
 
 
 $(PROG): $(OBJS)
 	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LIBS)
 
-.PHONY: version
-version:
-ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell if [ -f module_version.f90 ];then sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5;else echo '0';fi)")
-	
-    else
-	@echo "A new revision detected, removing old version module."
-	@if [ -f module_version.f90 ];then rm module_version.f90;fi
-	@if [ -f module_version.o ];then rm module_version.o;fi
-	@if [ -f version.mod ];then rm version.mod;fi
-endif
+#.PHONY: version
+#version:
 
 clean:
 	rm -f $(PROG) $(OBJS) *.mod
@@ -58,6 +59,7 @@ clean:
 	$(F90) $(FC90FLAGS) -c $< $(LIBS) $(INCLUDES)
 
 module_version.f90:
+	@echo $(B)
 	bzr version-info --custom --template="!{revno}\nmodule version\n    use kinds\n    character(kind=1,len=*),parameter :: branch=\"{branch_nick}\",revision=\"{revno}\",revdate=\"{date}\"\nend module version\n" >module_version.f90
 
 #module_input.o: module_kinds.o module_readtraj.o module_util.o module_version.o

@@ -87,6 +87,9 @@ subroutine reallocinstruct(v,i)!{{{
         allocate(v(i))
         
     end if
+    do j=1,size(v)
+    write(*,*)j,allocated(v(j)%datam)
+    end do
 end subroutine reallocinstruct!}}}
 
 !subroutine reallocinstruct(v,i)!{{{

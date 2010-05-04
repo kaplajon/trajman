@@ -160,7 +160,6 @@ module trajop
         character(len=300) :: string2
         integer(kind=ik) :: imol,i
         real(kind=rk) :: datam(:,:),meant(1:size(datam,1)),mean,meandev,var
-
         do imol=1,size(datam,1)
             meant(imol)=sum(datam(imol,:))/real(size(datam,2),rk)
         end do
@@ -169,6 +168,7 @@ module trajop
         meandev=sqrt(var/real(size(meant),rk))
         string=getmeanwithdev(mean,sqrt(var))
         write(string2,*)mean,meandev,sqrt(var)
+        write(*,*)string2
         string2=trim(adjustl(string))//" "//trim(string2)
     end function average!}}}
 
@@ -603,7 +603,7 @@ module trajop
                 end if
 
                 if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
-                call corr_distrib(instr(i),instr(corr1),instr(corr2),ounit)
+                call corr_distrib(instr(i),instr(corr1),instr(corr2),instr(i)%set%ounit)
                 if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
 
                 write(78,*)int(i,2),filename(6:len_trim(filename)-4)," = ",&
@@ -641,7 +641,6 @@ module trajop
                     end do
                     instr(i)%set%ounit=nunit
                 else
-                    write(*,*)'Average HEJ!'
                     instr(i)%set%ounit=stdout
                     filename="stdout"
                     j=i;k=0
@@ -679,6 +678,8 @@ module trajop
             select case(instr(i)%findex)
                 case(0,7,10)
                 case default
+                    write(*,*)size(instr(i)%set%calc),allocated(instr(i)%set%calc)
+                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         if(instr(i)%set%autofilename)then
                             filename=trim(instr(i)%set%filename)&
@@ -697,20 +698,22 @@ module trajop
                         end select
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do
-
+                    !end if
+                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
                         case(0,7,10)
                         case(1)
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
-                            trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi))),&
-                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                            trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
+                            !instr(i)%cv%entropy,instr(i)%cv%entropymutual
                         ! case(9)
 
                         case default
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
-                            trim(adjustl(average(instr(i)%datam))),&
-                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                            trim(adjustl(average(instr(i)%datam)))!,&
+!                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     end select
+                    !end if
             end select
             if(allocated(instr(i)%datam))deallocate(instr(i)%datam)
         end do
