@@ -21,6 +21,7 @@ module apl
         k=0
         do i=1,size(atoms,2)
             do imol=1,molt(moltypeofuatom(atomindex(trim(stringconv(atoms(:,i))))))%nmol
+            write(*,*)"MOL",molt(moltypeofuatom(atomindex(trim(stringconv(atoms(:,i))))))%nmol
                 !write(*,*)i,trim(stringconv(atoms(:,i))),cind(atomindex(trim(stringconv(atoms(:,i)))),imol)
                 k=k+1
                 apl_atoms(k)=cind(atomindex(trim(stringconv(atoms(:,i)))),imol)
@@ -34,7 +35,7 @@ module apl
         real(kind=rk) :: rmin
         integer(kind=ik),allocatable ::&
         apl_lower(:),apl_lower_inv(:),apl_upper(:),apl_upper_inv(:),grid(:,:)
-        integer(kind=ik) ::i,j,kl,ku,dmpc,mgdg
+        integer(kind=ik) ::i,j,kl,ku,dmpc,mgdg,g
         i=size(apl_atoms)
         allocate(apl_lower(i),apl_lower_inv(i),apl_upper(i),apl_upper_inv(i))
         kl=0;ku=0;dmpc=0;mgdg=0
@@ -56,7 +57,13 @@ module apl
         call reallocate(apl_upper_inv,ku)
         call mindist(apl_upper)
         !allocate(grid(1:ceiling((box(1)/rmin)*(sqrt(12._rk)+2)),1:ceiling((box(2)/rmin)*(sqrt(12._rk)+2))))
-        allocate(grid(1:1000,1:1000))
+        g=0
+        open(44,file="areatest_dmpc");open(45,file="areatest_mgdg")
+        do
+        g=g+50
+        if(g==1050)exit
+        dmpc=0;mgdg=0
+        allocate(grid(1:g,1:g))
         write(*,*)
         write(*,*)'Hej Grid!',shape(grid),size(apl_upper),size(apl_lower),size(apl_atoms)
         do i=1,size(grid,2)
@@ -69,8 +76,8 @@ module apl
                 end if
             end do
         end do
-        write(*,*)'AREA DMPC: ',(box(1)*box(2)*(real(dmpc,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/72._rk
-        write(*,*)'AREA MGDG: ',(box(1)*box(2)*(real(mgdg,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/18._rk
+        write(44,*)g,(box(1)*box(2)*(real(dmpc,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/48._rk !DMPC 72 48
+        write(45,*)g,(box(1)*box(2)*(real(mgdg,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))))/40._rk !MGDG 18 40
 
         do i=1,size(grid,2)
             write(42,*)real(grid(:,i),rk)
@@ -78,6 +85,9 @@ module apl
             write(43,*)i,j,real(grid(j,i),rk)
             end do
         end do
+        if(allocated(grid))deallocate(grid)
+        end do
+        close(44);close(45)
         !stop 'END LOOP'
        contains
 

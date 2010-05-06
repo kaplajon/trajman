@@ -71,7 +71,7 @@ program trajman
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-!        call apl_grid
+        call apl_grid
         call procop(troptype,frame) ! Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules
