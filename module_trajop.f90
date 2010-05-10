@@ -1,6 +1,7 @@
 module trajop
     use kinds
     use readtraj
+    use apl
 !    use input
     use util
     implicit none
@@ -70,8 +71,7 @@ module trajop
 
     subroutine procop(instr,frame)!{{{
     ! Hanterar operationerna hämtade från input
-
-        integer(kind=ik) :: imol,i,frame
+        integer(kind=ik) :: imol,i,j,frame
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
           do i=1,size(instr)
@@ -100,7 +100,7 @@ module trajop
                 case(5) !ORDER PARAMETER
                     do imol=1,instr(i)%nmolop
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
-                        !dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
+                        !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
                         instr(i)%datam(imol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
@@ -134,6 +134,12 @@ module trajop
                                 center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
                             end do
                      end select
+                 case(11) ! AREA PER LIPID
+                     !write(*,*)instr(i)%nmolop,'APL STOP';stop
+                     call apl_calc(instr(i),frame)
+                     write(*,*)sum(instr(i)%datam(:,frame),instr(i)%apl_side==1)&
+                     /COUNT(instr(i)%apl_side==1)!sumelements(test(instr(i)%apl_side,1))
+                     
             end select
 
            
@@ -498,16 +504,16 @@ module trajop
 !    stop
 !    end subroutine test!}}}
    
-    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
-        integer(kind=ik) :: umol,i,j,imol
-        real(kind=rk) :: centerofmolecule(3)
-        centerofmolecule=0
-        j=umol
-        do i=molt(j)%firstatom,molt(j)%lastatom
-            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
-        end do
-        centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
-    end function center_of_molecule!}}}
+!    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
+!        integer(kind=ik) :: umol,i,j,imol
+!        real(kind=rk) :: centerofmolecule(3)
+!        centerofmolecule=0
+!        j=umol
+!        do i=molt(j)%firstatom,molt(j)%lastatom
+!            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
+!        end do
+!        centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
+!    end function center_of_molecule!}}}
 
     function moi(umol,imol) result(tensor)!{{{
 

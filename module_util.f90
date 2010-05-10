@@ -179,6 +179,21 @@ module util
         end if
     end subroutine reallocatewriteframe!}}}
 
+    subroutine reallocinstratoms(v,i)!{{{
+        type(instruct),intent(inout),allocatable :: v(:)
+        type(instruct),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocinstratoms!}}}
+
 !    subroutine APL(grid,apl_atoms)
 !        integer(kind=ik) :: grid(200,200),apl_atoms(:)
 !

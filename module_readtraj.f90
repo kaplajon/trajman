@@ -22,7 +22,7 @@ module readtraj
     end type write_frame
 
     type setflags
-        logical :: autofilename,cbl_switch,folding
+        logical :: autofilename,cbl_switch,folding,apl
         integer(kind=ik) :: distbin,ounit,wftot !,writeframe
         character(kind=1,len=255) :: filename,fileprefix,filesuffix
         type(write_frame),allocatable :: writeframe(:)
@@ -46,7 +46,8 @@ module readtraj
     end type calcval
 
     type instruct
-        integer(kind=ik) :: atoms(20),findex,nmolop,average_count
+        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count
+        integer(kind=ik),allocatable :: atoms(:),apl_side(:)
         character(kind=1, len=50) :: instructionstring
         real(kind=rk),allocatable :: datam(:,:)
         type(setflags) :: set
@@ -85,11 +86,10 @@ subroutine reallocinstruct(v,i)!{{{
         call move_alloc(copy,v)
     else
         allocate(v(i))
-        
     end if
-    do j=1,size(v)
-    write(*,*)j,allocated(v(j)%datam)
-    end do
+    !do j=1,size(v)
+    !write(*,*)j,allocated(v(j)%datam),allocated(v(j)%atoms)
+    !end do
 end subroutine reallocinstruct!}}}
 
 !subroutine reallocinstruct(v,i)!{{{
@@ -118,6 +118,7 @@ subroutine globals!{{{
     global_setflags%filesuffix='.out'
 !    global_setflags%writeframe%framenumber=0
     global_setflags%wftot=0
+    global_setflags%apl=.FALSE.
     ! Default atom masses
     allocate(defmass(5))
     if(.not.allocated(atomd))allocate(atomd(size(defmass)))
@@ -324,4 +325,14 @@ end subroutine globals!}}}
 
     end subroutine trajindex!}}}
 
+    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
+        integer(kind=ik) :: umol,i,j,imol
+        real(kind=rk) :: centerofmolecule(3)
+        centerofmolecule=0
+        j=umol
+        do i=molt(j)%firstatom,molt(j)%lastatom
+            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
+        end do
+        centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
+    end function center_of_molecule!}}}
 end module readtraj

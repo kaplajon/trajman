@@ -180,7 +180,7 @@ module input
         call getwords(charvector,arguments)
         trajop%findex=0
         trajop%set=global_setflags
-        trajop%atoms=0
+        p=0
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('traj')
                 call initgro(arguments(:,2))
@@ -244,6 +244,11 @@ module input
                         trajop%findex=10
                         p=4
                  end select
+            case('al','AL','apl')
+                trajop%findex=11
+                p=size(arguments,2)
+                funcstr='AL_'
+                
             case('exit')
                 stop
                     
@@ -256,6 +261,7 @@ module input
                 write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
+            if(p>=2)allocate(trajop%atoms(p-1))
             trajop%instructionstring=''
             if(trajop%findex/=0)then
                 if(trajop%findex/=9 .AND. trajop%findex/=10)then
@@ -457,6 +463,7 @@ module input
             case('area_per_lipid','apl')
                 if(size(args,2)>=3)then
                     call apl_atomlist(args(:,3:))
+                    global_setflags%apl=.TRUE.
                 else
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if

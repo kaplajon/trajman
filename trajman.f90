@@ -9,6 +9,7 @@ program trajman
     character(kind=1,len=255) :: sysstr,pid,wf,filename
     integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame,runit
     integer(kind=8) :: trs,frs
+    logical,allocatable :: logicmolt(:)
     type(instruct),allocatable :: troptype(:)
     call arguments(runit)
     call constants
@@ -16,7 +17,7 @@ program trajman
     i=0
     do !Input processing 
         call readline(inputrad,ios,runit)
-        write(*,*)inputrad
+        !write(*,*)inputrad
         if(ios==endf)exit
         i=i+1
         call reallocinstruct(troptype,i)
@@ -24,7 +25,14 @@ program trajman
     end do
     troptype(:)%nmolop=0
     do i=1,size(troptype)
-        if(troptype(i)%findex/=0)troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
+        if(troptype(i)%findex/=0)then!troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
+            allocate(logicmolt(size(molt)));logicmolt=.FALSE.
+            do j=1,size(troptype(i)%atoms)
+                logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
+            end do
+            troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
+            deallocate(logicmolt)
+        end if
     end do
 
     ! Allocate data matrix to a size based on input
@@ -71,7 +79,7 @@ program trajman
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-        call apl_grid
+        if(global_setflags%apl)call apl_grid
         call procop(troptype,frame) ! Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules
