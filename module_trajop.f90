@@ -77,6 +77,8 @@ module trajop
           do i=1,size(instr)
            
             select case(instr(i)%findex)
+                case(0)
+                    if(instr(i)%setapl)call apl_grid(instr(i))
                 case(1) !DIRECTOR ANGLE
                     do imol=1,instr(i)%nmolop
                         instr(i)%datam(imol,frame)=&
@@ -132,13 +134,20 @@ module trajop
                             do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
                                 coor(:,cind(instr(i)%atoms(1),imol))=&
                                 center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                                !write(*,*)cind(instr(i)%atoms(1),imol),'CIND',instr(i)%atoms(1),imol,i
                             end do
+                            !write(*,*)masses;stop
+                            !if(frame==1)then
+                            !    call reallocate(masses,size(masses)+1)
+                            !    masses(size(masses))=1._rk
+                            !end if
+                            
                      end select
                  case(11) ! AREA PER LIPID
                      !write(*,*)instr(i)%nmolop,'APL STOP';stop
                      call apl_calc(instr(i),frame)
-                     write(*,*)sum(instr(i)%datam(:,frame),instr(i)%apl_side==1)&
-                     /COUNT(instr(i)%apl_side==1)!sumelements(test(instr(i)%apl_side,1))
+                    ! write(*,*)sum(instr(i)%datam(:,frame),instr(i)%apl_side==1)&
+                     !/COUNT(instr(i)%apl_side==1)!sumelements(test(instr(i)%apl_side,1))
                      
             end select
 
@@ -174,7 +183,7 @@ module trajop
         meandev=sqrt(var/real(size(meant),rk))
         string=getmeanwithdev(mean,sqrt(var))
         write(string2,*)mean,meandev,sqrt(var)
-        write(*,*)string2
+        !write(*,*)string2
         string2=trim(adjustl(string))//" "//trim(string2)
     end function average!}}}
 
@@ -375,7 +384,7 @@ module trajop
                 ma2=maxval(vec2)
         end select
 
-        bin1=(ma1-mi1)/real(size(dist,1),rk)
+        bin1=max((ma1-mi1)/real(size(dist,1),rk),epsilon(bin1))
         bin2=(ma2-mi2)/real(size(dist,2),rk)
 
         dp=1._rk/(real(size(vec1),rk)*bin1*bin2)
@@ -389,7 +398,7 @@ module trajop
             if(bi1<=0.or.bi1>size(dist,1).OR.bi2<=0.or.bi2>size(dist,2))then
                 write(*,*)bi1,"bi1",vec1(i),"vec1",i,"i",ma1,"ma1",mi1,"mi1",dp,"dp",bin1,"bin1"
                 write(*,*)bi2,"bi2",vec2(i),"vec2",i,"i",ma2,"ma2",mi2,"mi2",dp,"dp",bin2,"bin2"
-            stop "subroutine distrib"   
+            stop "subroutine corr_distrib"   
             else
                     dist(bi1,bi2)=dist(bi1,bi2)+dp
 
@@ -684,7 +693,7 @@ module trajop
             select case(instr(i)%findex)
                 case(0,7,10)
                 case default
-                    write(*,*)size(instr(i)%set%calc),allocated(instr(i)%set%calc)
+                    !write(*,*)size(instr(i)%set%calc),allocated(instr(i)%set%calc)
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         if(instr(i)%set%autofilename)then

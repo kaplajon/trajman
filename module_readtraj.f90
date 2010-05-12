@@ -23,7 +23,7 @@ module readtraj
 
     type setflags
         logical :: autofilename,cbl_switch,folding,apl
-        integer(kind=ik) :: distbin,ounit,wftot !,writeframe
+        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2) !,writeframe
         character(kind=1,len=255) :: filename,fileprefix,filesuffix
         type(write_frame),allocatable :: writeframe(:)
         character(kind=1,len=100),allocatable :: calc(:)
@@ -48,6 +48,7 @@ module readtraj
     type instruct
         integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count
         integer(kind=ik),allocatable :: atoms(:),apl_side(:)
+        logical :: setapl
         character(kind=1, len=50) :: instructionstring
         real(kind=rk),allocatable :: datam(:,:)
         type(setflags) :: set
@@ -119,6 +120,7 @@ subroutine globals!{{{
 !    global_setflags%writeframe%framenumber=0
     global_setflags%wftot=0
     global_setflags%apl=.FALSE.
+    global_setflags%aplgrid=[250,250]
     ! Default atom masses
     allocate(defmass(5))
     if(.not.allocated(atomd))allocate(atomd(size(defmass)))
@@ -334,5 +336,6 @@ end subroutine globals!}}}
             centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
         end do
         centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
+        !write(*,*)centerofmolecule
     end function center_of_molecule!}}}
 end module readtraj

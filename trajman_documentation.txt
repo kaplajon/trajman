@@ -50,7 +50,7 @@ set
 				    acorr writes autocorrelations 
 				    (WARNING! Autocorrelation can take a very long time!)
 
-    submolecule NAME startatom endatom :: Define a submolecule of an existing molecule, defined 
+    submoltype NAME startatom endatom :: Define a submolecule of an existing molecule, defined 
 					  by the atoms between startatom and endatom.
 
 INPUTFILE: FUNCTIONS

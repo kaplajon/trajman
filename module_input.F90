@@ -180,6 +180,7 @@ module input
         call getwords(charvector,arguments)
         trajop%findex=0
         trajop%set=global_setflags
+        trajop%setapl=.FALSE.
         p=0
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('traj')
@@ -188,6 +189,7 @@ module input
                 trajfile=arguments(1:size(trajfile),2)
 
             case('set','SET')
+                if(trim(stringconv(arguments(:,2)))=='apl')trajop%setapl=.TRUE.
                 call set(arguments)
 
             case('dirangle','DIRANGLE','da','DA')
@@ -297,7 +299,9 @@ module input
                         call reallocate(shift,size(shift)+1)
                         call reallocate(natoms,size(natoms)+1)
                         call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
+                        call reallocate(masses,size(masses)+1)
                         ! Handle the indexing for the new atom:
+                        masses(size(masses))=1._rk
                         i=size(atomnames)
                         j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
                         moltypeofuatom(i)=j
@@ -468,6 +472,7 @@ module input
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if
                 
+                
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
                 call reallocate(molt,size(molt)+1)
@@ -489,6 +494,12 @@ module input
                 endif
             case('folding')
                 global_setflags%folding=.TRUE.
+
+            case('aplgrid')
+                read(arg3,*,iostat=ios)global_setflags%aplgrid(1)
+                if(ios/=0)stop 'SET:aplgrid: Arg1'
+                read(arg4,*,iostat=ios)global_setflags%aplgrid(2)
+                if(ios/=0)stop 'SET:aplgrid: Arg2'
 
             case default
                 if(size(args,2)>=2)then

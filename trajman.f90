@@ -25,14 +25,18 @@ program trajman
     end do
     troptype(:)%nmolop=0
     do i=1,size(troptype)
-        if(troptype(i)%findex/=0)then!troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
-            allocate(logicmolt(size(molt)));logicmolt=.FALSE.
+        !if(troptype(i)%findex/=0)then!troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
+        select case(troptype(i)%findex)
+        case(0,10)
+        case default
+        allocate(logicmolt(size(molt)));logicmolt=.FALSE.
             do j=1,size(troptype(i)%atoms)
                 logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
             end do
             troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
             deallocate(logicmolt)
-        end if
+        !end if
+        end select
     end do
 
     ! Allocate data matrix to a size based on input
@@ -79,7 +83,7 @@ program trajman
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-        if(global_setflags%apl)call apl_grid
+        !if(global_setflags%apl)call apl_grid
         call procop(troptype,frame) ! Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules
@@ -106,6 +110,7 @@ program trajman
                     call wf_xyz(trim(filename),37)
                 end if
 
+            if(global_setflags%apl)call apl_matrix_out(frame)
             end if
         end do !END WRITEFRAME       
         if (frame==maxframes)exit

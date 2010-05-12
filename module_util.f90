@@ -7,7 +7,7 @@ module util
 
     interface reallocate
         module procedure &
-        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe
+        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe,reallocatereal
     end interface
 
     contains
@@ -135,6 +135,12 @@ module util
         endif
     end subroutine reallocatecharle !}}}
 
+    elemental function intstr(i) result(str)
+    integer(kind=ik),intent(in) :: i
+    character(len=40) :: str
+    write(str,*)i
+    end function intstr
+
     subroutine reallocateint(vector,n)!{{{
         integer(kind=ik),allocatable,intent(inout) :: vector(:)
         integer(kind=ik),allocatable :: copy(:)
@@ -148,6 +154,20 @@ module util
             allocate(vector(1:n))
         endif
     end subroutine reallocateint !}}}
+
+    subroutine reallocatereal(vector,n)!{{{
+        real(kind=rk),allocatable,intent(inout) :: vector(:)
+        real(kind=rk),allocatable :: copy(:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(vector))then
+            allocate(copy(1:n))
+            copy=0
+            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
+            call move_alloc(copy,vector)
+        else
+            allocate(vector(1:n))
+        endif
+    end subroutine reallocatereal !}}}
 
     subroutine reallocatemoltype(v,i)!{{{
         type(moltype),intent(inout),allocatable :: v(:)
