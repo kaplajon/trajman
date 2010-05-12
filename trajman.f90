@@ -17,7 +17,6 @@ program trajman
     i=0
     do !Input processing 
         call readline(inputrad,ios,runit)
-        !write(*,*)inputrad
         if(ios==endf)exit
         i=i+1
         call reallocinstruct(troptype,i)
@@ -25,7 +24,6 @@ program trajman
     end do
     troptype(:)%nmolop=0
     do i=1,size(troptype)
-        !if(troptype(i)%findex/=0)then!troptype(i)%nmolop=molt(moltypeofuatom(troptype(i)%atoms(1)))%nmol
         select case(troptype(i)%findex)
         case(0,10)
         case default
@@ -35,7 +33,6 @@ program trajman
             end do
             troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
             deallocate(logicmolt)
-        !end if
         end select
     end do
 
@@ -83,7 +80,6 @@ program trajman
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-        !if(global_setflags%apl)call apl_grid
         call procop(troptype,frame) ! Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules
