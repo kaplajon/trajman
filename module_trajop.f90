@@ -581,7 +581,7 @@ module trajop
         do i=1,size(instr)
             if(instr(i)%findex/=0)n=max(len(trim(instr(i)%instructionstring)),n)
         end do
-        open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
+        !open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
         do i=1,size(instr) ! Loop över instruktionsrader
         select case(instr(i)%findex)
             case(0,10)
@@ -621,8 +621,10 @@ module trajop
                 call corr_distrib(instr(i),instr(corr1),instr(corr2),instr(i)%set%ounit)
                 if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
 
+                open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
                 write(78,*)int(i,2),filename(6:len_trim(filename)-4)," = ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                close(78)
 
             case(9) ! AVERAGE
 
@@ -718,14 +720,18 @@ module trajop
                     select case(instr(i)%findex)
                         case(0,7,10)
                         case(1)
+                            open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
+                            close(78)
                             !instr(i)%cv%entropy,instr(i)%cv%entropymutual
                         ! case(9)
 
                         case default
+                            open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(instr(i)%datam)))!,&
+                            close(78)
 !                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     end select
                     !end if
@@ -733,7 +739,7 @@ module trajop
             if(allocated(instr(i)%datam))deallocate(instr(i)%datam)
         end do
 
-        close(78)
+        !close(78)
         
     end subroutine postproc!}}}
     
