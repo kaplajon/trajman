@@ -28,9 +28,10 @@ module trajop
 
     function torsionangle(a,b,c,d,imol) result(teta)!{{{
         ! Torsionsvinkel: a-b mot c-d i grader 
-        real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta
+        real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta,teta2
         integer(kind=ik) :: a,b,c,d,imol
-        Vcb=getatom(b,imol) - getatom(c,imol)
+        Vcb=normalize(getatom(b,imol) - getatom(c,imol))
+      !  Vcb=normalize(Vcb)
 
         Vba = normalize(cross_product( &
                         cross_product(getatom(a,imol) - getatom(b,imol) ,Vcb) &
@@ -39,8 +40,13 @@ module trajop
         Vcd = normalize(cross_product( &
                         cross_product(getatom(d,imol) - getatom(c,imol) ,Vcb) &
                         ,Vcb))
-        teta = modulo( sign(acos(dot_product(Vba,Vcd)) * 180._rk / pi &
-             , dot_product( cross_product(getatom(b,imol) - getatom(a,imol) ,Vcb ),Vcd )),360._rk)
+!        teta = modulo( sign(acos(dot_product(Vba,Vcd)) * 180._rk / pi &
+!             , dot_product( cross_product(getatom(b,imol) - getatom(a,imol) ,Vcb ),Vcd )),360._rk)
+
+        teta = modulo(atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi,360._rk)
+       ! write(*,*)teta
+!write(*,*)teta,teta2
+!stop
         !teta = acos(dot_product(Vba,Vcd)) * 180._rk / pi 
 !        teta = dot_product(Vba,Vcd) * 180._rk 
 
@@ -71,7 +77,7 @@ module trajop
 
     subroutine procop(instr,frame)!{{{
     ! Hanterar operationerna hämtade från input
-        integer(kind=ik) :: imol,i,j,frame
+        integer(kind=ik) :: imol,jmol,i,j,frame
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
           do i=1,size(instr)
@@ -80,46 +86,53 @@ module trajop
                 case(0)
                     if(instr(i)%setapl)call apl_grid(instr(i))
                 case(1) !DIRECTOR ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=&
                         cos(pi/180._rk*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
                     end do
                 case(2) !VALENCE ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=valenceangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=valenceangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),imol)
                     end do
                 case(3) !TORSION ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),instr(i)%atoms(4),imol)
                         
                     end do
                 case(4) !BOND LENGTH
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                     end do
                 case(5) !ORDER PARAMETER
-                    do imol=1,instr(i)%nmolop
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
-                        instr(i)%datam(imol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=distance_com(instr(i)%atoms(1),imol)
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=distance_com(instr(i)%atoms(1),imol)
                     end do
                 case(7) ! CORRELATE
                         ! Allt sköts i postproc
 
                 case(8) ! DIPOLE COUPLING
-                    do imol=1,instr(i)%nmolop
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
                         if(instr(i)%set%cbl_switch)then
                             bl=instr(i)%set%constant_bl
                         else
                             bl=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                         end if
-                        instr(i)%datam(imol,frame) =-(magnetic/(4*pi))&
+                        instr(i)%datam(jmol,frame) =-(magnetic/(4*pi))&
                         *(mgratios(instr(i)%atoms(1))*mgratios(instr(i)%atoms(2))*hbar/(2*pi))&
                         *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)&
                         *(bl*1.e-9)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
@@ -467,6 +480,27 @@ module trajop
 
     end subroutine center_of_membrane!}}}
 
+    subroutine whole!{{{
+        integer(kind=ik) :: i,imol,j,k
+        real(kind=rk) :: com(3),shift
+        ! Fold back molecules that is outside the box
+        do i=1,size(molt)
+            do imol=1,molt(i)%nmol
+                com=getatom(molt(i)%firstatom,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                !do j=1,3
+                   !shift=com(j)-modulo(com(j),box(j))
+                   ! if(abs(shift)>box(j)/2._rk)then
+                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            coor(:,cind(k,imol))=mymodulo(coor(:,cind(k,imol))-com(:),box(:))
+                        end do
+                       ! write(*,*)'COM',center_of_molecule(i,imol)
+                    !end if
+                !end do
+            end do
+        end do
+    end subroutine whole!}}}
+
     subroutine foldmol!{{{
         integer(kind=ik) :: i,imol,j,k
         real(kind=rk) :: com(3),shift
@@ -575,6 +609,8 @@ module trajop
         integer(kind=ik) :: ounit,ios,i,j,k,n,corr1,corr2
         real(kind=rk) :: a
         character(kind=1,len=len(global_setflags%filename)) :: filename
+        logical :: exists
+        character(kind=1,len=100) :: pos,avfilename
         a=0._rk
         instr%cv%entropy=a/a
         n=0
@@ -621,8 +657,16 @@ module trajop
                 call corr_distrib(instr(i),instr(corr1),instr(corr2),instr(i)%set%ounit)
                 if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
 
-                open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
-                write(78,*)int(i,2),filename(6:len_trim(filename)-4)," = ",&
+                avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
+                inquire(file=avfilename,exist=exists)
+                if(.NOT. exists)then
+                    pos='ASIS'
+                else
+                    pos='APPEND'
+                end if
+                open(78,file=trim(avfilename)&
+                ,position=trim(pos),status='unknown')
+                write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename)-4)," = ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
                 close(78)
 
@@ -692,6 +736,7 @@ module trajop
             end select
         end do
         do i=1,size(instr) ! Loop över instruktionsrader
+            avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
                 case(0,7,10)
                 case default
@@ -720,7 +765,14 @@ module trajop
                     select case(instr(i)%findex)
                         case(0,7,10)
                         case(1)
-                            open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
+                            inquire(file=avfilename,exist=exists)
+                            if(.NOT. exists)then
+                                pos='ASIS'
+                            else
+                                pos='APPEND'
+                            end if
+                            open(78,file=trim(avfilename)&
+                            ,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
                             close(78)
@@ -728,7 +780,14 @@ module trajop
                         ! case(9)
 
                         case default
-                            open(78,file=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%%filesuffix),status='APPEND')
+                            inquire(file=avfilename,exist=exists)
+                            if(.NOT. exists)then
+                                pos='ASIS'
+                            else
+                                pos='APPEND'
+                            end if
+                            open(78,file=trim(avfilename)&
+                            ,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(instr(i)%datam)))!,&
                             close(78)

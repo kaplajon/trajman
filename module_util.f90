@@ -1,9 +1,56 @@
 module util
     use kinds
-    use readtraj
+!    use readtraj
 !    use input
     implicit none
     integer(kind=ik) :: maxframes
+    type moltype
+        integer(kind=ik) :: firstatom,lastatom,nmol,natoms
+        integer(kind=ik),allocatable :: upper(:),lower(:)
+        character(kind=1,len=255) :: molname
+    end type moltype
+
+    type(moltype),allocatable :: molt(:)
+
+    type write_frame
+        integer(kind=ik) :: framenumber
+        character(kind=1,len=3) :: outformat
+    end type write_frame
+
+    type setflags
+        logical :: autofilename,cbl_switch,folding,apl
+        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet !,writeframe
+        character(kind=1,len=255) :: filename,fileprefix,filesuffix
+        type(write_frame),allocatable :: writeframe(:)
+        character(kind=1,len=100),allocatable :: calc(:)
+        real(kind=rk) :: constant_bl
+    end type setflags
+    
+    type natom
+        character(kind=1,len=100) :: atomname,from_mol_prop,molecule
+    end type natom
+
+    type setcommon
+        integer(kind=ik),allocatable :: membrane_moltypes(:)
+    end type
+    type(setcommon) :: common_setflags
+
+    type(setflags) :: global_setflags
+
+    type calcval
+        real(kind=rk) :: mean,meandev,entropy,entropymutual,pearsoncoeff
+    end type calcval
+
+    type instruct
+        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count
+        integer(kind=ik),allocatable :: atoms(:),apl_side(:),molind(:)
+        logical :: setapl
+        character(kind=1, len=50) :: instructionstring
+        real(kind=rk),allocatable :: datam(:,:)
+        type(setflags) :: set
+        type(calcval) :: cv
+        type(natom) :: newatom
+    end type instruct
 
     interface reallocate
         module procedure &
@@ -26,6 +73,13 @@ module util
     nvec=vec/sqrt(sum(vec**2))
 
     end function normalize!}}}
+
+    elemental function mymodulo(a,b) result(c)
+        real(kind=rk),intent(in) :: a,b
+        real(kind=rk) :: c
+        c=a-nint(a/b)*b !ok
+    end function mymodulo
+
 
     function cross_product(v1,v2) result(v3)!{{{
     real(kind=rk) :: v1(:),v2(:),v3(3)
@@ -54,41 +108,7 @@ module util
 
     end subroutine argparse!}}}
 
-    subroutine wf_gro(filename,wf,funit)!{{{
-    character(kind=1,len=*) :: filename,wf
-    integer(kind=ik) :: funit,i,j,k,l
-        open(funit,file=trim(filename))
-        write(funit,*)'frame=',trim(adjustl(wf))
-        write(funit,*)atot
-        l=1
-        do i=1,size(molt)
-            do j=1,molt(i)%nmol
-                do k=molt(i)%firstatom,molt(i)%lastatom
-                    !write(*,'(i5,a5,a10,i5,3F10.7)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
-                    write(funit,'(i5,2a5,i5,3F8.3)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
-                    l=l+1
-                end do
-            end do
-        end do
-        write(funit,'(3F8.3)')box
-        close(funit)
-    end subroutine wf_gro!}}}
 
-    subroutine wf_xyz(filename,funit)!{{{
-    character(kind=1,len=*) :: filename
-    integer(kind=ik) :: funit,i,j,k
-        open(funit,file=trim(filename))
-        write(funit,*)atot
-        write(funit,*)
-        do i=1,size(molt)
-            do j=1,molt(i)%nmol
-                do k=molt(i)%firstatom,molt(i)%lastatom
-                    write(funit,*)atomnames(k),10*getatom(k,j)
-                end do
-            end do
-        end do
-        close(funit)
-    end subroutine wf_xyz!}}}
 
     subroutine reallocatepointerchar(vector,n)!{{{
         character(kind=1,len=1),allocatable,intent(inout) :: vector(:)

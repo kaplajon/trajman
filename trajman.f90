@@ -15,6 +15,7 @@ program trajman
     call constants
     call globals
     i=0
+    allocate(inputrad(1))
     do !Input processing 
         call readline(inputrad,ios,runit)
         if(ios==endf)exit
@@ -26,13 +27,29 @@ program trajman
     do i=1,size(troptype)
         select case(troptype(i)%findex)
         case(0,10)
-        case default
+        case(11)
         allocate(logicmolt(size(molt)));logicmolt=.FALSE.
             do j=1,size(troptype(i)%atoms)
                 logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
             end do
             troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
             deallocate(logicmolt)
+        case default
+            j=moltypeofuatom(troptype(i)%atoms(1))
+            select case(troptype(i)%set%leaflet)
+                case(0)
+                    call reallocate(troptype(i)%molind,molt(j)%nmol)
+                    do k=1,molt(j)%nmol
+                        troptype(i)%molind(k)=k
+                    end do
+                case(1)
+                    call reallocate(troptype(i)%molind,size(molt(j)%lower))
+                    troptype(i)%molind=molt(j)%lower
+                case(2)
+                    call reallocate(troptype(i)%molind,size(molt(j)%upper))
+                    troptype(i)%molind=molt(j)%upper
+            end select
+            troptype(i)%nmolop=size(troptype(i)%molind)
         end select
     end do
 
@@ -77,6 +94,7 @@ program trajman
         if(modulo(frame-1,max(maxframes/100,1))==0)then
             write(*,'(5X,A10,I3,2A)',advance='no')'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
         end if
+        call whole
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)

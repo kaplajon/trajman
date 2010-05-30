@@ -107,11 +107,11 @@ module apl
 !            c=a-nint(a/b)*b !ok
 !        end function mymodulo
 
-        elemental function mymodulo(a,b) result(c)
-            real(kind=rk),intent(in) :: a,b
-            real(kind=rk) :: c
-            c=a-nint(a/b)*b !ok
-        end function mymodulo
+!        elemental function mymodulo(a,b) result(c)
+!            real(kind=rk),intent(in) :: a,b
+!            real(kind=rk) :: c
+!            c=a-nint(a/b)*b !ok
+!        end function mymodulo
 
     end subroutine apl_grid
 

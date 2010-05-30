@@ -4,6 +4,7 @@ module input
     use util
     use readtraj
     use apl
+    use trajop
     implicit none ! Routines for input file treatment
 
     contains
@@ -80,33 +81,33 @@ module input
         stop
     end subroutine print_help!}}}
 
-    subroutine readline(onerow,ios,runit)!{{{
-        character(kind=1,len=1),allocatable :: onerow(:) 
-        integer(kind=ik) :: n,ios,readunit
-        integer(kind=ik),optional,intent(in) :: runit
-        readunit=stdin
-        if (present(runit))readunit=runit
-            comment:do
-                n=0
-                do
-                    if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
-                    read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
-                    if(ios==endf)exit comment
-                    if(onerow(n+1)=='#' .or. ios==endr )then
-                        if(n==0)then
-                            if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
-                            cycle comment
-                        else
-                            exit comment
-                        endif
-                    end if
-                n=n+1
-                enddo
-            end do comment
-        if(ios==endf)return       
-        n=max(n,1)
-       call reallocate(onerow,n)
-    end subroutine readline !}}}
+!    subroutine readline(onerow,ios,runit)!{{{
+!        character(kind=1,len=1),allocatable :: onerow(:) 
+!        integer(kind=ik) :: n,ios,readunit
+!        integer(kind=ik),optional,intent(in) :: runit
+!        readunit=stdin
+!        if (present(runit))readunit=runit
+!            comment:do
+!                n=0
+!                do
+!                    if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
+!                    read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
+!                    if(ios==endf)exit comment
+!                    if(onerow(n+1)=='#' .or. ios==endr )then
+!                        if(n==0)then
+!                            if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
+!                            cycle comment
+!                        else
+!                            exit comment
+!                        endif
+!                    end if
+!                n=n+1
+!                enddo
+!            end do comment
+!        if(ios==endf)return       
+!        n=max(n,1)
+!       call reallocate(onerow,n)
+!    end subroutine readline !}}}
 
     function wordcount(onerow) result(words)!{{{
         character(kind=1,len=1) :: onerow(:)
@@ -329,7 +330,7 @@ module input
     subroutine set(args)!arg2,arg3)!{{{
         character(kind=1,len=1) :: args(:,:)
         character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
-        integer(kind=ik) :: i,j,p,ios
+        integer(kind=ik) :: i,j,p,ios,imol,kl,ku
         arg2='';arg3='';arg4='';arg5=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
@@ -390,6 +391,9 @@ module input
                 stop 'SET: distbin should be of type integer >0'
 
             case('atommasses')
+                allocate(masses(size(atomnames)),mgratios(size(atomnames)))
+                masses=0;mgratios=0
+
                 if(len_trim(arg3)/=0)then
                 open(nunit,file=arg3,action='read', status='old',iostat=ios)
                 if(ios==0)then
@@ -500,6 +504,50 @@ module input
                 if(ios/=0)stop 'SET:aplgrid: Arg1'
                 read(arg4,*,iostat=ios)global_setflags%aplgrid(2)
                 if(ios/=0)stop 'SET:aplgrid: Arg2'
+
+            case('leaflets')
+                
+                select case(arg3)
+                    case('both')
+                        global_setflags%leaflet=0
+                    case('lower')
+                        global_setflags%leaflet=1
+                    case('upper')
+                        global_setflags%leaflet=2
+                    case default
+                        !write(*,*)coor(:,10)
+                        call whole
+                        if(allocated(masses))then
+                            call foldmol
+                        else
+                            stop 'LEAFLETS:FOLDMOL: Atommasses not initiated'
+                        end if
+                        if(allocated(common_setflags%membrane_moltypes))then
+                            call&
+                            center_of_membrane(common_setflags%membrane_moltypes)
+                        else
+                            stop 'LEAFLETS: Needs center of membrane'
+                        end if
+                        !write(*,*)masses
+                        do i=1,size(molt)
+                        kl=0;ku=0
+                            do imol=1,molt(i)%nmol
+                         !   write(*,*)center_of_molecule(i,imol),centerofmembrane,director
+                            if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) < 0._rk)then
+                                    kl=kl+1
+                                    call reallocate(molt(i)%lower,kl)
+                                    molt(i)%lower(kl)=imol
+                                else
+                                    ku=ku+1
+                                    call reallocate(molt(i)%upper,ku)
+                                    molt(i)%upper(ku)=imol
+                                end if
+                            end do
+                           ! write(*,*)size(molt(i)%upper)
+                        end do
+                        
+                end select
+
 
             case default
                 if(size(args,2)>=2)then
