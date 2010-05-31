@@ -31,6 +31,7 @@ module util
     end type natom
 
     type setcommon
+        logical :: silent
         integer(kind=ik),allocatable :: membrane_moltypes(:)
     end type
     type(setcommon) :: common_setflags

@@ -85,20 +85,24 @@ program trajman
         end if
     end do
 
-    write(*,*)"input done"
-    write(*,'(5X,A19,I4)')'Frames to process: ',maxframes
+    if(.NOT. common_setflags%silent)then
+        write(*,*)"input processing done."
+        call summary
+        write(*,'(5X,A19,I4)')'Frames to process: ',maxframes
+    end if
 !#######################################################################################    
     frame=0
     do while (readgro(tunit)==0)! Trajectory processing
         frame=frame+1
         if(modulo(frame-1,max(maxframes/100,1))==0)then
-            write(*,'(5X,A10,I3,2A)',advance='no')'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
+            if(.NOT. common_setflags%silent)write(*,'(5X,A10,I3,2A)',advance='no')&
+            'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
         end if
         call whole
         if(global_setflags%folding)call foldmol
         if(allocated(common_setflags%membrane_moltypes))&
         call center_of_membrane(common_setflags%membrane_moltypes)
-        call procop(troptype,frame) ! Perform instructions on frame
+        call procop(troptype,frame) ! CALCULATIONS: Perform instructions on frame
 
         if(frame==1)then !Write atomnames and coordinates for the first molecules
                         !to a .xyz file
@@ -130,8 +134,10 @@ program trajman
         if (frame==maxframes)exit
         end do
 !#######################################################################################    
-    write(*,*)
-    write(*,'(5x,A)')'Postprocessing...'
-    call postproc(troptype)
-    write(*,'(5X,A5)')'Done!'
+    if(.NOT. common_setflags%silent)then
+        write(*,*)
+        write(*,'(5x,A)')'Postprocessing...'
+    end if
+    call postproc(troptype) ! POSTPROCESSING
+    if(.NOT. common_setflags%silent)write(*,'(5X,A5)')'Done!'
 end program trajman

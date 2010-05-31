@@ -12,7 +12,7 @@ module input
     subroutine arguments(runit)!{{{
         integer(kind=ik) :: i,ios,runit
         character(kind=1,len=255) :: carg,carg2,ctime
-
+        common_setflags%silent=.FALSE.
         !If no arguments, print help info
         if(command_argument_count()==0)then
             call print_help
@@ -33,6 +33,8 @@ module input
                     write(*,*)'Cannot open inputfile :',trim(carg2),':'
                     stop
                 end if
+            case('-s','--silent')
+                common_setflags%silent=.TRUE.
             case('-v','--version')
                 !ctime is set by the compiler using c type macro and cpp. Make
                 !sure the file is suffixed with capital F or that the compiler
@@ -72,6 +74,8 @@ module input
         write(*,*)'          Print this help and quit.'
         write(*,*)'  -i, --input FILE'
         write(*,*)'          Use FILE as inputfile'
+        write(*,*)'  -s, --silent'
+        write(*,*)'          No output to STDOUT'
         write(*,*)'  -'         
         write(*,*)'          Read from standard input, STDIN'
         write(*,*)
@@ -80,6 +84,17 @@ module input
         p=system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
         stop
     end subroutine print_help!}}}
+
+    subroutine summary
+        integer(kind=ik) :: i
+        write(*,*)
+        write(*,'(5X,A9)')"Molecules"
+        write(*,'(5X,A15)')"---------------"
+        do i=1,size(molt)
+        write(*,'(5X,A5,A2,I6)')trim(molt(i)%molname),': ',molt(i)%nmol
+        end do
+        write(*,'(5X,A15)')"---------------"
+    end subroutine summary
 
 !    subroutine readline(onerow,ios,runit)!{{{
 !        character(kind=1,len=1),allocatable :: onerow(:) 

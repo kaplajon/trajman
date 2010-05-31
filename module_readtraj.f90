@@ -189,6 +189,7 @@ subroutine globals!{{{
     global_setflags%apl=.FALSE.
     global_setflags%aplgrid=[250,250]
     global_setflags%leaflet=0
+    !global_setflags%silent=.FALSE.
     ! Default atom masses
     allocate(defmass(5))
     if(.not.allocated(atomd))allocate(atomd(size(defmass)))
