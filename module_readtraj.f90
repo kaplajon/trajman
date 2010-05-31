@@ -97,6 +97,7 @@ contains
         write(funit,'(3F8.3)')box
         close(funit)
     end subroutine wf_gro!}}}
+
     subroutine wf_xyz(filename,funit)!{{{
     character(kind=1,len=*) :: filename
     integer(kind=ik) :: funit,i,j,k
@@ -112,6 +113,7 @@ contains
         end do
         close(funit)
     end subroutine wf_xyz!}}}
+
 subroutine reallocinstruct(v,i)!{{{
     type(instruct),intent(inout),allocatable :: v(:)
     type(instruct),allocatable ::copy(:)

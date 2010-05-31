@@ -10,7 +10,8 @@ set
 	traj FILE
 
 Set the trajectory file. This setting must
-be the first non commented line.
+be the first non commented line. Only files in
+.gro format is supported at the moment.
 
 	maxframes N
 
@@ -95,6 +96,17 @@ The atoms may come from the same or different molecule types
 	aplgrid x y
 
 Define the grid size used in area per lipid calcualtions.
+
+	leaflets [upper,lower,both]
+
+Without arguments: Define membrane leaflets to be able to separate calculations
+based on which side of the membrane a molecule is situated.
+Needs centerofmembrane and atommasses.
+With arguments:
+Upper,lower: Following calculations will only be performed on the specified side
+of the bilayer.
+Both: Default. Calculations are performed without leaflet separation.
+
 
 INPUTFILE: FUNCTIONS
 Usage: function options
