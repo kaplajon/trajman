@@ -3,18 +3,16 @@ module input
     use version
     use util
     use readtraj
+    use apl
+    use trajop
     implicit none ! Routines for input file treatment
-    interface reallocate
-        module procedure &
-        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe
-    end interface
 
     contains
 
-    subroutine arguments(runit)
+    subroutine arguments(runit)!{{{
         integer(kind=ik) :: i,ios,runit
         character(kind=1,len=255) :: carg,carg2,ctime
-
+        common_setflags%silent=.FALSE.
         !If no arguments, print help info
         if(command_argument_count()==0)then
             call print_help
@@ -35,6 +33,8 @@ module input
                     write(*,*)'Cannot open inputfile :',trim(carg2),':'
                     stop
                 end if
+            case('-s','--silent')
+                common_setflags%silent=.TRUE.
             case('-v','--version')
                 !ctime is set by the compiler using c type macro and cpp. Make
                 !sure the file is suffixed with capital F or that the compiler
@@ -58,9 +58,9 @@ module input
            i=i+1
 
         end do
-    end subroutine arguments
+    end subroutine arguments!}}}
 
-    subroutine print_help
+    subroutine print_help!{{{
         character(len=100) :: pid
         integer(kind=ik) :: p
         write(*,*)
@@ -74,131 +74,55 @@ module input
         write(*,*)'          Print this help and quit.'
         write(*,*)'  -i, --input FILE'
         write(*,*)'          Use FILE as inputfile'
+        write(*,*)'  -s, --silent'
+        write(*,*)'          No output to STDOUT'
         write(*,*)'  -'         
         write(*,*)'          Read from standard input, STDIN'
         write(*,*)
         p=getpid()
         write(pid,*)p
-        call system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
+        p=system("cat $(readlink /proc/"//trim(adjustl(pid))//"/exe)_documentation.txt")
         stop
-    end subroutine print_help
+    end subroutine print_help!}}}
 
-    subroutine readline(onerow,ios,runit)!{{{
-        character(kind=1,len=1),pointer :: onerow(:) 
-        integer(kind=ik) :: n,ios,readunit
-        integer(kind=ik),optional,intent(in) :: runit
-        readunit=stdin
-        if (present(runit))readunit=runit
-            comment:do
-                n=0
-                do
-                    if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
-                    read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
-                    if(ios==endf)exit comment
-                    if(onerow(n+1)=='#' .or. ios==endr )then
-                        if(n==0)then
-                            if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
-                            cycle comment
-                        else
-                            exit comment
-                        endif
-                    end if
-                n=n+1
-                enddo
-            end do comment
-        if(ios==endf)return       
-        n=max(n,1)
-       call reallocate(onerow,n)
-    end subroutine readline !}}}
+    subroutine summary
+        integer(kind=ik) :: i
+        write(*,*)
+        write(*,'(5X,A9)')"Molecules"
+        write(*,'(5X,A15)')"---------------"
+        do i=1,size(molt)
+        write(*,'(5X,A5,A2,I6)')trim(molt(i)%molname),': ',molt(i)%nmol
+        end do
+        write(*,'(5X,A15)')"---------------"
+    end subroutine summary
 
-    subroutine reallocatepointerchar(vector,n)!{{{
-        character(kind=1,len=1),pointer,intent(inout) :: vector(:)
-        character(kind=1,len=1),pointer :: copy(:)
-        integer(kind=ik),intent(in) :: n
-        if (associated(vector))then
-            allocate(copy(1:min(size(vector),n)))
-            copy=vector(1:size(copy))
-            deallocate(vector)
-            allocate(vector(1:n))
-            vector(1:size(copy))=copy
-            deallocate(copy)
-        else
-            allocate(vector(1:n))
-        endif
-    end subroutine reallocatepointerchar !}}}
-
-    subroutine reallocatechar(vector,n)!{{{
-        character(kind=1,len=*),allocatable,intent(inout) :: vector(:)
-        character(kind=1,len=len(vector)),allocatable :: copy(:)
-        integer(kind=ik),intent(in) :: n
-        if (allocated(vector))then
-            allocate(copy(1:n))
-            copy=''
-            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
-            call move_alloc(copy,vector)
-        else
-            allocate(vector(1:n))
-        endif
-    end subroutine reallocatechar !}}}
-
-    subroutine reallocatecharle(vector,n,le)!{{{
-    integer(kind=ik) :: le    
-    character(kind=1,len=le),allocatable,intent(inout) :: vector(:)
-        character(kind=1,len=le),allocatable :: copy(:)
-        integer(kind=ik),intent(in) :: n
-        if (allocated(vector))then
-            allocate(copy(1:n))
-            copy=''
-            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
-            call move_alloc(copy,vector)
-        else
-            allocate(vector(1:n))
-        endif
-    end subroutine reallocatecharle !}}}
-
-    subroutine reallocateint(vector,n)!{{{
-        integer(kind=ik),allocatable,intent(inout) :: vector(:)
-        integer(kind=ik),allocatable :: copy(:)
-        integer(kind=ik),intent(in) :: n
-        if (allocated(vector))then
-            allocate(copy(1:n))
-            copy=0
-            copy(1:min(n,size(vector)))=vector(1:min(n,size(vector)))
-            call move_alloc(copy,vector)
-        else
-            allocate(vector(1:n))
-        endif
-    end subroutine reallocateint !}}}
-
-    subroutine reallocatemoltype(v,i)!{{{
-        type(moltype),intent(inout),allocatable :: v(:)
-        type(moltype),allocatable ::copy(:)
-        integer(kind=ik) :: i,j
-        if (allocated(v))then
-            j=min(i,size(v))
-            allocate(copy(i))
-            copy(1:j)=v(1:j)
-            call move_alloc(copy,v)
-        else
-            allocate(v(i))
-        
-        end if
-    end subroutine reallocatemoltype!}}}
-
-    subroutine reallocatewriteframe(v,i)!{{{
-        type(write_frame),intent(inout),allocatable :: v(:)
-        type(write_frame),allocatable ::copy(:)
-        integer(kind=ik) :: i,j
-        if (allocated(v))then
-            j=min(i,size(v))
-            allocate(copy(i))
-            copy(1:j)=v(1:j)
-            call move_alloc(copy,v)
-        else
-            allocate(v(i))
-        
-        end if
-    end subroutine reallocatewriteframe!}}}
+!    subroutine readline(onerow,ios,runit)!{{{
+!        character(kind=1,len=1),allocatable :: onerow(:) 
+!        integer(kind=ik) :: n,ios,readunit
+!        integer(kind=ik),optional,intent(in) :: runit
+!        readunit=stdin
+!        if (present(runit))readunit=runit
+!            comment:do
+!                n=0
+!                do
+!                    if(n+1>=size(onerow))call reallocate(onerow,int(2*size(onerow)+1,ik))
+!                    read(readunit,fmt="(1A1)",advance='NO',iostat=ios)onerow(n+1)!oneletter
+!                    if(ios==endf)exit comment
+!                    if(onerow(n+1)=='#' .or. ios==endr )then
+!                        if(n==0)then
+!                            if(ios/=endr)read(readunit,fmt='()',advance='YES',iostat=ios)
+!                            cycle comment
+!                        else
+!                            exit comment
+!                        endif
+!                    end if
+!                n=n+1
+!                enddo
+!            end do comment
+!        if(ios==endf)return       
+!        n=max(n,1)
+!       call reallocate(onerow,n)
+!    end subroutine readline !}}}
 
     function wordcount(onerow) result(words)!{{{
         character(kind=1,len=1) :: onerow(:)
@@ -219,13 +143,13 @@ module input
     end function wordcount!}}}
 
     subroutine getwords(vector,words)!{{{
-        character(len=1),pointer :: vector(:)
-        character(len=1),pointer :: words(:,:)
+        character(len=1),allocatable :: vector(:)
+        character(len=1),allocatable :: words(:,:)
         integer :: i,nwords,k
         logical :: whitespace
         nwords=wordcount(vector)
         
-        if (associated(words))deallocate(words)
+        if (allocated(words))deallocate(words)
         allocate(words(1:size(vector),1:nwords))
         words(:,:)=" "
         whitespace=.TRUE.
@@ -263,7 +187,7 @@ module input
 
     subroutine procinp(charvector,trajop)!{{{
         implicit none    
-        character(kind=1,len=1),pointer ::charvector(:),arguments(:,:)
+        character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2
         integer(kind=ik) ::&
@@ -272,7 +196,8 @@ module input
         call getwords(charvector,arguments)
         trajop%findex=0
         trajop%set=global_setflags
-        trajop%atoms=0
+        trajop%setapl=.FALSE.
+        p=0
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('traj')
                 call initgro(arguments(:,2))
@@ -280,6 +205,7 @@ module input
                 trajfile=arguments(1:size(trajfile),2)
 
             case('set','SET')
+                if(trim(stringconv(arguments(:,2)))=='apl')trajop%setapl=.TRUE.
                 call set(arguments)
 
             case('dirangle','DIRANGLE','da','DA')
@@ -336,6 +262,11 @@ module input
                         trajop%findex=10
                         p=4
                  end select
+            case('al','AL','apl')
+                trajop%findex=11
+                p=size(arguments,2)
+                funcstr='AL_'
+                
             case('exit')
                 stop
                     
@@ -345,8 +276,10 @@ module input
             case default 
                 write(*,*)"Not a valid input, ",":",&
                 trim(stringconv(arguments(:,1))),":"
+                write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
+            if(p>=2)allocate(trajop%atoms(p-1))
             trajop%instructionstring=''
             if(trajop%findex/=0)then
                 if(trajop%findex/=9 .AND. trajop%findex/=10)then
@@ -382,7 +315,9 @@ module input
                         call reallocate(shift,size(shift)+1)
                         call reallocate(natoms,size(natoms)+1)
                         call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
+                        call reallocate(masses,size(masses)+1)
                         ! Handle the indexing for the new atom:
+                        masses(size(masses))=1._rk
                         i=size(atomnames)
                         j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
                         moltypeofuatom(i)=j
@@ -410,7 +345,7 @@ module input
     subroutine set(args)!arg2,arg3)!{{{
         character(kind=1,len=1) :: args(:,:)
         character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
-        integer(kind=ik) :: i,j,p,ios
+        integer(kind=ik) :: i,j,p,ios,imol,kl,ku
         arg2='';arg3='';arg4='';arg5=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
@@ -471,6 +406,10 @@ module input
                 stop 'SET: distbin should be of type integer >0'
 
             case('atommasses')
+                allocate(masses(size(atomnames)),mgratios(size(atomnames)))
+                masses=0;mgratios=0
+
+                if(len_trim(arg3)/=0)then
                 open(nunit,file=arg3,action='read', status='old',iostat=ios)
                 if(ios==0)then
                     !Läs in atommassor från fil:
@@ -492,6 +431,7 @@ module input
                     end do
                 end if
                 close(nunit,iostat=ios)
+                end if
                 !Ge varje unikt atomnamn en massa: 
                 do i=1,size(atomd)
                     p=len_trim(atomd(i)%aname)
@@ -544,6 +484,14 @@ module input
                     stop
                 end if
             case('area_per_lipid','apl')
+                if(size(args,2)>=3)then
+                    call apl_atomlist(args(:,3:))
+                    global_setflags%apl=.TRUE.
+                else
+                    write(*,*)'SET: Area per lipid: Requires atomnames'
+                end if
+                
+                
                !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
                 call reallocate(molt,size(molt)+1)
@@ -563,6 +511,58 @@ module input
                     write(*,*)'ERROR:SET:NEWMOLTYPE: Illegal atom order!'
                     stop
                 endif
+            case('folding')
+                global_setflags%folding=.TRUE.
+
+            case('aplgrid')
+                read(arg3,*,iostat=ios)global_setflags%aplgrid(1)
+                if(ios/=0)stop 'SET:aplgrid: Arg1'
+                read(arg4,*,iostat=ios)global_setflags%aplgrid(2)
+                if(ios/=0)stop 'SET:aplgrid: Arg2'
+
+            case('leaflets')
+                
+                select case(arg3)
+                    case('both')
+                        global_setflags%leaflet=0
+                    case('lower')
+                        global_setflags%leaflet=1
+                    case('upper')
+                        global_setflags%leaflet=2
+                    case default
+                        !write(*,*)coor(:,10)
+                        call whole
+                        if(allocated(masses))then
+                            call foldmol
+                        else
+                            stop 'LEAFLETS:FOLDMOL: Atommasses not initiated'
+                        end if
+                        if(allocated(common_setflags%membrane_moltypes))then
+                            call&
+                            center_of_membrane(common_setflags%membrane_moltypes)
+                        else
+                            stop 'LEAFLETS: Needs center of membrane'
+                        end if
+                        !write(*,*)masses
+                        do i=1,size(molt)
+                        kl=0;ku=0
+                            do imol=1,molt(i)%nmol
+                         !   write(*,*)center_of_molecule(i,imol),centerofmembrane,director
+                            if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) < 0._rk)then
+                                    kl=kl+1
+                                    call reallocate(molt(i)%lower,kl)
+                                    molt(i)%lower(kl)=imol
+                                else
+                                    ku=ku+1
+                                    call reallocate(molt(i)%upper,ku)
+                                    molt(i)%upper(ku)=imol
+                                end if
+                            end do
+                           ! write(*,*)size(molt(i)%upper)
+                        end do
+                        
+                end select
+
 
             case default
                 if(size(args,2)>=2)then

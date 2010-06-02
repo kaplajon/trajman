@@ -1,7 +1,8 @@
 module trajop
     use kinds
     use readtraj
-    use input
+    use apl
+!    use input
     use util
     implicit none
     
@@ -27,9 +28,10 @@ module trajop
 
     function torsionangle(a,b,c,d,imol) result(teta)!{{{
         ! Torsionsvinkel: a-b mot c-d i grader 
-        real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta
+        real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta,teta2
         integer(kind=ik) :: a,b,c,d,imol
-        Vcb=getatom(b,imol) - getatom(c,imol)
+        Vcb=normalize(getatom(b,imol) - getatom(c,imol))
+      !  Vcb=normalize(Vcb)
 
         Vba = normalize(cross_product( &
                         cross_product(getatom(a,imol) - getatom(b,imol) ,Vcb) &
@@ -38,8 +40,13 @@ module trajop
         Vcd = normalize(cross_product( &
                         cross_product(getatom(d,imol) - getatom(c,imol) ,Vcb) &
                         ,Vcb))
-        teta = modulo( sign(acos(dot_product(Vba,Vcd)) * 180._rk / pi &
-             , dot_product( cross_product(getatom(b,imol) - getatom(a,imol) ,Vcb ),Vcd )),360._rk)
+!        teta = modulo( sign(acos(dot_product(Vba,Vcd)) * 180._rk / pi &
+!             , dot_product( cross_product(getatom(b,imol) - getatom(a,imol) ,Vcb ),Vcd )),360._rk)
+
+        teta = modulo(atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi,360._rk)
+       ! write(*,*)teta
+!write(*,*)teta,teta2
+!stop
         !teta = acos(dot_product(Vba,Vcd)) * 180._rk / pi 
 !        teta = dot_product(Vba,Vcd) * 180._rk 
 
@@ -61,65 +68,71 @@ module trajop
 
     end function distance_com!}}}
 
-    function order_parameter(a,b,imol) result(c)
+    function order_parameter(a,b,imol) result(c)!{{{
         integer(kind=ik) :: a,b,imol
         real(kind=rk) :: c
         c=1.5_rk*cos(pi/180._rk*&
         dirangle(a,b,imol))**2-0.5
-    end function order_parameter
+    end function order_parameter!}}}
 
     subroutine procop(instr,frame)!{{{
     ! Hanterar operationerna hämtade från input
-
-        integer(kind=ik) :: imol,i,frame
+        integer(kind=ik) :: imol,jmol,i,j,frame
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
-        if(allocated(common_setflags%membrane_moltypes))&
-        call center_of_membrane(common_setflags%membrane_moltypes)
           do i=1,size(instr)
            
             select case(instr(i)%findex)
+                case(0)
+                    if(instr(i)%setapl)call apl_grid(instr(i))
                 case(1) !DIRECTOR ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=&
                         cos(pi/180._rk*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
                     end do
                 case(2) !VALENCE ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=valenceangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=valenceangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),imol)
                     end do
                 case(3) !TORSION ANGLE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),instr(i)%atoms(4),imol)
                         
                     end do
                 case(4) !BOND LENGTH
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                     end do
                 case(5) !ORDER PARAMETER
-                    do imol=1,instr(i)%nmolop
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
-                        !dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
-                        instr(i)%datam(imol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                        !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
+                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
-                    do imol=1,instr(i)%nmolop
-                        instr(i)%datam(imol,frame)=distance_com(instr(i)%atoms(1),imol)
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=distance_com(instr(i)%atoms(1),imol)
                     end do
                 case(7) ! CORRELATE
                         ! Allt sköts i postproc
 
                 case(8) ! DIPOLE COUPLING
-                    do imol=1,instr(i)%nmolop
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
                         if(instr(i)%set%cbl_switch)then
                             bl=instr(i)%set%constant_bl
                         else
                             bl=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol)
                         end if
-                        instr(i)%datam(imol,frame) =-(magnetic/(4*pi))&
+                        instr(i)%datam(jmol,frame) =-(magnetic/(4*pi))&
                         *(mgratios(instr(i)%atoms(1))*mgratios(instr(i)%atoms(2))*hbar/(2*pi))&
                         *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)&
                         *(bl*1.e-9)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
@@ -134,8 +147,21 @@ module trajop
                             do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
                                 coor(:,cind(instr(i)%atoms(1),imol))=&
                                 center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                                !write(*,*)cind(instr(i)%atoms(1),imol),'CIND',instr(i)%atoms(1),imol,i
                             end do
+                            !write(*,*)masses;stop
+                            !if(frame==1)then
+                            !    call reallocate(masses,size(masses)+1)
+                            !    masses(size(masses))=1._rk
+                            !end if
+                            
                      end select
+                 case(11) ! AREA PER LIPID
+                     !write(*,*)instr(i)%nmolop,'APL STOP';stop
+                     call apl_calc(instr(i),frame)
+                    ! write(*,*)sum(instr(i)%datam(:,frame),instr(i)%apl_side==1)&
+                     !/COUNT(instr(i)%apl_side==1)!sumelements(test(instr(i)%apl_side,1))
+                     
             end select
 
            
@@ -162,7 +188,6 @@ module trajop
         character(len=300) :: string2
         integer(kind=ik) :: imol,i
         real(kind=rk) :: datam(:,:),meant(1:size(datam,1)),mean,meandev,var
-
         do imol=1,size(datam,1)
             meant(imol)=sum(datam(imol,:))/real(size(datam,2),rk)
         end do
@@ -171,10 +196,11 @@ module trajop
         meandev=sqrt(var/real(size(meant),rk))
         string=getmeanwithdev(mean,sqrt(var))
         write(string2,*)mean,meandev,sqrt(var)
+        !write(*,*)string2
         string2=trim(adjustl(string))//" "//trim(string2)
     end function average!}}}
 
-    function test_var(vector) result(var)
+    function test_var(vector) result(var)!{{{
         real(kind=rk) :: vector(:),vector2(size(vector)),var,mean
         integer(kind=ik) :: imol
         mean=sum(vector)
@@ -183,7 +209,7 @@ module trajop
         end do
         mean=sum(vector(:))/real(size(vector),rk)
         var=sum((vector2(:)-mean)**2)*real(size(vector)-1,rk)/real(size(vector),rk)
-    end function test_var
+    end function test_var!}}}
 
     subroutine instruction_average(instr,ounit,ind,lastind)!{{{
         type(instruct),intent(inout) :: instr(:)
@@ -371,7 +397,7 @@ module trajop
                 ma2=maxval(vec2)
         end select
 
-        bin1=(ma1-mi1)/real(size(dist,1),rk)
+        bin1=max((ma1-mi1)/real(size(dist,1),rk),epsilon(bin1))
         bin2=(ma2-mi2)/real(size(dist,2),rk)
 
         dp=1._rk/(real(size(vec1),rk)*bin1*bin2)
@@ -385,7 +411,7 @@ module trajop
             if(bi1<=0.or.bi1>size(dist,1).OR.bi2<=0.or.bi2>size(dist,2))then
                 write(*,*)bi1,"bi1",vec1(i),"vec1",i,"i",ma1,"ma1",mi1,"mi1",dp,"dp",bin1,"bin1"
                 write(*,*)bi2,"bi2",vec2(i),"vec2",i,"i",ma2,"ma2",mi2,"mi2",dp,"dp",bin2,"bin2"
-            stop "subroutine distrib"   
+            stop "subroutine corr_distrib"   
             else
                     dist(bi1,bi2)=dist(bi1,bi2)+dp
 
@@ -437,22 +463,8 @@ module trajop
     end subroutine corr_distrib!}}}
 
     subroutine center_of_membrane(molecules)!{{{
-        integer(kind=ik) :: molecules(:),i,imol,j,k
-        real(kind=rk) :: com(3),shift,n
-        ! Fold back molecules that is outside the box
-        do i=1,size(molt)
-            do imol=1,molt(i)%nmol
-                com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
-                do j=1,3
-                    shift=com(j)-modulo(com(j),box(j))
-                    if(abs(shift)>box(j)/2._rk)then
-                        do k=molt(i)%firstatom,molt(i)%lastatom
-                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
-                        end do
-                    end if
-                end do
-            end do
-        end do
+        integer(kind=ik) :: molecules(:),i,imol,j
+        real(kind=rk) :: n
         ! Calculate center of membrane based on mass density of
         ! all atoms between atom a and b
         centerofmembrane=0;n=0
@@ -468,7 +480,49 @@ module trajop
 
     end subroutine center_of_membrane!}}}
 
-!    subroutine test(a)
+    subroutine whole!{{{
+        integer(kind=ik) :: i,imol,j,k
+        real(kind=rk) :: com(3),shift
+        ! Fold back molecules that is outside the box
+        do i=1,size(molt)
+            do imol=1,molt(i)%nmol
+                com=getatom(molt(i)%firstatom,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                !do j=1,3
+                   !shift=com(j)-modulo(com(j),box(j))
+                   ! if(abs(shift)>box(j)/2._rk)then
+                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            coor(:,cind(k,imol))=mymodulo(coor(:,cind(k,imol))-com(:),box(:))
+                        end do
+                       ! write(*,*)'COM',center_of_molecule(i,imol)
+                    !end if
+                !end do
+            end do
+        end do
+    end subroutine whole!}}}
+
+    subroutine foldmol!{{{
+        integer(kind=ik) :: i,imol,j,k
+        real(kind=rk) :: com(3),shift
+        ! Fold back molecules that is outside the box
+        do i=1,size(molt)
+            do imol=1,molt(i)%nmol
+                com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                do j=1,3
+                    shift=com(j)-modulo(com(j),box(j))
+                    if(abs(shift)>box(j)/2._rk)then
+                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                        end do
+                       ! write(*,*)'COM',center_of_molecule(i,imol)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine foldmol!}}}
+
+!    subroutine test(a)!{{{
 !    use f95_lapack
 !!    use solver
 !    integer(kind=ik) :: a,imol
@@ -491,18 +545,18 @@ module trajop
 !    write(*,*)tens
 !
 !    stop
-!    end subroutine test
+!    end subroutine test!}}}
    
-    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
-        integer(kind=ik) :: umol,i,j,imol
-        real(kind=rk) :: centerofmolecule(3)
-        centerofmolecule=0
-        j=umol
-        do i=molt(j)%firstatom,molt(j)%lastatom
-            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
-        end do
-        centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
-    end function center_of_molecule!}}}
+!    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
+!        integer(kind=ik) :: umol,i,j,imol
+!        real(kind=rk) :: centerofmolecule(3)
+!        centerofmolecule=0
+!        j=umol
+!        do i=molt(j)%firstatom,molt(j)%lastatom
+!            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
+!        end do
+!        centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
+!    end function center_of_molecule!}}}
 
     function moi(umol,imol) result(tensor)!{{{
 
@@ -555,13 +609,15 @@ module trajop
         integer(kind=ik) :: ounit,ios,i,j,k,n,corr1,corr2
         real(kind=rk) :: a
         character(kind=1,len=len(global_setflags%filename)) :: filename
+        logical :: exists
+        character(kind=1,len=100) :: pos,avfilename
         a=0._rk
         instr%cv%entropy=a/a
         n=0
         do i=1,size(instr)
             if(instr(i)%findex/=0)n=max(len(trim(instr(i)%instructionstring)),n)
         end do
-        open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
+        !open(78,file=trim(global_setflags%fileprefix)//'averages'//trim(global_setflags%filesuffix))
         do i=1,size(instr) ! Loop över instruktionsrader
         select case(instr(i)%findex)
             case(0,10)
@@ -598,11 +654,21 @@ module trajop
                 end if
 
                 if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
-                call corr_distrib(instr(i),instr(corr1),instr(corr2),ounit)
+                call corr_distrib(instr(i),instr(corr1),instr(corr2),instr(i)%set%ounit)
                 if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
 
-                write(78,*)int(i,2),filename(6:len_trim(filename)-4)," = ",&
+                avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
+                inquire(file=avfilename,exist=exists)
+                if(.NOT. exists)then
+                    pos='ASIS'
+                else
+                    pos='APPEND'
+                end if
+                open(78,file=trim(avfilename)&
+                ,position=trim(pos),status='unknown')
+                write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename)-4)," = ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                close(78)
 
             case(9) ! AVERAGE
 
@@ -636,7 +702,6 @@ module trajop
                     end do
                     instr(i)%set%ounit=nunit
                 else
-                    write(*,*)'Average HEJ!'
                     instr(i)%set%ounit=stdout
                     filename="stdout"
                     j=i;k=0
@@ -671,9 +736,12 @@ module trajop
             end select
         end do
         do i=1,size(instr) ! Loop över instruktionsrader
+            avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
                 case(0,7,10)
                 case default
+                    !write(*,*)size(instr(i)%set%calc),allocated(instr(i)%set%calc)
+                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         if(instr(i)%set%autofilename)then
                             filename=trim(instr(i)%set%filename)&
@@ -692,29 +760,49 @@ module trajop
                         end select
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do
-
+                    !end if
+                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
                         case(0,7,10)
                         case(1)
+                            inquire(file=avfilename,exist=exists)
+                            if(.NOT. exists)then
+                                pos='ASIS'
+                            else
+                                pos='APPEND'
+                            end if
+                            open(78,file=trim(avfilename)&
+                            ,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
-                            trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi))),&
-                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                            trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
+                            close(78)
+                            !instr(i)%cv%entropy,instr(i)%cv%entropymutual
                         ! case(9)
 
                         case default
+                            inquire(file=avfilename,exist=exists)
+                            if(.NOT. exists)then
+                                pos='ASIS'
+                            else
+                                pos='APPEND'
+                            end if
+                            open(78,file=trim(avfilename)&
+                            ,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
-                            trim(adjustl(average(instr(i)%datam))),&
-                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
+                            trim(adjustl(average(instr(i)%datam)))!,&
+                            close(78)
+!                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     end select
+                    !end if
             end select
             if(allocated(instr(i)%datam))deallocate(instr(i)%datam)
         end do
 
-        close(78)
+        !close(78)
         
     end subroutine postproc!}}}
     
-    subroutine autocorr(instr)
+    subroutine autocorr(instr)!{{{
         type(instruct) :: instr
         integer(kind=ik) :: i,j,imol
         real(kind=rk) :: acorr(size(instr%datam,1),0:size(instr%datam,2)-1),norm
@@ -792,6 +880,6 @@ module trajop
 
 
 
-    end subroutine autocorr
+    end subroutine autocorr!}}}
 
 end module trajop

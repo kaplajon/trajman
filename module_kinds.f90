@@ -1,4 +1,5 @@
 module kinds
+    !use ifport
     implicit none
     integer(kind=4) ,parameter::ik=4
     integer(kind=ik),parameter :: rk=8,endf=-1,endr=-2,stdin=5,stdout=6

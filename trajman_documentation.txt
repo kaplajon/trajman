@@ -2,90 +2,176 @@ INPUTFILE: SYNTAX
 
 Syntax is one function or setting per line. Blank lines and comments (#) are ignored.
 
+
 INPUTFILE: SETTINGS
+Usage: set setfunction options
 ----------------------------------
 set
-    traj FILE			:: Set the trajectory file. This setting must
-				   be the first non commented line.
+	traj FILE
 
-    maxframes N			:: N number of frames to be processed. N=0 means
-				   all frames. Default "0".
+Set the trajectory file. This setting must
+be the first non commented line. Only files in
+.gro format is supported at the moment.
 
-    atomnames FILE		:: Custom unique atomnames for the trajectory. 
-				   Names must be in the same order as in the trajectory file.
+	maxframes N
 
-    atommasses [FILE]		:: Set default atommasses. If FILE is specified, atommasses
-				   are set according to that instead of the default values.
+N number of frames to be processed. N=0 means
+all frames. Default "0".
 
-    autofilename on,off		:: Set automatic filename creation for output files on or off.
-				   Default "on".
+	atomnames FILE
 
-    filename [FILENAME,off]	:: Set the filename explicitly to FILENAME (char). This setting 
-   				   will override autofilename. If filename and autofilename
-				   are both set to off, output will be directed to STDOUT.
-				   If used with autofilename set to 'on' the set filename will
-				   be automatically suffixed with type of postcalculation.
-				   See also fileprefix and filesuffix below.
+Custom unique atomnames for the trajectory. 
+Names must be in the same order as in the trajectory file.
 
-    fileprefix [prefix_]	:: Custom prefix for filenames (char, can be a system path).
-				   Default "auto_".
+	atommasses [FILE]
 
-    filesuffix [.suffix]	:: Custom suffix for filenames (char). Default ".out".
+Set default atommasses.
+If FILE is specified, atommasses are set according
+to that instead of the default values.
 
-    distbin N			:: Set number of bins, N (int), used for distributions.
-				   Default "100".
+	autofilename on,off
 
-    centerofmembrane molecule1 ... :: Calculate center of membrane based on named molecules
-				   separated by space (char)
+Set automatic filename creation for output files on or off.
+Default "on".
 
-    cbl R			:: Set constant bondlength, R (real), with same unit as the trajectory.
+	filename [FILENAME,off]
 
-    writeframe N [gro]		:: Write frame N (int) to a file with name frameN.xyz in xyz format
-				   (plottable by e.g. gOpenmol). If gro is added to the end of the
-				   command, the output will be in .gro-format. 
+Set the filename explicitly to FILENAME (char). This setting 
+will override autofilename. If filename and autofilename
+are both set to off, output will be directed to STDOUT.
+If used with autofilename set to 'on' the set filename will
+be automatically suffixed with type of postcalculation.
+See also fileprefix and filesuffix below.
 
-    calc [distrib,traj,acorr]	:: Defines postprocessing of the calculated FUNCTIONS (see below).
-				    distrib writes distributions
-				    traj writes trajectories
-				    acorr writes autocorrelations 
-				    (WARNING! Autocorrelation can take a very long time!)
+	fileprefix [prefix_]
+    
+Custom prefix for filenames (char, can be a system path).
+Default "auto_".
 
-    submolecule NAME startatom endatom :: Define a submolecule of an existing molecule, defined 
-					  by the atoms between startatom and endatom.
+	filesuffix [.suffix]
+
+Custom suffix for filenames (char). Default ".out".
+
+    	distbin N
+
+Set number of bins, N (int), used for distributions.
+Default "100".
+
+    	centerofmembrane molecule1 ...
+
+Calculate center of membrane based on named molecules
+separated by space (char)
+
+    	cbl R
+
+Set constant bondlength, R (real),
+with same unit as the trajectory.
+
+    	writeframe N [gro]
+
+Write frame N (int) to a file with name frameN.xyz in xyz format
+(plottable by e.g. gOpenmol). If gro is added to the end of the
+command, the output will be in .gro-format.
+If apl is set, this option also writes out files with area per lipid
+information.
+
+    	calc [distrib,traj,acorr]
+
+Defines postprocessing of the calculated FUNCTIONS (see below).
+distrib: writes distributions
+traj: writes trajectories
+acorr: writes autocorrelations 
+
+    	submoltype NAME startatom endatom
+
+Define a submolecule of an existing molecule, defined 
+by the atoms between startatom and endatom.
+
+	apl atom1 [atom2 ...]
+
+Define the atoms used to calculate the area per lipid in a membrane.
+The atoms may come from the same or different molecule types
+(or from atoms defined in a submoltype).
+
+	aplgrid x y
+
+Define the grid size used in area per lipid calcualtions.
+
+	leaflets [upper,lower,both]
+
+Without arguments: Define membrane leaflets to be able to separate calculations
+based on which side of the membrane a molecule is situated.
+Needs centerofmembrane and atommasses.
+With arguments:
+Upper,lower: Following calculations will only be performed on the specified side
+of the bilayer.
+Both: Default. Calculations are performed without leaflet separation.
+
 
 INPUTFILE: FUNCTIONS
+Usage: function options
 ----------------------------------
-define atom NAME SUBMOLPROP SUBMOL :: Define a new atom with name, NAME, from a property (SUBMOLPROP)
-				      of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
-				      be set to 'com', which is the center of mass of the submolecule.
+	define atom NAME SUBMOLPROP SUBMOL
 
-DA Atom1 Atom2		           :: Director angle: Angle between the vector Atom1-Atom2
-			              against the director
+Define a new atom with name, NAME, from a property (SUBMOLPROP)
+of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
+be set to 'com', which is the center of mass of the submolecule.
 
-VA Atom1 Atom2 Atom3	           :: Valence angle. First atom is the central atom.
+	DA Atom1 Atom2
 
-TA Atom1 Atom2 Atom3 Atom4         :: Torsion angle of atoms 1-4
+Director angle: Angle between the vector Atom1-Atom2
+against the director
 
-BL Atom1 Atom2		           :: Bond length (or distance) between two atoms
+	VA Atom1 Atom2 Atom3
 
-SV Atom1 Atom2	    	           :: Order parameter
+Valence angle. First atom is the central atom.
 
-MP Atom1		           :: Distance of atom1 from the centerofmembrane
+	TA Atom1 Atom2 Atom3 Atom4
+	
+Torsion angle of atoms 1-4
 
-corr	 		           :: Correlate the two following functions in a correlation
-			              distribution.
+	BL Atom1 Atom2
 
-DC Atom1 Atom2		           :: Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
+Bond length (or distance) between two atoms
 
-average N		           :: Calculate an average of the following N (int) functions
-			              (e.g. averaging a CH3 group)
+	SV Atom1 Atom2
+
+Order parameter
+
+	MP Atom1
+
+Distance of atom1 from the centerofmembrane
+
+	corr
+	
+Correlate the two following functions in a correlation
+distribution.
+
+	DC Atom1 Atom2
+	
+Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
+
+	average N
+	
+Calculate an average of the following N (int) functions
+(e.g. averaging a CH3 group)
+
+	AL atom1 [atom2 ...]
+
+Calculate area per lipid for defined atoms.
+If more than one atom is given, all additional atoms need to
+belong to the same molecule type as the first.
 
 
 TRAJMAN DEFAULT FILES:
 
-atoms.xyz			 :: This file contains atomnames and coordinates for each molecular type
-				    defined in the trajectory.
+	atoms.xyz
 
-[fileprefix]averages[filesuffix] :: FUNCTION averages and statistical data of the format:
+This file contains atomnames and coordinates for each molecular type
+defined in the trajectory.
+
+	[fileprefix]averages[filesuffix]
+
+FUNCTION averages and statistical data of the format:
  <index> <function definition> = <compact average> <average> <mean std> <std> [<dist. entropy> <mutual dist.entropy>]
 
