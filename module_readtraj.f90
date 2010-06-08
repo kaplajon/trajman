@@ -192,10 +192,10 @@ subroutine globals!{{{
     global_setflags%whole=.FALSE.
     global_setflags%centerofmembrane=.FALSE.
     global_setflags%leaflets_defined=.FALSE.
-    if(.NOT.allocated(global_setflags%calc))then
-        allocate(global_setflags%calc(1))
-        global_Setflags%calc=''
-    end if
+    !if(.NOT.allocated(global_setflags%calc))then
+    !    allocate(global_setflags%calc(1))
+    !    global_Setflags%calc=''
+    !end if
     !global_setflags%silent=.FALSE.
     ! Default atom masses
     allocate(defmass(5))

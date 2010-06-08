@@ -751,6 +751,7 @@ module trajop
                 case default
                     !write(*,*)size(instr(i)%set%calc),allocated(instr(i)%set%calc)
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
+                    if(allocated(instr(i)%set%calc))then
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         if(instr(i)%set%autofilename)then
                             filename=trim(instr(i)%set%filename)&
@@ -770,7 +771,7 @@ module trajop
                         end select
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do
-                    !end if
+                    end if
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
                         case(0,7,10)
@@ -807,9 +808,11 @@ module trajop
             end select
             if(allocated(instr(i)%datam))deallocate(instr(i)%datam)
         end do
-
-        !close(78)
-        
+        if(.NOT.allocated(global_setflags%calc))then
+            write(*,*)'     Nothing except averages is calculated.'
+            write(*,*)'     To enable postcalcualtions (e.g. distributions), '
+            write(*,*)'     use the "set calc" function.'
+        end if
     end subroutine postproc!}}}
     
     subroutine autocorr(instr)!{{{
