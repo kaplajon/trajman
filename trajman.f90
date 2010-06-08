@@ -26,14 +26,21 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,10)
-        case(11)
-        allocate(logicmolt(size(molt)));logicmolt=.FALSE.
-            do j=1,size(troptype(i)%atoms)
-                logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
-            end do
-            troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
-            deallocate(logicmolt)
+        case(0,9,10)
+!        case(11)
+!        allocate(logicmolt(size(molt)));logicmolt=.FALSE.
+!            do j=1,size(troptype(i)%atoms)
+!                logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
+!            end do
+!            select case(troptype(i)%set%leaflet)
+!            case(0)
+!                troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
+!            case(1)
+!                troptype(i)%nmolop=sum(size(molt(:)%lower))
+!            case(2)
+!                troptype(i)%nmolop=sum(size(molt(logicmolt)%upper))
+!            end select
+!            deallocate(logicmolt)
         case default
             j=moltypeofuatom(troptype(i)%atoms(1))
             select case(troptype(i)%set%leaflet)
@@ -98,12 +105,11 @@ program trajman
             if(.NOT. common_setflags%silent)write(*,'(5X,A10,I3,2A)',advance='no')&
             'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'%',char(13)
         end if
-        call whole
+        if(global_setflags%whole)call whole
         if(global_setflags%folding)call foldmol
-        if(allocated(common_setflags%membrane_moltypes))&
-        call center_of_membrane(common_setflags%membrane_moltypes)
+        !if(allocated(common_setflags%membrane_moltypes))&
+        !call center_of_membrane(common_setflags%membrane_moltypes)
         call procop(troptype,frame) ! CALCULATIONS: Perform instructions on frame
-
         if(frame==1)then !Write atomnames and coordinates for the first molecules
                         !to a .xyz file
             open(37,file='atoms.xyz')

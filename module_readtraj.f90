@@ -189,6 +189,13 @@ subroutine globals!{{{
     global_setflags%apl=.FALSE.
     global_setflags%aplgrid=[250,250]
     global_setflags%leaflet=0
+    global_setflags%whole=.FALSE.
+    global_setflags%centerofmembrane=.FALSE.
+    global_setflags%leaflets_defined=.FALSE.
+    if(.NOT.allocated(global_setflags%calc))then
+        allocate(global_setflags%calc(1))
+        global_Setflags%calc=''
+    end if
     !global_setflags%silent=.FALSE.
     ! Default atom masses
     allocate(defmass(5))
@@ -242,7 +249,7 @@ end subroutine globals!}}}
             !stop
             sdr=stringconv(charvec)
             read(sdr(6:16),"(2A5)")moltype_atom(1:2,ia)
-            read(sdr(17:),*)coor(1:3,ia)
+            read(sdr(21:),*)coor(1:3,ia)
         end do
             read(tunit,*)box
         rewind(tunit)
@@ -306,16 +313,17 @@ end subroutine globals!}}}
         
     end function atomindex_b!}}}
 
-    function cind(iuatom,imol) result(ind)!{{{
+    elemental function cind(iuatom,imol) result(ind)!{{{
 
-        integer(kind=ik) :: ind,imol,iuatom
+        integer(kind=ik),intent(in) :: imol,iuatom
+        integer(kind=ik) :: ind
         ! Index i coor för atom iuatom i molekyl imol
         ind=shift(iuatom)+natoms(iuatom)*imol
     end function cind!}}}
 
-    function getatom(aindex,imol) result(acoor)!{{{
+    pure function getatom(aindex,imol) result(acoor)!{{{
 
-        integer (kind=ik) :: aindex,imol
+        integer (kind=ik),intent(in) :: aindex,imol
         real (kind=rk) :: acoor(1:3)
 
         acoor(1:3)=coor(1:3,cind(aindex,imol))
@@ -335,7 +343,7 @@ end subroutine globals!}}}
         do ia=1,atot
 
             uatom=""
-            uatom=trim(moltype_atom(1,ia))//"_"//trim(adjustl(moltype_atom(2,ia))) ! Sätter unikt atomnamn
+            uatom=trim(moltype_atom(2,ia))//"_"//trim(adjustl(moltype_atom(1,ia))) ! Sätter unikt atomnamn
              ! Alla atomnamn i traj (atot)
             temp(ia)=uatom
              ! Alla förekomster av molekyltyp i traj (atot) 
@@ -407,8 +415,9 @@ end subroutine globals!}}}
 
     end subroutine trajindex!}}}
 
-    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
-        integer(kind=ik) :: umol,i,j,imol
+    pure function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
+        integer(kind=ik),intent(in) :: umol,imol
+        integer(kind=ik) :: i,j
         real(kind=rk) :: centerofmolecule(3)
         centerofmolecule=0
         j=umol

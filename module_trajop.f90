@@ -84,7 +84,7 @@ module trajop
            
             select case(instr(i)%findex)
                 case(0)
-                    if(instr(i)%setapl)call apl_grid(instr(i))
+                    !if(instr(i)%setapl)call apl_grid(instr(i))
                 case(1) !DIRECTOR ANGLE
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
@@ -140,27 +140,28 @@ module trajop
                  case(9) ! AVERAGE
                          ! Allt sköts i postproc
 
-                 case(10) !DEFINE ATOM
-                     select case(instr(i)%newatom%from_mol_prop)
-                        case('com','center_of_mass')
-                           ! Define atom from center of mass of a defined submolecule.
-                            do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
-                                coor(:,cind(instr(i)%atoms(1),imol))=&
-                                center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
-                                !write(*,*)cind(instr(i)%atoms(1),imol),'CIND',instr(i)%atoms(1),imol,i
-                            end do
-                            !write(*,*)masses;stop
-                            !if(frame==1)then
-                            !    call reallocate(masses,size(masses)+1)
-                            !    masses(size(masses))=1._rk
-                            !end if
-                            
-                     end select
+                 case(10) !DEFINE
+                     select case(instr(i)%define)
+                        case(1) !CENTEROFMEMBRANE
+                            call center_of_membrane(instr(i)%membrane_moltypes)
+                        case(2) !ATOM
+                            select case(instr(i)%newatom%from_mol_prop)
+                                case('com','center_of_mass')
+                                ! Define atom from center of mass of a defined submolecule.
+                                    do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                                        coor(:,cind(instr(i)%atoms(1),imol))=&
+                                        center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                                    end do
+                            end select
+                        case(3) !LEAFLET
+                                    if(global_setflags%apl)call apl_grid(instr(i))
+                    end select
+
+
+
+
                  case(11) ! AREA PER LIPID
-                     !write(*,*)instr(i)%nmolop,'APL STOP';stop
                      call apl_calc(instr(i),frame)
-                    ! write(*,*)sum(instr(i)%datam(:,frame),instr(i)%apl_side==1)&
-                     !/COUNT(instr(i)%apl_side==1)!sumelements(test(instr(i)%apl_side,1))
                      
             end select
 
@@ -215,11 +216,13 @@ module trajop
         type(instruct),intent(inout) :: instr(:)
         integer(kind=ik) :: ounit,ind,j,k,lastind
         j=ind;k=0
+        !if(allocated(instr(ind)%datam))deallocate(instr(ind)%datam)
+        !write(*,*)allocated(instr(ind)%datam)
         allocate(instr(ind)%datam(size(instr(lastind)%datam,1),size(instr(lastind)%datam,2)*instr(ind)%average_count))
 
         do !j=i+1,i+instr(i)%average_count
             j=j+1
-            if(instr(j)%findex/=0)then
+            if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
                 k=k+1
                 instr(ind)%datam(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
                 if(k>=instr(ind)%average_count)exit
@@ -487,21 +490,14 @@ module trajop
         do i=1,size(molt)
             do imol=1,molt(i)%nmol
                 com=getatom(molt(i)%firstatom,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
-                !do j=1,3
-                   !shift=com(j)-modulo(com(j),box(j))
-                   ! if(abs(shift)>box(j)/2._rk)then
-                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
-                        do k=molt(i)%firstatom,molt(i)%lastatom
-                            coor(:,cind(k,imol))=mymodulo(coor(:,cind(k,imol))-com(:),box(:))
-                        end do
-                       ! write(*,*)'COM',center_of_molecule(i,imol)
-                    !end if
-                !end do
+                do k=molt(i)%firstatom,molt(i)%lastatom
+                    coor(:,cind(k,imol))=com+mymodulo(coor(:,cind(k,imol))-com(:),box(:))
+                end do
             end do
         end do
     end subroutine whole!}}}
 
-    subroutine foldmol!{{{
+   subroutine foldmol!{{{
         integer(kind=ik) :: i,imol,j,k
         real(kind=rk) :: com(3),shift
         ! Fold back molecules that is outside the box
@@ -511,17 +507,30 @@ module trajop
                 do j=1,3
                     shift=com(j)-modulo(com(j),box(j))
                     if(abs(shift)>box(j)/2._rk)then
-                       ! write(*,*)'FOLDING...',imol,i,j,com(j)
                         do k=molt(i)%firstatom,molt(i)%lastatom
                             coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
                         end do
-                       ! write(*,*)'COM',center_of_molecule(i,imol)
                     end if
                 end do
+                com=center_of_molecule(i,imol)
+                if(com(3)<0 .OR. com(3)>box(3))then
+                write(*,*)com,'COM'
+                stop
+                end if
             end do
         end do
     end subroutine foldmol!}}}
 
+    function totalmoi(umol,imol) result(m)
+        integer(kind=ik) :: umol,imol,i
+        real(kind=rk) :: com(3),m
+        m=0
+        com=center_of_molecule(umol,imol)
+        do i=molt(umol)%firstatom,molt(umol)%lastatom
+            m=m+sum((getatom(i,imol)-com)**2)*(masses(i))
+        end do
+        
+    end function totalmoi
 !    subroutine test(a)!{{{
 !    use f95_lapack
 !!    use solver
@@ -677,7 +686,8 @@ module trajop
                     j=i;k=0
                     do 
                         j=j+1
-                        if(instr(j)%findex/=0)then
+                        if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
+                        !if(.not.any(instr(j)%findex==[0,10])then
                             k=k+1
                             if(k>=instr(i)%average_count)exit
                         endif
@@ -692,7 +702,7 @@ module trajop
                     j=i;k=0
                     do 
                         j=j+1
-                        if(instr(j)%findex/=0)then
+                        if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
                             k=k+1
                             if(k==1)instr(i)%set%filename=trim(instr(i)%set%filename)//trim(instr(j)%instructionstring(1:2))
                             instr(i)%set%filename=trim(instr(i)%set%filename)&
@@ -707,7 +717,7 @@ module trajop
                     j=i;k=0
                     do 
                         j=j+1
-                        if(instr(j)%findex/=0)then
+                        if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
                             k=k+1
                             if(k>=instr(i)%average_count)exit
                         endif
@@ -716,7 +726,6 @@ module trajop
                 end if
                call instruction_average(instr,instr(i)%set%ounit,i,j)
                instr(i)%findex=instr(j)%findex
-
 
             case default ! DEFAULT
 
@@ -752,6 +761,7 @@ module trajop
                         if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
                         select case(trim(instr(i)%set%calc(j)))
                             case('distrib')
+                                !write(*,*)'I',i,instr(i)%datam
                                 call distrib(instr(i))
                             case('traj')
                                 call traj(instr(i))

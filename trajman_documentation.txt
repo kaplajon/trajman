@@ -29,6 +29,18 @@ Set default atommasses.
 If FILE is specified, atommasses are set according
 to that instead of the default values.
 
+	whole
+
+By setting this, molecules that have been broken due to
+periodic boundary conditions, will be made whole again by 
+back folding of atom coordinates.
+
+	folding
+
+If the center of mass of a molecule lies outside the box,
+it will be folded back in by this setting.
+
+
 	autofilename on,off
 
 Set automatic filename creation for output files on or off.
@@ -56,11 +68,6 @@ Custom suffix for filenames (char). Default ".out".
 
 Set number of bins, N (int), used for distributions.
 Default "100".
-
-    	centerofmembrane molecule1 ...
-
-Calculate center of membrane based on named molecules
-separated by space (char)
 
     	cbl R
 
@@ -97,25 +104,39 @@ The atoms may come from the same or different molecule types
 
 Define the grid size used in area per lipid calcualtions.
 
-	leaflets [upper,lower,both]
+	leaflets
 
-Without arguments: Define membrane leaflets to be able to separate calculations
+Define membrane leaflets to be able to separate calculations
 based on which side of the membrane a molecule is situated.
 Needs centerofmembrane and atommasses.
 With arguments:
-Upper,lower: Following calculations will only be performed on the specified side
-of the bilayer.
-Both: Default. Calculations are performed without leaflet separation.
+
+INPUTFILE: DEFINITIONS
+Usage: define options
+----------------------------------
+define
+	atom NAME SUBMOLPROP SUBMOL
+
+Define a new atom with name, NAME, from a property (SUBMOLPROP)
+of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
+be set to 'com', which is the center of mass of the submolecule.
+
+    	centerofmembrane molecule1 ...
+
+Calculate center of membrane based on named molecules
+separated by space (char)
+
+	leaflet [both,upper,lower]
+
+upper,lower: Following calculations will only be performed on 
+	     the specified side of the bilayer.
+       both: Default. Calculations are performed without leaflet separation.
+Definition of leaflets is mandatory if you're doing area per lipid calculations.
 
 
 INPUTFILE: FUNCTIONS
 Usage: function options
 ----------------------------------
-	define atom NAME SUBMOLPROP SUBMOL
-
-Define a new atom with name, NAME, from a property (SUBMOLPROP)
-of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
-be set to 'com', which is the center of mass of the submolecule.
 
 	DA Atom1 Atom2
 

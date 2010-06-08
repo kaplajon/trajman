@@ -18,7 +18,8 @@ module util
     end type write_frame
 
     type setflags
-        logical :: autofilename,cbl_switch,folding,apl
+        logical ::&
+        autofilename,cbl_switch,folding,apl,whole,leaflets_defined,centerofmembrane
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet !,writeframe
         character(kind=1,len=255) :: filename,fileprefix,filesuffix
         type(write_frame),allocatable :: writeframe(:)
@@ -31,8 +32,8 @@ module util
     end type natom
 
     type setcommon
-        logical :: silent
-        integer(kind=ik),allocatable :: membrane_moltypes(:)
+        logical :: silent,centerofmembrane
+        !integer(kind=ik),allocatable :: membrane_moltypes(:)
     end type
     type(setcommon) :: common_setflags
 
@@ -43,8 +44,9 @@ module util
     end type calcval
 
     type instruct
-        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count
-        integer(kind=ik),allocatable :: atoms(:),apl_side(:),molind(:)
+        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count,define
+        integer(kind=ik),allocatable ::&
+        atoms(:),apl_side(:),molind(:),membrane_moltypes(:)
         logical :: setapl
         character(kind=1, len=50) :: instructionstring
         real(kind=rk),allocatable :: datam(:,:)

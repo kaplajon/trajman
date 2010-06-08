@@ -88,12 +88,30 @@ module input
     subroutine summary
         integer(kind=ik) :: i
         write(*,*)
-        write(*,'(5X,A9)')"Molecules"
-        write(*,'(5X,A15)')"---------------"
+        if(.NOT.global_setflags%whole)then
+            write(0,*)"     WARNING: Whole not set!"
+            write(0,*)"        If you want to make broken molecules"
+            write(0,*)"        whole, add 'set whole' to the input."
+        end if
+!        if(.NOT.allocated(common_setflags%membrane_moltypes))&
+!        write(0,*)"     WARNING: Center of membrane not set!"
+        write(*,*)
+        write(*,'(12X,A31)')"Molecules Atoms(mol) Atoms(tot)"
+        write(*,'(5X,A40)')"----------------------------------------"
         do i=1,size(molt)
-        write(*,'(5X,A5,A2,I6)')trim(molt(i)%molname),': ',molt(i)%nmol
+        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
+        trim(molt(i)%molname),': ',molt(i)%nmol,' ',molt(i)%natoms,&
+        ' ',molt(i)%natoms*molt(i)%nmol
         end do
-        write(*,'(5X,A15)')"---------------"
+        write(*,'(5X,A40)')"----------------------------------------"
+        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
+        "Total",': ',sum(molt(:)%nmol),' ',sum(molt(:)%natoms),' ',atot
+        write(*,*)
+        if(global_setflags%whole)&
+        write(*,*)"     Function Whole is active."
+        if(global_setflags%apl)&
+        write(*,*)"     Area per lipid calculation is enabled."
+        write(*,*)
     end subroutine summary
 
 !    subroutine readline(onerow,ios,runit)!{{{
@@ -197,7 +215,7 @@ module input
         trajop%findex=0
         trajop%set=global_setflags
         trajop%setapl=.FALSE.
-        p=0
+        p=0;funcstr=''
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('traj')
                 call initgro(arguments(:,2))
@@ -241,6 +259,8 @@ module input
                 funcstr='SV_'
 
             case('membraneposition','MP')
+                if(.NOT.global_setflags%centerofmembrane)&
+                stop 'MP: Needs centerofmembrane!'
                 trajop%findex=6
                 p=2
                 funcstr='MP_'
@@ -257,12 +277,16 @@ module input
                 p=2 !faktiskt 2, men andra arg ej molekylnamn
                 funcstr='AV_'
             case('define')
-                 select case(trim(stringconv(arguments(:,2))))
-                    case('atom')
-                        trajop%findex=10
-                        p=4
-                 end select
+                 trajop%findex=10
+                 !p=2
+                 call define(trajop,arguments)
+                 !select case(trim(stringconv(arguments(:,2))))
+                 !   case('atom')
+                 !       p=4
+                 !end select
             case('al','AL','apl')
+                if(.NOT.trajop%set%apl)stop 'AL: Needs apl!'
+                if(.NOT.trajop%set%leaflets_defined)stop 'AL: Needs leaflets!'
                 trajop%findex=11
                 p=size(arguments,2)
                 funcstr='AL_'
@@ -304,31 +328,31 @@ module input
                             trim(stringconv(arguments(:,p-1)))
                             stop
                         endif
-                    else if(trajop%findex==10)then ! DEFINE ATOM
-                        trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
-                        trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
-                        trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
-                       ! This indexing works for one and only one atom per
-                       ! submolecule!
-                       ! Reallocate indexing vectors to add one atom:
-                        call reallocatechar(atomnames,size(atomnames)+1)
-                        call reallocate(shift,size(shift)+1)
-                        call reallocate(natoms,size(natoms)+1)
-                        call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
-                        call reallocate(masses,size(masses)+1)
-                        ! Handle the indexing for the new atom:
-                        masses(size(masses))=1._rk
-                        i=size(atomnames)
-                        j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
-                        moltypeofuatom(i)=j
-                        molt(j)%natoms=molt(j)%natoms+1
-                        natoms(size(atomnames))=molt(j)%natoms
-                        atomnames(size(atomnames))=trajop%newatom%atomname
-                        trajop%atoms(1)=size(atomnames)
-                        atot=atot+molt(j)%nmol
-                        shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
-                        deallocate(coor)
-                        allocate(coor(1:3,atot))
+                   ! else if(trajop%findex==10)then ! DEFINE ATOM
+                   !     trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
+                   !     trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
+                   !     trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
+                   !    ! This indexing works for one and only one atom per
+                   !    ! submolecule!
+                   !    ! Reallocate indexing vectors to add one atom:
+                   !     call reallocatechar(atomnames,size(atomnames)+1)
+                   !     call reallocate(shift,size(shift)+1)
+                   !     call reallocate(natoms,size(natoms)+1)
+                   !     call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
+                   !     call reallocate(masses,size(masses)+1)
+                   !     ! Handle the indexing for the new atom:
+                   !     masses(size(masses))=1._rk
+                   !     i=size(atomnames)
+                   !     j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
+                   !     moltypeofuatom(i)=j
+                   !     molt(j)%natoms=molt(j)%natoms+1
+                   !     natoms(size(atomnames))=molt(j)%natoms
+                   !     atomnames(size(atomnames))=trajop%newatom%atomname
+                   !     trajop%atoms(1)=size(atomnames)
+                   !     atot=atot+molt(j)%nmol
+                   !     shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
+                   !     deallocate(coor)
+                   !     allocate(coor(1:3,atot))
 
 
                     else
@@ -341,6 +365,71 @@ module input
             end if
 
     end subroutine procinp!}}}
+
+    subroutine define(trajop,arguments)
+        type(instruct) :: trajop
+        character(kind=1,len=1) :: arguments(:,:)
+        character(kind=1,len=size(arguments,1)) :: arg2,arg3,arg4
+        integer(kind=ik) :: i,j
+        if(size(arguments,2)>=2)arg2=trim(stringconv(arguments(:,2)))
+        if(size(arguments,2)>=3)arg3=trim(stringconv(arguments(:,3)))
+        if(size(arguments,2)>=4)arg4=trim(stringconv(arguments(:,4)))
+        select case(arg2)
+            case('centerofmembrane')
+                trajop%define=1
+                if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
+                if(allocated(trajop%membrane_moltypes))deallocate(trajop%membrane_moltypes)
+                allocate(trajop%membrane_moltypes(size(arguments,2)-2))
+                do i=1,size(trajop%membrane_moltypes)
+                    trajop%membrane_moltypes(i)=atomindex(trim(stringconv(arguments(:,2+i))),molt(:)%molname,size(molt))
+                end do
+                call center_of_membrane(trajop%membrane_moltypes)
+                global_setflags%centerofmembrane=.TRUE.
+
+            case('atom')
+                trajop%define=2
+                trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
+                trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
+                trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
+                ! This indexing works for one and only one atom per
+                ! submolecule!
+                ! Reallocate indexing vectors to add one atom:
+                call reallocatechar(atomnames,size(atomnames)+1)
+                call reallocate(shift,size(shift)+1)
+                call reallocate(natoms,size(natoms)+1)
+                call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
+                call reallocate(masses,size(masses)+1)
+                ! Handle the indexing for the new atom:
+                masses(size(masses))=1._rk
+                i=size(atomnames)
+                j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
+                moltypeofuatom(i)=j
+                molt(j)%natoms=molt(j)%natoms+1
+                natoms(size(atomnames))=molt(j)%natoms
+                atomnames(size(atomnames))=trajop%newatom%atomname
+                trajop%atoms(1)=size(atomnames)
+                atot=atot+molt(j)%nmol
+                shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
+                deallocate(coor)
+                allocate(coor(1:3,atot))
+
+            case('leaflet')
+                trajop%define=3
+                global_setflags%leaflets_defined=.TRUE.
+                select case(arg3)
+                    case('both')
+                        trajop%set%leaflet=0
+                        global_setflags%leaflet=0
+                    case('lower')
+                        trajop%set%leaflet=1
+                        global_setflags%leaflet=1
+                    case('upper')
+                        trajop%set%leaflet=2
+                        global_setflags%leaflet=2
+                end select
+            end select
+
+    end subroutine define
 
     subroutine set(args)!arg2,arg3)!{{{
         character(kind=1,len=1) :: args(:,:)
@@ -442,11 +531,12 @@ module input
                         endif
                      end do
                 end do
-            case('centerofmembrane')
-               allocate(common_setflags%membrane_moltypes(size(args,2)-2))
-               do i=1,size(common_setflags%membrane_moltypes)
-                   common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(args(:,2+i))),molt(:)%molname,size(molt))
-               end do
+           ! case('centerofmembrane')
+           !     if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
+           !    allocate(common_setflags%membrane_moltypes(size(args,2)-2))
+           !    do i=1,size(common_setflags%membrane_moltypes)
+           !        common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(args(:,2+i))),molt(:)%molname,size(molt))
+           !    end do
             case('constant_bondlength','cbl')
                 select case(arg3)
                     case('on','ON')
@@ -484,6 +574,7 @@ module input
                     stop
                 end if
             case('area_per_lipid','apl')
+                
                 if(size(args,2)>=3)then
                     call apl_atomlist(args(:,3:))
                     global_setflags%apl=.TRUE.
@@ -512,6 +603,7 @@ module input
                     stop
                 endif
             case('folding')
+                if(.NOT. allocated(masses))stop 'FOLDING: Needs atom masses'
                 global_setflags%folding=.TRUE.
 
             case('aplgrid')
@@ -521,48 +613,28 @@ module input
                 if(ios/=0)stop 'SET:aplgrid: Arg2'
 
             case('leaflets')
-                
-                select case(arg3)
-                    case('both')
-                        global_setflags%leaflet=0
-                    case('lower')
-                        global_setflags%leaflet=1
-                    case('upper')
-                        global_setflags%leaflet=2
-                    case default
-                        !write(*,*)coor(:,10)
-                        call whole
-                        if(allocated(masses))then
-                            call foldmol
-                        else
-                            stop 'LEAFLETS:FOLDMOL: Atommasses not initiated'
+                        if(global_setflags%whole)call whole
+                        if(global_setflags%folding)call foldmol
+                        if(.NOT.global_setflags%centerofmembrane)then
+                            stop 'LEAFLETS: Needs a defined center of membrane'
                         end if
-                        if(allocated(common_setflags%membrane_moltypes))then
-                            call&
-                            center_of_membrane(common_setflags%membrane_moltypes)
-                        else
-                            stop 'LEAFLETS: Needs center of membrane'
-                        end if
-                        !write(*,*)masses
                         do i=1,size(molt)
                         kl=0;ku=0
                             do imol=1,molt(i)%nmol
-                         !   write(*,*)center_of_molecule(i,imol),centerofmembrane,director
                             if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) < 0._rk)then
-                                    kl=kl+1
-                                    call reallocate(molt(i)%lower,kl)
-                                    molt(i)%lower(kl)=imol
-                                else
-                                    ku=ku+1
-                                    call reallocate(molt(i)%upper,ku)
-                                    molt(i)%upper(ku)=imol
-                                end if
+                                kl=kl+1
+                                call reallocate(molt(i)%lower,kl)
+                                molt(i)%lower(kl)=imol
+                            else if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) > 0._rk)then
+                                ku=ku+1
+                                call reallocate(molt(i)%upper,ku)
+                                molt(i)%upper(ku)=imol
+                            end if
                             end do
-                           ! write(*,*)size(molt(i)%upper)
                         end do
                         
-                end select
-
+            case ('whole')
+                global_setflags%whole=.TRUE.
 
             case default
                 if(size(args,2)>=2)then
