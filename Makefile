@@ -1,7 +1,10 @@
-ARCH = LINUXAMD64
-
 PROG =	trajman
+
+#---VMD MOLFILE PLUGIN---
+VMD_ARCH = LINUXAMD64 #Based on how you compiled vmd plugins
 VMD_PLUGINS = /home/jon/src/vmd-1.8.7.src/plugins
+#------------------------
+
 SRCS =	module_input.F90 module_kinds.f90 module_readtraj.f90 \
 	module_trajop.f90 module_util.f90 trajman.f90
 
@@ -11,7 +14,6 @@ OBJS =	module_input.o module_apl.o module_version.o module_kinds.o module_readtr
 LIBS =  #/usr/lib64/liblapack.so.3
 
 #INCLUDES = -I/data/jon/src/LAPACK95/lapack95_modules/ 
-#INCLUDES = -I/home/jon/src/vmd-1.8.7.src/plugins/compile/lib_$(ARCH)/molfile -I/home/jon/src/vmd-1.8.7.src/plugins/include
 #-I/home/jon/src/LAPACK95/lapack95_modules/ 
 #LIBSPATH = -L/usr/common/sprng2.0/lib
 #LIBSPATH = /data/jon/src/LAPACK95/lapack95.a /usr/lib64/liblapack.so.3 
@@ -23,12 +25,9 @@ F90 = gfortran
 FFLAGS =  -O3 
 F90FLAGS =  -O3 -g 
 FC90FLAGS = -D "CINFO='$$(date)'" $(F90FLAGS)
-NETCDFLIB      = -L/home/jon/src/vmd-1.8.7.src/vmd/lib/netcdf/lib_LINUX
 NETCDFLDFLAGS  = -lnetcdf
-TCLLIB         = -L/home/jon/src/vmd-1.8.7.src/vmd/lib/tcl/lib_LINUX
 TCLLDFLAGS     = -ltcl8.5
-#F77MOLFILEPATH = /home/jon/src/vmd-1.8.7.src/plugins/molfile_plugin/f77/
-LDFLAGS        = $(VMD_PLUGINS)/molfile_plugin/f77/f77_molfile.o -L/home/jon/src/vmd-1.8.7.src/plugins/compile/lib_$(ARCH)/molfile $(TCLLIB) $(NETCDFLIB)
+LDFLAGS        = $(VMD_PLUGINS)/molfile_plugin/f77/f77_molfile.o -L$(VMD_PLUGINS)/compile/lib_$(VMD_ARCH)/molfile
 LDLIBS         = -lmolfile_plugin $(NETCDFLDFLAGS) $(TCLLDFLAGS) -lstdc++ -ldl
 
 #LDFLAGS = 
