@@ -10,7 +10,8 @@ module input
     contains
 
     subroutine arguments(runit)!{{{
-        integer(kind=ik) :: i,ios,runit
+        integer(kind=ik) :: i,ios!,runit
+        integer(kind=4) :: runit
         character(kind=1,len=255) :: carg,carg2,ctime
         common_setflags%silent=.FALSE.
         !If no arguments, print help info
@@ -205,11 +206,15 @@ module input
 
     subroutine procinp(charvector,trajop)!{{{
         implicit none    
+!        external :: f77_molfile_read_next,f77_molfile_init,f77_molfile_open_read,&
+!        f77_molfile_close_read,f77_molfile_finish
         character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2
+        character(kind=1,len=200) :: infile
         integer(kind=ik) ::&
         ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
+        integer(kind=4) :: natm 
         type(instruct) :: trajop
         call getwords(charvector,arguments)
         trajop%findex=0
@@ -217,10 +222,24 @@ module input
         trajop%setapl=.FALSE.
         p=0;funcstr=''
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
-            case('traj')
+            case('init')
                 call initgro(arguments(:,2))
+            case('traj')
+                !call initgro(arguments(:,2))
                 allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
                 trajfile=arguments(1:size(trajfile),2)
+                infile=stringconv(trajfile)
+                trajtype=trim(infile(scan(infile,'.',BACK=.TRUE.)+1:))
+                select case(trim(trajtype))
+                    case('gro')
+                        open(tunit,file=stringconv(trajfile),status='old')
+                    case('trr')!MOLFILEPLUGIN FROM VMD
+                        tunit=-1
+                        call f77_molfile_init
+                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+                end select
+                !allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
+                !trajfile=arguments(1:size(trajfile),2)
 
             case('set','SET')
                 if(trim(stringconv(arguments(:,2)))=='apl')trajop%setapl=.TRUE.

@@ -2,12 +2,16 @@ module readtraj
     use kinds
     use util
     implicit none
+    !external :: f77_molfile_read_next,f77_molfile_init,f77_molfile_open_read,&
+    !f77_molfile_close_read,f77_molfile_finish
     real (kind=rk),allocatable :: coor(:,:),box(:),masses(:),mgratios(:)
     character(kind=1, len=11),allocatable :: temp(:)
     character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
     character(kind=1, len=1),allocatable :: trajfile(:)
-    integer (kind=ik) :: mols=0,tunit=12,nunit=13,atot,rowsperframe
+    character(kind=1,len=3) :: trajtype
+    integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
+    integer(kind=4) :: tunit=12!,runit
     integer (kind=ik),allocatable ::&
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
@@ -229,7 +233,7 @@ end subroutine globals!}}}
         integer(kind=ik) :: ios,ia
        !stop 'HEJ'
         allocate(charvec(1))
-        open(unit=tunit,file=trim(stringconv(fname)),iostat=ios)
+        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
 
         if(ios/=0)then
                 write(*,*)"Error, cannot open ",&
@@ -252,15 +256,16 @@ end subroutine globals!}}}
             read(sdr(21:),*)coor(1:3,ia)
         end do
             read(tunit,*)box
-        rewind(tunit)
+        !rewind(tunit)
+        close(tunit)
         rowsperframe=atot+3
         call trajindex(moltype_atom)
-        deallocate(charvec)   
+        deallocate(charvec)
     end subroutine initgro!}}}
 
     function readgro(tunit) result(ios)!{{{
 
-        integer(kind=ik) :: tunit
+        integer(kind=4) :: tunit
         integer(kind=ik) :: ios,ia
         read(unit=tunit,fmt=*,iostat=ios)
         if(ios==endf)return
@@ -271,6 +276,43 @@ end subroutine globals!}}}
         read(unit=tunit,fmt=*,iostat=ios)box(:)
 
     end function readgro!}}}
+
+    function readtrr(fhandle) result(ios) !MOLFILEPLUGIN FROM VMD
+        integer(kind=4) :: fhandle,stat,natm
+        integer(kind=ik) :: ios
+        real(kind=4) :: bx(6)
+        real(kind=4),allocatable :: coorv(:)
+        allocate(coorv(atot*3))
+        natm=int(atot,4)
+        stat=1
+        call f77_molfile_read_next(fhandle,natm,coorv,bx,stat)
+        coor=reshape(real(coorv,kind(coor)),[3,atot])
+        box=bx(1:3)
+        if(stat/=0)ios=0 !molfile stat and iostat conversion 
+        if(stat==0)ios=1 !for the frameloop to work as expected.
+    end function readtrr
+
+    subroutine closetraj(funit)
+    integer(kind=4) :: stat,funit
+        select case(trajtype)
+    case('gro')
+        close(funit)
+    case('trr')
+        call f77_molfile_close_read(funit,stat)
+        call f77_molfile_finish
+    end select
+    end subroutine closetraj
+
+    function readframe(tunit) result(ios)
+    integer(kind=ik) :: ios
+    integer(kind=4) :: tunit
+    select case(trajtype)
+    case('gro')
+        ios=readgro(tunit)
+    case('trr')
+        ios=readtrr(tunit)
+    end select
+    end function readframe        
 
     function stringconv(vector) result(string)!{{{
     ! Convert a vector to a string
