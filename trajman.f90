@@ -94,11 +94,12 @@ program trajman
             stat=1
             allocate(coorv(atot*3),bx(6))
             do while (stat/=0)
-                maxframes=maxframes+1
                 call f77_molfile_read_next(tunit,atot,coorv,bx,stat)
-                !if(stat==0)exit
+                if(stat==0)exit
+                maxframes=maxframes+1
             end do
-                maxframes=maxframes-1
+                !maxframes=maxframes-1
+                !write(*,*)maxframes,'MAXFRAMES'
                 call f77_molfile_close_read(tunit,stat)
                 call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
                 !stop
