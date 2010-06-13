@@ -1,0 +1,32 @@
+Trajman: Trajectory Manager
+
+Author: Jon Kapla, jon.kapla@mmk.su.se
+
+Trajman is a linux based molecular dynamics trajectory analysis
+tool written in fortran. It is mainly aimed towards analysis of
+simulations of model lipid membranes, but can easily be adopted
+for other use as well.
+
+Installation:
+
+Trajman needs the Visual Molecular Dynamics molfile plugin to
+be functional. Get the source code, and compile the plugins.
+
+http://www.ks.uiuc.edu/Research/vmd/
+
+Make sure you also compile the fortran c wrapper located in 
+the molfile_plugin/f77 folder.
+
+When you have VMD plugins compiled. Compile trajman by telling
+make where your VMD plugins are situated, and what archflag you
+used. Note that you need gfortran. Here's a 64-bit example:
+
+make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=/home/jon/src/vmd/plugins
+
+Run trajman -h for more information about usage.
+
+
+
+
+
+
