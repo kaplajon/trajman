@@ -6,9 +6,7 @@ module input
     use apl
     use trajop
     implicit none ! Routines for input file treatment
-
     contains
-
     subroutine arguments(runit)!{{{
         integer(kind=ik) :: i,ios!,runit
         integer(kind=4) :: runit
@@ -86,7 +84,7 @@ module input
         stop
     end subroutine print_help!}}}
 
-    subroutine summary
+    subroutine summary!{{{
         integer(kind=ik) :: i
         write(*,*)
         if(.NOT.global_setflags%whole)then
@@ -113,7 +111,7 @@ module input
         if(global_setflags%apl)&
         write(*,*)"     Area per lipid calculation is enabled."
         write(*,*)
-    end subroutine summary
+    end subroutine summary!}}}
 
 !    subroutine readline(onerow,ios,runit)!{{{
 !        character(kind=1,len=1),allocatable :: onerow(:) 
@@ -276,7 +274,6 @@ module input
                 trajop%findex=5
                 p=3
                 funcstr='SV_'
-
             case('membraneposition','MP')
                 if(.NOT.global_setflags%centerofmembrane)&
                 stop 'MP: Needs centerofmembrane!'
@@ -291,18 +288,18 @@ module input
                 trajop%findex=8
                 p=3
                 funcstr='DC_'
-            case('average')
+            case('average','combine')
+                if(trim(stringconv(arguments(:,1)))=='combine')then
+                    trajop%set%molaverage=.TRUE.
+                    funcstr='MA_'
+                else
+                    funcstr='AV_'
+                end if
                 trajop%findex=9
                 p=2 !faktiskt 2, men andra arg ej molekylnamn
-                funcstr='AV_'
             case('define')
                  trajop%findex=10
-                 !p=2
                  call define(trajop,arguments)
-                 !select case(trim(stringconv(arguments(:,2))))
-                 !   case('atom')
-                 !       p=4
-                 !end select
             case('al','AL','apl')
                 if(.NOT.trajop%set%apl)stop 'AL: Needs apl!'
                 if(.NOT.trajop%set%leaflets_defined)stop 'AL: Needs leaflets!'
@@ -312,9 +309,6 @@ module input
                 
             case('exit')
                 stop
-                    
-                        
-                !end select
 
             case default 
                 write(*,*)"Not a valid input, ",":",&
@@ -322,70 +316,61 @@ module input
                 write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
+            !------------------------------------------------------
             if(p>=2)allocate(trajop%atoms(p-1))
             trajop%instructionstring=''
-            if(trajop%findex/=0)then
-                if(trajop%findex/=9 .AND. trajop%findex/=10)then
-                do i=1,p-1
-                    trajop%atoms(i)=atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
-                    +atomindex(trim(stringconv(arguments(:,i+1))))
-                    if(trajop%atoms(i)==0)then
-                        write(*,*)'Input is not an atom or a molecule '&
-                        ,trim(stringconv(arguments(:,i+1)))
-                        stop
-                    endif
-                end do
-                end if
-                if(p>=2)then
-                    if(trajop%findex==9)then ! AVERAGE
+            trajop%set%corrindex=''
+            trajop%ref=''
+                select case(trajop%findex)
+                case(0,10)
+                case(7)
+                    select case(size(arguments,2)-1)
+                    case(2,3)
+                        trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
+                        trajop%set%corrindex(2)=trim(adjustl(stringconv(arguments(:,3))))
+                        if(size(arguments,2)==4)trajop%ref=trim(stringconv(arguments(:,4)))!TAG the function
+                        trajop%instructionstring=trim(funcstr)
+                    case default
+                        stop 'CORR: Wrong number of arguments.&
+                                Use two CHAR arguments'
+                    end select
+                   
+                case(9)
                     trajop%instructionstring=funcstr//&
                     trim(concatargs(arguments(:,2:size(arguments,2))))
-                        arg2=trim(stringconv(arguments(:,p)))
-                        read(arg2,*,iostat=ios)trajop%average_count
-                        if(ios/=0)then
-                            write(*,*)'Input is not an integer',&
-                            trim(stringconv(arguments(:,p-1)))
-                            stop
-                        endif
-                   ! else if(trajop%findex==10)then ! DEFINE ATOM
-                   !     trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
-                   !     trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
-                   !     trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
-                   !    ! This indexing works for one and only one atom per
-                   !    ! submolecule!
-                   !    ! Reallocate indexing vectors to add one atom:
-                   !     call reallocatechar(atomnames,size(atomnames)+1)
-                   !     call reallocate(shift,size(shift)+1)
-                   !     call reallocate(natoms,size(natoms)+1)
-                   !     call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
-                   !     call reallocate(masses,size(masses)+1)
-                   !     ! Handle the indexing for the new atom:
-                   !     masses(size(masses))=1._rk
-                   !     i=size(atomnames)
-                   !     j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
-                   !     moltypeofuatom(i)=j
-                   !     molt(j)%natoms=molt(j)%natoms+1
-                   !     natoms(size(atomnames))=molt(j)%natoms
-                   !     atomnames(size(atomnames))=trajop%newatom%atomname
-                   !     trajop%atoms(1)=size(atomnames)
-                   !     atot=atot+molt(j)%nmol
-                   !     shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
-                   !     deallocate(coor)
-                   !     allocate(coor(1:3,atot))
-
-
-                    else
-                        trajop%instructionstring=funcstr//trim(concatargs(arguments(:,2:p)))
+                    !write(*,*)trajop%instructionstring
+                    !stop
+                    arg2=trim(stringconv(arguments(:,p)))
+                    read(arg2,*,iostat=ios)trajop%average_count
+                    if(ios/=0)then
+                        write(*,*)'Input is not an integer',&
+                        trim(stringconv(arguments(:,p-1)))
+                        stop
                     endif
+                    if(size(arguments,2)>p)trajop%ref=trim(stringconv(arguments(:,p+1)))
 
-                else
-                    trajop%instructionstring=trim(funcstr)
-                endif
-            end if
-
+                case default
+                    if(p>=2)then
+                        do i=1,p-1
+                            trajop%atoms(i)=atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
+                            +atomindex(trim(stringconv(arguments(:,i+1))))
+                            if(trajop%atoms(i)==0)then
+                                write(*,*)'Input is not an atom or a molecule '&
+                                ,trim(stringconv(arguments(:,i+1)))
+                                stop
+                            endif
+                        end do
+                        if(size(arguments,2)>p)trajop%ref=trim(stringconv(arguments(:,p+1)))
+                        trajop%instructionstring=funcstr//trim(concatargs(arguments(:,2:p)))
+                    else
+                        trajop%instructionstring=trim(funcstr)
+                        if(size(arguments,2)>1)trajop%ref=trim(stringconv(arguments(:,2)))
+                    end if
+                end select
+            !------------------------------------------------------
     end subroutine procinp!}}}
 
-    subroutine define(trajop,arguments)
+    subroutine define(trajop,arguments)!{{{
         type(instruct) :: trajop
         character(kind=1,len=1) :: arguments(:,:)
         character(kind=1,len=size(arguments,1)) :: arg2,arg3,arg4
@@ -448,7 +433,7 @@ module input
                 end select
             end select
 
-    end subroutine define
+    end subroutine define!}}}
 
     subroutine set(args)!arg2,arg3)!{{{
         character(kind=1,len=1) :: args(:,:)

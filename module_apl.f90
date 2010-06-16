@@ -1,15 +1,12 @@
 module apl
-    !use kinds
     use readtraj
-    !use trajop
     use util
     implicit none
     integer(kind=ik),allocatable ::&
     apl_atoms(:),apl_atoms_invatom(:),apl_atoms_invmol(:),grid(:,:)&
     ,apl_side(:),apl_side_inv(:),apl_side_invmol(:)
     contains
-
-    subroutine apl_atomlist(atoms)
+    subroutine apl_atomlist(atoms)!{{{
         character(kind=1,len=1) :: atoms(:,:)
         integer(kind=ik) :: i,j,k,imol
         j=0
@@ -28,9 +25,9 @@ module apl
                 apl_atoms_invmol(k)=imol
             end do
         end do
-    end subroutine apl_atomlist
+    end subroutine apl_atomlist!}}}
     
-    subroutine apl_grid(instr)
+    subroutine apl_grid(instr)!{{{
         type(instruct) :: instr
         real(kind=rk) :: rmin
         integer(kind=ik) ::i,j,kl,ku,dmpc,mgdg,g
@@ -92,9 +89,9 @@ module apl
                end if
            end do
        end function nneighbour
-    end subroutine apl_grid
+    end subroutine apl_grid!}}}
 
-    subroutine apl_calc(instr,frame)
+    subroutine apl_calc(instr,frame)!{{{
         type(instruct) :: instr
         integer(kind=ik),intent(in) :: frame
         integer(kind=ik) :: i,j,l,imol,k(instr%nmolop)
@@ -112,9 +109,9 @@ module apl
                 end do
             end do
         instr%datam(:,frame)=real(k,rk)*box(1)*box(2)/(real(size(grid,1),rk)*real(size(grid,2),rk))
-    end subroutine apl_calc
+    end subroutine apl_calc!}}}
 
-    subroutine apl_matrix_out(frame)
+    subroutine apl_matrix_out(frame)!{{{
         integer(kind=ik) :: i,j,side,frame
         integer(kind=ik),allocatable :: v1(:),v2(:)
         allocate(v1(size(grid,1)),v2(size(grid,1)))
@@ -145,5 +142,5 @@ module apl
             close(43);close(44)
         end do
         deallocate(v1,v2)
-    end subroutine apl_matrix_out
+    end subroutine apl_matrix_out!}}}
 end module apl

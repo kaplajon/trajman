@@ -14,7 +14,7 @@ program trajman
     integer(kind=8) :: trs,frs
     integer(kind=4) :: natm,stat
     real(kind=4),allocatable :: coorv(:),bx(:) !MOLFILEPLUGIN FROM VMD
-    logical,allocatable :: logicmolt(:)
+    !logical,allocatable :: logicmolt(:)
     type(instruct),allocatable :: troptype(:)
     call arguments(runit)
     call constants
@@ -31,21 +31,7 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,9,10)
-!        case(11)
-!        allocate(logicmolt(size(molt)));logicmolt=.FALSE.
-!            do j=1,size(troptype(i)%atoms)
-!                logicmolt(moltypeofuatom(troptype(i)%atoms(j)))=.TRUE.
-!            end do
-!            select case(troptype(i)%set%leaflet)
-!            case(0)
-!                troptype(i)%nmolop=sum(molt(:)%nmol,MASK=logicmolt)
-!            case(1)
-!                troptype(i)%nmolop=sum(size(molt(:)%lower))
-!            case(2)
-!                troptype(i)%nmolop=sum(size(molt(logicmolt)%upper))
-!            end select
-!            deallocate(logicmolt)
+        case(0,7,9,10)
         case default
             j=moltypeofuatom(troptype(i)%atoms(1))
             select case(troptype(i)%set%leaflet)
@@ -64,7 +50,6 @@ program trajman
             troptype(i)%nmolop=size(troptype(i)%molind)
         end select
     end do
-
     ! Allocate data matrix to a size based on input
     if(maxframes==0)then !maxframes=1001
         select case(trajtype)
@@ -93,21 +78,16 @@ program trajman
         case('trr')!VMD MOLFILEPLUGIN
             stat=1
             allocate(coorv(atot*3),bx(6))
-            do while (stat/=0)
-                call f77_molfile_read_next(tunit,atot,coorv,bx,stat)
+            do! while (stat/=0)
+                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,stat)
                 if(stat==0)exit
                 maxframes=maxframes+1
             end do
-                !maxframes=maxframes-1
-                !write(*,*)maxframes,'MAXFRAMES'
                 call f77_molfile_close_read(tunit,stat)
                 call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
-                !stop
             deallocate(coorv,bx)
         end select
     end if
-        
-
     do i=1,size(troptype)
         if(troptype(i)%nmolop*maxframes/=0)then
             allocate(troptype(i)%datam(troptype(i)%nmolop,maxframes))

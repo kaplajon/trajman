@@ -212,22 +212,40 @@ module trajop
         var=sum((vector2(:)-mean)**2)*real(size(vector)-1,rk)/real(size(vector),rk)
     end function test_var!}}}
 
-    subroutine instruction_average(instr,ounit,ind,lastind)!{{{
+    subroutine instruction_average(instr,ind,lastind)!{{{
         type(instruct),intent(inout) :: instr(:)
-        integer(kind=ik) :: ounit,ind,j,k,lastind
-        j=ind;k=0
-        !if(allocated(instr(ind)%datam))deallocate(instr(ind)%datam)
-        !write(*,*)allocated(instr(ind)%datam)
-        allocate(instr(ind)%datam(size(instr(lastind)%datam,1),size(instr(lastind)%datam,2)*instr(ind)%average_count))
-
+        integer(kind=ik) :: ounit,ind,j,k,lastind,mols
+        j=ind;k=0;mols=0
+        if(instr(ind)%set%molaverage)then
+        do 
+            j=j+1
+            if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
+                k=k+1
+                mols=mols+instr(j)%nmolop
+                if(k>=instr(ind)%average_count)exit
+            endif
+        end do
+        allocate(instr(ind)%datam(mols,size(instr(j)%datam,2)))
+        else
+        allocate(instr(ind)%datam(size(instr(lastind)%datam,1),size(instr(lastind)%datam,2)))!*instr(ind)%average_count))
+        end if
+        mols=1;j=ind;k=0
+        instr(ind)%datam=0
         do !j=i+1,i+instr(i)%average_count
             j=j+1
             if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
                 k=k+1
-                instr(ind)%datam(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
+                if(instr(ind)%set%molaverage)then
+                    mols=mols+instr(j)%nmolop
+                    instr(ind)%datam(mols-instr(j)%nmolop:mols,:)=instr(j)%datam
+                    write(*,*)mols,instr(j)%nmolop,j
+                else
+                    instr(ind)%datam=(instr(ind)%datam+instr(j)%datam)!/real(instr(ind)%average_count,rk)!(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
+                end if
                 if(k>=instr(ind)%average_count)exit
             endif
         end do
+        if(.NOT.instr(ind)%set%molaverage)instr(ind)%datam=instr(ind)%datam/instr(ind)%average_count
        ! instr(ind)%datam=instr(ind)%datam/real(instr(ind)%average_count,rk)
     end subroutine instruction_average!}}}
 
@@ -276,21 +294,26 @@ module trajop
         str(n+4:n+4)=')'
       end function getmeanwithdev!}}}
 
-    subroutine distrib(instr)!{{{
+    subroutine distrib(instr,ind,calcind)!{{{
         type(instruct),intent(inout) :: instr
-        integer(kind=ik) :: bi,i,j
+        integer(kind=ik) :: bi,i,j,ind,calcind,indold=0
         !integer(kind=ik),optional :: ounit
         real(kind=rk) :: vec(size(instr%datam))
         real(kind=rk) :: mi,ma,x,bin,dp,dpm,isoentropy
         real(kind=rk),allocatable :: dist(:),distmol(:,:),molentropy(:)
-        allocate(dist(instr%set%distbin))
-        allocate(distmol(size(instr%datam,1),size(dist)))
-        allocate(molentropy(size(distmol,1)))
-        vec=reshape(instr%datam,[size(instr%datam)])
+        save indold,dist,distmol,mi,bin
 
-        dist=0
-        distmol=0
-        select case(instr%findex)
+        if(ind>indold)then
+            !if(allocated(dist))deallocate(dist);
+            allocate(dist(instr%set%distbin))
+            !if(allocated(distmol)deallocate(distmol);
+            allocate(distmol(size(instr%datam,1),size(dist)))
+            !if(allocated(molentropy)deallocate(molentropy);
+            allocate(molentropy(size(distmol,1)))
+            vec=reshape(instr%datam,[size(instr%datam)])
+            dist=0
+            distmol=0
+            select case(instr%findex)
             case(1)
                 mi=-1._rk
                 ma=1._rk
@@ -305,25 +328,36 @@ module trajop
             case default
                 mi=minval(vec)
                 ma=maxval(vec)
-        end select
-
-        bin=(ma-mi)/real(size(dist),rk)
-
-        dp=1._rk/(real(size(vec),rk)*bin)
-        dpm=1._rk/(real(size(instr%datam,2),rk)*bin)
-        do i=1,size(vec)
-            bi=int((vec(i)-mi)/bin+1._rk)
-            if(bi==size(dist)+1)bi=size(dist)
-            if(bi<=0.or.bi>size(dist))then
-                write(*,*)bi,"bi",vec(i),"vec",i,"i",ma,"ma",mi,"mi",dp,"dp",bin,"bin"
-            stop "subroutine distrib"   
-            else
+            end select
+            bin=(ma-mi)/real(size(dist),rk)
+            dp=1._rk/(real(size(vec),rk)*bin)
+            dpm=1._rk/(real(size(instr%datam,2),rk)*bin)
+            do i=1,size(vec)
+                bi=int((vec(i)-mi)/bin+1._rk)
+                if(bi==size(dist)+1)bi=size(dist)
+                if(bi<=0.or.bi>size(dist))then
+                    write(*,*)bi,"bi",vec(i),"vec",i,"i",ma,"ma",mi,"mi",dp,"dp",bin,"bin"
+                    stop "subroutine distrib"   
+                else
                     dist(bi)=dist(bi)+dp
                     j=mod(i-1,size(distmol,1))+1
                     distmol(j,bi)=distmol(j,bi)+dpm
                 end if
-                    end do
-
+            end do
+           !Räkna ut entropin för distributionen
+           isoentropy=log(ma-mi)
+           instr%cv%entropy=-log(real(size(dist),rk)*bin)-bin*sum(dist(:)*log(dist(:)),MASK=dist(:)/=0)&
+                         -isoentropy
+           !Standardavvikelse för entropin
+           do i=1,size(distmol,1)
+           molentropy(i)=-log(real(size(distmol,2),rk)*bin)&
+           -bin*sum(distmol(i,:)*log(distmol(i,:)),MASK=distmol(i,:)/=0)-isoentropy
+           end do
+           instr%cv%entropymutual=instr%cv%entropy-sum(molentropy)/real(size(distmol,1),rk)
+           deallocate(molentropy)
+        end if !ind>indold
+        select case(instr%set%calc(calcind))
+        case('distrib')
             !Skriv ut distribution till disk
             do bi=1,size(dist)
                 x=mi+(real(bi,rk)-1._rk)*bin
@@ -333,27 +367,29 @@ module trajop
                 if(instr%findex==1)x=acos(x)*180._rk/pi
                 write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
             end do
-        !Räkna ut entropin för distributionen
-        isoentropy=log(ma-mi)
-        instr%cv%entropy=-log(real(size(dist),rk)*bin)-bin*sum(dist(:)*log(dist(:)),MASK=dist(:)/=0)&
-                         -isoentropy
+        case('distribm')
+            do i=1,size(distmol,1)
+             do bi=1,size(dist)
+                x=mi+(real(bi,rk)-1._rk)*bin
+                if(instr%findex==1)x=acos(x)*180._rk/pi
+                write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
+                x=mi+(real(bi,rk))*bin
+                if(instr%findex==1)x=acos(x)*180._rk/pi
+                write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
+            end do
+                write(instr%set%ounit,*)
+            end do
 
-        !Standardavvikelse för entropin
-        do i=1,size(distmol,1)
-            molentropy(i)=-log(real(size(distmol,2),rk)*bin)&
-            -bin*sum(distmol(i,:)*log(distmol(i,:)),MASK=distmol(i,:)/=0)-isoentropy
-        end do
-        instr%cv%entropymutual=instr%cv%entropy-sum(molentropy)/real(size(distmol,1),rk)
-       ! instr%cv%entropydev=instr%cv%entropy-&
-        !(-log(real(size(distmol),rk))-sum(distmol(:,:)*log(distmol(:,:)),MASK=distmol(:,:)/=0))
-
-        deallocate(dist,distmol,molentropy)
+        end select
+        if(COUNT(instr%set%calc(:)(1:7)=='distrib')==1.OR.ind==indold)deallocate(dist,distmol)
+        indold=ind
     end subroutine distrib!}}}
 
-    subroutine corr_distrib(instr0,instr1,instr2,ounit)!{{{
+    subroutine corr_distrib(instr0,instr1,instr2)!{{{
         type(instruct),intent(inout) :: instr0,instr1,instr2
-        integer(kind=ik) :: bi1,bi2,i,j
-        integer(kind=ik),optional :: ounit
+        integer(kind=ik) :: bi1,bi2,i,j,imol,ios
+        character(len=len(instr0%set%filename)) :: filename
+        !integer(kind=ik),optional :: ounit
         real(kind=rk) :: vec1(size(instr1%datam)),vec2(size(instr2%datam))
         real(kind=rk) :: mi1,mi2,ma1,ma2,x1,x2,bin1,bin2,dp,dpm,isoentropy&
         ,m1,m2,v1,v2
@@ -421,9 +457,13 @@ module trajop
                     j=mod(i-1,size(distmol,1))+1
                     distmol(j,bi1,bi2)=distmol(j,bi1,bi2)+dpm
                 end if
-         end do
-
-        if(present(ounit))then
+        end do
+        if(COUNT(instr0%set%calc(:)(1:7)=='distrib')>0)then
+        do i=1,size(instr0%set%calc)
+        select case(instr0%set%calc(i))
+        case('distrib')
+            filename=trim(instr0%set%filename)//'_'//trim(instr0%set%calc(i))//trim(instr0%set%filesuffix)
+        if(instr0%set%ounit/=stdout)open(unit=instr0%set%ounit,file=trim(filename),status="unknown",iostat=ios)
             !Skriv ut distribution till disk
             do bi1=1,size(dist,1)
                 do bi2=1,size(dist,2)
@@ -431,13 +471,36 @@ module trajop
                     x2=mi2+(real(bi2,rk)-.5_rk)*bin2
                     if(instr1%findex==1)x1=acos(x1)*180._rk/pi
                     if(instr2%findex==1)x2=acos(x2)*180._rk/pi
-                    write(ounit,*)x1,x2,dist(bi1,bi2),std(distmol(:,bi1,bi2))
+                    write(instr0%set%ounit,*)x1,x2,dist(bi1,bi2),std(distmol(:,bi1,bi2))
                     !x=mi+(real(bi,rk))*bin
                     !if(instr%findex==1)x=acos(x)*180._rk/pi
                     !write(ounit,*)x,dist(bi),std(distmol(:,bi))
                 end do
-                write(ounit,*)
+                write(instr0%set%ounit,*)
             end do
+            if(instr0%set%ounit/=stdout)close(instr0%set%ounit)
+        case('distribm')
+            filename=trim(instr0%set%filename)//'_'//trim(instr0%set%calc(i))//trim(instr0%set%filesuffix)
+            if(instr0%set%ounit/=stdout)open(unit=instr0%set%ounit,file=trim(filename),status="unknown",iostat=ios)
+            do imol=1,size(distmol,1)
+            do bi1=1,size(dist,1)
+                do bi2=1,size(dist,2)
+                    x1=mi1+(real(bi1,rk)-.5_rk)*bin1
+                    x2=mi2+(real(bi2,rk)-.5_rk)*bin2
+                    if(instr1%findex==1)x1=acos(x1)*180._rk/pi
+                    if(instr2%findex==1)x2=acos(x2)*180._rk/pi
+                    write(instr0%set%ounit,*)x1,x2,imol,distmol(imol,bi1,bi2)!,std(distmol(:,bi1,bi2))
+                    !x=mi+(real(bi,rk))*bin
+                    !if(instr%findex==1)x=acos(x)*180._rk/pi
+                    !write(ounit,*)x,dist(bi),std(distmol(:,bi))
+                end do
+                write(instr0%set%ounit,*)
+            end do
+            !write(ounit,*)
+            end do
+            if(instr0%set%ounit/=stdout)close(instr0%set%ounit)
+        end select
+        end do
         end if
 
       !   Pearson's correlation coefficiant
@@ -521,7 +584,7 @@ module trajop
         end do
     end subroutine foldmol!}}}
 
-    function totalmoi(umol,imol) result(m)
+    function totalmoi(umol,imol) result(m)!{{{
         integer(kind=ik) :: umol,imol,i
         real(kind=rk) :: com(3),m
         m=0
@@ -530,7 +593,8 @@ module trajop
             m=m+sum((getatom(i,imol)-com)**2)*(masses(i))
         end do
         
-    end function totalmoi
+    end function totalmoi!}}}
+
 !    subroutine test(a)!{{{
 !    use f95_lapack
 !!    use solver
@@ -598,19 +662,27 @@ module trajop
 
     end function moi!}}}
 
-    subroutine traj(instr)!{{{
+    subroutine traj(instr,j)!{{{
         type(instruct) :: instr
         real(kind=rk) :: eaverage(size(instr%datam,2))
-        integer(kind=ik) :: frame,i
-
-        do frame=1,size(instr%datam,2)
-            eaverage(frame)=sum(instr%datam(:,frame))/size(instr%datam,1)
-        end do
+        integer(kind=ik) :: frame,i,j
+        select case(instr%set%calc(j))
+        case('traj')
+            do frame=1,size(instr%datam,2)
+                eaverage(frame)=sum(instr%datam(:,frame))/size(instr%datam,1)
+            end do
         
-        do frame=1,size(instr%datam,2)
-            write(instr%set%ounit,*)frame,eaverage(frame),std(instr%datam(:,frame))
-        end do
-
+            do frame=1,size(instr%datam,2)
+                write(instr%set%ounit,*)frame,eaverage(frame),std(instr%datam(:,frame))
+            end do
+        case('trajm')
+            do i=1,size(instr%datam,1)
+                do frame=1,size(instr%datam,2)
+                    write(instr%set%ounit,*)frame,i,instr%datam(i,frame)
+                end do
+                write(instr%set%ounit,*)
+            end do
+        end select
     end subroutine traj!}}}
 
     subroutine postproc(instr)!{{{
@@ -631,41 +703,25 @@ module trajop
         select case(instr(i)%findex)
             case(0,10)
             case(7) ! CORRELATE
-                corr1=0
-                corr2=0
-                do j=i+1,size(instr)
-                    if(instr(j)%findex/=0)then
-                        if (corr1==0)then
-                            corr1=j
-                        else
-                            corr2=j
-                            exit
-                        end if
-                    end if
-                end do
-                if(corr2==0)write(*,*)'WARNING: Wrong input corr: '&
-                ,i,corr1,corr2
-
+                corr1=strvecindex(instr(:)%ref,instr(i)%set%corrindex(1))
+                corr2=strvecindex(instr(:)%ref,instr(i)%set%corrindex(2))
                 if(instr(i)%set%filename/='')then
-                    filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)//trim(instr(i)%set%filesuffix)
+                    instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)!//trim(instr(i)%set%filesuffix)
+                    filename=instr(i)%set%filename
                     instr(i)%set%ounit=nunit
                 else
                     if(instr(i)%set%autofilename)then
-                    filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)&
+                        instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)&
                                 //trim(instr(corr1)%instructionstring)//'_'//&
-                                trim(instr(corr2)%instructionstring)//trim(instr(i)%set%filesuffix)
-                    instr(i)%set%ounit=nunit
+                                trim(instr(corr2)%instructionstring)!//trim(instr(i)%set%filesuffix)
+                        filename=instr(i)%set%filename
+                        instr(i)%set%ounit=nunit
                     else
-
-                    instr(i)%set%ounit=stdout
-                    filename="stdout"
+                        instr(i)%set%ounit=stdout
+                        filename="stdout"
+                    end if
                 end if
-                end if
-
-                if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
-                call corr_distrib(instr(i),instr(corr1),instr(corr2),instr(i)%set%ounit)
-                if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
-
+                call corr_distrib(instr(i),instr(corr1),instr(corr2))
                 avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
                 inquire(file=avfilename,exist=exists)
                 if(.NOT. exists)then
@@ -675,25 +731,21 @@ module trajop
                 end if
                 open(78,file=trim(avfilename)&
                 ,position=trim(pos),status='unknown')
-                write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename)-4)," = ",&
+                write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename))," = ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
                 close(78)
 
             case(9) ! AVERAGE
-
                 if(instr(i)%set%filename/='')then
                     instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)
                     j=i;k=0
                     do 
                         j=j+1
                         if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
-                        !if(.not.any(instr(j)%findex==[0,10])then
                             k=k+1
                             if(k>=instr(i)%average_count)exit
                         endif
                     end do
-
-
                     instr(i)%set%ounit=nunit
                 else
                     if(instr(i)%set%autofilename)then
@@ -724,7 +776,7 @@ module trajop
                     end do
                 end if
                 end if
-               call instruction_average(instr,instr(i)%set%ounit,i,j)
+               call instruction_average(instr,i,j)
                instr(i)%findex=instr(j)%findex
 
             case default ! DEFAULT
@@ -761,13 +813,13 @@ module trajop
                         end if
                         if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
                         select case(trim(instr(i)%set%calc(j)))
-                            case('distrib')
+                            case('distrib','distribm')
                                 !write(*,*)'I',i,instr(i)%datam
-                                call distrib(instr(i))
-                            case('traj')
-                                call traj(instr(i))
-                            case('acorr')
-                                call autocorr(instr(i))
+                                call distrib(instr(i),i,j)
+                            case('traj','trajm')
+                                call traj(instr(i),j)
+                            case('acorr','acorrm')
+                                call autocorr(instr(i),i,j)
                         end select
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do
@@ -815,10 +867,14 @@ module trajop
         end if
     end subroutine postproc!}}}
     
-    subroutine autocorr(instr)!{{{
+    subroutine autocorr(instr,ind,calcind)!{{{
         type(instruct) :: instr
-        integer(kind=ik) :: i,j,imol
-        real(kind=rk) :: acorr(size(instr%datam,1),0:size(instr%datam,2)-1),norm
+        integer(kind=ik) :: i,j,imol,ind,calcind,indold=0
+        real(kind=rk) :: norm
+        real(kind=rk),allocatable :: acorr(:,:)
+        save acorr,indold
+        if(ind>indold)then
+            allocate(acorr(size(instr%datam,1),0:size(instr%datam,2)-1))
         acorr=0
         do imol=1,size(instr%datam,1)
             call directtcf(instr%datam(imol,:),acorr(imol,:))
@@ -826,11 +882,22 @@ module trajop
              norm=1._rk/acorr(imol,0)
             acorr(imol,:)=acorr(imol,:)*norm
         end do
-
-        do i=0,ubound(acorr,2)
-            write(instr%set%ounit,*)i,sum(acorr(:,i))/real(size(acorr,1),rk),std(acorr(:,i))
-        end do
-        
+        end if !ind>indold
+        select case(instr%set%calc(calcind))
+        case('acorr')
+            do i=0,ubound(acorr,2)
+                write(instr%set%ounit,*)i,sum(acorr(:,i))/real(size(acorr,1),rk),std(acorr(:,i))
+            end do
+        case('acorrm')
+            do imol=1,size(instr%datam,1)
+                do i=0,ubound(acorr,2)
+                    write(instr%set%ounit,*)i,imol,acorr(imol,i)!,std(acorr(:,i))
+                end do
+                write(instr%set%ounit,*)
+            end do
+         end select
+        if(COUNT(instr%set%calc(:)(1:4)=='traj')==1.OR.ind==indold)deallocate(acorr)
+        indold=ind
         contains
         subroutine directtcf(datav,acorrv)
             real(kind=rk) :: datav(:),acorrv(0:size(datav)-1)
@@ -890,9 +957,5 @@ module trajop
                 acorrv(j)=acorrv(j)/real(size(acorrv)-j,rk)
             end do
         end subroutine myft
-
-
-
     end subroutine autocorr!}}}
-
 end module trajop

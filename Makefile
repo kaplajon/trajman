@@ -1,7 +1,7 @@
 PROG =	trajman
 
 #---VMD MOLFILE PLUGIN---
-VMD_ARCH = LINUXAMD64 #Based on how you compiled vmd plugins
+VMD_ARCH = LINUXAMD64
 VMD_PLUGINS = /home/jon/src/vmd-1.8.7.src/plugins
 #------------------------
 

@@ -82,12 +82,15 @@ command, the output will be in .gro-format.
 If apl is set, this option also writes out files with area per lipid
 information.
 
-    	calc [distrib,traj,acorr]
+    	calc [distrib,traj,acorr ... ]
 
 Defines postprocessing of the calculated FUNCTIONS (see below).
 distrib: writes distributions
+distribm: writes distributions per molecule
 traj: writes trajectories
-acorr: writes autocorrelations 
+trajm: writes trajectories per molecule
+acorr: writes autocorrelations
+acorrm writes autocorrelations per molecule
 
     	submoltype NAME startatom endatom
 
@@ -135,8 +138,11 @@ Definition of leaflets is mandatory if you're doing area per lipid calculations.
 
 
 INPUTFILE: FUNCTIONS
-Usage: function options
+Usage: function options [tag]
 ----------------------------------
+All functions can be tagged by a string at
+the end of the line. The tags are used by
+i.e. corr.
 
 	DA Atom1 Atom2
 
@@ -163,10 +169,12 @@ Order parameter
 
 Distance of atom1 from the centerofmembrane
 
-	corr
+	corr tag1 tag2
 	
-Correlate the two following functions in a correlation
-distribution.
+Correlate two functions previously tagged by tag1 (str) and
+tag2 (str)(corr needs to come after the two functions in the
+input file). To get output other than a pearson coefficient
+calc has to be set to distrib and/or distribm.
 
 	DC Atom1 Atom2
 	
@@ -176,6 +184,11 @@ Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
 	
 Calculate an average of the following N (int) functions
 (e.g. averaging a CH3 group)
+
+	combine N
+
+Combine the data per molecule from N (int) functions into
+one.
 
 	AL atom1 [atom2 ...]
 

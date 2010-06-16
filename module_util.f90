@@ -19,9 +19,10 @@ module util
 
     type setflags
         logical ::&
-        autofilename,cbl_switch,folding,apl,whole,leaflets_defined,centerofmembrane
+        autofilename,cbl_switch,folding,apl,whole,leaflets_defined,centerofmembrane,&
+        molaverage
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet !,writeframe
-        character(kind=1,len=255) :: filename,fileprefix,filesuffix
+        character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(2)
         type(write_frame),allocatable :: writeframe(:)
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl
@@ -44,11 +45,11 @@ module util
     end type calcval
 
     type instruct
-        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count,define
+        integer(kind=ik) :: findex,nmolop,average_count,define!atoms_bak(20),
         integer(kind=ik),allocatable ::&
         atoms(:),apl_side(:),molind(:),membrane_moltypes(:)
         logical :: setapl
-        character(kind=1, len=50) :: instructionstring
+        character(kind=1, len=50) :: instructionstring,ref
         real(kind=rk),allocatable :: datam(:,:)
         type(setflags) :: set
         type(calcval) :: cv
@@ -77,12 +78,11 @@ module util
 
     end function normalize!}}}
 
-    elemental function mymodulo(a,b) result(c)
+    elemental function mymodulo(a,b) result(c)!{{{
         real(kind=rk),intent(in) :: a,b
         real(kind=rk) :: c
         c=a-nint(a/b)*b !ok
-    end function mymodulo
-
+    end function mymodulo!}}}
 
     function cross_product(v1,v2) result(v3)!{{{
     real(kind=rk) :: v1(:),v2(:),v3(3)
@@ -110,8 +110,6 @@ module util
         end if
 
     end subroutine argparse!}}}
-
-
 
     subroutine reallocatepointerchar(vector,n)!{{{
         character(kind=1,len=1),allocatable,intent(inout) :: vector(:)
@@ -158,11 +156,11 @@ module util
         endif
     end subroutine reallocatecharle !}}}
 
-    elemental function intstr(i) result(str)
+    elemental function intstr(i) result(str)!{{{
     integer(kind=ik),intent(in) :: i
     character(len=40) :: str
     write(str,*)i
-    end function intstr
+    end function intstr!}}}
 
     subroutine reallocateint(vector,n)!{{{
         integer(kind=ik),allocatable,intent(inout) :: vector(:)
@@ -237,24 +235,23 @@ module util
         end if
     end subroutine reallocinstratoms!}}}
 
-!    subroutine APL(grid,apl_atoms)
-!        integer(kind=ik) :: grid(200,200),apl_atoms(:)
-!
-!        do i=1,size(grid,1)
-!            do j=1,size(grid,2)
-!                do k=1,size(apl_atoms)
-!                    
-!                    rsq= (modulo( getatomx - (box(1)/(size(grid,1)))*i,box(1)/2 ))**2&
-!                    + (modulo( getatomy - (box(2)/size(grid,2))*j,box(2)/2 ))**2
-!                    if(rsq<rmin)then
-!                        minind=k
-!                        rmin=rsq
-!                    end if
-!                end do
-!                grid(i,j)=minind
-!            end do
-!        end do
-!
-!    end subroutine APL
+function strvecindex(refvec,teststr) result(j)
+character (len=*) :: refvec(:),teststr
+integer (kind=ik) :: i,j
+!if(ANY(refvec==trim(teststr)))then
+    j=0
+    do i=1,size(refvec)
+        if(trim(refvec(i))==trim(teststr))j=i
+    end do
+!else
+!    i=0
+!end if
+end function strvecindex
+
+    elemental function readint(str) result(i)
+        integer :: i
+        character(len=*),intent(in) :: str
+        read(str,*)i
+    end function readint
 
 end module util
