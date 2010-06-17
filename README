@@ -24,9 +24,3 @@ used. Note that you need gfortran. Here's a 64-bit example:
 make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=/home/jon/src/vmd/plugins
 
 Run trajman -h for more information about usage.
-
-
-
-
-
-
