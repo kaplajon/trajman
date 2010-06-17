@@ -5,8 +5,6 @@ program trajman
     use readtraj
     use trajop
     implicit none
-!    external :: f77_molfile_read_next,f77_molfile_init,f77_molfile_open_read,&
-!    f77_molfile_close_read,f77_molfile_finish
     character(kind=1,len=1),allocatable :: inputrad(:),words(:,:)
     character(kind=1,len=255) :: sysstr,pid,wf,filename
     integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame
@@ -14,7 +12,6 @@ program trajman
     integer(kind=8) :: trs,frs
     integer(kind=4) :: natm,stat
     real(kind=4),allocatable :: coorv(:),bx(:) !MOLFILEPLUGIN FROM VMD
-    !logical,allocatable :: logicmolt(:)
     type(instruct),allocatable :: troptype(:)
     call arguments(runit)
     call constants
@@ -51,7 +48,7 @@ program trajman
         end select
     end do
     ! Allocate data matrix to a size based on input
-    if(maxframes==0)then !maxframes=1001
+    if(maxframes==0)then
         select case(trajtype)
         case('gro')
             p=getpid() ! Returns pid of the running instance of trajman
@@ -78,7 +75,7 @@ program trajman
         case('trr')!VMD MOLFILEPLUGIN
             stat=1
             allocate(coorv(atot*3),bx(6))
-            do! while (stat/=0)
+            do 
                 call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,stat)
                 if(stat==0)exit
                 maxframes=maxframes+1
@@ -99,7 +96,7 @@ program trajman
         call summary
         write(*,'(5X,A19,I6)')'Frames to process: ',maxframes
     end if
-!#######################################################################################    
+!###########################FRAME LOOP##################################################    
     frame=0
     do while (readframe(tunit)==0)! Trajectory processing
         frame=frame+1
@@ -109,12 +106,9 @@ program trajman
         end if
         if(global_setflags%whole)call whole
         if(global_setflags%folding)call foldmol
-        !if(allocated(common_setflags%membrane_moltypes))&
-        !call center_of_membrane(common_setflags%membrane_moltypes)
         call procop(troptype,frame) ! CALCULATIONS: Perform instructions on frame
         if(frame==1)then !Write atomnames and coordinates for the first molecules
                         !to a .xyz file
-
             open(37,file='atoms.xyz')
             write(37,*)size(atomnames)
             write(37,*)
@@ -141,8 +135,6 @@ program trajman
                     filename='frame'//trim(adjustl(wf))//'.xyz'
                     call wf_xyz(trim(filename),37)
                 end if
-
-            if(global_setflags%apl)call apl_matrix_out(frame)
             end if
         end do !END WRITEFRAME       
         if (frame==maxframes)exit

@@ -112,23 +112,27 @@ module apl
     end subroutine apl_calc!}}}
 
     subroutine apl_matrix_out(frame)!{{{
-        integer(kind=ik) :: i,j,side,frame
+        integer(kind=ik) :: i,j,frame
         integer(kind=ik),allocatable :: v1(:),v2(:)
         allocate(v1(size(grid,1)),v2(size(grid,1)))
-        do side=1,2
-            if(side==1)open(43,file='APL_polygons_upper_grid'&
+            if(global_setflags%leaflet==1)open(43,file='apl_polygons_lower_grid'&
             //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
             //'_frame'//trim(adjustl(intstr(frame))))
-            if(side==2)open(43,file='APL_polygons_lower_grid'&
+            if(global_setflags%leaflet==2)open(43,file='apl_polygons_upper_grid'&
             //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
             //'_frame'//trim(adjustl(intstr(frame))))
-            if(side==1)open(44,file='APL_polygons_upper_grid'&
+            if(global_setflags%leaflet==1)open(44,file='apl_polygons_lower_grid'&
             //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
             //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
-            if(side==2)open(44,file='APL_polygons_lower_grid'&
+            if(global_setflags%leaflet==2)open(44,file='apl_polygons_upper_grid'&
             //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
             //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
-
+            if(global_setflags%leaflet==0)open(43,file='apl_polygons_lower_grid'&
+            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
+            //'_frame'//trim(adjustl(intstr(frame))))
+            if(global_setflags%leaflet==0)open(44,file='apl_polygons_upper_grid'&
+            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
+            //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
             do j=1,size(grid,2)
                 do i=1,size(v1)
                     v1(i)=apl_atoms_invmol(grid(i,j))
@@ -140,7 +144,6 @@ module apl
                     write(44,*)v1(:)
             end do
             close(43);close(44)
-        end do
         deallocate(v1,v2)
     end subroutine apl_matrix_out!}}}
 end module apl

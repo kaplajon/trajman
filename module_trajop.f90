@@ -9,7 +9,7 @@ module trajop
     contains
 
     function dirangle(a,b,imol) result(teta)!{{{
-        ! Vinkel a-b mot direktor i grader
+        ! Angle: a-b  against director in degrees
         real(kind=rk) :: teta,dir(3)
         integer(kind=ik) :: a,b,imol
         dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
@@ -17,39 +17,26 @@ module trajop
     end function dirangle!}}}
 
     function valenceangle(a,b,c,imol) result(teta)!{{{
-        ! vinkel a-b mot a-c i grader
+        ! Angle a-b against a-c in degrees
         real(kind=rk) :: teta
         integer(kind=ik) :: a,b,c,imol
-
         teta=acos(dot_product(normalize(getatom(a,imol)-getatom(b,imol))&
                 ,normalize(getatom(a,imol)-getatom(c,imol))))*180._rk/pi
-
     end function valenceangle!}}}
 
     function torsionangle(a,b,c,d,imol) result(teta)!{{{
-        ! Torsionsvinkel: a-b mot c-d i grader 
+        ! Torsion angle: a-b-c-d in degrees 
         real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta,teta2
         integer(kind=ik) :: a,b,c,d,imol
         Vcb=normalize(getatom(b,imol) - getatom(c,imol))
-      !  Vcb=normalize(Vcb)
-
         Vba = normalize(cross_product( &
                         cross_product(getatom(a,imol) - getatom(b,imol) ,Vcb) &
                         , Vcb))
-
         Vcd = normalize(cross_product( &
                         cross_product(getatom(d,imol) - getatom(c,imol) ,Vcb) &
                         ,Vcb))
-!        teta = modulo( sign(acos(dot_product(Vba,Vcd)) * 180._rk / pi &
-!             , dot_product( cross_product(getatom(b,imol) - getatom(a,imol) ,Vcb ),Vcd )),360._rk)
-
-        teta = modulo(atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi,360._rk)
-       ! write(*,*)teta
-!write(*,*)teta,teta2
-!stop
-        !teta = acos(dot_product(Vba,Vcd)) * 180._rk / pi 
-!        teta = dot_product(Vba,Vcd) * 180._rk 
-
+        !teta = modulo(atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi,360._rk)
+        teta = atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi
     end function torsionangle!}}}
 
     function bond_length(a,b,imol) result(c)!{{{
@@ -60,12 +47,10 @@ module trajop
     end function bond_length!}}}
 
     function distance_com(a,imol) result(distance)!{{{
-
         integer(kind=ik) :: a,imol
         real(kind=rk) :: dir(3),distance
         dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
         distance=dot_product(getatom(a,imol)-centerofmembrane,dir)
-
     end function distance_com!}}}
 
     function order_parameter(a,b,imol) result(c)!{{{
@@ -81,7 +66,6 @@ module trajop
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
           do i=1,size(instr)
-           
             select case(instr(i)%findex)
                 case(0)
                     !if(instr(i)%setapl)call apl_grid(instr(i))
@@ -123,7 +107,6 @@ module trajop
                     end do
                 case(7) ! CORRELATE
                         ! Allt sköts i postproc
-
                 case(8) ! DIPOLE COUPLING
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
@@ -139,7 +122,6 @@ module trajop
                     end do
                  case(9) ! AVERAGE
                          ! Allt sköts i postproc
-
                  case(10) !DEFINE
                      select case(instr(i)%define)
                         case(1) !CENTEROFMEMBRANE
@@ -153,19 +135,19 @@ module trajop
                                         center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
                                     end do
                             end select
-                        case(3) !LEAFLET
+                         case(3) !LEAFLET
                                     if(global_setflags%apl)call apl_grid(instr(i))
-                    end select
-
-
-
-
+                       end select
                  case(11) ! AREA PER LIPID
                      call apl_calc(instr(i),frame)
-                     
+                     if(allocated(global_setflags%writeframe))then
+                     if(ANY(instr(i)%set%writeframe(:)%framenumber==frame)&
+                     .AND.instr(i)%set%writeframe(strvecindex(instr(i)%set%writeframe(:)%outformat,'apl'))%framenumber&
+                     ==frame)then
+                        call apl_matrix_out(frame)
+                    end if
+                    end if
             end select
-
-           
         end do 
     end subroutine procop!}}}
 
@@ -321,10 +303,10 @@ module trajop
                 mi=0._rk
                 ma=180._rk
             case(3)
-                mi=0._rk
-                ma=360._rk
-               ! mi=-180._rk
-               ! ma=180._rk
+               ! mi=0._rk
+               ! ma=360._rk
+                mi=-180._rk
+                ma=180._rk
             case default
                 mi=minval(vec)
                 ma=maxval(vec)
@@ -410,10 +392,10 @@ module trajop
                 mi1=0._rk
                 ma1=180._rk
             case(3)
-                mi1=0._rk
-                ma1=360._rk
-               ! mi=-180._rk
-               ! ma=180._rk
+               ! mi1=0._rk
+               ! ma1=360._rk
+                mi1=-180._rk
+                ma1=180._rk
             case default
                 mi1=minval(vec1)
                 ma1=maxval(vec1)
@@ -427,10 +409,10 @@ module trajop
                 mi2=0._rk
                 ma2=180._rk
             case(3)
-                mi2=0._rk
-                ma2=360._rk
-               ! mi=-180._rk
-               ! ma=180._rk
+               ! mi2=0._rk
+               ! ma2=360._rk
+                mi2=-180._rk
+                ma2=180._rk
             case default
                 mi2=minval(vec2)
                 ma2=maxval(vec2)
