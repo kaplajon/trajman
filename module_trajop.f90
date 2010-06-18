@@ -4,6 +4,8 @@
 !  Trajman: A MD Trajectory Analysis Tool
 !
 !  Copyright (C) 2010, Jon Kapla, jon.kapla@mmk.su.se
+!  Department of Material and Environmental Chemistry,
+!  Stockholm University
 !
 ! Trajman is free software: you can redistribute it and/or modify
 ! it under the terms of the GNU General Public License as published by
