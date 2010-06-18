@@ -7,16 +7,28 @@ INPUTFILE: SETTINGS
 Usage: set setfunction options
 ----------------------------------
 set
+
+	init FILE
+
+The file for trajectory initialization. Must be at least
+one frame and in .gro format. This setting must be the first
+noncommented line in the input file.
+
 	traj FILE
 
 Set the trajectory file. This setting must
-be the first non commented line. Only files in
-.gro format is supported at the moment.
+be the second non commented line. Only files in the
+.gro and .trr format are supported at the moment.
+Trr-trajectories are recommended for speed.
 
 	maxframes N
 
-N number of frames to be processed. N=0 means
-all frames. Default "0".
+N number of frames to be processed. N=0 means that the
+trajectory will be examined to get the number of frames
+automatically. WARNING! For trr-files N=0 means that trajman
+cycles through the whole trajectory file, which can take a
+long time depending on the trajectory length.
+Default "0".
 
 	atomnames FILE
 
@@ -28,6 +40,18 @@ Names must be in the same order as in the trajectory file.
 Set default atommasses.
 If FILE is specified, atommasses are set according
 to that instead of the default values.
+
+	whole
+
+By setting this, molecules that have been broken due to
+periodic boundary conditions, will be made whole again by 
+back folding of atom coordinates.
+
+	folding
+
+If the center of mass of a molecule lies outside the box,
+it will be folded back in by this setting.
+
 
 	autofilename on,off
 
@@ -57,30 +81,27 @@ Custom suffix for filenames (char). Default ".out".
 Set number of bins, N (int), used for distributions.
 Default "100".
 
-    	centerofmembrane molecule1 ...
-
-Calculate center of membrane based on named molecules
-separated by space (char)
-
     	cbl R
 
 Set constant bondlength, R (real),
 with same unit as the trajectory.
 
-    	writeframe N [gro]
+    	writeframe N [xyz,gro,apl]
 
-Write frame N (int) to a file with name frameN.xyz in xyz format
-(plottable by e.g. gOpenmol). If gro is added to the end of the
-command, the output will be in .gro-format.
-If apl is set, this option also writes out files with area per lipid
-information.
+Write frame N (int) to a file with name frameN.xyz in xyz format (default,
+plottable by e.g. gOpenmol). If gro is added to the end of the
+command, the output will be in .gro-format. If apl is used as format and
+apl is set, area per lipid grid information is written (Voronoi like data).
 
-    	calc [distrib,traj,acorr]
+    	calc [distrib,traj,acorr ... ]
 
 Defines postprocessing of the calculated FUNCTIONS (see below).
 distrib: writes distributions
+distribm: writes distributions per molecule
 traj: writes trajectories
-acorr: writes autocorrelations 
+trajm: writes trajectories per molecule
+acorr: writes autocorrelations
+acorrm writes autocorrelations per molecule
 
     	submoltype NAME startatom endatom
 
@@ -97,25 +118,42 @@ The atoms may come from the same or different molecule types
 
 Define the grid size used in area per lipid calcualtions.
 
-	leaflets [upper,lower,both]
+	leaflets
 
-Without arguments: Define membrane leaflets to be able to separate calculations
+Define membrane leaflets to be able to separate calculations
 based on which side of the membrane a molecule is situated.
 Needs centerofmembrane and atommasses.
 With arguments:
-Upper,lower: Following calculations will only be performed on the specified side
-of the bilayer.
-Both: Default. Calculations are performed without leaflet separation.
 
-
-INPUTFILE: FUNCTIONS
-Usage: function options
+INPUTFILE: DEFINITIONS
+Usage: define options
 ----------------------------------
-	define atom NAME SUBMOLPROP SUBMOL
+define
+	atom NAME SUBMOLPROP SUBMOL
 
 Define a new atom with name, NAME, from a property (SUBMOLPROP)
 of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
 be set to 'com', which is the center of mass of the submolecule.
+
+    	centerofmembrane molecule1 ...
+
+Calculate center of membrane based on named molecules
+separated by space (char)
+
+	leaflet [both,upper,lower]
+
+upper,lower: Following calculations will only be performed on 
+	     the specified side of the bilayer.
+       both: Default. Calculations are performed without leaflet separation.
+Definition of leaflets is mandatory if you're doing area per lipid calculations.
+
+
+INPUTFILE: FUNCTIONS
+Usage: function options [tag]
+----------------------------------
+All functions can be tagged by a string at
+the end of the line. The tags are used by
+i.e. corr.
 
 	DA Atom1 Atom2
 
@@ -142,10 +180,12 @@ Order parameter
 
 Distance of atom1 from the centerofmembrane
 
-	corr
+	corr tag1 tag2
 	
-Correlate the two following functions in a correlation
-distribution.
+Correlate two functions previously tagged by tag1 (str) and
+tag2 (str)(corr needs to come after the two functions in the
+input file). To get output other than a pearson coefficient
+calc has to be set to distrib and/or distribm.
 
 	DC Atom1 Atom2
 	
@@ -155,6 +195,11 @@ Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
 	
 Calculate an average of the following N (int) functions
 (e.g. averaging a CH3 group)
+
+	combine N
+
+Combine the data per molecule from N (int) functions into
+one.
 
 	AL atom1 [atom2 ...]
 

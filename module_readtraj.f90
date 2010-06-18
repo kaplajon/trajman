@@ -2,12 +2,16 @@ module readtraj
     use kinds
     use util
     implicit none
+    !external :: f77_molfile_read_next,f77_molfile_init,f77_molfile_open_read,&
+    !f77_molfile_close_read,f77_molfile_finish
     real (kind=rk),allocatable :: coor(:,:),box(:),masses(:),mgratios(:)
     character(kind=1, len=11),allocatable :: temp(:)
     character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
     character(kind=1, len=1),allocatable :: trajfile(:)
-    integer (kind=ik) :: mols=0,tunit=12,nunit=13,atot,rowsperframe
+    character(kind=1,len=3) :: trajtype
+    integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
+    integer(kind=4) :: tunit=12!,runit
     integer (kind=ik),allocatable ::&
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
@@ -17,60 +21,12 @@ module readtraj
         module procedure atomindex_a,atomindex_b
     end interface
 
-!    type write_frame
-!        integer(kind=ik) :: framenumber
-!        character(kind=1,len=3) :: outformat
-!    end type write_frame
-!
-!    type setflags
-!        logical :: autofilename,cbl_switch,folding,apl
-!        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet !,writeframe
-!        character(kind=1,len=255) :: filename,fileprefix,filesuffix
-!        type(write_frame),allocatable :: writeframe(:)
-!        character(kind=1,len=100),allocatable :: calc(:)
-!        real(kind=rk) :: constant_bl
-!    end type setflags
-!    
-!    type natom
-!        character(kind=1,len=100) :: atomname,from_mol_prop,molecule
-!    end type natom
-!
-!    type setcommon
-!        integer(kind=ik),allocatable :: membrane_moltypes(:)
-!    end type
-!    type(setcommon) :: common_setflags
-!
-!    type(setflags) :: global_setflags
-!
-!    type calcval
-!        real(kind=rk) :: mean,meandev,entropy,entropymutual,pearsoncoeff
-!    end type calcval
-
-!    type instruct
-!        integer(kind=ik) :: atoms_bak(20),findex,nmolop,average_count
-!        integer(kind=ik),allocatable :: atoms(:),apl_side(:),molind(:)
-!        logical :: setapl
-!        character(kind=1, len=50) :: instructionstring
-!        real(kind=rk),allocatable :: datam(:,:)
-!        type(setflags) :: set
-!        type(calcval) :: cv
-!        type(natom) :: newatom
-!    end type instruct
-
     type atomdata
         character(kind=1,len=len(atomnames)) :: aname
         real(kind=rk) :: mass,mgratio
     end type atomdata
 
     type(atomdata),allocatable :: atomd(:)
-
-!    type moltype
-!        integer(kind=ik) :: firstatom,lastatom,nmol,natoms
-!        integer(kind=ik),allocatable :: upper(:),lower(:)
-!        character(kind=1,len=255) :: molname
-!    end type moltype
-!
-!    type(moltype),allocatable :: molt(:)
 
     interface operator(.str.)
         module procedure stringconv
@@ -174,7 +130,6 @@ end subroutine reallocinstruct!}}}
        call reallocate(onerow,n)
     end subroutine readline !}}}
 
-
 subroutine globals!{{{
     character(kind=1, len=30),allocatable :: defmass(:)
     integer(kind=ik) :: i,ios
@@ -189,6 +144,14 @@ subroutine globals!{{{
     global_setflags%apl=.FALSE.
     global_setflags%aplgrid=[250,250]
     global_setflags%leaflet=0
+    global_setflags%whole=.FALSE.
+    global_setflags%centerofmembrane=.FALSE.
+    global_setflags%leaflets_defined=.FALSE.
+    global_setflags%molaverage=.FALSE.
+    !if(.NOT.allocated(global_setflags%calc))then
+    !    allocate(global_setflags%calc(1))
+    !    global_Setflags%calc=''
+    !end if
     !global_setflags%silent=.FALSE.
     ! Default atom masses
     allocate(defmass(5))
@@ -217,12 +180,12 @@ end subroutine globals!}}}
         character(kind=1,len=1),intent(in) :: fname(:)
         character(kind=1,len=1),allocatable :: charvec(:)
    !     character(kind=1,len=11),allocatable :: temp(:)
-        character(kind=1,len=5),allocatable :: moltype_atom(:,:)
-        character(kind=1,len=200) :: sdr
-        integer(kind=ik) :: ios,ia
+        character(kind=1,len=10),allocatable :: moltype_atom(:,:)
+        character(kind=1,len=10) :: sdr
+        integer(kind=ik) :: ios,ia,i
        !stop 'HEJ'
         allocate(charvec(1))
-        open(unit=tunit,file=trim(stringconv(fname)),iostat=ios)
+        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
 
         if(ios/=0)then
                 write(*,*)"Error, cannot open ",&
@@ -234,38 +197,77 @@ end subroutine globals!}}}
         if(ios==endf)return
         read(unit=tunit,fmt=*,iostat=ios)atot ! Totala antalet atomer i en frame
         allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
+        moltype_atom=''
         do ia=1,atot
-            !read(tunit,"(5x,2A5)",iostat=ios)moltype_atom(1:2,ia)
-            !write(*,*)size(charvec),'charvec'
-            call readline(charvec,ios,tunit)!,*,iostat=ios)sdr
-            !write(*,*)size(charvec),'charvec'
-            !stop
-            sdr=stringconv(charvec)
-            read(sdr(6:16),"(2A5)")moltype_atom(1:2,ia)
-            read(sdr(17:),*)coor(1:3,ia)
+            read(tunit,"(5x,A10,5x)",advance='no')sdr
+            sdr=adjustl(sdr)
+            i=scan(sdr,' ')
+            if(i>10.or.i<1)i=6
+            moltype_atom(1,ia)=trim(sdr(1:i-1))
+            moltype_atom(2,ia)=trim(adjustl(sdr(i:)))
+            read(tunit,*)coor(1:3,ia)
         end do
             read(tunit,*)box
-        rewind(tunit)
+        !rewind(tunit)
+        close(tunit)
         rowsperframe=atot+3
         call trajindex(moltype_atom)
-        deallocate(charvec)   
+        deallocate(charvec)
     end subroutine initgro!}}}
 
     function readgro(tunit) result(ios)!{{{
 
-        integer(kind=ik) :: tunit
+        integer(kind=4) :: tunit
         integer(kind=ik) :: ios,ia
         read(unit=tunit,fmt=*,iostat=ios)
         if(ios==endf)return
         read(unit=tunit,fmt=*,iostat=ios)atot
         do ia=1,atot
-            read(unit=tunit,fmt='(20x,3f12.7)',iostat=ios)coor(:,ia)
+            read(unit=tunit,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
+            read(tunit,*)coor(:,ia)
         end do
         read(unit=tunit,fmt=*,iostat=ios)box(:)
 
     end function readgro!}}}
 
-    function stringconv(vector) result(string)!{{{
+    function readtrr(fhandle) result(ios) !MOLFILEPLUGIN FROM VMD!{{{
+        integer(kind=4) :: fhandle,stat,natm
+        integer(kind=ik) :: ios
+        real(kind=4) :: bx(6)
+        real(kind=4),allocatable :: coorv(:)
+        allocate(coorv(atot*3))
+        natm=int(atot,4)
+        stat=1
+        call f77_molfile_read_next(fhandle,natm,coorv,bx,stat)
+        coor=reshape(real(coorv,kind(coor)),[3,atot])
+        box=bx(1:3)
+        if(stat/=0)ios=0 !molfile stat and iostat conversion 
+        if(stat==0)ios=1 !for the frameloop to work as expected.
+    end function readtrr!}}}
+
+    subroutine closetraj(funit)!{{{
+        integer(kind=4) :: stat,funit
+        select case(trajtype)
+        case('gro')
+            close(funit)
+        case('trr')
+            call f77_molfile_close_read(funit,stat)
+            call f77_molfile_finish
+        end select
+    end subroutine closetraj!}}}
+
+    function readframe(tunit) result(ios)!{{{
+        integer(kind=ik) :: ios
+        integer(kind=4) :: tunit
+        select case(trajtype)
+        case('gro')
+            ios=readgro(tunit)
+        case('trr')
+            ios=readtrr(tunit)
+        end select
+    end function readframe        !}}}
+
+    pure function stringconv(vector) result(string)!{{{
     ! Convert a vector to a string
 
         character(kind=1,len=1),intent(in) :: vector(:)
@@ -306,16 +308,17 @@ end subroutine globals!}}}
         
     end function atomindex_b!}}}
 
-    function cind(iuatom,imol) result(ind)!{{{
+    elemental function cind(iuatom,imol) result(ind)!{{{
 
-        integer(kind=ik) :: ind,imol,iuatom
+        integer(kind=ik),intent(in) :: imol,iuatom
+        integer(kind=ik) :: ind
         ! Index i coor för atom iuatom i molekyl imol
         ind=shift(iuatom)+natoms(iuatom)*imol
     end function cind!}}}
 
-    function getatom(aindex,imol) result(acoor)!{{{
+    pure function getatom(aindex,imol) result(acoor)!{{{
 
-        integer (kind=ik) :: aindex,imol
+        integer (kind=ik),intent(in) :: aindex,imol
         real (kind=rk) :: acoor(1:3)
 
         acoor(1:3)=coor(1:3,cind(aindex,imol))
@@ -325,7 +328,7 @@ end subroutine globals!}}}
     subroutine trajindex(moltype_atom)!{{{
         character(kind=1,len=11) :: uatom
    !     character(kind=1,len=11),allocatable :: temp(:)
-        character(kind=1,len=5),allocatable ::&
+        character(kind=1,len=10),allocatable ::&
         temp2(:),temp3(:),moltype_atom(:,:)
         integer(kind=ik),allocatable :: natomsoftype(:),nmols(:)
         character(kind=1, len=5),allocatable :: moltypenames(:)
@@ -335,7 +338,7 @@ end subroutine globals!}}}
         do ia=1,atot
 
             uatom=""
-            uatom=trim(moltype_atom(1,ia))//"_"//trim(adjustl(moltype_atom(2,ia))) ! Sätter unikt atomnamn
+            uatom=trim(moltype_atom(2,ia))//"_"//trim(adjustl(moltype_atom(1,ia))) ! Sätter unikt atomnamn
              ! Alla atomnamn i traj (atot)
             temp(ia)=uatom
              ! Alla förekomster av molekyltyp i traj (atot) 
@@ -407,8 +410,9 @@ end subroutine globals!}}}
 
     end subroutine trajindex!}}}
 
-    function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
-        integer(kind=ik) :: umol,i,j,imol
+    pure function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
+        integer(kind=ik),intent(in) :: umol,imol
+        integer(kind=ik) :: i,j
         real(kind=rk) :: centerofmolecule(3)
         centerofmolecule=0
         j=umol

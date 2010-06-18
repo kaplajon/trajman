@@ -1,0 +1,38 @@
+init firstframe.gro
+traj trajectory.trr #trajectory.gro
+set atomnames namefile
+set atommasses
+set autofilename on
+set whole
+set folding
+set centerofmembrane mol1 mol2 ...
+set submoltype SUBMOL atomfirst atomlast
+define atom SUBMOLATOM com SUBMOL
+set distbin 100
+set aplgrid 250 250
+set leaflets
+set apl atom1 SUBMOLATOM atom3  ...
+set calc distrib traj acorr #distribm trajm acorrm
+#-------------------------------------------------#
+combine 2
+DA a1 a2
+DA a2 a3 
+VA a1 a2 a3
+TA a1 a2 a3 a4
+BL a1 a2
+SV a1 a2
+MP a1
+DC a1 a2
+DC a1 a2
+DC a3 a4
+average 2 av1
+VA a1 a2 a3
+VA a1 a2 a3
+average 2 av2
+VA a4 a5 a6
+VA a7 a8 a9
+corr av1 av2
+AL SUBMOLATOM
+AL atom1 atom3
+# There are some more set functions that can be useful.
+# See trajman -h for more information on input.

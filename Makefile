@@ -1,18 +1,23 @@
 PROG =	trajman
 
+#---VMD MOLFILE PLUGIN---
+VMD_ARCH = LINUXAMD64
+VMD_PLUGINS = /home/jon/src/vmd-1.8.7.src/plugins
+#------------------------
+
 SRCS =	module_input.F90 module_kinds.f90 module_readtraj.f90 \
 	module_trajop.f90 module_util.f90 trajman.f90
 
 OBJS =	module_input.o module_apl.o module_version.o module_kinds.o module_readtraj.o module_trajop.o \
-	module_util.o trajman.o
+	module_util.o trajman.o 
 
 LIBS =  #/usr/lib64/liblapack.so.3
 
 #INCLUDES = -I/data/jon/src/LAPACK95/lapack95_modules/ 
-INCLUDES = #-I/home/jon/src/LAPACK95/lapack95_modules/ 
+#-I/home/jon/src/LAPACK95/lapack95_modules/ 
 #LIBSPATH = -L/usr/common/sprng2.0/lib
 #LIBSPATH = /data/jon/src/LAPACK95/lapack95.a /usr/lib64/liblapack.so.3 
-LIBSPATH =# /home/jon/src/LAPACK95/lapack95.a /usr/lib/liblapack.so.3 
+#LIBSPATH =# /home/jon/src/LAPACK95/lapack95.a /usr/lib/liblapack.so.3 
 CC = gcc
 CFLAGS = -03
 F90 = gfortran 
@@ -20,7 +25,12 @@ F90 = gfortran
 FFLAGS =  -O3 
 F90FLAGS =  -O3 -g 
 FC90FLAGS = -D "CINFO='$$(date)'" $(F90FLAGS)
-LDFLAGS = 
+NETCDFLDFLAGS  = -lnetcdf
+TCLLDFLAGS     = -ltcl8.5
+LDFLAGS        = $(VMD_PLUGINS)/molfile_plugin/f77/f77_molfile.o -L$(VMD_PLUGINS)/compile/lib_$(VMD_ARCH)/molfile
+LDLIBS         = -lmolfile_plugin $(NETCDFLDFLAGS) $(TCLLDFLAGS) -lstdc++ -ldl
+
+#LDFLAGS = 
 ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell if [ -f module_version.f90 ];then sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5;else echo '0';fi)")
 A := 
     else
@@ -35,7 +45,7 @@ all: $(PROG)
 
 
 $(PROG): $(OBJS)
-	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LIBS)
+	$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBSPATH) $(LDLIBS) $(LIBS)
 
 #.PHONY: version
 #version:
@@ -56,7 +66,7 @@ clean:
 .SUFFIXES: $(SUFFIXES) .F90 
 
 .F90.o:
-	$(F90) $(FC90FLAGS) -c $< $(LIBS) $(INCLUDES)
+	$(F90) $(FC90FLAGS) -c $<  $(LIBS) $(INCLUDES)
 
 module_version.f90:
 	@echo $(B)
