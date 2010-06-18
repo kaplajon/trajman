@@ -205,7 +205,11 @@ one.
 
 Calculate area per lipid for defined atoms.
 If more than one atom is given, all additional atoms need to
-belong to the same molecule type as the first.
+belong to the same molecule type as the first.Needs setting apl
+and leaflets, and usually a definition of the upper or lower leaflet
+(define leaflet [upper,lower,both]).
+Note that 'define leaflet both' does not calculate a proper area per lipid
+on a bilayer. Use average or combine of upper and lower leaflets instead.
 
 
 TRAJMAN DEFAULT FILES:
