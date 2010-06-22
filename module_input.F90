@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,7 +19,7 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 module input
     use kinds
     use version
@@ -61,10 +61,17 @@ module input
                 !sure the file is suffixed with capital F or that the compiler
                 !is flagged to use the preprocessor.
                 ctime=CINFO
-                write(*,*)'     Trajman experimental :: ',trim(ctime)
-                write(*,*)'                   Branch :: ',branch
-                write(*,*)'                 Revision :: r',revision,', committed ',revdate
-                write(*,*)'     (c) Jon Kapla, 2009  :: Contact: jon.kapla@mmk.su.se'
+                write(*,*)'      Trajman experimental :: ',trim(ctime)
+                write(*,*)'      Branch :: ',branch
+                write(*,*)'      Revision :: r',revision,', committed ',revdate
+                write(*,*)'      Copyright (c) 2010 Jon Kapla :: Contact: jon.kapla@mmk.su.se'
+                write(*,*)'      --------------------------------------------------------------'
+                write(*,*)'      Trajman comes with NO WARRANTY, to the extent permitted by law.'
+                write(*,*)'      You may redistribute copies of Trajman under the terms of the'
+                write(*,*)'      GNU General Public License.'
+                write(*,*)'      For more information about these matters, see the file named COPYING.'
+                write(*,*)
+
                 stop
             case('-h','--help')
                call print_help 
@@ -114,8 +121,6 @@ module input
             write(0,*)"        If you want to make broken molecules"
             write(0,*)"        whole, add 'set whole' to the input."
         end if
-!        if(.NOT.allocated(common_setflags%membrane_moltypes))&
-!        write(0,*)"     WARNING: Center of membrane not set!"
         write(*,*)
         write(*,'(12X,A31)')"Molecules Atoms(mol) Atoms(tot)"
         write(*,'(5X,A40)')"----------------------------------------"
@@ -411,7 +416,6 @@ module input
                 end do
                 call center_of_membrane(trajop%membrane_moltypes)
                 global_setflags%centerofmembrane=.TRUE.
-
             case('atom')
                 trajop%define=2
                 trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
@@ -438,7 +442,6 @@ module input
                 shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
                 deallocate(coor)
                 allocate(coor(1:3,atot))
-
             case('leaflet')
                 trajop%define=3
                 global_setflags%leaflets_defined=.TRUE.
@@ -454,7 +457,6 @@ module input
                         global_setflags%leaflet=2
                 end select
             end select
-
     end subroutine define!}}}
 
     subroutine set(args)!arg2,arg3)!{{{
@@ -466,7 +468,6 @@ module input
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
         if(size(args,2)>=4)arg4=trim(stringconv(args(:,4)))
         if(size(args,2)>=5)arg5=trim(stringconv(args(:,5)))
-
         select case(arg2)
             case ('autofilename','AUTOFILENAME','Autofilename')
                 select case(arg3)
@@ -477,11 +478,9 @@ module input
                     case default
                         global_setflags%autofilename=.TRUE.
                 end select
-
             case('maxframes','mf')
                 read(arg3,*,iostat=ios)maxframes
                 if (ios/=0)stop 'SET: maxframes should be of type integer'
-
             case('atomnames')
                 open(nunit,file=arg3,action='read',status='old',iostat=ios)
                 if(ios/=0)then
@@ -497,7 +496,6 @@ module input
                 endif
                 end do
                 close(nunit)
-
             case('filename')
                 if(arg3=='off')then
                     global_setflags%filename=''
@@ -505,16 +503,13 @@ module input
                     global_setflags%filename=''
                     global_setflags%filename=arg3
                 endif
-
             case('calc')
-
                 if (allocated(global_setflags%calc))deallocate(global_setflags%calc)
                 allocate(global_setflags%calc(size(args,2)-2))
 
                 do i=1,size(global_setflags%calc)
                     global_setflags%calc(i)=trim(stringconv(args(:,i+2)))
                 end do
-
             case('distbin')
                 read(arg3,*,iostat=ios)global_setflags%distbin
                 if (ios/=0 .OR. global_setflags%distbin<=0)&
@@ -557,12 +552,6 @@ module input
                         endif
                      end do
                 end do
-           ! case('centerofmembrane')
-           !     if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
-           !    allocate(common_setflags%membrane_moltypes(size(args,2)-2))
-           !    do i=1,size(common_setflags%membrane_moltypes)
-           !        common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(args(:,2+i))),molt(:)%molname,size(molt))
-           !    end do
             case('constant_bondlength','cbl')
                 select case(arg3)
                     case('on','ON')
@@ -607,9 +596,6 @@ module input
                 else
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if
-                
-                
-               !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
                 call reallocate(molt,size(molt)+1)
                 mols=mols+1
@@ -631,13 +617,11 @@ module input
             case('folding')
                 if(.NOT. allocated(masses))stop 'FOLDING: Needs atom masses'
                 global_setflags%folding=.TRUE.
-
             case('aplgrid')
                 read(arg3,*,iostat=ios)global_setflags%aplgrid(1)
                 if(ios/=0)stop 'SET:aplgrid: Arg1'
                 read(arg4,*,iostat=ios)global_setflags%aplgrid(2)
                 if(ios/=0)stop 'SET:aplgrid: Arg2'
-
             case('leaflets')
                         if(global_setflags%whole)call whole
                         if(global_setflags%folding)call foldmol
@@ -658,10 +642,8 @@ module input
                             end if
                             end do
                         end do
-                        
             case ('whole')
                 global_setflags%whole=.TRUE.
-
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

@@ -1,6 +1,7 @@
 INPUTFILE: SYNTAX
 
-Syntax is one function or setting per line. Blank lines and comments (#) are ignored.
+Syntax is one function or setting per line.
+Blank lines and comments (#) are ignored.
 
 
 INPUTFILE: SETTINGS

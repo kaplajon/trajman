@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,7 +19,7 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 program trajman
     use util
     use kinds

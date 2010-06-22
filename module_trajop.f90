@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,7 +19,7 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 
 module trajop
     use kinds
@@ -84,7 +84,7 @@ module trajop
     end function order_parameter!}}}
 
     subroutine procop(instr,frame)!{{{
-    ! Hanterar operationerna hämtade från input
+    ! Processing of operations from input
         integer(kind=ik) :: imol,jmol,i,j,frame
         real(kind=rk) :: teta,bl
         type(instruct) :: instr(:)
@@ -129,7 +129,7 @@ module trajop
                         instr(i)%datam(jmol,frame)=distance_com(instr(i)%atoms(1),imol)
                     end do
                 case(7) ! CORRELATE
-                        ! Allt sköts i postproc
+                        ! Everything is handled in subroutine postproc
                 case(8) ! DIPOLE COUPLING
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
@@ -144,7 +144,7 @@ module trajop
                         *(bl*1.e-9)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
                     end do
                  case(9) ! AVERAGE
-                         ! Allt sköts i postproc
+                        ! Everything is handled in subroutine postproc
                  case(10) !DEFINE
                      select case(instr(i)%define)
                         case(1) !CENTEROFMEMBRANE
