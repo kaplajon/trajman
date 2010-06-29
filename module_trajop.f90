@@ -243,7 +243,7 @@ module trajop
                 if(instr(ind)%set%molaverage)then
                     mols=mols+instr(j)%nmolop
                     instr(ind)%datam(mols-instr(j)%nmolop:mols,:)=instr(j)%datam
-                    write(*,*)mols,instr(j)%nmolop,j
+                    !write(*,*)mols,instr(j)%nmolop,j
                 else
                     instr(ind)%datam=(instr(ind)%datam+instr(j)%datam)!/real(instr(ind)%average_count,rk)!(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
                 end if
