@@ -61,7 +61,7 @@ contains
     integer(kind=ik) :: funit,i,j,k,l
         open(funit,file=trim(filename))
         write(funit,*)'frame=',trim(adjustl(wf))
-        write(funit,*)atot
+        write(funit,*)size(coor,2)
         l=1
         do i=1,size(molt)
             do j=1,molt(i)%nmol
@@ -80,7 +80,7 @@ contains
     character(kind=1,len=*) :: filename
     integer(kind=ik) :: funit,i,j,k
         open(funit,file=trim(filename))
-        write(funit,*)atot
+        write(funit,*)size(coor,2)
         write(funit,*)
         do i=1,size(molt)
             do j=1,molt(i)%nmol
@@ -155,21 +155,28 @@ end subroutine reallocinstruct!}}}
 subroutine globals!{{{
     character(kind=1, len=30),allocatable :: defmass(:)
     integer(kind=ik) :: i,ios
-    global_setflags%autofilename=.TRUE.
-    global_setflags%folding=.FALSE.
-    global_setflags%filename=''
-    global_setflags%distbin=100
-    global_setflags%fileprefix='auto_'
-    global_setflags%filesuffix='.out'
-!    global_setflags%writeframe%framenumber=0
-    global_setflags%wftot=0
-    global_setflags%apl=.FALSE.
-    global_setflags%aplgrid=[250,250]
-    global_setflags%leaflet=0
-    global_setflags%whole=.FALSE.
-    global_setflags%centerofmembrane=.FALSE.
-    global_setflags%leaflets_defined=.FALSE.
-    global_setflags%molaverage=.FALSE.
+    if(.NOT.allocated(atomd))then
+        global_setflags%autofilename=.TRUE.
+        global_setflags%folding=.FALSE.
+        global_setflags%filename=''
+        global_setflags%distbin=100
+        global_setflags%fileprefix='auto_'
+        global_setflags%filesuffix='.out'
+    !    global_setflags%writeframe%framenumber=0
+        global_setflags%wftot=0
+        global_setflags%apl=.FALSE.
+        global_setflags%aplgrid=[250,250]
+        global_setflags%leaflet=0
+        global_setflags%whole=.FALSE.
+        global_setflags%centerofmembrane=.FALSE.
+        global_setflags%leaflets_defined=.FALSE.
+        global_setflags%molaverage=.FALSE.
+        global_setflags%tshift=0
+        common_setflags%traj_cscale=1
+        global_setflags%rdf_binsize=0.2
+        global_setflags%xyrdf=.FALSE.
+    end if
+    !maxframes=0;minframe=0
     !if(.NOT.allocated(global_setflags%calc))then
     !    allocate(global_setflags%calc(1))
     !    global_Setflags%calc=''
@@ -253,18 +260,18 @@ end subroutine globals!}}}
     end function readgro!}}}
 
     function readtrr(fhandle) result(ios) !MOLFILEPLUGIN FROM VMD!{{{
-        integer(kind=4) :: fhandle,stat,natm
+        integer(kind=4) :: fhandle,statf,natm
         integer(kind=ik) :: ios
         real(kind=4) :: bx(6)
         real(kind=4),allocatable :: coorv(:)
         allocate(coorv(atot*3))
         natm=int(atot,4)
-        stat=1
-        call f77_molfile_read_next(fhandle,natm,coorv,bx,stat)
-        coor=reshape(real(coorv,kind(coor)),[3,atot])
+        statf=1
+        call f77_molfile_read_next(fhandle,natm,coorv,bx,statf)
+        coor=reshape(real(coorv,kind(coor)),[3,size(coor,2)],PAD=0._rk*coor)
         box=bx(1:3)
-        if(stat/=0)ios=0 !molfile stat and iostat conversion 
-        if(stat==0)ios=1 !for the frameloop to work as expected.
+        if(statf/=0)ios=0 !molfile stat and iostat conversion 
+        if(statf==0)ios=1 !for the frameloop to work as expected.
     end function readtrr!}}}
 
     subroutine closetraj(funit)!{{{

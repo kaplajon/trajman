@@ -115,6 +115,12 @@ module input
 
     subroutine summary!{{{
         integer(kind=ik) :: i
+        character(len=100) :: A,B
+        A=''
+        A="          Molecules Atoms(mol)  Atoms(tot)"
+        if(global_setflags%leaflets_defined)A=trim(A)//'  Upper(mol)  Lower(mol)'
+        B=''
+        B=stringconv([[(' ',i=1,5)],[('-',i=6,len_trim(A))]])
         write(*,*)
         if(.NOT.global_setflags%whole)then
             write(0,*)"     WARNING: Whole not set!"
@@ -122,21 +128,30 @@ module input
             write(0,*)"        whole, add 'set whole' to the input."
         end if
         write(*,*)
-        write(*,'(12X,A31)')"Molecules Atoms(mol) Atoms(tot)"
-        write(*,'(5X,A40)')"----------------------------------------"
+        write(*,*)trim(A)
+        write(*,*)trim(B)
         do i=1,size(molt)
-        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
-        trim(molt(i)%molname),': ',molt(i)%nmol,' ',molt(i)%natoms,&
-        ' ',molt(i)%natoms*molt(i)%nmol
+            write(*,'(5X,A5,A2,I7,2(1A,I11))',advance="no")&
+            trim(molt(i)%molname),': ',molt(i)%nmol,' ',molt(i)%natoms,&
+            ' ',molt(i)%natoms*molt(i)%nmol!,
+            if(global_setflags%leaflets_defined)then
+                write(*,'(2(1A,I11))')' ',size(molt(i)%upper),' ',size(molt(i)%lower)
+            else
+                write(*,*)
+            end if
         end do
-        write(*,'(5X,A40)')"----------------------------------------"
-        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
-        "Total",': ',sum(molt(:)%nmol),' ',sum(molt(:)%natoms),' ',atot
+        write(*,*)trim(B)
+        write(*,'(5X,A5,A2,I7,2(1A,I11))',advance="no")&
+        "Total",': ',sum(molt(:)%nmol),' ',sum(molt(:)%natoms),' ',size(coor,2)
+        if(global_setflags%leaflets_defined)then
+            write(*,'(2(1A,I11))')' ',sum([(size(molt(i)%upper),i=1,size(molt))]),' ',sum([(size(molt(i)%lower),i=1,size(molt))])
+        else
+            write(*,*)
+        end if
         write(*,*)
-        if(global_setflags%whole)&
-        write(*,*)"     Function Whole is active."
-        if(global_setflags%apl)&
-        write(*,*)"     Area per lipid calculation is enabled."
+        if(global_setflags%whole)write(*,*)"     Function Whole is active."
+        if(global_setflags%apl)write(*,*)"     Area per lipid calculation is enabled."
+        if(skipframes/=0)write(*,*)"     Skipping first ",trim(adjustl(intstr(skipframes)))," frames."
         write(*,*)
     end subroutine summary!}}}
 
@@ -333,7 +348,25 @@ module input
                 trajop%findex=11
                 p=size(arguments,2)
                 funcstr='AL_'
-                
+            case('MI','mi','moi')
+                trajop%findex=12
+                funcstr='MI_'
+                p=2
+            case('RDF','rdf','rf')
+                trajop%findex=13
+                funcstr='RF_'
+                p=3
+            case('X','x','Y','y','Z','z')
+                trajop%findex=14
+                select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+                case('X','x')
+                    funcstr='XC_'
+                case('Y','y')
+                    funcstr='YC_'
+                case('Z','z')
+                    funcstr='ZC_'
+                end select
+                p=2
             case('exit')
                 stop
 
@@ -393,6 +426,7 @@ module input
                         trajop%instructionstring=trim(funcstr)
                         if(size(arguments,2)>1)trajop%ref=trim(stringconv(arguments(:,2)))
                     end if
+                    if(trajop%findex==12)trajop%atoms(1)=molt(trajop%atoms(1))%firstatom !MOI
                 end select
             !------------------------------------------------------
     end subroutine procinp!}}}
@@ -417,6 +451,7 @@ module input
                 call center_of_membrane(trajop%membrane_moltypes)
                 global_setflags%centerofmembrane=.TRUE.
             case('atom')
+                allocate(trajop%atoms(1))
                 trajop%define=2
                 trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
                 trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
@@ -438,10 +473,11 @@ module input
                 natoms(size(atomnames))=molt(j)%natoms
                 atomnames(size(atomnames))=trajop%newatom%atomname
                 trajop%atoms(1)=size(atomnames)
-                atot=atot+molt(j)%nmol
+                !atot=atot+molt(j)%nmol
                 shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
-                deallocate(coor)
-                allocate(coor(1:3,atot))
+                call reallocatecoor(coor,size(coor,2)+molt(j)%nmol)
+                !deallocate(coor)
+                !allocate(coor(1:3,atot+molt(j)%nmol))
             case('leaflet')
                 trajop%define=3
                 global_setflags%leaflets_defined=.TRUE.
@@ -481,6 +517,9 @@ module input
             case('maxframes','mf')
                 read(arg3,*,iostat=ios)maxframes
                 if (ios/=0)stop 'SET: maxframes should be of type integer'
+            case('skipframes','sf')
+                read(arg3,*,iostat=ios)skipframes
+                if (ios/=0)stop 'SET: skipframes should be of type integer'
             case('atomnames')
                 open(nunit,file=arg3,action='read',status='old',iostat=ios)
                 if(ios/=0)then
@@ -584,6 +623,7 @@ module input
                     else
                         global_setflags%writeframe(global_setflags%wftot)%outformat='xyz'
                     end if
+                    !write(*,*)trim(global_setflags%writeframe(global_setflags%wftot)%outformat)
                 else
                     write(*,*)'ERROR:SET:writeframe: Needs an integer'
                     stop
@@ -644,6 +684,32 @@ module input
                         end do
             case ('whole')
                 global_setflags%whole=.TRUE.
+            case('torsion_shift','tshift')
+                if(size(args,2)>=2)then
+                    global_setflags%tshift=readint(arg3)
+                else
+                    stop 'SET: Torsion shift needs an integer'
+                end if
+            case('cscale')
+                if(size(args,2)>=2)then
+                    common_setflags%traj_cscale=readreal(arg3)
+                else
+                    stop 'SET: Coordinate scale needs a real number'
+                end if
+            case('rdf_binsize')
+                if(size(args,2)>=2)then
+                    global_setflags%rdf_binsize=readreal(arg3)
+                else
+                    stop 'SET: RDF_Binsize needs a real number'
+                end if
+            case('rdftype')
+                select case(arg3)
+                case('xy')
+                    global_setflags%xyrdf=.TRUE.
+                case default
+                    global_setflags%xyrdf=.FALSE.
+                end select
+
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

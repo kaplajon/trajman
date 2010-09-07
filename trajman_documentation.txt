@@ -22,6 +22,13 @@ be the second non commented line. Only files in the
 .gro and .trr format are supported at the moment.
 Trr-trajectories are recommended for speed.
 
+	cscale R
+
+Specifies in which scale the coordinates are written in the input
+trajectory.
+Examples: .gro files: R=1.e-9 (nm)
+          .trr-files: R=1.e-10 (Å)
+
 	maxframes N
 
 N number of frames to be processed. N=0 means that the
@@ -30,6 +37,10 @@ automatically. WARNING! For trr-files N=0 means that trajman
 cycles through the whole trajectory file, which can take a
 long time depending on the trajectory length.
 Default "0".
+
+	skipframes N
+
+N number of frames will be skipped in the beginning of the trajectory.
 
 	atomnames FILE
 
@@ -79,8 +90,14 @@ Custom suffix for filenames (char). Default ".out".
 
     	distbin N
 
-Set number of bins, N (int), used for distributions.
+Set number of bins, N (int), used for distributions (rdf:s included).
 Default "100".
+
+	torsion_shift N
+
+Modulo shift, N (int, degrees) for the torsion angle function.
+Default 0: 0,360
+
 
     	cbl R
 
@@ -124,7 +141,12 @@ Define the grid size used in area per lipid calcualtions.
 Define membrane leaflets to be able to separate calculations
 based on which side of the membrane a molecule is situated.
 Needs centerofmembrane and atommasses.
-With arguments:
+
+	rdf_binsize R
+
+Define the binsize for rdf calculations. R is a real number
+in Ångström.
+Example: distbin=100, rdf_binsize=0.2 Å => cutoff=100x0.2 Å = 20 Å
 
 INPUTFILE: DEFINITIONS
 Usage: define options
@@ -211,6 +233,11 @@ and leaflets, and usually a definition of the upper or lower leaflet
 (define leaflet [upper,lower,both]).
 Note that 'define leaflet both' does not calculate a proper area per lipid
 on a bilayer. Use average or combine of upper and lower leaflets instead.
+
+	rdf atom1 atom2
+
+Calculate radial distribution functions between atom pairs. The cutoff distance is
+determined by the number of bins (set distbin) and the rdf_binsize (set rdf_binsize).
 
 
 TRAJMAN DEFAULT FILES:

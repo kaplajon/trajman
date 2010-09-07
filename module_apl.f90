@@ -27,6 +27,7 @@ module apl
     integer(kind=ik),allocatable ::&
     apl_atoms(:),apl_atoms_invatom(:),apl_atoms_invmol(:),grid(:,:)&
     ,apl_side(:),apl_side_inv(:),apl_side_invmol(:)
+    real(kind=rk) :: meanbox(4)=0
     contains
     subroutine apl_atomlist(atoms)!{{{
         character(kind=1,len=1) :: atoms(:,:)
@@ -87,8 +88,8 @@ module apl
         call reallocate(apl_side,kl)
         call reallocate(apl_side_inv,kl)
         call reallocate(apl_side_invmol,kl)
-       if(allocated(grid))deallocate(grid)
-       allocate(grid(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
+        if(allocated(grid))deallocate(grid)
+        allocate(grid(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
         do i=1,size(grid,2)
             do j=1,size(grid,1)
                 grid(j,i)=nneighbour(j,i,apl_side,apl_side_inv)
@@ -130,42 +131,42 @@ module apl
                     end if
                 end do
             end do
-        instr%datam(:,frame)=real(k,rk)*box(1)*box(2)/(real(size(grid,1),rk)*real(size(grid,2),rk))
+        !instr%datam(:,frame)=real(k,rk)*box(1)*box(2)/(real(size(grid,1),rk)*real(size(grid,2),rk))
+        instr%datam(:,frame)=real(k,rk)/(real(size(grid,1),rk)*real(size(grid,2),rk))
     end subroutine apl_calc!}}}
 
-    subroutine apl_matrix_out(frame)!{{{
+    subroutine apl_matrix_out(frame,instr)!{{{
         integer(kind=ik) :: i,j,frame
+        type(instruct) :: instr 
         integer(kind=ik),allocatable :: v1(:),v2(:)
+        character(len=5) :: side
         allocate(v1(size(grid,1)),v2(size(grid,1)))
-            if(global_setflags%leaflet==1)open(43,file='apl_polygons_lower_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame))))
-            if(global_setflags%leaflet==2)open(43,file='apl_polygons_upper_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame))))
-            if(global_setflags%leaflet==1)open(44,file='apl_polygons_lower_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
-            if(global_setflags%leaflet==2)open(44,file='apl_polygons_upper_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
-            if(global_setflags%leaflet==0)open(43,file='apl_polygons_lower_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame))))
-            if(global_setflags%leaflet==0)open(44,file='apl_polygons_upper_grid'&
-            //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
-            //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
-            do j=1,size(grid,2)
-                do i=1,size(v1)
-                    v1(i)=apl_atoms_invmol(grid(i,j))
-                    v2(i)=moltypeofuatom(apl_atoms_invatom(grid(i,j)))
-                    write(43,*)i,j,v1(i),v2(i)
-                    v1(i)=v1(i)+sum(molt(1:v2(i)-1)%nmol)
-                    end do
-                    write(43,*)
-                    write(44,*)v1(:)
+        side=''
+        select case(instr%set%leaflet)
+            case(1)
+                side="lower"
+            case(2)
+                side="upper"
+            case(0)
+                side="both"
+        end select
+        open(43,file='apl_polygons_'//trim(side)//'_grid'&
+        //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
+        //'_frame'//trim(adjustl(intstr(frame))))
+        open(44,file='apl_polygons_'//trim(side)//'_grid'&
+        //trim(adjustl(intstr(size(grid,1))))//'.'//trim(adjustl(intstr(size(grid,2))))&
+        //'_frame'//trim(adjustl(intstr(frame)))//'_mtrx')
+        do j=1,size(grid,2)
+            do i=1,size(v1)
+                v1(i)=apl_atoms_invmol(grid(i,j))
+                v2(i)=moltypeofuatom(apl_atoms_invatom(grid(i,j)))
+                write(43,*)i,j,v1(i),v2(i)
+                v1(i)=v1(i)+sum(molt(1:v2(i)-1)%nmol)
             end do
-            close(43);close(44)
+                write(43,*)
+                write(44,*)v1(:)
+        end do
+        close(43);close(44)
         deallocate(v1,v2)
     end subroutine apl_matrix_out!}}}
 end module apl

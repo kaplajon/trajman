@@ -25,7 +25,7 @@ module util
 !    use readtraj
 !    use input
     implicit none
-    integer(kind=ik) :: maxframes
+    integer(kind=ik) :: maxframes,skipframes
     type moltype
         integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         integer(kind=ik),allocatable :: upper(:),lower(:)
@@ -42,12 +42,12 @@ module util
     type setflags
         logical ::&
         autofilename,cbl_switch,folding,apl,whole,leaflets_defined,centerofmembrane,&
-        molaverage
-        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet !,writeframe
+        molaverage,xyrdf
+        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(2)
         type(write_frame),allocatable :: writeframe(:)
         character(kind=1,len=100),allocatable :: calc(:)
-        real(kind=rk) :: constant_bl
+        real(kind=rk) :: constant_bl,rdf_binsize
     end type setflags
     
     type natom
@@ -56,6 +56,7 @@ module util
 
     type setcommon
         logical :: silent,centerofmembrane
+        real(kind=rk) :: traj_cscale
         !integer(kind=ik),allocatable :: membrane_moltypes(:)
     end type
     type(setcommon) :: common_setflags
@@ -72,7 +73,8 @@ module util
         atoms(:),apl_side(:),molind(:),membrane_moltypes(:)
         logical :: setapl
         character(kind=1, len=50) :: instructionstring,ref
-        real(kind=rk),allocatable :: datam(:,:)
+        real(kind=rk),allocatable :: datam(:,:),rdf_dist(:),rdf_pairs(:)
+        real(kind=rk) :: rdf_bin
         type(setflags) :: set
         type(calcval) :: cv
         type(natom) :: newatom
@@ -212,6 +214,20 @@ module util
         endif
     end subroutine reallocatereal !}}}
 
+    subroutine reallocatecoor(mtrx,n)!{{{
+        real(kind=rk),allocatable,intent(inout) :: mtrx(:,:)
+        real(kind=rk),allocatable :: copy(:,:)
+        integer(kind=ik),intent(in) :: n
+        if (allocated(mtrx))then
+            allocate(copy(1:3,1:n))
+            copy=0
+            copy(1:3,1:min(n,size(mtrx,2)))=mtrx(1:3,1:min(n,size(mtrx,2)))
+            call move_alloc(copy,mtrx)
+        else
+            allocate(mtrx(1:3,1:n))
+        endif
+    end subroutine reallocatecoor !}}}
+
     subroutine reallocatemoltype(v,i)!{{{
         type(moltype),intent(inout),allocatable :: v(:)
         type(moltype),allocatable ::copy(:)
@@ -275,5 +291,11 @@ end function strvecindex
         character(len=*),intent(in) :: str
         read(str,*)i
     end function readint
+
+    elemental function readreal(str) result(r)
+        real :: r
+        character(len=*),intent(in) :: str
+        read(str,*)r
+    end function readreal
 
 end module util
