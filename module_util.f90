@@ -57,6 +57,7 @@ module util
     type setcommon
         logical :: silent,centerofmembrane
         real(kind=rk) :: traj_cscale
+        integer(kind=ik),allocatable :: membrane_moltypes(:),shuffle_atoms(:)
         !integer(kind=ik),allocatable :: membrane_moltypes(:)
     end type
     type(setcommon) :: common_setflags
@@ -65,12 +66,13 @@ module util
 
     type calcval
         real(kind=rk) :: mean,meandev,entropy,entropymutual,pearsoncoeff
+        integer(kind=ik) :: n
     end type calcval
 
     type instruct
         integer(kind=ik) :: findex,nmolop,average_count,define!atoms_bak(20),
         integer(kind=ik),allocatable ::&
-        atoms(:),apl_side(:),molind(:),membrane_moltypes(:)
+        atoms(:),apl_side(:),molind(:)!,membrane_moltypes(:)
         logical :: setapl
         character(kind=1, len=50) :: instructionstring,ref
         real(kind=rk),allocatable :: datam(:,:),rdf_dist(:),rdf_pairs(:)

@@ -175,6 +175,7 @@ subroutine globals!{{{
         common_setflags%traj_cscale=1
         global_setflags%rdf_binsize=0.2
         global_setflags%xyrdf=.FALSE.
+
     end if
     !maxframes=0;minframe=0
     !if(.NOT.allocated(global_setflags%calc))then

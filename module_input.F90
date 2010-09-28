@@ -367,6 +367,15 @@ module input
                     funcstr='ZC_'
                 end select
                 p=2
+            case('GD','gd')
+                if(global_setflags%apl)stop 'APL cannot be active'
+                trajop%findex=15
+                funcstr='GD_'
+                p=1
+            case('shuffle_GD')
+                trajop%findex=16
+                funcstr='SH_'
+                p=2
             case('exit')
                 stop
 
@@ -376,6 +385,9 @@ module input
                 write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
+            trajop%cv%mean=0
+            trajop%cv%meandev=0
+            trajop%cv%n=0
             !------------------------------------------------------
             if(p>=2)allocate(trajop%atoms(p-1))
             trajop%instructionstring=''
@@ -443,12 +455,12 @@ module input
             case('centerofmembrane')
                 trajop%define=1
                 if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
-                if(allocated(trajop%membrane_moltypes))deallocate(trajop%membrane_moltypes)
-                allocate(trajop%membrane_moltypes(size(arguments,2)-2))
-                do i=1,size(trajop%membrane_moltypes)
-                    trajop%membrane_moltypes(i)=atomindex(trim(stringconv(arguments(:,2+i))),molt(:)%molname,size(molt))
+                if(allocated(common_setflags%membrane_moltypes))deallocate(common_setflags%membrane_moltypes)
+                allocate(common_setflags%membrane_moltypes(size(arguments,2)-2))
+                do i=1,size(common_setflags%membrane_moltypes)
+                    common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(arguments(:,2+i))),molt(:)%molname,size(molt))
                 end do
-                call center_of_membrane(trajop%membrane_moltypes)
+                call center_of_membrane(common_setflags%membrane_moltypes)
                 global_setflags%centerofmembrane=.TRUE.
             case('atom')
                 allocate(trajop%atoms(1))
@@ -628,11 +640,12 @@ module input
                     write(*,*)'ERROR:SET:writeframe: Needs an integer'
                     stop
                 end if
-            case('area_per_lipid','apl')
+            case('area_per_lipid','apl','griddiff')
                 
                 if(size(args,2)>=3)then
                     call apl_atomlist(args(:,3:))
                     global_setflags%apl=.TRUE.
+                    if(arg2=='griddiff')global_setflags%apl=.FALSE.
                 else
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if
@@ -709,7 +722,12 @@ module input
                 case default
                     global_setflags%xyrdf=.FALSE.
                 end select
-
+            case('shuffle_atoms')
+                if(.not.allocated(common_setflags%shuffle_atoms))&
+                allocate(common_setflags%shuffle_atoms(size(args,2)-2))
+                do i=1,size(common_setflags%shuffle_atoms)
+                    common_setflags%shuffle_atoms(i)=atomindex(stringconv(args(:,2+i)))
+                end do
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

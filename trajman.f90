@@ -26,6 +26,7 @@ program trajman
     use input
     use readtraj
     use trajop
+    use statistics
     implicit none
     character(kind=1,len=1),allocatable :: inputrad(:),words(:,:)
     character(kind=1,len=255) :: sysstr,pid,wf,filename
@@ -35,6 +36,8 @@ program trajman
     integer(kind=4) :: natm,statf
     real(kind=4),allocatable :: coorv(:),bx(:) !MOLFILEPLUGIN FROM VMD
     type(instruct),allocatable :: troptype(:)
+    integer(kind=ik) :: v(1:4),vs(1:4)
+    call RNSTRT(310952_ikr) !init. random seed
     skipframes=0;maxframes=0
     call arguments(runit)
     call constants
@@ -51,7 +54,7 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,7,9,10)
+        case(0,7,9,10,15,16)
         case(13) !RDF
             j=moltypeofuatom(troptype(i)%atoms(1))
             k=moltypeofuatom(troptype(i)%atoms(2))
@@ -127,11 +130,19 @@ program trajman
             allocate(troptype(i)%datam(troptype(i)%nmolop,skipframes+1:maxframes))
             troptype(i)%datam=0
         else
-            if(troptype(i)%findex==13)then
+            select case(troptype(i)%findex)
+            case(13)
                 allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
                 allocate(troptype(i)%datam(1,skipframes+1:maxframes))
                 troptype(i)%rdf_dist=0
-            end if
+            case(15)
+                allocate(troptype(i)%datam(1,skipframes+1:maxframes))
+                troptype(i)%datam=0
+            case(16)
+                allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
+                troptype(i)%rdf_dist=0
+                troptype(i)%rdf_bin=1._rk/troptype(i)%set%distbin
+            end select
         end if
     end do
     !write(*,*)size(troptype(18)%datam,2),'DATAM';stop

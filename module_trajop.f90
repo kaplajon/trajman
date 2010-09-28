@@ -25,6 +25,7 @@ module trajop
     use kinds
     use readtraj
     use apl
+    use statistics
 !    use input
     use util
     implicit none
@@ -104,9 +105,11 @@ module trajop
 
     subroutine procop(instr,frame)!{{{
     ! Processing of operations from input
-        integer(kind=ik) :: imol,jmol,i,j,k,l,frame
+        integer(kind=ik) :: imol,jmol,i,j,k,l,frame,steps
+        integer(kind=ik),allocatable ::&
+        cindexes_l(:),cindexes_u(:),grid1(:,:),grid2(:,:)
         logical :: moltest
-        real(kind=rk) :: teta,bl,v(3)
+        real(kind=rk) :: teta,bl,v(3),x
         type(instruct) :: instr(:)
           do i=1,size(instr)
             select case(instr(i)%findex)
@@ -169,20 +172,21 @@ module trajop
                         ! Everything is handled in subroutine postproc
                  case(10) !DEFINE
                      select case(instr(i)%define)
-                        case(1) !CENTEROFMEMBRANE
-                            call center_of_membrane(instr(i)%membrane_moltypes)
-                        case(2) !ATOM
-                            select case(instr(i)%newatom%from_mol_prop)
-                                case('com','center_of_mass')
-                                ! Define atom from center of mass of a defined submolecule.
-                                    do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
-                                        coor(:,cind(instr(i)%atoms(1),imol))=&
-                                        center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
-                                    end do
-                            end select
-                         case(3) !LEAFLET
-                                    if(global_setflags%apl)call apl_grid(instr(i))
-                       end select
+                     case(1) !CENTEROFMEMBRANE
+                        call center_of_membrane(common_setflags%membrane_moltypes)
+                     case(2) !ATOM
+                        select case(instr(i)%newatom%from_mol_prop)
+                        case('com','center_of_mass')
+                            ! Define atom from center of mass of a defined submolecule.
+                            do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                                coor(:,cind(instr(i)%atoms(1),imol))=&
+                                center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                            end do
+                        end select
+                     case(3) !LEAFLET
+                            !if(global_setflags%apl)call apl_grid(instr(i))
+                            call apl_grid(instr(i))
+                     end select
                  case(11) ! AREA PER LIPID
                      call apl_calc(instr(i),frame)
                      if(allocated(global_setflags%writeframe))then
@@ -253,6 +257,38 @@ module trajop
                             instr(i)%datam(jmol,frame)=v(3)
                         end select
                     end do
+                case(15)
+                    instr(i)%datam(1,frame)=griddiff(grid_lower,grid_upper)
+                case(16)
+                    allocate(grid1(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
+                    allocate(grid2(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
+                    steps=1
+                    do j=1,steps
+                        call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,1,cindexes_l)
+                        call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,2,cindexes_u)
+                        call countmol(cindexes_l,grid1)
+                        call countmol(cindexes_u,grid2)
+                        x=griddiff(grid1,grid2)
+                        instr(i)%cv%mean=instr(i)%cv%mean+x
+                        instr(i)%cv%n=instr(i)%cv%n+1
+                        instr(i)%cv%meandev=instr(i)%cv%meandev+x**2
+                        k=int(x*size(instr(i)%rdf_dist)+1)
+                        !write(*,*)k,griddiff(grid1,grid2)
+                        if(k==(size(instr(i)%rdf_dist)+1))k=size(instr(i)%rdf_dist)
+                       ! write(*,*)k,'k',griddiff(grid1,grid2),allocated(instr(i)%rdf_dist)
+                        instr(i)%rdf_dist(k)=instr(i)%rdf_dist(k)+real(size(cindexes_l),rk)/real(((maxframes-skipframes)*steps),rk)
+                    end do
+                    
+                   ! if(frame==maxframes)then
+                   ! do j=1,size(instr(i)%rdf_dist)
+                   !     x=(real(j,rk)-0.5_rk)*(1._rk/size(instr(i)%rdf_dist))
+                   !     write(instr(i)%set%ounit,*)x,instr(i)%rdf_dist(j)
+                   ! end do
+                   ! write(instr(i)%set%ounit,*)
+                   ! end if
+
+                    deallocate(grid1,grid2)
+
             end select
         end do 
     end subroutine procop!}}}
@@ -310,9 +346,26 @@ module trajop
                 write(instr%set%ounit,*)x,instr%rdf_dist(bi)
             end do
                 write(instr%set%ounit,*)
-        deallocate(instr%rdf_dist,instr%rdf_pairs)
+                if(allocated(instr%rdf_dist))deallocate(instr%rdf_dist)
+                if(allocated(instr%rdf_pairs))deallocate(instr%rdf_pairs)
         end if !present(frame)
     end subroutine rdf_distrib!}}}
+
+    subroutine write_distrib(instr)
+        type(instruct) :: instr
+        integer(kind=ik) :: bi
+        real(kind=rk) :: x,mean,var,meandev
+        mean=instr%cv%mean/instr%cv%n
+        var=(1/(real(instr%cv%n,rk)-1))*(instr%cv%meandev-&
+        (1/real(instr%cv%n,rk))*(instr%cv%mean)**2)
+        meandev=sqrt(var/real(instr%cv%n,rk))
+        !Skriv ut distribution till disk
+        do bi=1,size(instr%rdf_dist,1)
+            x=0._rk+(real(bi,rk)-0.5_rk)*instr%rdf_bin
+            write(instr%set%ounit,*)x,instr%rdf_dist(bi),(1/sqrt(2*pi*var))*exp(-((x-mean)**2)/(2*var))
+        end do
+            write(instr%set%ounit,*)
+    end subroutine write_distrib
 
     function average(datam) result(string2)!{{{
         implicit none
@@ -914,7 +967,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
            ! write(*,*)instr%datam(1,frame+minframe),"frame+minframe"
            ! write(*,*)instr%datam(1,frame),"frame"
             select case(instr%findex)
-            case(14)! A try to average coordinates the periodic box 
+            case(14)! A try to average coordinates in the periodic box 
                 select case(instr%instructionstring(1:1))
                 case('X')
                     XYZ=1
@@ -924,8 +977,8 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     XYZ=3
                 end select
                 eaverage(frame)=&
-                aimag(log(sum(exp(cmplx(0,instr%datam(:,frame)&
-                *(2*pi/box(XYZ)))))/size(instr%datam,1)))*(box(XYZ)/(2*pi))
+                modulo(aimag(log(sum(exp(cmplx(0,instr%datam(:,frame)&
+                *(2*pi/box(XYZ)))))/size(instr%datam,1)))*(box(XYZ)/(2*pi)),box(XYZ))
                 !eaverage(frame)=&
                 !abs(sum(exp(cmplx(0,instr%datam(:,frame)&
                 !*(2*pi/box(XYZ)))))/size(instr%datam,1))!*(box(XYZ)/(2*pi))
@@ -950,8 +1003,10 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
     subroutine postproc(instr)!{{{
         type(instruct) :: instr(:)
         integer(kind=ik) :: ounit,ios,i,j,k,m,n,corr1,corr2
-        real(kind=rk) :: a
+        real(kind=rk) :: a,mean,meandev,var
         character(kind=1,len=len(global_setflags%filename)) :: filename
+        character(len=24) :: string
+        character(len=300) :: string2
         logical :: exists
         character(kind=1,len=100) :: pos,avfilename
         meanbox=meanbox/(maxframes-skipframes)
@@ -1083,17 +1138,19 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                                 write(0,'(A10)',advance="no")'distrib'
                                 write(0,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
                                 !write(*,*)'I',i,instr(i)%datam
-                                if(instr(i)%findex/=13)call distrib(instr(i),i,j)
+                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16)call distrib(instr(i),i,j)
                                 if(instr(i)%findex==13.AND.trim(instr(i)%set%calc(j))=='distrib')&
                                 call rdf_distrib(instr(i))
+                                if(instr(i)%findex==16.AND.trim(instr(i)%set%calc(j))=='distrib')&
+                                call write_distrib(instr(i))
                             case('traj','trajm')
                                 write(0,'(A10)',advance="no")'traj'
                                 write(0,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
-                                call traj(instr(i),j)
+                                if(instr(i)%findex/=16)call traj(instr(i),j)
                             case('acorr','acorrm')
                                 write(0,'(A10)',advance="no")'acorr'
                                 write(0,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
-                                if(instr(i)%findex/=13)call autocorr(instr(i),i,j)
+                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16)call autocorr(instr(i),i,j)
                         end select
                         m=len_trim(instr(i)%instructionstring)&
                         +len_trim('Instruction '//trim(adjustl(intstr(i)))//' / '//trim(adjustl(intstr(size(instr)))))+16
@@ -1106,30 +1163,54 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end if
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
+                    case(0,7,10,13)
+                    case default
+                        inquire(file=avfilename,exist=exists)
+                        if(.NOT. exists)then
+                            pos='ASIS'
+                        else
+                            pos='APPEND'
+                        end if
+                        open(78,file=trim(avfilename)&
+                        ,position=trim(pos),status='unknown')
+                    end select
+
+                    select case(instr(i)%findex)
                         case(0,7,10,13)
                         case(1)
-                            inquire(file=avfilename,exist=exists)
-                            if(.NOT. exists)then
-                                pos='ASIS'
-                            else
-                                pos='APPEND'
-                            end if
-                            open(78,file=trim(avfilename)&
-                            ,position=trim(pos),status='unknown')
+                            !inquire(file=avfilename,exist=exists)
+                            !if(.NOT. exists)then
+                            !    pos='ASIS'
+                            !else
+                            !    pos='APPEND'
+                            !end if
+                            !open(78,file=trim(avfilename)&
+                            !,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
                             close(78)
                             !instr(i)%cv%entropy,instr(i)%cv%entropymutual
                         ! case(9)
+                        case(16)
+                            mean=instr(i)%cv%mean/instr(i)%cv%n
+                            var=(1/(real(instr(i)%cv%n,rk)-1))*(instr(i)%cv%meandev-&
+                            (1/real(instr(i)%cv%n,rk))*(instr(i)%cv%mean)**2)
+                            meandev=sqrt(var/real(instr(i)%cv%n,rk))
+                            string=getmeanwithdev(mean,meandev)
+                            write(string2,*)mean,meandev,sqrt(var)
+                            string2=trim(adjustl(string))//" "//trim(string2)
+                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = "&
+                            ,trim(string2)
+                            close(78)
                         case default
-                            inquire(file=avfilename,exist=exists)
-                            if(.NOT. exists)then
-                                pos='ASIS'
-                            else
-                                pos='APPEND'
-                            end if
-                            open(78,file=trim(avfilename)&
-                            ,position=trim(pos),status='unknown')
+                            !inquire(file=avfilename,exist=exists)
+                            !if(.NOT. exists)then
+                            !    pos='ASIS'
+                            !else
+                            !    pos='APPEND'
+                            !end if
+                            !open(78,file=trim(avfilename)&
+                            !,position=trim(pos),status='unknown')
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
                             trim(adjustl(average(instr(i)%datam)))!,&
                             !trim(adjustl(average(transpose(instr(i)%datam))))
