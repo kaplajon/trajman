@@ -165,6 +165,7 @@ subroutine globals!{{{
     !    global_setflags%writeframe%framenumber=0
         global_setflags%wftot=0
         global_setflags%apl=.FALSE.
+        global_setflags%gd=.FALSE.
         global_setflags%aplgrid=[250,250]
         global_setflags%leaflet=0
         global_setflags%whole=.FALSE.

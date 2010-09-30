@@ -645,7 +645,9 @@ module input
                 if(size(args,2)>=3)then
                     call apl_atomlist(args(:,3:))
                     global_setflags%apl=.TRUE.
+                    global_setflags%gd=.FALSE.
                     if(arg2=='griddiff')global_setflags%apl=.FALSE.
+                    if(arg2=='griddiff')global_setflags%gd=.TRUE.
                 else
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if

@@ -41,7 +41,7 @@ module util
 
     type setflags
         logical ::&
-        autofilename,cbl_switch,folding,apl,whole,leaflets_defined,centerofmembrane,&
+        autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
         molaverage,xyrdf
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(2)

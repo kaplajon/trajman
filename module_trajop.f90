@@ -185,7 +185,7 @@ module trajop
                         end select
                      case(3) !LEAFLET
                             !if(global_setflags%apl)call apl_grid(instr(i))
-                            call apl_grid(instr(i))
+                            if(global_setflags%apl .OR. global_setflags%gd)call apl_grid(instr(i))
                      end select
                  case(11) ! AREA PER LIPID
                      call apl_calc(instr(i),frame)
