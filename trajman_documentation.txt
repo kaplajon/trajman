@@ -214,6 +214,14 @@ calc has to be set to distrib and/or distribm.
 	
 Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
 
+	X,Y,Z Atom1
+
+Extract the X, Y or Z coordinates for selected atom.
+
+	BX,BY,BZ
+
+Extract the box X,Y or Z coordinates.
+
 	average N
 	
 Calculate an average of the following N (int) functions

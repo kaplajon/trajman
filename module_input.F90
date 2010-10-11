@@ -376,6 +376,17 @@ module input
                 trajop%findex=16
                 funcstr='SH_'
                 p=2
+            case('boxx','bx','BX','boxy','by','BY','boxz','bz','BZ')
+                trajop%findex=17
+                select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+                case('boxx','bx','BX')
+                    funcstr='BX_'
+                case('boxy','by','BY')
+                    funcstr='BY_'
+                case('boxz','bz','BZ')
+                    funcstr='BZ_'
+                end select
+                p=1
             case('exit')
                 stop
 

@@ -288,6 +288,16 @@ module trajop
                    ! end if
 
                     deallocate(grid1,grid2)
+                case(17)
+                    select case(instr(i)%instructionstring(1:2))
+                        case('BX')
+                            instr(i)%datam(1,frame)=box(1)
+                        case('BY')
+                            instr(i)%datam(1,frame)=box(2)
+                        case('BZ')
+                            instr(i)%datam(1,frame)=box(3)
+                    end select
+
 
             end select
         end do 
