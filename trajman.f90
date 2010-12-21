@@ -139,12 +139,11 @@ program trajman
                 allocate(troptype(i)%datam(1,skipframes+1:maxframes))
                 troptype(i)%datam=0
             case(16)
-                allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
-                troptype(i)%rdf_dist=0
-                troptype(i)%rdf_bin=1._rk/troptype(i)%set%distbin
+                !allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
+                !troptype(i)%rdf_dist=0
+                !troptype(i)%rdf_bin=1._rk/troptype(i)%set%distbin
             case(17)
                 allocate(troptype(i)%datam(1,skipframes+1:maxframes))
-                write(*,*)'Hej BOXX,BOXY,BOXZ'
             end select
         end if
     end do

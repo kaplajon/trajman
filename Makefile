@@ -2,7 +2,7 @@ PROG =	trajman
 
 #---VMD MOLFILE PLUGIN---
 VMD_ARCH = LINUXAMD64
-VMD_PLUGINS = /home/jon/src/vmd-1.8.7.src/plugins
+VMD_PLUGINS = /media/local/jon/src/vmd-1.8.7.src/plugins
 #------------------------
 
 SRCS =	module_input.F90 module_kinds.f90 module_readtraj.f90 \

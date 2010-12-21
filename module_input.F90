@@ -250,7 +250,7 @@ module input
 !        f77_molfile_close_read,f77_molfile_finish
         character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
-        character(kind=1,len=20) :: arg2
+        character(kind=1,len=20) :: arg2,inttest
         character(kind=1,len=200) :: infile
         integer(kind=ik) ::&
         ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
@@ -346,7 +346,14 @@ module input
                 if(.NOT.trajop%set%apl)stop 'AL: Needs apl!'
                 if(.NOT.trajop%set%leaflets_defined)stop 'AL: Needs leaflets!'
                 trajop%findex=11
-                p=size(arguments,2)
+                inttest=trim(stringconv(arguments(:,size(arguments,2))))
+                if (atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
+                    +atomindex(trim(stringconv(arguments(:,i+1))))==0 .and.&
+                    inttest(1:1)=='%')then
+                    p=size(arguments,2)-1
+                else
+                    p=size(arguments,2)
+                end if
                 funcstr='AL_'
             case('MI','mi','moi')
                 trajop%findex=12
@@ -552,6 +559,10 @@ module input
                 endif
                 do i=1,size(atomnames)
                 read(nunit,*,iostat=ios)atomnames(i)
+                if(ANY(atomnames(1:i-1)==atomnames(i)))then
+                    write(*,*)"ERROR ATOMNAMES: The name ",trim(atomnames(i))," is not unique!"
+                    stop
+                end if
                 if(ios/=0)then
                     write(*,*)"ERROR: (",i,")",arg3,ios
                     stop

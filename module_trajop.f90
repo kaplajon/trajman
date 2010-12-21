@@ -90,6 +90,7 @@ module trajop
         real(kind=rk) :: c
         c=1.5_rk*cos(pi/180._rk*&
         dirangle(a,b,imol))**2-0.5
+
     end function order_parameter!}}}
 
     function imoi(a,imol) result(c)!{{{
@@ -105,7 +106,7 @@ module trajop
 
     subroutine procop(instr,frame)!{{{
     ! Processing of operations from input
-        integer(kind=ik) :: imol,jmol,i,j,k,l,frame,steps
+        integer(kind=ik) :: imol,jmol,i,j,k,l,m,frame,steps
         integer(kind=ik),allocatable ::&
         cindexes_l(:),cindexes_u(:),grid1(:,:),grid2(:,:)
         logical :: moltest
@@ -146,6 +147,11 @@ module trajop
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
                         instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                        write(*,*)
+                        write(*,*)imol,instr(i)%atoms(1),trim(atomnames(instr(i)%atoms(1))),getatom(instr(i)%atoms(2),imol)
+
+                        write(*,*)imol,instr(i)%atoms(2),trim(atomnames(instr(i)%atoms(2))),getatom(instr(i)%atoms(2),imol)
+                        stop
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
                     do jmol=1,instr(i)%nmolop
@@ -259,24 +265,51 @@ module trajop
                     end do
                 case(15)
                     instr(i)%datam(1,frame)=griddiff(grid_lower,grid_upper)
+                    if(.not.allocated(instr(i)%rdf_dist))then
+                        allocate(instr(i)%rdf_dist(-sum(grid_upper):sum(grid_lower)))
+                        instr(i)%rdf_dist=0
+                    end if
+                    do j=1,size(grid_lower,1)
+                    do k=1,size(grid_lower,2)
+                        l=grid_lower(j,k)-grid_upper(j,k)
+                        instr(i)%rdf_dist(l)=instr(i)%rdf_dist(l)+1/real((maxframes-skipframes),rk)
+                    end do
+                    end do
+
                 case(16)
                     allocate(grid1(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
                     allocate(grid2(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
+!                    if(.not.allocated(instr(i)%rdf_dist))then
+!                        allocate(instr(i)%rdf_dist(-sum(grid_upper):sum(grid_lower)))
+!                        instr(i)%rdf_dist=0
+!                    end if
                     steps=1
                     do j=1,steps
                         call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,1,cindexes_l)
                         call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,2,cindexes_u)
                         call countmol(cindexes_l,grid1)
                         call countmol(cindexes_u,grid2)
-                        x=griddiff(grid1,grid2)
-                        instr(i)%cv%mean=instr(i)%cv%mean+x
-                        instr(i)%cv%n=instr(i)%cv%n+1
-                        instr(i)%cv%meandev=instr(i)%cv%meandev+x**2
-                        k=int(x*size(instr(i)%rdf_dist)+1)
+                    if(.not.allocated(instr(i)%rdf_dist))then
+                        allocate(instr(i)%rdf_dist(-sum(grid1):sum(grid1)))
+                        instr(i)%rdf_dist=0
+                    end if
+
+                     !   !x=griddiff(grid1,grid2)
+                     !   !instr(i)%cv%mean=instr(i)%cv%mean+x
+                     !   !instr(i)%cv%n=instr(i)%cv%n+1
+                     !   !instr(i)%cv%meandev=instr(i)%cv%meandev+x**2
+                     !   !k=int(x*size(instr(i)%rdf_dist)+1)
                         !write(*,*)k,griddiff(grid1,grid2)
-                        if(k==(size(instr(i)%rdf_dist)+1))k=size(instr(i)%rdf_dist)
+                     !   !if(k==(size(instr(i)%rdf_dist)+1))k=size(instr(i)%rdf_dist)
+                        
                        ! write(*,*)k,'k',griddiff(grid1,grid2),allocated(instr(i)%rdf_dist)
-                        instr(i)%rdf_dist(k)=instr(i)%rdf_dist(k)+real(size(cindexes_l),rk)/real(((maxframes-skipframes)*steps),rk)
+                    !    !instr(i)%rdf_dist(k)=instr(i)%rdf_dist(k)+real(size(cindexes_l),rk)/real(((maxframes-skipframes)*steps),rk)
+                    do k=1,size(grid1,1)
+                    do l=1,size(grid2,2)
+                        m=grid1(k,l)-grid2(k,l)
+                        instr(i)%rdf_dist(m)=instr(i)%rdf_dist(m)+1/real(((maxframes-skipframes)*steps),rk)
+                    end do
+                    end do
                     end do
                     
                    ! if(frame==maxframes)then
@@ -297,8 +330,6 @@ module trajop
                         case('BZ')
                             instr(i)%datam(1,frame)=box(3)
                     end select
-
-
             end select
         end do 
     end subroutine procop!}}}
@@ -365,16 +396,27 @@ module trajop
         type(instruct) :: instr
         integer(kind=ik) :: bi
         real(kind=rk) :: x,mean,var,meandev
-        mean=instr%cv%mean/instr%cv%n
-        var=(1/(real(instr%cv%n,rk)-1))*(instr%cv%meandev-&
-        (1/real(instr%cv%n,rk))*(instr%cv%mean)**2)
-        meandev=sqrt(var/real(instr%cv%n,rk))
-        !Skriv ut distribution till disk
-        do bi=1,size(instr%rdf_dist,1)
-            x=0._rk+(real(bi,rk)-0.5_rk)*instr%rdf_bin
-            write(instr%set%ounit,*)x,instr%rdf_dist(bi),(1/sqrt(2*pi*var))*exp(-((x-mean)**2)/(2*var))
-        end do
+        select case(instr%findex)
+        case(0)
+            mean=instr%cv%mean/instr%cv%n
+            var=(1/(real(instr%cv%n,rk)-1))*(instr%cv%meandev-&
+            (1/real(instr%cv%n,rk))*(instr%cv%mean)**2)
+            meandev=sqrt(var/real(instr%cv%n,rk))
+            !Skriv ut distribution till disk
+            do bi=1,size(instr%rdf_dist,1)
+                x=0._rk+(real(bi,rk)-0.5_rk)*instr%rdf_bin
+                write(instr%set%ounit,*)x,instr%rdf_dist(bi),(1/sqrt(2*pi*var))*exp(-((x-mean)**2)/(2*var))
+            end do
             write(instr%set%ounit,*)
+        case(15,16)
+            do bi=lbound(instr%rdf_dist,1),ubound(instr%rdf_dist,1)
+                write(*,*)lbound(instr%rdf_dist,1),size(instr%rdf_dist),bi
+                write(instr%set%ounit,*)bi,instr%rdf_dist(bi)!,(1/sqrt(2*pi*var))*exp(-((x-mean)**2)/(2*var))
+            end do
+            write(instr%set%ounit,*)
+        end select
+            
+            
     end subroutine write_distrib
 
     function average(datam) result(string2)!{{{
@@ -554,9 +596,9 @@ module trajop
         case('distrib')
             !Skriv ut distribution till disk
             do bi=1,size(dist)
-                x=mi+(real(bi,rk)-1._rk)*bin
-                if(instr%findex==1)x=acos(x)*180._rk/pi
-                write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
+                !x=mi+(real(bi,rk)-1._rk)*bin
+                !if(instr%findex==1)x=acos(x)*180._rk/pi
+                !write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
                 x=mi+(real(bi,rk))*bin
                 if(instr%findex==1)x=acos(x)*180._rk/pi
                 write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
@@ -1148,10 +1190,10 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                                 write(0,'(A10)',advance="no")'distrib'
                                 write(0,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
                                 !write(*,*)'I',i,instr(i)%datam
-                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16)call distrib(instr(i),i,j)
+                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16.AND.instr(i)%findex/=15)call distrib(instr(i),i,j)
                                 if(instr(i)%findex==13.AND.trim(instr(i)%set%calc(j))=='distrib')&
                                 call rdf_distrib(instr(i))
-                                if(instr(i)%findex==16.AND.trim(instr(i)%set%calc(j))=='distrib')&
+                                if(instr(i)%findex==16.OR.instr(i)%findex==15.AND.trim(instr(i)%set%calc(j))=='distrib')&
                                 call write_distrib(instr(i))
                             case('traj','trajm')
                                 write(0,'(A10)',advance="no")'traj'

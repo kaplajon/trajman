@@ -57,7 +57,7 @@ to that instead of the default values.
 
 By setting this, molecules that have been broken due to
 periodic boundary conditions, will be made whole again by 
-back folding of atom coordinates.
+folding atom coordinates back to the right side of the box.
 
 	folding
 
@@ -175,8 +175,8 @@ INPUTFILE: FUNCTIONS
 Usage: function options [tag]
 ----------------------------------
 All functions can be tagged by a string at
-the end of the line. The tags are used by
-i.e. corr.
+the end of the line. Tags for the AL function MUST start with a %.
+The tags are used by i.e. corr.
 
 	DA Atom1 Atom2
 

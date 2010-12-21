@@ -182,12 +182,26 @@ module statistics
                 cindexes_invatom(m:)=shuffle_atoms(i)
                 m=m+size(molt(moltypeofuatom(shuffle_atoms(i)))%lower)
             end do
+            !write(*,*)cindexes
+            !write(*,*)            
+            !call shuffle(cindexes,shuffled_cindexes)
+            !do i=1,size(shuffled_cindexes)
+            !write(33,*)shuffled_cindexes(i)
+            !end do
         case(2)
             do i=1,size(shuffle_atoms)
                 cindexes(m:)=molt(moltypeofuatom(shuffle_atoms(i)))%upper
                 cindexes_invatom(m:)=shuffle_atoms(i)
                 m=m+size(molt(moltypeofuatom(shuffle_atoms(i)))%upper)
             end do
+           ! write(*,*)'-------------------------------------------'
+           ! write(*,*)cindexes
+           ! write(*,*)            
+           ! call shuffle(cindexes,shuffled_cindexes)
+           ! do i=1,size(shuffled_cindexes)
+           ! write(34,*)shuffled_cindexes(i)
+           ! end do
+           ! stop
         end select
         !Transfer the molecular indexes to atomic indexes in
         do i=1,size(cindexes)
