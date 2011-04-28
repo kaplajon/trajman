@@ -36,7 +36,9 @@ module trajop
         ! Angle: a-b  against director in degrees
         real(kind=rk) :: teta,dir(3)
         integer(kind=ik) :: a,b,imol
-        dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
+        !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
+        dir=director
+        if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
         teta=acos(dot_product(normalize(getatom(b,imol)-getatom(a,imol)),dir))*180._rk/pi
     end function dirangle!}}}
 
@@ -134,6 +136,7 @@ module trajop
                         instr(i)%datam(jmol,frame)=modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
                         +real(instr(i)%set%tshift,rk)
+                        !if(instr(i)%datam(jmol,frame)>0._rk)write(66,*)frame,imol,instr(i)%datam(jmol,frame)
                         
                     end do
                 case(4) !BOND LENGTH
@@ -147,11 +150,11 @@ module trajop
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
                         instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
-                        write(*,*)
-                        write(*,*)imol,instr(i)%atoms(1),trim(atomnames(instr(i)%atoms(1))),getatom(instr(i)%atoms(2),imol)
+                       ! write(*,*)
+                       ! write(*,*)imol,instr(i)%atoms(1),trim(atomnames(instr(i)%atoms(1))),getatom(instr(i)%atoms(2),imol)
 
-                        write(*,*)imol,instr(i)%atoms(2),trim(atomnames(instr(i)%atoms(2))),getatom(instr(i)%atoms(2),imol)
-                        stop
+                       ! write(*,*)imol,instr(i)%atoms(2),trim(atomnames(instr(i)%atoms(2))),getatom(instr(i)%atoms(2),imol)
+                       ! stop
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
                     do jmol=1,instr(i)%nmolop
@@ -235,6 +238,7 @@ module trajop
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%lower(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)%set%xyrdf)
+                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
                             end do
                         end do
                     case(2)!Upper
@@ -245,6 +249,7 @@ module trajop
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)%set%xyrdf)
+                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
                             end do
                         end do
                     end select
@@ -330,6 +335,8 @@ module trajop
                         case('BZ')
                             instr(i)%datam(1,frame)=box(3)
                     end select
+                case(18)
+                    instr(i)%datam(1,frame)=(box(1)*box(2))/(molt(instr(i)%atoms(1))%nmol/2._rk)
             end select
         end do 
     end subroutine procop!}}}
@@ -382,10 +389,15 @@ module trajop
             end do
         else !.not.present(frame)
             !Skriv ut distribution till disk
+                x=mi+(real(1,rk)-1._rk)*instr%rdf_bin
+                write(instr%set%ounit,*)x,instr%rdf_dist(1)
             do bi=1,size(instr%rdf_dist,1)
                 x=mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin
+                !x=mi+(real(bi,rk)-1._rk)*instr%rdf_bin
                 write(instr%set%ounit,*)x,instr%rdf_dist(bi)
             end do
+                x=mi+(real(size(instr%rdf_dist,1),rk)-1._rk)*instr%rdf_bin
+                write(instr%set%ounit,*)x,instr%rdf_dist(size(instr%rdf_dist,1))
                 write(instr%set%ounit,*)
                 if(allocated(instr%rdf_dist))deallocate(instr%rdf_dist)
                 if(allocated(instr%rdf_pairs))deallocate(instr%rdf_pairs)
@@ -595,14 +607,20 @@ module trajop
         select case(instr%set%calc(calcind))
         case('distrib')
             !Skriv ut distribution till disk
+            x=mi
+            if(instr%findex==1)x=acos(x)*180._rk/pi
+            write(instr%set%ounit,*)x,dist(1),std(distmol(:,1))
             do bi=1,size(dist)
                 !x=mi+(real(bi,rk)-1._rk)*bin
                 !if(instr%findex==1)x=acos(x)*180._rk/pi
                 !write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
-                x=mi+(real(bi,rk))*bin
+                x=mi+(real(bi,rk)-.5_rk)*bin
                 if(instr%findex==1)x=acos(x)*180._rk/pi
                 write(instr%set%ounit,*)x,dist(bi),std(distmol(:,bi))
             end do
+            x=ma
+            if(instr%findex==1)x=acos(x)*180._rk/pi
+            write(instr%set%ounit,*)x,dist(size(dist)),std(distmol(:,size(dist)))
         case('distribm')
             do i=1,size(distmol,1)
              do bi=1,size(dist)

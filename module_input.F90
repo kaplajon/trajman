@@ -394,6 +394,11 @@ module input
                     funcstr='BZ_'
                 end select
                 p=1
+            case('boxapl')
+                trajop%findex=18
+                funcstr='BA_'
+                p=2
+
             case('exit')
                 stop
 

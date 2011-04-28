@@ -54,7 +54,7 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,7,9,10,15,16,17)
+        case(0,7,9,10,15,16,17,18)
         case(13) !RDF
             j=moltypeofuatom(troptype(i)%atoms(1))
             k=moltypeofuatom(troptype(i)%atoms(2))
@@ -142,7 +142,7 @@ program trajman
                 !allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
                 !troptype(i)%rdf_dist=0
                 !troptype(i)%rdf_bin=1._rk/troptype(i)%set%distbin
-            case(17)
+            case(17,18)
                 allocate(troptype(i)%datam(1,skipframes+1:maxframes))
             end select
         end if
