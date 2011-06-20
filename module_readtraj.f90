@@ -237,6 +237,7 @@ end subroutine globals!}}}
             moltype_atom(1,ia)=trim(sdr(1:i-1))
             moltype_atom(2,ia)=trim(adjustl(sdr(i:)))
             read(tunit,*)coor(1:3,ia)
+            !write(*,*)coor(1:3,ia),'COOR'
         end do
             read(tunit,*)box
         !rewind(tunit)

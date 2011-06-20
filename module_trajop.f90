@@ -37,8 +37,10 @@ module trajop
         real(kind=rk) :: teta,dir(3)
         integer(kind=ik) :: a,b,imol
         !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
-        dir=director
-        if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
+            dir=director
+        if(global_setflags%centerofmembrane)then
+            if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
+        end if
         teta=acos(dot_product(normalize(getatom(b,imol)-getatom(a,imol)),dir))*180._rk/pi
     end function dirangle!}}}
 
@@ -163,7 +165,7 @@ module trajop
                     end do
                 case(7) ! CORRELATE
                         ! Everything is handled in subroutine postproc
-                case(8) ! DIPOLE COUPLING
+                case(8) ! DIPOLAR COUPLING
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
                         if(instr(i)%set%cbl_switch)then
@@ -621,16 +623,36 @@ module trajop
             x=ma
             if(instr%findex==1)x=acos(x)*180._rk/pi
             write(instr%set%ounit,*)x,dist(size(dist)),std(distmol(:,size(dist)))
+       ! case('distribm')
+       !     do i=1,size(distmol,1)
+       !      do bi=1,size(dist)
+       !         x=mi+(real(bi,rk)-1._rk)*bin
+       !         if(instr%findex==1)x=acos(x)*180._rk/pi
+       !         write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
+       !         x=mi+(real(bi,rk))*bin
+       !         if(instr%findex==1)x=acos(x)*180._rk/pi
+       !         write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
+       !     end do
+       !         write(instr%set%ounit,*)
+       !     end do
+
         case('distribm')
             do i=1,size(distmol,1)
+                !x=mi
+                !if(instr%findex==1)x=acos(x)*180._rk/pi
+                !write(instr%set%ounit,*)x,i,distmol(i,1)!std(distmol(:,bi))
              do bi=1,size(dist)
-                x=mi+(real(bi,rk)-1._rk)*bin
+                x=mi+(real(bi,rk)-.5_rk)*bin
                 if(instr%findex==1)x=acos(x)*180._rk/pi
                 write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
-                x=mi+(real(bi,rk))*bin
-                if(instr%findex==1)x=acos(x)*180._rk/pi
-                write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
+                !x=mi+(real(bi,rk))*bin
+                !if(instr%findex==1)x=acos(x)*180._rk/pi
+                !write(instr%set%ounit,*)x,i,distmol(i,bi)!std(distmol(:,bi))
             end do
+                !x=ma
+                !if(instr%findex==1)x=acos(x)*180._rk/pi
+                !write(instr%set%ounit,*)x,i,distmol(i,size(distmol))!std(distmol(:,bi))
+                write(instr%set%ounit,*)
                 write(instr%set%ounit,*)
             end do
 

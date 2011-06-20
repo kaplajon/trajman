@@ -326,7 +326,7 @@ module input
                 trajop%findex=7
                 p=1
                 funcstr='CO_'
-            case('dc','DC','dipolecoupling')
+            case('dc','DC','dipolarcoupling')
                 trajop%findex=8
                 p=3
                 funcstr='DC_'
