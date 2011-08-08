@@ -398,6 +398,10 @@ module input
                 trajop%findex=18
                 funcstr='BA_'
                 p=2
+            case('versus','VS','VERSUS')
+                trajop%findex=19
+                funcstr='VS_'
+                p=1
 
             case('exit')
                 stop
@@ -418,7 +422,7 @@ module input
             trajop%ref=''
                 select case(trajop%findex)
                 case(0,10)
-                case(7)
+                case(7,19)
                     select case(size(arguments,2)-1)
                     case(2,3)
                         trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
@@ -426,7 +430,7 @@ module input
                         if(size(arguments,2)==4)trajop%ref=trim(stringconv(arguments(:,4)))!TAG the function
                         trajop%instructionstring=trim(funcstr)
                     case default
-                        stop 'CORR: Wrong number of arguments.&
+                        stop 'CORR/VS: Wrong number of arguments.&
                                 Use two CHAR arguments'
                     end select
                    

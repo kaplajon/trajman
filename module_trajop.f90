@@ -39,7 +39,9 @@ module trajop
         !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
             dir=director
         if(global_setflags%centerofmembrane)then
-            if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
+            if(global_setflags%leaflets_defined)then
+                if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
+            end if
         end if
         teta=acos(dot_product(normalize(getatom(b,imol)-getatom(a,imol)),dir))*180._rk/pi
     end function dirangle!}}}
@@ -915,6 +917,86 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         deallocate(dist,distmol,molentropy)
     end subroutine corr_distrib!}}}
 
+    subroutine vs_distrib(instr0,instr1,instr2)!{{{
+        type(instruct),intent(inout) :: instr0,instr1,instr2
+        integer(kind=ik) :: bi,i,j,l,imol,ios
+        character(len=len(instr0%set%filename)) :: filename
+        real(kind=rk) :: mi,ma,x,bin
+        real(kind=rk),allocatable :: dist(:,:),distmol(:,:,:)
+        !write(*,*)allocated(instr1%datam),"allocated"
+        !write(*,*)instr0%set%filename
+        allocate(dist(instr2%set%distbin,2))
+        allocate(distmol(size(instr1%datam,1),size(dist,1),2))
+        dist=0
+        distmol=0
+        select case(instr2%findex)
+            case(1)
+                mi=-1._rk
+                ma=1._rk
+            case(2)
+                mi=0._rk
+                ma=180._rk
+                
+            case default
+                mi=minval(instr2%datam)
+                ma=maxval(instr2%datam)
+        end select
+        bin=(ma-mi)/real(size(dist,1),rk)
+        do l=lbound(instr2%datam,1),ubound(instr2%datam,1)
+            do i=lbound(instr2%datam,2),ubound(instr2%datam,2)
+                bi=int(((instr2%datam(l,i)-mi)/bin)+1._rk)
+                if(bi==size(dist,1)+1)bi=size(dist,1)
+                if(bi<=0.or.bi>size(dist,1))then
+                    write(*,*)bi,"bi",instr2%datam(l,i),"instr2",i,"i",ma,"ma",mi,"mi",bin,"bin"
+                    stop "subroutine corr_distrib"   
+                else
+                    dist(bi,1)=dist(bi,1)+instr1%datam(l,i)
+                    dist(bi,2)=dist(bi,2)+1
+                    distmol(l,bi,1)=distmol(l,bi,1)+instr1%datam(l,i)
+                    distmol(l,bi,2)=distmol(l,bi,2)+1
+                end if
+            end do
+        end do
+        dist(:,1)=dist(:,1)/dist(:,2)
+        !dist(:,1)=merge(dist(:,1)/dist(:,2),0._rk,MASK=dist(:,2)/=0)
+        distmol(:,:,1)=distmol(:,:,1)/distmol(:,:,2)
+        !distmol(:,:,1)=merge(distmol(:,:,1)/distmol(:,:,2),0._rk,MASK=distmol(:,:,2)/=0)
+        !s=sum((distmol(:,bi,1)-dist(bi,1))**2/(dist(bi,2)-1._rk),MASK=distmol(:,bi,2)/=0)
+
+        if(COUNT(instr0%set%calc(:)(1:7)=='distrib')>0)then
+        do i=1,size(instr0%set%calc)
+        select case(instr0%set%calc(i))
+        case('distrib')
+            filename=trim(instr0%set%filename)//'_'//trim(instr0%set%calc(i))//trim(instr0%set%filesuffix)
+        if(instr0%set%ounit/=stdout)open(unit=instr0%set%ounit,file=trim(filename),status="unknown",iostat=ios)
+            !Skriv ut distribution till disk
+            do bi=1,size(dist,1)
+                    x=mi+(real(bi,rk)-.5_rk)*bin
+                    if(instr2%findex==1)x=acos(x)*180._rk/pi
+                    write(instr0%set%ounit,*)x,dist(bi,1),merge(sqrt(sum((distmol(:,bi,1)-dist(bi,1))**2&
+                    ,MASK=distmol(:,bi,2)/=0)/(real(COUNT(distmol(:,bi,2)/=0._rk),rk)-1._rk)),&
+                    dist(bi,1),MASK=.not.all(distmol(:,bi,2)==0._rk))
+            end do
+            if(instr0%set%ounit/=stdout)close(instr0%set%ounit)
+        case('distribm')
+            filename=trim(instr0%set%filename)//'_'//trim(instr0%set%calc(i))//trim(instr0%set%filesuffix)
+            if(instr0%set%ounit/=stdout)open(unit=instr0%set%ounit,file=trim(filename),status="unknown",iostat=ios)
+            do imol=1,size(distmol,1)
+            do bi=1,size(dist,1)
+                    x=mi+(real(bi,rk)-.5_rk)*bin
+                    if(instr2%findex==1)x=acos(x)*180._rk/pi
+                    write(instr0%set%ounit,*)x,imol,distmol(imol,bi,1)
+            end do
+                write(instr0%set%ounit,*)
+                write(instr0%set%ounit,*)
+            end do
+            if(instr0%set%ounit/=stdout)close(instr0%set%ounit)
+        end select
+        end do
+        end if
+        deallocate(dist,distmol)
+    end subroutine vs_distrib!}}}
+
     subroutine center_of_membrane(molecules)!{{{
         integer(kind=ik) :: molecules(:),i,imol,j
         real(kind=rk) :: n
@@ -1113,7 +1195,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         
         select case(instr(i)%findex)
             case(0,10)
-            case(7) ! CORRELATE
+            case(7,19) ! CORRELATE,VERSUS
                 corr1=strvecindex(instr(:)%ref,instr(i)%set%corrindex(1))
                 corr2=strvecindex(instr(:)%ref,instr(i)%set%corrindex(2))
                 if(instr(i)%set%filename/='')then
@@ -1132,19 +1214,22 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         filename="stdout"
                     end if
                 end if
-                call corr_distrib(instr(i),instr(corr1),instr(corr2))
-                avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
-                inquire(file=avfilename,exist=exists)
-                if(.NOT. exists)then
-                    pos='ASIS'
-                else
-                    pos='APPEND'
-                end if
-                open(78,file=trim(avfilename)&
-                ,position=trim(pos),status='unknown')
-                write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename))," = ",&
+                if(instr(i)%findex==7)then !CORRELATE
+                    call corr_distrib(instr(i),instr(corr1),instr(corr2))
+                    avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
+                    inquire(file=avfilename,exist=exists)
+                    if(.NOT. exists)then
+                        pos='ASIS'
+                    else
+                        pos='APPEND'
+                    end if
+                    open(78,file=trim(avfilename)&
+                    ,position=trim(pos),status='unknown')
+                    write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename))," = ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
-                close(78)
+                    close(78)
+                end if
+                if(instr(i)%findex==19)call vs_distrib(instr(i),instr(corr1),instr(corr2)) !VERSUS
 
             case(9) ! AVERAGE
                 if(instr(i)%set%filename/='')then
@@ -1210,7 +1295,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         do i=1,size(instr) ! Loop över instruktionsrader
             avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
-                case(0,7,10)
+                case(0,7,10,19)
                 case default
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     if(allocated(instr(i)%set%calc))then
@@ -1255,7 +1340,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end if
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
-                    case(0,7,10,13)
+                    case(0,7,10,13,19)
                     case default
                         inquire(file=avfilename,exist=exists)
                         if(.NOT. exists)then
@@ -1268,7 +1353,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end select
 
                     select case(instr(i)%findex)
-                        case(0,7,10,13)
+                        case(0,7,10,13,19)
                         case(1)
                             !inquire(file=avfilename,exist=exists)
                             !if(.NOT. exists)then
