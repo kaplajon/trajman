@@ -134,7 +134,7 @@ The atoms may come from the same or different molecule types
 
 	aplgrid x y
 
-Define the grid size used in area per lipid calcualtions.
+Define the grid size used in area per lipid calculations.
 
 	leaflets
 
@@ -242,10 +242,19 @@ and leaflets, and usually a definition of the upper or lower leaflet
 Note that 'define leaflet both' does not calculate a proper area per lipid
 on a bilayer. Use average or combine of upper and lower leaflets instead.
 
+	boxapl moltype
+
+Calculate the area per lipid as x*y/#moltype. No STD as for now... 
+
 	rdf atom1 atom2
 
 Calculate radial distribution functions between atom pairs. The cutoff distance is
 determined by the number of bins (set distbin) and the rdf_binsize (set rdf_binsize).
+
+	VS tag1 tag2
+
+Function with tag "tag1" versus function with tag "tag2"
+(the values of function1 is binned in function2).
 
 
 TRAJMAN DEFAULT FILES:
