@@ -1176,7 +1176,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
     subroutine postproc(instr)!{{{
         type(instruct) :: instr(:)
-        integer(kind=ik) :: ounit,ios,i,j,k,m,n,corr1,corr2
+        integer(kind=ik) :: ounit,ios,i,j,k,m,n,corr(6)!1,corr2
         real(kind=rk) :: a,mean,meandev,var
         character(kind=1,len=len(global_setflags%filename)) :: filename
         character(len=24) :: string
@@ -1195,18 +1195,31 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         
         select case(instr(i)%findex)
             case(0,10)
-            case(7,19) ! CORRELATE,VERSUS
-                corr1=strvecindex(instr(:)%ref,instr(i)%set%corrindex(1))
-                corr2=strvecindex(instr(:)%ref,instr(i)%set%corrindex(2))
+            case(7,19,20) ! CORRELATE,VERSUS, ROTCORR
+                corr(1)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(1))
+                corr(2)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(2))
+                if(instr(i)%findex==20)then !ROTCORR
+                    corr(3)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(3))
+                    corr(4)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(4))
+                    corr(5)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(5))
+                    corr(6)=strvecindex(instr(:)%ref,instr(i)%set%corrindex(6))
+                end if
                 if(instr(i)%set%filename/='')then
                     instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)!//trim(instr(i)%set%filesuffix)
                     filename=instr(i)%set%filename
                     instr(i)%set%ounit=nunit
                 else
                     if(instr(i)%set%autofilename)then
+                        select case(instr(i)%findex)
+                        case(7,19)
                         instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)&
-                                //trim(instr(corr1)%instructionstring)//'_'//&
-                                trim(instr(corr2)%instructionstring)!//trim(instr(i)%set%filesuffix)
+                                //trim(instr(corr(1))%instructionstring)//'_'//&
+                                trim(instr(corr(2))%instructionstring)!//trim(instr(i)%set%filesuffix)
+                        case(20)
+                        instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)&
+                                //trim(instr(corr(1))%instructionstring)//'_'//&
+                                trim(instr(corr(4))%instructionstring)!//trim(instr(i)%set%filesuffix)
+                        end select
                         filename=instr(i)%set%filename
                         instr(i)%set%ounit=nunit
                     else
@@ -1215,7 +1228,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end if
                 end if
                 if(instr(i)%findex==7)then !CORRELATE
-                    call corr_distrib(instr(i),instr(corr1),instr(corr2))
+                    call corr_distrib(instr(i),instr(corr(1)),instr(corr(2)))
                     avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
                     inquire(file=avfilename,exist=exists)
                     if(.NOT. exists)then
@@ -1229,7 +1242,13 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     close(78)
                 end if
-                if(instr(i)%findex==19)call vs_distrib(instr(i),instr(corr1),instr(corr2)) !VERSUS
+                !!!!
+                if(instr(i)%findex==19)call vs_distrib(instr(i),instr(corr(1)),instr(corr(2))) !VERSUS
+                !!!!
+                if(instr(i)%findex==20)then !ROTCORR
+                    call rotcorr(instr(i),instr(corr(1)),instr(corr(2)),instr(corr(3)),&
+                    instr(corr(4)),instr(corr(5)),instr(corr(6)))
+                end if
 
             case(9) ! AVERAGE
                 if(instr(i)%set%filename/='')then
@@ -1295,7 +1314,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         do i=1,size(instr) ! Loop över instruktionsrader
             avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
-                case(0,7,10,19)
+                case(0,7,10,19,20)
                 case default
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     if(allocated(instr(i)%set%calc))then
@@ -1340,7 +1359,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end if
                     !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
-                    case(0,7,10,13,19)
+                    case(0,7,10,13,19,20)
                     case default
                         inquire(file=avfilename,exist=exists)
                         if(.NOT. exists)then
@@ -1353,7 +1372,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end select
 
                     select case(instr(i)%findex)
-                        case(0,7,10,13,19)
+                        case(0,7,10,13,19,20)
                         case(1)
                             !inquire(file=avfilename,exist=exists)
                             !if(.NOT. exists)then
@@ -1497,4 +1516,71 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
             end do
         end subroutine myft
     end subroutine autocorr!}}}
+
+subroutine rotcorr(instr,xa,ya,za,xb,yb,zb)
+    type(instruct),intent(inout) :: instr,xa,ya,za,xb,yb,zb
+    real(kind=rk),allocatable :: dataa(:,:,:),datab(:,:,:),acorr(:,:)
+    real(kind=rk) :: norm
+    integer(kind=ik) :: imol,calcind,i,ios
+    character(kind=1,len=len(global_setflags%filename)) :: filename
+    allocate(dataa(3,lbound(xa%datam,2):ubound(xa%datam,2),size(xa%datam,1)))
+    allocate(datab(3,lbound(xb%datam,2):ubound(xb%datam,2),size(xb%datam,1)))
+    allocate(acorr(size(xa%datam,1),0:size(xa%datam,2)-1))
+    dataa(1,:,:)=transpose(xa%datam(:,:))
+    dataa(2,:,:)=transpose(ya%datam(:,:))
+    dataa(3,:,:)=transpose(za%datam(:,:))
+    datab(1,:,:)=transpose(xb%datam(:,:))
+    datab(2,:,:)=transpose(yb%datam(:,:))
+    datab(3,:,:)=transpose(zb%datam(:,:))
+    !write(*,*)lbound(xa%datam,2),lbound(dataa,2)
+    do imol=1,size(xa%datam,1)
+        call rotacf(dataa(:,:,imol),datab(:,:,imol),acorr(imol,0:))
+        !norm=1._rk/acorr(imol,0)
+        !acorr(imol,:)=acorr(imol,:)*norm
+    end do
+    do calcind=1,size(instr%set%calc)
+        select case(instr%set%calc(calcind))
+        case('acorr')
+            filename=trim(instr%set%filename)//'_'//trim(instr%set%calc(calcind))//trim(instr%set%filesuffix)
+            if(instr%set%ounit/=stdout)open(unit=instr%set%ounit,file=trim(filename),status="unknown",iostat=ios)
+
+            do i=0,ubound(acorr,2)
+                write(instr%set%ounit,*)i,sum(acorr(:,i))/real(size(acorr,1),rk),std(acorr(:,i))
+            end do
+            if(instr%set%ounit/=stdout)close(instr%set%ounit)
+        case('acorrm')
+            filename=trim(instr%set%filename)//'_'//trim(instr%set%calc(calcind))//trim(instr%set%filesuffix)
+            if(instr%set%ounit/=stdout)open(unit=instr%set%ounit,file=trim(filename),status="unknown",iostat=ios)
+            do imol=1,size(dataa,3)
+                do i=0,ubound(acorr,2)
+                    write(instr%set%ounit,*)i,imol,acorr(imol,i)!,std(acorr(:,i))
+                end do
+                write(instr%set%ounit,*)
+            end do
+            if(instr%set%ounit/=stdout)close(instr%set%ounit)
+         end select
+     end do
+     contains
+     subroutine rotacf(dataam,databm,acorrv)
+         real(kind=rk) :: dataam(:,:),databm(:,:),datav(3,size(dataam,2)),acorrv(0:)
+         integer(kind=ik) :: i,j
+         acorrv=0
+         datav=0
+         do i=lbound(dataam,2),ubound(dataam,2)
+             datav(:,i)=normalize(databm(:,i)-dataam(:,i))
+         end do
+             do j=0,size(datav,2)-1
+                 do i=1,size(datav,2)-j
+                     !write(*,*)i,j,j+i,lbound(acorrv)
+                     acorrv(j)=acorrv(j)+P2(datav(:,i),datav(:,j+i))
+                 end do
+                 acorrv(j)=acorrv(j)/real(size(datav,2)-j,rk)
+             end do
+     end subroutine rotacf
+     function P2(a,b) result(c)
+         real(kind=rk) :: a(:),b(:),c
+         c=1.5_rk*dot_product(a,b)**2-.5_rk
+         !write(*,*)c
+     end function P2
+     end subroutine rotcorr
 end module trajop

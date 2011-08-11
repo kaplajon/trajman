@@ -44,7 +44,7 @@ module util
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
         molaverage,xyrdf
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
-        character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(2)
+        character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
         type(write_frame),allocatable :: writeframe(:)
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl,rdf_binsize
@@ -99,9 +99,7 @@ module util
     function normalize(vec) result(nvec)!{{{
     real(kind=rk),intent(in) :: vec(:)
     real(kind=rk) :: nvec(1:3)
-
     nvec=vec/sqrt(sum(vec**2))
-
     end function normalize!}}}
 
     elemental function mymodulo(a,b) result(c)!{{{

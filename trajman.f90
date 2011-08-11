@@ -54,7 +54,7 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,7,9,10,15,16,17,18,19)
+        case(0,7,9,10,15,16,17,18,19,20)
         case(13) !RDF
             j=moltypeofuatom(troptype(i)%atoms(1))
             k=moltypeofuatom(troptype(i)%atoms(2))

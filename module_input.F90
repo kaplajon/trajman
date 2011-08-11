@@ -402,7 +402,10 @@ module input
                 trajop%findex=19
                 funcstr='VS_'
                 p=1
-
+            case('rotcorr','RC','ROTCORR')
+                trajop%findex=20
+                funcstr='RC_'
+                p=1
             case('exit')
                 stop
 
@@ -422,16 +425,26 @@ module input
             trajop%ref=''
                 select case(trajop%findex)
                 case(0,10)
-                case(7,19)
+                case(7,19,20)
                     select case(size(arguments,2)-1)
                     case(2,3)
                         trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
                         trajop%set%corrindex(2)=trim(adjustl(stringconv(arguments(:,3))))
                         if(size(arguments,2)==4)trajop%ref=trim(stringconv(arguments(:,4)))!TAG the function
                         trajop%instructionstring=trim(funcstr)
+                    case(6,7)
+                        trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
+                        trajop%set%corrindex(2)=trim(adjustl(stringconv(arguments(:,3))))
+                        trajop%set%corrindex(3)=trim(adjustl(stringconv(arguments(:,4))))
+                        trajop%set%corrindex(4)=trim(adjustl(stringconv(arguments(:,5))))
+                        trajop%set%corrindex(5)=trim(adjustl(stringconv(arguments(:,6))))
+                        trajop%set%corrindex(6)=trim(adjustl(stringconv(arguments(:,7))))
+                        if(size(arguments,2)==8)trajop%ref=trim(stringconv(arguments(:,8)))!TAG the function
+                        trajop%instructionstring=trim(funcstr)
                     case default
                         stop 'CORR/VS: Wrong number of arguments.&
-                                Use two CHAR arguments'
+                                Use two CHAR arguments for corr or VS, six for&
+                                ROTCORR'
                     end select
                    
                 case(9)

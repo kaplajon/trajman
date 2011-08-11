@@ -119,7 +119,7 @@ distribm: writes distributions per molecule
 traj: writes trajectories
 trajm: writes trajectories per molecule
 acorr: writes autocorrelations
-acorrm writes autocorrelations per molecule
+acorrm: writes autocorrelations per molecule
 
     	submoltype NAME startatom endatom
 
@@ -255,6 +255,14 @@ determined by the number of bins (set distbin) and the rdf_binsize (set rdf_bins
 
 Function with tag "tag1" versus function with tag "tag2"
 (the values of function1 is binned in function2).
+
+	RC tagXa tagYa tagZa tagXb tagYb tagZb
+
+Calculates the rotational correlation function for the vector (Xb,Yb,zb) - (Xa,Ya,Za). 
+For now it calculates the correlation in the second order Legendre polynomial P2. 
+Use the appropriate functions for extracting the component coordinates
+(e.g. "X atomname tag") and use tags for the RC function. Make sure you set 'calc' to
+'acorr' and/or 'acorrm' to get any output.
 
 
 TRAJMAN DEFAULT FILES:
