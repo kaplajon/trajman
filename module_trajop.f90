@@ -1533,6 +1533,16 @@ subroutine rotcorr(instr,xa,ya,za,xb,yb,zb)
     datab(2,:,:)=transpose(yb%datam(:,:))
     datab(3,:,:)=transpose(zb%datam(:,:))
     !write(*,*)lbound(xa%datam,2),lbound(dataa,2)
+    if(size(xa%datam,1)/=size(xb%datam,1))then
+        write(*,*)'WARNING RC: NMOLa /= NMOLb'
+        write(*,*)instr%set%filename,' <-- Doing nothing!!'
+        return
+    else if(size(xa%datam,2)/=size(xb%datam,2))then
+        write(*,*)'WARNING RC: NFRAMESa /= NFRAMESb'
+        write(*,*)instr%set%filename,' <-- Doing nothing!!'
+        return
+    end if
+        
     do imol=1,size(xa%datam,1)
         call rotacf(dataa(:,:,imol),datab(:,:,imol),acorr(imol,0:))
         !norm=1._rk/acorr(imol,0)
