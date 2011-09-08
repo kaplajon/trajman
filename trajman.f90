@@ -55,7 +55,7 @@ program trajman
     do i=1,size(troptype)
         select case(troptype(i)%findex)
         case(0,7,9,10,15,16,17,18,19,20)
-        case(13) !RDF
+        case(13,22) !RDF
             j=moltypeofuatom(troptype(i)%atoms(1))
             k=moltypeofuatom(troptype(i)%atoms(2))
             select case(troptype(i)%set%leaflet)
@@ -66,8 +66,13 @@ program trajman
             case(2)!Upper
                 l=size(molt(j)%upper)*size(molt(k)%upper)
             end select
-            if(j==k)l=nint(sqrt(real(l,rk))*(sqrt(real(l,rk))-1))/2
-            allocate(troptype(i)%rdf_pairs(l))
+            !if(j==k)l=nint(sqrt(real(l,rk))*(sqrt(real(l,rk))-1))/2
+            if(j==k)l=nint(sqrt(real(l,rk))*(sqrt(real(l,rk))-1)/2)
+            if(troptype(i)%findex==13)allocate(troptype(i)%rdf_pairs(l))
+            if(troptype(i)%findex==22)troptype(i)%nmolop=l
+           ! write(*,*)troptype(i)%nmolop,troptype(i)%findex,j,k,molt(1)%nmol
+           ! stop
+
                 
         case default
             j=moltypeofuatom(troptype(i)%atoms(1))

@@ -69,14 +69,43 @@ module trajop
         teta = atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi
     end function torsionangle!}}}
 
-    function bond_length(a,b,imol,jmol,xyrdf) result(c)!{{{
+    function bond_length(a,b,imol,jmol,instr) result(c)!{{{
         integer(kind=ik) :: a,b,imol
         integer(kind=ik),optional :: jmol
-        logical,optional :: xyrdf
-        real(kind=rk) :: c,vector(1:3)
+        type(instruct),optional :: instr
+        real(kind=rk) :: c,vector(1:3),ac(3),bc(3)
         if(present(jmol))then
-        vector=mymodulo(getatom(b,jmol)-getatom(a,imol),box)
-        if(present(xyrdf).AND.xyrdf)vector(3)=0._rk
+        if(present(instr).AND.instr%findex==13)then
+            vector=mymodulo(getatom(b,jmol)-getatom(a,imol),box)
+        else
+           ! write(*,*)getatom(b,jmol)
+           ! write(*,*)getatom(a,imol)
+           ! stop
+           
+           
+         !   if(any(imol==molt(moltypeofuatom(a))%upper).neqv.any(jmol==molt(moltypeofuatom(b))%upper)&
+         !   .or.any(imol==molt(moltypeofuatom(a))%lower).neqv.any(jmol==molt(moltypeofuatom(b))%lower))then
+            ac=getatom(a,imol)
+            bc=getatom(b,jmol)
+          !  if(ac(3)<0._rk)then
+          !      if(any(imol==molt(moltypeofuatom(a))%upper))ac(3)=box(3)-ac(3)
+          !      if(any(imol==molt(moltypeofuatom(a))%lower))ac(3)=ac(3)
+          !  else if(ac(3)>box(3))then
+          !      if(any(imol==molt(moltypeofuatom(a))%upper))ac(3)=ac(3)
+          !      if(any(imol==molt(moltypeofuatom(a))%lower))ac(3)=box(3)-ac(3)
+          !  end if
+          !  if(bc(3)<0._rk)then
+          !      if(any(jmol==molt(moltypeofuatom(b))%upper))bc(3)=box(3)-bc(3)
+          !      if(any(jmol==molt(moltypeofuatom(b))%lower))bc(3)=bc(3)
+          !  else if(bc(3)>box(3))then
+          !      if(any(jmol==molt(moltypeofuatom(b))%upper))bc(3)=bc(3)
+          !      if(any(jmol==molt(moltypeofuatom(b))%lower))bc(3)=box(3)-bc(3)
+          !  end if
+        !end if
+            vector=bc-ac
+        end if
+        if(present(instr).AND.instr%set%xyrdf)vector(3)=0._rk
+        if(present(instr).AND.instr%set%zrdf)vector(1:2)=0._rk
         c=sqrt(sum(vector**2))
         else
         vector=getatom(b,imol)-getatom(a,imol)
@@ -116,7 +145,7 @@ module trajop
         integer(kind=ik),allocatable ::&
         cindexes_l(:),cindexes_u(:),grid1(:,:),grid2(:,:)
         logical :: moltest
-        real(kind=rk) :: teta,bl,v(3),x
+        real(kind=rk) :: teta,bl,v(3),x,scaling
         type(instruct) :: instr(:)
           do i=1,size(instr)
             select case(instr(i)%findex)
@@ -184,7 +213,7 @@ module trajop
                  case(9) ! AVERAGE
                         ! Everything is handled in subroutine postproc
                  case(10) !DEFINE
-                     select case(instr(i)%define)
+                     select case(instr(i)%define)!{{{
                      case(1) !CENTEROFMEMBRANE
                         call center_of_membrane(common_setflags%membrane_moltypes)
                      case(2) !ATOM
@@ -199,7 +228,9 @@ module trajop
                      case(3) !LEAFLET
                             !if(global_setflags%apl)call apl_grid(instr(i))
                             if(global_setflags%apl .OR. global_setflags%gd)call apl_grid(instr(i))
-                     end select
+                     case(4)
+                         call foldmol('com')
+                     end select!}}}
                  case(11) ! AREA PER LIPID
                      call apl_calc(instr(i),frame)
                      if(allocated(global_setflags%writeframe))then
@@ -225,14 +256,14 @@ module trajop
                     l=0
                     instr(i)%rdf_pairs=0
                     moltest=(moltypeofuatom(instr(i)%atoms(1))==moltypeofuatom(instr(i)%atoms(2)))
-                    select case(instr(i)%set%leaflet)
+                    select case(instr(i)%set%leaflet)!{{{
                     case(0)!Both
                         do j=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
                             imol=j
                             do k=merge(j+1,1,moltest),molt(moltypeofuatom(instr(i)%atoms(2)))%nmol
                                 jmol=k
                                 l=l+1
-                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)%set%xyrdf)
+                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                             end do
                         end do
                     case(1)!Lower
@@ -241,7 +272,7 @@ module trajop
                             do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%lower)
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%lower(k)
                                 l=l+1
-                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)%set%xyrdf)
+                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                                 !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
                             end do
                         end do
@@ -252,14 +283,14 @@ module trajop
                             do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%upper)
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
                                 l=l+1
-                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)%set%xyrdf)
+                                instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                                 !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
                             end do
                         end do
-                    end select
+                    end select!}}}
                     call rdf_distrib(instr(i),frame)
                     instr(i)%datam(1,frame)=sum((1._rk/instr(i)%rdf_pairs)**3)/size(instr(i)%rdf_pairs)
-                case(14)
+                case(14) !XYZ
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
                         v=[getatom(instr(i)%atoms(1),imol)]
@@ -272,7 +303,7 @@ module trajop
                             instr(i)%datam(jmol,frame)=v(3)
                         end select
                     end do
-                case(15)
+                case(15) !Griddiff
                     instr(i)%datam(1,frame)=griddiff(grid_lower,grid_upper)
                     if(.not.allocated(instr(i)%rdf_dist))then
                         allocate(instr(i)%rdf_dist(-sum(grid_upper):sum(grid_lower)))
@@ -285,8 +316,8 @@ module trajop
                     end do
                     end do
 
-                case(16)
-                    allocate(grid1(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
+                case(16) ! shuffle_GD
+                    allocate(grid1(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))!{{{
                     allocate(grid2(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
 !                    if(.not.allocated(instr(i)%rdf_dist))then
 !                        allocate(instr(i)%rdf_dist(-sum(grid_upper):sum(grid_lower)))
@@ -329,7 +360,7 @@ module trajop
                    ! write(instr(i)%set%ounit,*)
                    ! end if
 
-                    deallocate(grid1,grid2)
+                    deallocate(grid1,grid2)!}}}
                 case(17)
                     select case(instr(i)%instructionstring(1:2))
                         case('BX')
@@ -341,8 +372,70 @@ module trajop
                     end select
                 case(18)
                     instr(i)%datam(1,frame)=(box(1)*box(2))/(molt(instr(i)%atoms(1))%nmol/2._rk)
+                case(21) !Constant datam
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        instr(i)%datam(jmol,frame)=&
+                        instr(i)%set%const%value
+                    end do
+                case(22) !MBL distance between atoms in different molecules
+                    l=0!{{{
+                    moltest=(moltypeofuatom(instr(i)%atoms(1))==moltypeofuatom(instr(i)%atoms(2)))
+                    select case(instr(i)%set%leaflet)
+                    case(0)!Both
+                        do j=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                            imol=j
+                            do k=merge(j+1,1,moltest),molt(moltypeofuatom(instr(i)%atoms(2)))%nmol
+                                jmol=k
+                                l=l+1
+                                !write(*,*)l,size(instr(i)%datam,1)
+                                instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
+                            end do
+                        end do
+                    case(1)!Lower
+                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%lower)
+                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%lower(j)
+                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%lower)
+                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%lower(k)
+                                l=l+1
+                                instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
+                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
+                            end do
+                        end do
+                    case(2)!Upper
+
+                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%upper)
+                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%upper(j)
+                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%upper)
+                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
+                                l=l+1
+                                instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
+                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
+                            end do
+                        end do
+                    end select!}}}
             end select
-        end do 
+            if(instr(i)%set%scaling%switch .and. allocated(instr(i)%datam))then
+                scaling=0
+                select case(trim(instr(i)%set%scaling%typ))
+                ! Scale the function results with the box in different ways
+                case('xy','yx')
+                    scaling=1._rk/(box(1)*box(2))
+                case('xz','zx')
+                    scaling=1._rk/(box(1)*box(3))
+                case('yz','zy')
+                    scaling=1._rk/(box(2)*box(3))
+                case('xyz')
+                    scaling=1._rk/(box(1)*box(2)*box(3))
+                case('x');scaling=1._rk/box(1)
+                case('y');scaling=1._rk/box(2)
+                case('z');scaling=1._rk/box(3)
+                end select
+                !write(*,*)i,frame,scaling,trim(instr(i)%set%scaling%typ),instr(i)%instructionstring,instr(i)%findex
+                instr(i)%datam(:,frame)=instr(i)%datam(:,frame)*scaling
+                !write(*,*)i,frame,scaling
+            end if
+    end do 
     end subroutine procop!}}}
 
     subroutine mean_var(vec,mean,var)!{{{
@@ -372,7 +465,9 @@ module trajop
                 modbox=modbox*10._rk
             end if
             if(instr%set%xyrdf)modbox(3)=1._rk !Normalize with area if xyrdf
+            !if(instr%set%zrdf)modbox(1:2)=1._rk !ZRDF
             ma=instr%set%rdf_binsize*instr%set%distbin
+            !if(instr%set%zrdf)ma=modbox(3) !!ZRDF
             instr%rdf_bin=(ma-mi)/real(size(instr%rdf_dist,1),rk)
             numberdensity=(size(instr%rdf_pairs)/product(modbox(1:3))) 
             do i=1,size(instr%rdf_pairs)
@@ -381,6 +476,7 @@ module trajop
                     bvol=2*pi*((mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin)*instr%rdf_bin)
                 else
                     bvol=(4*pi*((mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin)**2+instr%rdf_bin**2/12._rk))*instr%rdf_bin
+                    !if(instr%set%zrdf)bvol=instr%rdf_bin**2 !ZRDF
                 end if
 
                 if(bi<=0.or.bi>size(instr%rdf_dist,1))then
@@ -408,7 +504,7 @@ module trajop
         end if !present(frame)
     end subroutine rdf_distrib!}}}
 
-    subroutine write_distrib(instr)
+    subroutine write_distrib(instr)!{{{
         type(instruct) :: instr
         integer(kind=ik) :: bi
         real(kind=rk) :: x,mean,var,meandev
@@ -433,7 +529,7 @@ module trajop
         end select
             
             
-    end subroutine write_distrib
+    end subroutine write_distrib!}}}
 
     function average(datam) result(string2)!{{{
         implicit none
@@ -445,7 +541,11 @@ module trajop
             meant(imol)=sum(datam(imol,:))/real(size(datam,2),rk)
         end do
         mean=sum(meant)/real(size(meant),rk)
-        var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
+        if(size(datam,1)==1)then !Added 2011-08-31
+            var=sum((datam(:,2)-mean)**2)/real(size(datam,2)-1,rk)
+        else
+            var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
+        end if
         meandev=sqrt(var/real(size(meant),rk))
         string=getmeanwithdev(mean,sqrt(var))
         write(string2,*)mean,meandev,sqrt(var)
@@ -565,22 +665,27 @@ module trajop
             vec=reshape(instr%datam,[size(instr%datam)])
             dist=0
             distmol=0
-            select case(instr%findex)
-            case(1)
-                mi=-1._rk
-                ma=1._rk
-            case(2)
-                mi=0._rk
-                ma=180._rk
-            !case(3)
-               ! mi=0._rk
-               ! ma=360._rk
-             !   mi=-180._rk
-              !  ma=180._rk
-            case default
-                mi=minval(vec)
-                ma=maxval(vec)
-            end select
+            if(instr%set%distminmax%switch)then
+                mi=instr%set%distminmax%mi
+                ma=instr%set%distminmax%ma
+            else
+                select case(instr%findex)
+                case(1)
+                    mi=-1._rk
+                    ma=1._rk
+                case(2)
+                    mi=0._rk
+                    ma=180._rk
+                !case(3)
+                ! mi=0._rk
+                ! ma=360._rk
+                !   mi=-180._rk
+                !  ma=180._rk
+                case default
+                    mi=minval(vec)
+                    ma=maxval(vec)
+                end select
+            end if
             bin=(ma-mi)/real(size(dist),rk)
             dp=1._rk/(real(size(vec),rk)*bin)
             dpm=1._rk/(real(size(instr%datam,2),rk)*bin)
@@ -588,8 +693,10 @@ module trajop
                 bi=int((vec(i)-mi)/bin+1._rk)
                 if(bi==size(dist)+1)bi=size(dist)
                 if(bi<=0.or.bi>size(dist))then
-                    write(*,*)bi,"bi",vec(i),"vec",i,"i",ma,"ma",mi,"mi",dp,"dp",bin,"bin"
-                    stop "subroutine distrib"   
+                        if(.not.instr%set%distminmax%switch)then
+                        write(*,*)bi,"bi",vec(i),"vec",i,"i",ma,"ma",mi,"mi",dp,"dp",bin,"bin"
+                        stop "subroutine distrib"
+                    end if
                 else
                     dist(bi)=dist(bi)+dp
                     j=mod(i-1,size(distmol,1))+1
@@ -791,40 +898,48 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
         dist=0
         distmol=0
-        select case(instr1%findex)
-            case(1)
-                mi1=-1._rk
-                ma1=1._rk
-            case(2)
-                mi1=0._rk
-                ma1=180._rk
-            !case(3)
-               ! mi1=0._rk
-               ! ma1=360._rk
-             !   mi1=-180._rk
-              !  ma1=180._rk
-            case default
-                mi1=minval(vec1)
-                ma1=maxval(vec1)
-        end select
-
-        select case(instr2%findex)
-            case(1)
-                mi2=-1._rk
-                ma2=1._rk
-            case(2)
-                mi2=0._rk
-                ma2=180._rk
-            !case(3)
-               ! mi2=0._rk
-               ! ma2=360._rk
-             !   mi2=-180._rk
-              !  ma2=180._rk
-            case default
-                mi2=minval(vec2)
-                ma2=maxval(vec2)
-        end select
-
+        if(instr1%set%distminmax%switch)then
+            mi1=instr1%set%distminmax%mi
+            ma1=instr1%set%distminmax%ma
+        else
+            select case(instr1%findex)
+                case(1)
+                    mi1=-1._rk
+                    ma1=1._rk
+                case(2)
+                    mi1=0._rk
+                    ma1=180._rk
+                !case(3)
+                ! mi1=0._rk
+                ! ma1=360._rk
+                !   mi1=-180._rk
+                !  ma1=180._rk
+                case default
+                    mi1=minval(vec1)
+                    ma1=maxval(vec1)
+            end select
+        end if
+        if(instr2%set%distminmax%switch)then
+            mi2=instr2%set%distminmax%mi
+            ma2=instr2%set%distminmax%ma
+        else
+            select case(instr2%findex)
+                case(1)
+                    mi2=-1._rk
+                    ma2=1._rk
+                case(2)
+                    mi2=0._rk
+                    ma2=180._rk
+                !case(3)
+                ! mi2=0._rk
+                ! ma2=360._rk
+                !   mi2=-180._rk
+                !  ma2=180._rk
+                case default
+                    mi2=minval(vec2)
+                    ma2=maxval(vec2)
+            end select
+        end if
         bin1=max((ma1-mi1)/real(size(dist,1),rk),epsilon(bin1))
         bin2=(ma2-mi2)/real(size(dist,2),rk)
 
@@ -837,9 +952,13 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
             if(bi1==size(dist,1)+1)bi1=size(dist,1)
             if(bi2==size(dist,2)+1)bi2=size(dist,2)
             if(bi1<=0.or.bi1>size(dist,1).OR.bi2<=0.or.bi2>size(dist,2))then
-                write(*,*)bi1,"bi1",vec1(i),"vec1",i,"i",ma1,"ma1",mi1,"mi1",dp,"dp",bin1,"bin1"
-                write(*,*)bi2,"bi2",vec2(i),"vec2",i,"i",ma2,"ma2",mi2,"mi2",dp,"dp",bin2,"bin2"
-            stop "subroutine corr_distrib"   
+                if(.not.instr1%set%distminmax%switch .and. bi1<=0 .or. bi1>size(dist,1))then
+                        write(*,*)bi1,"bi1",vec1(i),"vec1",i,"i",ma1,"ma1",mi1,"mi1",dp,"dp",bin1,"bin1"
+                        stop 'subroutine corr_distrib'
+                else if(.not.instr2%set%distminmax%switch)then
+                    write(*,*)bi2,"bi2",vec2(i),"vec2",i,"i",ma2,"ma2",mi2,"mi2",dp,"dp",bin2,"bin2"
+                    stop "subroutine corr_distrib"
+                end if
             else
                     dist(bi1,bi2)=dist(bi1,bi2)+dp
 
@@ -929,26 +1048,33 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         allocate(distmol(size(instr1%datam,1),size(dist,1),2))
         dist=0
         distmol=0
-        select case(instr2%findex)
-            case(1)
-                mi=-1._rk
-                ma=1._rk
-            case(2)
-                mi=0._rk
-                ma=180._rk
-                
-            case default
-                mi=minval(instr2%datam)
-                ma=maxval(instr2%datam)
-        end select
+
+        if(instr2%set%distminmax%switch)then
+            mi=instr2%set%distminmax%mi
+            ma=instr2%set%distminmax%ma
+        else
+            select case(instr2%findex)
+                case(1)
+                    mi=-1._rk
+                    ma=1._rk
+                case(2)
+                    mi=0._rk
+                    ma=180._rk
+                case default
+                    mi=minval(instr2%datam)
+                    ma=maxval(instr2%datam)
+            end select
+        end if
         bin=(ma-mi)/real(size(dist,1),rk)
         do l=lbound(instr2%datam,1),ubound(instr2%datam,1)
             do i=lbound(instr2%datam,2),ubound(instr2%datam,2)
                 bi=int(((instr2%datam(l,i)-mi)/bin)+1._rk)
                 if(bi==size(dist,1)+1)bi=size(dist,1)
                 if(bi<=0.or.bi>size(dist,1))then
+                    if(.not.instr2%set%distminmax%switch)then
                     write(*,*)bi,"bi",instr2%datam(l,i),"instr2",i,"i",ma,"ma",mi,"mi",bin,"bin"
-                    stop "subroutine corr_distrib"   
+                    stop "subroutine corr_distrib"
+                    end if
                 else
                     dist(bi,1)=dist(bi,1)+instr1%datam(l,i)
                     dist(bi,2)=dist(bi,2)+1
@@ -957,9 +1083,11 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 end if
             end do
         end do
-        dist(:,1)=dist(:,1)/dist(:,2)
+        if(instr0%set%VSnorm)dist(:,1)=dist(:,1)/dist(:,2)
+        if(.not.instr0%set%VSnorm)dist(:,1)=dist(:,1)/(bin*size(instr1%datam,2))
         !dist(:,1)=merge(dist(:,1)/dist(:,2),0._rk,MASK=dist(:,2)/=0)
-        distmol(:,:,1)=distmol(:,:,1)/distmol(:,:,2)
+        if(instr0%set%VSnorm)distmol(:,:,1)=distmol(:,:,1)/distmol(:,:,2)
+        if(.not.instr0%set%VSnorm)distmol(:,:,1)=distmol(:,:,1)/(bin*size(instr1%datam,2))
         !distmol(:,:,1)=merge(distmol(:,:,1)/distmol(:,:,2),0._rk,MASK=distmol(:,:,2)/=0)
         !s=sum((distmol(:,bi,1)-dist(bi,1))**2/(dist(bi,2)-1._rk),MASK=distmol(:,bi,2)/=0)
 
@@ -998,20 +1126,49 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
     end subroutine vs_distrib!}}}
 
     subroutine center_of_membrane(molecules)!{{{
-        integer(kind=ik) :: molecules(:),i,imol,j
-        real(kind=rk) :: n
+        integer(kind=ik) :: molecules(:),i,imol,j,k,l
+        real(kind=rk),allocatable,save :: centers(:,:)
+        real(kind=rk) :: n,shift(3),com(3)
         ! Calculate center of membrane based on mass density of
         ! all atoms between atom a and b
-        centerofmembrane=0;n=0
+        if(.not.allocated(centers))then
+            allocate(centers(3,sum(molt(molecules(:))%nmol)))
+            k=0
+            do j=1,size(molecules)
+                i=molecules(j)
+                do imol=1,molt(i)%nmol
+                    k=k+1
+                    centers(:,k)=center_of_molecule(i,imol)!com-shift
+                end do
+            end do
+        end if
+        centerofmembrane=0;n=0;k=0
         do j=1,size(molecules)
            i=molecules(j)
             do imol=1,molt(i)%nmol
+                k=k+1
+                com=center_of_molecule(i,imol)
+                !shift(:)=(com(:)-centers(:,k))-mymodulo(com(:)-centers(:,k),box(:))
+               
+                shift(:)=(com(:)-centers(:,k))-mod(com(:)-centers(:,k),box(:)) !OBSOBS
+
+                do l=molt(i)%firstatom,molt(i)%lastatom
+                    coor(:,cind(l,imol))=coor(:,cind(l,imol))-shift(:)
+                if(allocated(molt(i)%lower))then
+                if(any(imol==molt(i)%lower).and.coor(3,cind(l,imol))>box(3)/2)then
+                !write(*,*)'    shift'
+                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-box(3)
+                end if
+                end if
+                end do
+                centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centerofmembrane=centerofmembrane+center_of_molecule(i,imol)&
                 *sum(masses(molt(i)%firstatom:molt(i)%lastatom))
             end do
             n=n+sum(masses(molt(i)%firstatom:molt(i)%lastatom))*molt(i)%nmol
         end do
         centerofmembrane=centerofmembrane/n
+       ! write(*,*)centerofmembrane
 
     end subroutine center_of_membrane!}}}
 
@@ -1029,13 +1186,27 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         end do
     end subroutine whole!}}}
 
-   subroutine foldmol!{{{
+   subroutine foldmol(a)!{{{
         integer(kind=ik) :: i,imol,j,k
         real(kind=rk) :: com(3),shift
+        character(len=*),optional,intent(in) :: a
+
         ! Fold back molecules that is outside the box
         do i=1,size(molt)
             do imol=1,molt(i)%nmol
+        if(present(a))then
+                com=center_of_molecule(i,imol)-(centerofmembrane-box/2) !Ändrade molt(i)%firstatom till i
+                do j=1,3
+                shift=0
+                if(ALL(i/=common_setflags%membrane_moltypes))shift=com(j)-modulo(com(j),box(j))
+                shift=shift+centerofmembrane(j)
+                        do k=molt(i)%firstatom,molt(i)%lastatom
+                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                        end do
+                end do
+        else
                 com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+
                 do j=1,3
                     shift=com(j)-modulo(com(j),box(j))
                     if(abs(shift)>box(j)/2._rk)then
@@ -1044,11 +1215,14 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         end do
                     end if
                 end do
-                com=center_of_molecule(i,imol)
-                if(com(3)<0 .OR. com(3)>box(3))then
-                write(*,*)com,'COM'
-                stop
+                if(.not.present(a))then
+                    com=center_of_molecule(i,imol)
+                    if(com(3)<0 .OR. com(3)>box(3))then
+                        write(*,*)com,'COM'
+                        stop
+                    end if
                 end if
+        end if
             end do
         end do
     end subroutine foldmol!}}}
@@ -1189,10 +1363,9 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         n=0
         do i=1,size(instr)
             if(instr(i)%findex/=0)n=max(len(trim(instr(i)%instructionstring)),n)
-            if(instr(i)%findex==11)instr(i)%datam=instr(i)%datam*(meanbox(1)*meanbox(2))
+            if(instr(i)%findex==11)instr(i)%datam=instr(i)%datam*(meanbox(1)*meanbox(2)) !APL
         end do
         do i=1,size(instr) ! Loop över instruktionsrader
-        
         select case(instr(i)%findex)
             case(0,10)
             case(7,19,20) ! CORRELATE,VERSUS, ROTCORR
@@ -1238,7 +1411,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     end if
                     open(78,file=trim(avfilename)&
                     ,position=trim(pos),status='unknown')
-                    write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename))," = ",&
+                    write(78,*)int(i,2),filename(len_trim(instr(i)%set%fileprefix)+1:len_trim(filename))," ",&
                     instr(i)%cv%pearsoncoeff,instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     close(78)
                 end if
@@ -1314,9 +1487,8 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         do i=1,size(instr) ! Loop över instruktionsrader
             avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
-                case(0,7,10,19,20)
+                case(0,7,10,19,20,21)
                 case default
-                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     if(allocated(instr(i)%set%calc))then
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
                         write(0,'(5X,A)',advance="no")'Instruction '//trim(adjustl(intstr(i)))//&
@@ -1328,7 +1500,6 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                             filename=trim(instr(i)%set%filename)//trim(instr(i)%set%filesuffix)
                         end if
                         if(instr(i)%set%ounit/=stdout)open(unit=instr(i)%set%ounit,file=trim(filename),status="unknown",iostat=ios)
-                       ! write(*,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
                         select case(trim(instr(i)%set%calc(j)))
                             case('distrib','distribm')
                                 write(0,'(A10)',advance="no")'distrib'
@@ -1357,7 +1528,6 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         if(instr(i)%set%ounit/=stdout)close(instr(i)%set%ounit,iostat=ios)
                     end do
                     end if
-                    !if(size(instr(i)%set%calc)/=0)then ! Make sure even Intel knows what to do
                     select case(instr(i)%findex)
                     case(0,7,10,13,19,20)
                     case default
@@ -1374,19 +1544,9 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     select case(instr(i)%findex)
                         case(0,7,10,13,19,20)
                         case(1)
-                            !inquire(file=avfilename,exist=exists)
-                            !if(.NOT. exists)then
-                            !    pos='ASIS'
-                            !else
-                            !    pos='APPEND'
-                            !end if
-                            !open(78,file=trim(avfilename)&
-                            !,position=trim(pos),status='unknown')
-                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
+                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," ",&
                             trim(adjustl(average(acos(instr(i)%datam)*180._rk/pi)))!,&
                             close(78)
-                            !instr(i)%cv%entropy,instr(i)%cv%entropymutual
-                        ! case(9)
                         case(16)
                             mean=instr(i)%cv%mean/instr(i)%cv%n
                             var=(1/(real(instr(i)%cv%n,rk)-1))*(instr(i)%cv%meandev-&
@@ -1395,25 +1555,19 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                             string=getmeanwithdev(mean,meandev)
                             write(string2,*)mean,meandev,sqrt(var)
                             string2=trim(adjustl(string))//" "//trim(string2)
-                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = "&
-                            ,trim(string2)
+                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," ",&
+                            trim(string2)
                             close(78)
                         case default
-                            !inquire(file=avfilename,exist=exists)
-                            !if(.NOT. exists)then
-                            !    pos='ASIS'
-                            !else
-                            !    pos='APPEND'
-                            !end if
-                            !open(78,file=trim(avfilename)&
-                            !,position=trim(pos),status='unknown')
-                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," = ",&
+                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)," ",&
                             trim(adjustl(average(instr(i)%datam)))!,&
-                            !trim(adjustl(average(transpose(instr(i)%datam))))
+                            !if(instr(i)%molaverage)then
+                            !    do k=1,size(instr(i)%datam,1)
+                            !        write(42,*)k,instr(i)%instructionstring(1:n),sum(instr(i)%datam(k,:))/size(instr(i)%datam,2)
+                            !    end do
+                            !end if
                             close(78)
-!                            instr(i)%cv%entropy,instr(i)%cv%entropymutual
                     end select
-                    !end if
             end select
             if(allocated(instr(i)%datam))deallocate(instr(i)%datam)
         end do
@@ -1517,7 +1671,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         end subroutine myft
     end subroutine autocorr!}}}
 
-subroutine rotcorr(instr,xa,ya,za,xb,yb,zb)
+subroutine rotcorr(instr,xa,ya,za,xb,yb,zb)!{{{
     type(instruct),intent(inout) :: instr,xa,ya,za,xb,yb,zb
     real(kind=rk),allocatable :: dataa(:,:,:),datab(:,:,:),acorr(:,:)
     real(kind=rk) :: norm
@@ -1592,5 +1746,5 @@ subroutine rotcorr(instr,xa,ya,za,xb,yb,zb)
          c=1.5_rk*dot_product(a,b)**2-.5_rk
          !write(*,*)c
      end function P2
-     end subroutine rotcorr
+     end subroutine rotcorr!}}}
 end module trajop

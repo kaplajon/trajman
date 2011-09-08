@@ -26,50 +26,58 @@ module util
 !    use input
     implicit none
     integer(kind=ik) :: maxframes,skipframes
-    type moltype
+    type moltype!{{{
         integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         integer(kind=ik),allocatable :: upper(:),lower(:)
         character(kind=1,len=255) :: molname
-    end type moltype
-
+    end type moltype!}}}
     type(moltype),allocatable :: molt(:)
-
-    type write_frame
+    type write_frame!{{{
         integer(kind=ik) :: framenumber
         character(kind=1,len=3) :: outformat
-    end type write_frame
-
-    type setflags
+    end type write_frame!}}}
+    type constant!{{{
+        real(kind=rk) :: value
+        logical :: switch
+    end type!}}}
+    type distmima!{{{
+        real(kind=rk) :: mi,ma
+        logical :: switch
+    end type!}}}
+    type scaletype!{{{
+        !real(kind=rk) ::
+        character(kind=1,len=3) :: typ
+        logical :: switch
+    end type!}}}
+    type setflags!{{{
         logical ::&
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
-        molaverage,xyrdf
+        molaverage,xyrdf,zrdf,VSnorm
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
         type(write_frame),allocatable :: writeframe(:)
+        type(constant) :: const
+        type(distmima) :: distminmax
+        type(scaletype) :: scaling
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl,rdf_binsize
-    end type setflags
-    
-    type natom
+    end type setflags!}}}
+    type natom!{{{
         character(kind=1,len=100) :: atomname,from_mol_prop,molecule
-    end type natom
-
-    type setcommon
+    end type natom!}}}
+    type setcommon!{{{
         logical :: silent,centerofmembrane
         real(kind=rk) :: traj_cscale
         integer(kind=ik),allocatable :: membrane_moltypes(:),shuffle_atoms(:)
         !integer(kind=ik),allocatable :: membrane_moltypes(:)
-    end type
+    end type!}}}
     type(setcommon) :: common_setflags
-
     type(setflags) :: global_setflags
-
-    type calcval
+    type calcval!{{{
         real(kind=rk) :: mean,meandev,entropy,entropymutual,pearsoncoeff
         integer(kind=ik) :: n
-    end type calcval
-
-    type instruct
+    end type calcval!}}}
+    type instruct!{{{
         integer(kind=ik) :: findex,nmolop,average_count,define!atoms_bak(20),
         integer(kind=ik),allocatable ::&
         atoms(:),apl_side(:),molind(:)!,membrane_moltypes(:)
@@ -80,13 +88,11 @@ module util
         type(setflags) :: set
         type(calcval) :: cv
         type(natom) :: newatom
-    end type instruct
-
+    end type instruct!}}}
     interface reallocate
         module procedure &
         reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe,reallocatereal
     end interface
-
     contains
 
     subroutine subtract(a,b,c)!{{{
@@ -273,7 +279,7 @@ module util
         end if
     end subroutine reallocinstratoms!}}}
 
-function strvecindex(refvec,teststr) result(j)
+function strvecindex(refvec,teststr) result(j)!{{{
 character (len=*) :: refvec(:),teststr
 integer (kind=ik) :: i,j
 !if(ANY(refvec==trim(teststr)))then
@@ -284,18 +290,18 @@ integer (kind=ik) :: i,j
 !else
 !    i=0
 !end if
-end function strvecindex
+end function strvecindex!}}}
 
-    elemental function readint(str) result(i)
+    elemental function readint(str) result(i)!{{{
         integer :: i
         character(len=*),intent(in) :: str
         read(str,*)i
-    end function readint
+    end function readint!}}}
 
-    elemental function readreal(str) result(r)
+    elemental function readreal(str) result(r)!{{{
         real :: r
         character(len=*),intent(in) :: str
         read(str,*)r
-    end function readreal
+    end function readreal!}}}
 
 end module util

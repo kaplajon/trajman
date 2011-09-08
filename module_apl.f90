@@ -84,7 +84,7 @@ module apl
 !        call reallocate(apl_upper_invmol,ku)
 
     end subroutine apl_atomlist!}}}
-    
+
 !    subroutine apl_grid_old(instr)!{{{
 !        type(instruct) :: instr
 !        real(kind=rk) :: rmin
@@ -259,7 +259,8 @@ module apl
            end do
        end function nneighbour
     end subroutine apl_grid!}}}
-    subroutine countmol(apl_side,g)
+
+    subroutine countmol(apl_side,g)!{{{
            integer(kind=ik) :: apl_side(:),i&
            ,ma1,mi1,ma2,mi2,bi1,bi2
            integer(kind=ik) :: g(:,:)
@@ -274,8 +275,7 @@ module apl
                bi2=modulo(int((coor(2,apl_side(i))-mi2)/bin2+1._rk)-1,size(g,2))+1
                g(bi1,bi2)=g(bi1,bi2)+1
            end do
-    end subroutine countmol
-
+    end subroutine countmol!}}}
 
     subroutine apl_calc(instr,frame)!{{{
         type(instruct) :: instr
@@ -310,7 +310,7 @@ module apl
         nullify(grid)
     end subroutine apl_calc!}}}
 
-    function griddiff(grid1,grid2) result(res)
+    function griddiff(grid1,grid2) result(res)!{{{
         real(kind=rk) :: res
         integer(kind=ik) :: grid1(:,:),grid2(:,:)
         real(kind=rk) :: rg1(size(grid1,1),size(grid1,2)),rg2(size(grid2,1),size(grid2,2))
@@ -319,7 +319,7 @@ module apl
         !res=(sqrt(real(sum((grid1-grid2)**2),rk))*sum(grid1)/real(size(grid1),rk))
         res=sum(abs(rg1-rg2))/2._rk
         !res=sum(abs(real(((real(grid1,rk)/real(sum(grid1),rk))-(real(grid2,rk)/real(sum(grid2),rk))),rk)))/2._rk
-    end function griddiff
+    end function griddiff!}}}
 
     subroutine apl_matrix_out(frame,instr)!{{{
         integer(kind=ik) :: i,j,frame
@@ -362,4 +362,5 @@ module apl
         close(43);close(44)
         deallocate(v1,v2)
     end subroutine apl_matrix_out!}}}
+
 end module apl

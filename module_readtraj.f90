@@ -38,22 +38,17 @@ module readtraj
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
     private :: atomindex_a,atomindex_b
-    
     interface atomindex
         module procedure atomindex_a,atomindex_b
     end interface
-
     type atomdata
         character(kind=1,len=len(atomnames)) :: aname
         real(kind=rk) :: mass,mgratio
     end type atomdata
-
     type(atomdata),allocatable :: atomd(:)
-
     interface operator(.str.)
         module procedure stringconv
     end interface operator(.str.)
-
 contains
 
     subroutine wf_gro(filename,wf,funit)!{{{
@@ -176,6 +171,12 @@ subroutine globals!{{{
         common_setflags%traj_cscale=1
         global_setflags%rdf_binsize=0.2
         global_setflags%xyrdf=.FALSE.
+        global_setflags%zrdf=.FALSE.
+        global_setflags%const%value=0
+        global_setflags%const%switch=.FALSE.
+        global_setflags%Vsnorm=.TRUE.
+        global_setflags%distminmax%switch=.FALSE.
+        global_setflags%scaling%switch=.FALSE.
 
     end if
     !maxframes=0;minframe=0

@@ -151,6 +151,17 @@ module input
         write(*,*)
         if(global_setflags%whole)write(*,*)"     Function Whole is active."
         if(global_setflags%apl)write(*,*)"     Area per lipid calculation is enabled."
+        !if(.not.global_setflags%distminmax%switch)write(*,*)"     All or some of the &
+        !distributions have automatic limits.[DEFAULT]"
+        if(global_setflags%distminmax%switch)write(*,*)"     All or some of the &
+        distributions have user defined limits.[NOT DEFAULT]"
+        if(.not.global_setflags%VSnorm)write(*,*)"     All or some of the VS functions are &
+        normalized with binsize and frames.[NOT DEFAULT]"
+        !if(global_setflags%VSnorm)write(*,*)"     All or some of the VS functions are &
+        !normalized with molecules and frames.[DEFAULT]"
+        if(global_setflags%zrdf)write(*,*)'      WARNING! Z-rdf not implemented.'
+        if(global_setflags%zrdf)write(*,*)'      The rdftype z setting works only for MBL!'
+
         if(skipframes/=0)write(*,*)"     Skipping first ",trim(adjustl(intstr(skipframes)))," frames."
         write(*,*)
     end subroutine summary!}}}
@@ -361,6 +372,8 @@ module input
                 p=2
             case('RDF','rdf','rf')
                 trajop%findex=13
+!                if(trajop%set%zrdf)write(*,*)'WARNING! Z-rdf not implemented. Works only &
+!                for MBL'
                 funcstr='RF_'
                 p=3
             case('X','x','Y','y','Z','z')
@@ -406,6 +419,16 @@ module input
                 trajop%findex=20
                 funcstr='RC_'
                 p=1
+            case('constant','CS')
+                trajop%findex=21
+                funcstr='CS_'
+                if(.not.trajop%set%const%switch)stop 'CS: To use a constant &
+                you need to set it first!'
+                p=2
+            case('mbl','MBL','MB')
+                trajop%findex=22
+                funcstr='MB_'
+                p=3
             case('exit')
                 stop
 
@@ -543,6 +566,12 @@ module input
                     case('upper')
                         trajop%set%leaflet=2
                         global_setflags%leaflet=2
+                end select
+            case('fold')
+                select case(arg3)
+                case('centerofmembrane')
+                    trajop%define=4
+                    call foldmol('com')
                 end select
             end select
     end subroutine define!}}}
@@ -741,6 +770,10 @@ module input
                             end if
                             end do
                         end do
+                        if(ku==0 .or. kl==0)then
+                            write(*,*)'Upper: ',ku,' Lower: ',kl
+                            stop
+                        end if
             case ('whole')
                 global_setflags%whole=.TRUE.
             case('torsion_shift','tshift')
@@ -765,8 +798,13 @@ module input
                 select case(arg3)
                 case('xy')
                     global_setflags%xyrdf=.TRUE.
+                    global_setflags%zrdf=.FALSE.
+                case('z')
+                    global_setflags%xyrdf=.FALSE.
+                    global_setflags%zrdf=.TRUE.
                 case default
                     global_setflags%xyrdf=.FALSE.
+                    global_setflags%zrdf=.FALSE.
                 end select
             case('shuffle_atoms')
                 if(.not.allocated(common_setflags%shuffle_atoms))&
@@ -774,6 +812,44 @@ module input
                 do i=1,size(common_setflags%shuffle_atoms)
                     common_setflags%shuffle_atoms(i)=atomindex(stringconv(args(:,2+i)))
                 end do
+            case('constant')
+                read(arg3,*,iostat=ios)global_setflags%const%value
+                global_setflags%const%switch=.TRUE.
+                if (ios/=0)stop 'SET: Constant should be of type real'
+            case('VS_norm')
+                select case(arg3)
+                case('normal')
+                    global_setflags%VSnorm=.TRUE.
+                case('density')
+                    global_setflags%VSnorm=.FALSE.
+                case default
+                    stop 'SET: VS_norm: normal or density?'
+                end select
+            case('distriblimits')
+                if(size(args,2)<=3)then
+                    global_setflags%distminmax%switch=.FALSE.
+                else
+                    global_setflags%distminmax%switch=.TRUE.
+                    read(arg3,*,iostat=ios)global_setflags%distminmax%mi
+                    if (ios/=0)stop 'SET: Disttriblimit min should be of type real'
+                    read(arg4,*,iostat=ios)global_setflags%distminmax%ma
+                    if (ios/=0)stop 'SET: Disttriblimit max should be of type real'
+                end if
+            case('scaling')
+                if(size(args,2)>=3)then
+                    global_setflags%scaling%switch=.true.
+                    global_setflags%scaling%typ=arg3
+                    select case(trim(global_setflags%scaling%typ))
+                    case('x','y','z','xy','yx','xz','zx','yz','zy','xyz')
+                    case default
+                        stop 'SCALING: Check input!'
+                    end select
+                else
+                    global_setflags%scaling%typ=''
+                    global_setflags%scaling%switch=.false.
+
+                end if
+
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

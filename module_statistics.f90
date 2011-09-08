@@ -148,7 +148,7 @@ module statistics
         end do
     end subroutine shuffle!}}}
 
-    subroutine atomshuffle(shuffle_atoms,atoms,side,shuffled_atom_cindexes)
+    subroutine atomshuffle(shuffle_atoms,atoms,side,shuffled_atom_cindexes)!{{{
         integer(kind=ik) :: shuffle_atoms(:),atoms(:),i,j,k,l,m,imol,side
         integer(kind=ik),allocatable :: cindexes(:),cindexes_invatom(:),shuffled_cindexes(:),shuffled_atom_cindexes(:)
         if(allocated(cindexes))deallocate(cindexes,cindexes_invatom,shuffled_cindexes)
@@ -218,6 +218,6 @@ module statistics
             end if
             end do
         end do
-    end subroutine atomshuffle
+    end subroutine atomshuffle!}}}
 
 end module statistics
