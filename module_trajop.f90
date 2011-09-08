@@ -1155,7 +1155,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 do l=molt(i)%firstatom,molt(i)%lastatom
                     coor(:,cind(l,imol))=coor(:,cind(l,imol))-shift(:)
                 if(allocated(molt(i)%lower))then
-                if(any(imol==molt(i)%lower).and.coor(3,cind(l,imol))>box(3)/2)then
+                if(any(imol==molt(i)%lower).and.coor(3,cind(l,imol))>box(3)*.75_rk)then
                 !write(*,*)'    shift'
                     coor(3,cind(l,imol))=coor(3,cind(l,imol))-box(3)
                 end if
