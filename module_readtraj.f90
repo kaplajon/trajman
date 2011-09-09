@@ -242,6 +242,8 @@ end subroutine globals!}}}
         end do
             read(tunit,*)box
         !rewind(tunit)
+        coor=coor*10._rk ! Scale to Å (default in .trr files)
+        box=box*10._rk ! Scale to Å (default in .trr files)
         close(tunit)
         rowsperframe=atot+3
         call trajindex(moltype_atom)
@@ -260,6 +262,8 @@ end subroutine globals!}}}
             read(tunit,*)coor(:,ia)
         end do
         read(unit=tunit,fmt=*,iostat=ios)box(:)
+        coor=coor*10._rk ! Scale to Å (default in .trr files)
+        box=box*10._rk ! Scale to Å (default in .trr files)
 
     end function readgro!}}}
 

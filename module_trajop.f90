@@ -29,6 +29,7 @@ module trajop
 !    use input
     use util
     implicit none
+    real(kind=rk),allocatable :: centers(:,:)
     
     contains
 
@@ -1127,7 +1128,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
     subroutine center_of_membrane(molecules)!{{{
         integer(kind=ik) :: molecules(:),i,imol,j,k,l
-        real(kind=rk),allocatable,save :: centers(:,:)
+        !real(kind=rk),allocatable,save :: centers(:,:)
         real(kind=rk) :: n,shift(3),com(3)
         ! Calculate center of membrane based on mass density of
         ! all atoms between atom a and b
@@ -1141,26 +1142,20 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     centers(:,k)=center_of_molecule(i,imol)!com-shift
                 end do
             end do
+            !centers=centers*10._rk !SCALE INITFILE INSTEAD!
         end if
-        centerofmembrane=0;n=0;k=0
+        centerofmembrane=0;n=0;k=0;shift=0
         do j=1,size(molecules)
            i=molecules(j)
             do imol=1,molt(i)%nmol
                 k=k+1
                 com=center_of_molecule(i,imol)
-                !shift(:)=(com(:)-centers(:,k))-mymodulo(com(:)-centers(:,k),box(:))
-               
-                shift(:)=(com(:)-centers(:,k))-mod(com(:)-centers(:,k),box(:)) !OBSOBS
-
+                !if(allocated(molt(i)%upper))shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
+                shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
                 do l=molt(i)%firstatom,molt(i)%lastatom
-                    coor(:,cind(l,imol))=coor(:,cind(l,imol))-shift(:)
-                if(allocated(molt(i)%lower))then
-                if(any(imol==molt(i)%lower).and.coor(3,cind(l,imol))>box(3)*.75_rk)then
-                !write(*,*)'    shift'
-                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-box(3)
-                end if
-                end if
+                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-shift(3)
                 end do
+                !if(allocated(molt(i)%upper))centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centerofmembrane=centerofmembrane+center_of_molecule(i,imol)&
                 *sum(masses(molt(i)%firstatom:molt(i)%lastatom))
@@ -1168,7 +1163,6 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
             n=n+sum(masses(molt(i)%firstatom:molt(i)%lastatom))*molt(i)%nmol
         end do
         centerofmembrane=centerofmembrane/n
-       ! write(*,*)centerofmembrane
 
     end subroutine center_of_membrane!}}}
 
