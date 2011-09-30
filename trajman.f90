@@ -117,7 +117,7 @@ program trajman
             close(42)
             ! Remove temporary files
             ios=system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
-        case('trr')!VMD MOLFILEPLUGIN
+        case('trr','dcd','pdb')!VMD MOLFILEPLUGIN
             statf=1
             allocate(coorv(atot*3),bx(6))
             do 
@@ -127,6 +127,17 @@ program trajman
             end do
                 call f77_molfile_close_read(tunit,statf)
                 call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+            deallocate(coorv,bx)
+        case default
+            statf=1
+            allocate(coorv(atot*3),bx(6))
+            do 
+                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
+                if(statf==0)exit
+                maxframes=maxframes+1
+            end do
+                call f77_molfile_close_read(tunit,statf)
+                call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
             deallocate(coorv,bx)
         end select
     end if
@@ -192,7 +203,9 @@ frame=skipframes
                 select case(trajtype)
                 case('gro')
                     write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
-                case('trr')
+                case('trr','dcd','pdb')
+                    write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+                case default
                     write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
                 end select
             end do

@@ -287,7 +287,10 @@ end subroutine globals!}}}
         select case(trajtype)
         case('gro')
             close(funit)
-        case('trr')
+        case('trr','dcd','pdb')
+            call f77_molfile_close_read(funit,stat)
+            call f77_molfile_finish
+        case default
             call f77_molfile_close_read(funit,stat)
             call f77_molfile_finish
         end select
@@ -299,7 +302,9 @@ end subroutine globals!}}}
         select case(trajtype)
         case('gro')
             ios=readgro(tunit)
-        case('trr')
+        case('trr','dcd','pdb')
+            ios=readtrr(tunit)
+        case default
             ios=readtrr(tunit)
         end select
     end function readframe        !}}}

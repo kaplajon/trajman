@@ -284,10 +284,14 @@ module input
                 select case(trim(trajtype))
                     case('gro')
                         open(tunit,file=stringconv(trajfile),status='old')
-                    case('trr')!MOLFILEPLUGIN FROM VMD
+                    case('trr','dcd','pdb')!MOLFILEPLUGIN FROM VMD
                         tunit=-1
                         call f77_molfile_init
                         call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+                    case default
+                        tunit=-1
+                        call f77_molfile_init
+                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
                 end select
                 !allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
                 !trajfile=arguments(1:size(trajfile),2)
@@ -433,8 +437,8 @@ module input
                 stop
 
             case default 
-                write(*,*)"Not a valid input, ",":",&
-                trim(stringconv(arguments(:,1))),":"
+                write(*,*)"Not a valid input, ",">",&
+                trim(stringconv(arguments(:,1))),"<"
                 write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
@@ -573,6 +577,9 @@ module input
                     trajop%define=4
                     call foldmol('com')
                 end select
+            case default
+                write(*,*)'>',arg3,'< is not a valid for "define"!'
+                stop
             end select
     end subroutine define!}}}
 
@@ -849,7 +856,25 @@ module input
                     global_setflags%scaling%switch=.false.
 
                 end if
-
+            case('slice')
+                global_setflags%slice%switch=.TRUE.
+                select case(arg3)
+                case('Z_in')
+                    global_setflags%slice%typ='Z'
+                case('Z_out')
+                    global_setflags%slice%typ='Z'
+                case('off')
+                    global_setflags%slice%switch=.FALSE.
+                case default
+                    write(*,*)'SLICE: >',arg3,'< Only slicing in Z (Z_in nd Z_out) is implemented!'
+                    stop
+                end select
+                if(size(args,2)==5)then
+                    global_setflags%slice%lower=readreal(arg4)
+                    global_setflags%slice%upper=readreal(arg5)
+                else
+                    stop 'SLICE: Wrong number of arguments!'
+                end if
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

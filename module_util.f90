@@ -49,6 +49,13 @@ module util
         character(kind=1,len=3) :: typ
         logical :: switch
     end type!}}}
+    type slicetype!{{{
+        !real(kind=rk) ::
+        character(kind=1,len=1) :: typ
+        real(kind=rk) :: upper,lower
+        logical :: switch
+        logical,allocatable :: bintest(:,:)
+    end type!}}}
     type setflags!{{{
         logical ::&
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
@@ -59,6 +66,7 @@ module util
         type(constant) :: const
         type(distmima) :: distminmax
         type(scaletype) :: scaling
+        type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
         real(kind=rk) :: constant_bl,rdf_binsize
     end type setflags!}}}
@@ -192,6 +200,11 @@ module util
     write(str,*)i
     end function intstr!}}}
 
+    elemental function realstr(i) result(str)!{{{
+    real(kind=rk),intent(in) :: i
+    character(len=40) :: str
+    write(str,*)i
+    end function realstr!}}}
     subroutine reallocateint(vector,n)!{{{
         integer(kind=ik),allocatable,intent(inout) :: vector(:)
         integer(kind=ik),allocatable :: copy(:)

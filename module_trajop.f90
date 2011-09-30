@@ -29,7 +29,7 @@ module trajop
 !    use input
     use util
     implicit none
-    real(kind=rk),allocatable :: centers(:,:)
+   ! real(kind=rk),allocatable :: centers(:,:)
     
     contains
 
@@ -74,7 +74,7 @@ module trajop
         integer(kind=ik) :: a,b,imol
         integer(kind=ik),optional :: jmol
         type(instruct),optional :: instr
-        real(kind=rk) :: c,vector(1:3),ac(3),bc(3)
+        real(kind=rk) :: c,vector(1:3),ac(3),bc(3)!,com(3)
         if(present(jmol))then
         if(present(instr).AND.instr%findex==13)then
             vector=mymodulo(getatom(b,jmol)-getatom(a,imol),box)
@@ -217,6 +217,7 @@ module trajop
                      select case(instr(i)%define)!{{{
                      case(1) !CENTEROFMEMBRANE
                         call center_of_membrane(common_setflags%membrane_moltypes)
+                        !write(42,*)frame,centerofmembrane
                      case(2) !ATOM
                         select case(instr(i)%newatom%from_mol_prop)
                         case('com','center_of_mass')
@@ -416,6 +417,33 @@ module trajop
                         end do
                     end select!}}}
             end select
+
+            if(instr(i)%set%slice%switch .and. allocated(instr(i)%datam))then
+            ! SLICE THE BOX AND CHECK MOLECULES IN THE SLICE
+                if(.not.allocated(instr(i)%set%slice%bintest))&
+                allocate(instr(i)%set%slice%bintest(instr(i)%nmolop,skipframes+1:maxframes))
+                do jmol=1,instr(i)%nmolop
+                    imol=instr(i)%molind(jmol)
+                    v=center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                    select case(instr(i)%set%slice%typ)
+                    case('Z_out')
+                    if(v(3)<=instr(i)%set%slice%lower.or.v(3)>=instr(i)%set%slice%upper)then
+                        instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                    else
+                        instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
+                    end if
+                    case('Z_in')
+                    if(v(3)>=instr(i)%set%slice%lower.or.v(3)<=instr(i)%set%slice%upper)then
+                        instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                    else
+                        instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
+                    end if
+                    case default
+                        stop 'SLICE: something is wrong (subroutine procop)'
+                    end select
+                end do
+            end if
+
             if(instr(i)%set%scaling%switch .and. allocated(instr(i)%datam))then
                 scaling=0
                 select case(trim(instr(i)%set%scaling%typ))
@@ -554,6 +582,30 @@ module trajop
         string2=trim(adjustl(string))//" "//trim(string2)
     end function average!}}}
 
+    function slice_average(instr) result(string2)!{{{
+        implicit none
+        type(instruct) :: instr
+        character(len=24) :: string
+        character(len=300) :: string2
+        integer(kind=ik) :: frame,i
+        real(kind=rk) :: meant(1:size(instr%datam,2)),mean,meandev,var
+        do frame=1,size(instr%datam,2)
+            meant(frame)=&
+            sum(instr%datam(:,skipframes+frame),MASK=instr%set%slice%bintest(:,skipframes+frame))&
+            /real(count(instr%set%slice%bintest(:,skipframes+frame)),rk)
+        end do
+        mean=sum(meant)/real(size(meant),rk)
+        !if(size(datam,1)==1)then !Added 2011-08-31
+        !    var=sum((datam(:,2)-mean)**2)/real(size(datam,2)-1,rk)
+        !else
+            var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
+        !end if
+        meandev=sqrt(var/real(size(meant),rk))
+        string=getmeanwithdev(mean,sqrt(var))
+        write(string2,*)mean,meandev,sqrt(var)
+        !write(*,*)string2
+        string2=trim(adjustl(string))//" framedev. "//trim(string2)
+    end function slice_average!}}}
     function test_var(vector) result(var)!{{{
         real(kind=rk) :: vector(:),vector2(size(vector)),var,mean
         integer(kind=ik) :: imol
@@ -1128,7 +1180,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
     subroutine center_of_membrane(molecules)!{{{
         integer(kind=ik) :: molecules(:),i,imol,j,k,l
-        !real(kind=rk),allocatable,save :: centers(:,:)
+        real(kind=rk),allocatable,save :: centers(:,:)
         real(kind=rk) :: n,shift(3),com(3)
         ! Calculate center of membrane based on mass density of
         ! all atoms between atom a and b
@@ -1151,9 +1203,9 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 k=k+1
                 com=center_of_molecule(i,imol)
                 !if(allocated(molt(i)%upper))shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
-                shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
+                shift(:)=(com(:)-centers(:,k))-mymodulo(com(:)-centers(:,k),box(:))
                 do l=molt(i)%firstatom,molt(i)%lastatom
-                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-shift(3)
+                    coor(:,cind(l,imol))=coor(:,cind(l,imol))-shift(:)
                 end do
                 !if(allocated(molt(i)%upper))centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centers(:,k)=center_of_molecule(i,imol)!com-shift
@@ -1169,7 +1221,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
     subroutine whole!{{{
         integer(kind=ik) :: i,imol,j,k
         real(kind=rk) :: com(3),shift
-        ! Fold back molecules that is outside the box
+        ! Fold back atoms that are outside the box
         do i=1,size(molt)
             do imol=1,molt(i)%nmol
                 com=getatom(molt(i)%firstatom,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
@@ -1185,40 +1237,39 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         real(kind=rk) :: com(3),shift
         character(len=*),optional,intent(in) :: a
 
-        ! Fold back molecules that is outside the box
         do i=1,size(molt)
             do imol=1,molt(i)%nmol
-        if(present(a))then
-                com=center_of_molecule(i,imol)-(centerofmembrane-box/2) !Ändrade molt(i)%firstatom till i
-                do j=1,3
-                shift=0
-                if(ALL(i/=common_setflags%membrane_moltypes))shift=com(j)-modulo(com(j),box(j))
-                shift=shift+centerofmembrane(j)
+                if(present(a))then ! Fold and shift the molecules with respect to centerofmembrane
+                    com=center_of_molecule(i,imol)-(centerofmembrane) !box/2 till box
+                    do j=1,3
+                        shift=0
+                        if(ALL(i/=common_setflags%membrane_moltypes))shift=com(j)-mymodulo(com(j),box(j))
+                        shift=shift+centerofmembrane(j)
                         do k=molt(i)%firstatom,molt(i)%lastatom
                             coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
                         end do
-                end do
-        else
-                com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
-
-                do j=1,3
-                    shift=com(j)-modulo(com(j),box(j))
-                    if(abs(shift)>box(j)/2._rk)then
-                        do k=molt(i)%firstatom,molt(i)%lastatom
-                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
-                        end do
-                    end if
-                end do
-                if(.not.present(a))then
-                    com=center_of_molecule(i,imol)
-                    if(com(3)<0 .OR. com(3)>box(3))then
-                        write(*,*)com,'COM'
-                        stop
+                    end do
+                else ! Fold back molecules that are outside the box
+                    com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                    do j=1,3
+                        shift=com(j)-modulo(com(j),box(j))
+                        if(abs(shift)>box(j)/2._rk)then
+                            do k=molt(i)%firstatom,molt(i)%lastatom
+                                coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                            end do
+                        end if
+                    end do
+                    if(.not.present(a))then
+                        com=center_of_molecule(i,imol)
+                        if(com(3)<0 .OR. com(3)>box(3))then
+                            write(*,*)com,'COM'
+                            stop
+                        end if
                     end if
                 end if
-        end if
             end do
         end do
+        if(present(a))centerofmembrane=0
     end subroutine foldmol!}}}
 
     function totalmoi(umol,imol) result(m)!{{{
@@ -1555,6 +1606,12 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         case default
                             write(78,*)int(i,2),instr(i)%instructionstring(1:n)," ",&
                             trim(adjustl(average(instr(i)%datam)))!,&
+                            !!SLICE
+                            if(instr(i)%set%slice%switch)then
+                            write(78,*)int(i,2),instr(i)%instructionstring(1:n)//"_SLICE_"//&
+                            realstr(instr(i)%set%slice%lower)//"-"//realstr(instr(i)%set%slice%upper)," ",&
+                            trim(adjustl(slice_average(instr(i)))) !,&
+                            end if
                             !if(instr(i)%molaverage)then
                             !    do k=1,size(instr(i)%datam,1)
                             !        write(42,*)k,instr(i)%instructionstring(1:n),sum(instr(i)%datam(k,:))/size(instr(i)%datam,2)
