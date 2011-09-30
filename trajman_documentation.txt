@@ -148,6 +148,41 @@ Define the binsize for rdf calculations. R is a real number
 in Ångström.
 Example: distbin=100, rdf_binsize=0.2 Å => cutoff=100x0.2 Å = 20 Å
 
+	rdftype [xyz,xy,z]
+
+Set the type of the rdf distribution. z is only valid for the mbl function
+as for now.
+
+	constant R
+
+To set the value of the constant function.
+(Fill your data matrix with a constant real value.)
+
+
+	VS_norm [normal,density]
+
+Set the the VS_norm to density if you want a number density normalization
+(e.g. in combination with "set constant" and z to get an electron density
+distribution).
+
+	distriblimits min max
+
+Set the limits of the distributions. min and max are real.
+
+	scaling [x,y,z,xy,xz,yz,xyz]
+
+Scale your results with some factor. Right now only combinations of box vectors are
+valid. Set scaling without argument to unset.
+
+	slice [Z_in,Z_out,off] lower upper
+
+EXPERIMENTAL: Make a slice of the box with real limits upper and lower. 
+Z_in: Take molecules inside the slice into account
+Z_out: Takew molecules outside the box into account.
+off: turns slicing off
+
+
+
 INPUTFILE: DEFINITIONS
 Usage: define options
 ----------------------------------
@@ -170,6 +205,9 @@ upper,lower: Following calculations will only be performed on
        both: Default. Calculations are performed without leaflet separation.
 Definition of leaflets is mandatory if you're doing area per lipid calculations.
 
+	fold centerofmembrane
+
+Fold the system so that the box origo is at centerofmembrane.
 
 INPUTFILE: FUNCTIONS
 Usage: function options [tag]
@@ -263,6 +301,18 @@ For now it calculates the correlation in the second order Legendre polynomial P2
 Use the appropriate functions for extracting the component coordinates
 (e.g. "X atomname tag") and use tags for the RC function. Make sure you set 'calc' to
 'acorr' and/or 'acorrm' to get any output.
+
+	CS atom
+
+Set the data matrix to the value set by the "set constant" function. Atom is used
+to get the right nuber of molecules and to distinguish between constants when used
+together with combine and VS and z to get electron density profiles.
+
+	mbl atom1 atom2
+
+Take the distance between atoms in different molecules (e.g. P-P distance in DMPC).
+Can be used in conjunction with "rdftype z" to only take the z component of the
+distance into account (useful in bilayers).
 
 
 TRAJMAN DEFAULT FILES:
