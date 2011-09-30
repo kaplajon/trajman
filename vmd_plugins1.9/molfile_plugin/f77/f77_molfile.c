@@ -14,7 +14,7 @@
 #include "libmolfile_plugin.h"
 #include "vmdplugin.h"
 
-#define F77TESTME 1
+#define F77TESTME 0
 
 /* fortran name mangling */ 
 #if defined(_F77_NO_UNDERSCORE)
