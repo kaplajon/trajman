@@ -1,0 +1,121 @@
+\section{molfile\_\-volumetric\_\-t  Struct Reference}
+\label{structmolfile__volumetric__t}\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+{\tt \#include $<$molfile\_\-plugin.h$>$}
+
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+char {\bf dataname} [256]
+\item 
+float {\bf origin} [3]
+\item 
+float {\bf xaxis} [3]
+\item 
+float {\bf yaxis} [3]
+\item 
+float {\bf zaxis} [3]
+\item 
+int {\bf xsize}
+\item 
+int {\bf ysize}
+\item 
+int {\bf zsize}
+\item 
+int {\bf has\_\-color}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Metadata for volumetric datasets, read initially and used for subsequent memory allocations and file loading. 
+
+
+
+Definition at line 135 of file molfile\_\-plugin.h.
+
+\subsection{Member Data Documentation}
+\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!dataname@{dataname}}
+\index{dataname@{dataname}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-volumetric\_\-t::dataname[256]}\label{structmolfile__volumetric__t_m0}
+
+
+name of volumetric data set 
+
+Definition at line 136 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, open\_\-xsf\_\-read, read\_\-dx\_\-data, and read\_\-xsf\_\-data.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!has_color@{has\_\-color}}
+\index{has_color@{has\_\-color}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-volumetric\_\-t::has\_\-color}\label{structmolfile__volumetric__t_m8}
+
+
+flag indicating presence of voxel color data 
+
+Definition at line 163 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, and open\_\-xsf\_\-read.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!origin@{origin}}
+\index{origin@{origin}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-volumetric\_\-t::origin[3]}\label{structmolfile__volumetric__t_m1}
+
+
+origin: origin of volume (x=0, y=0, z=0 corner 
+
+Definition at line 138 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, and open\_\-xsf\_\-read.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!xaxis@{xaxis}}
+\index{xaxis@{xaxis}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-volumetric\_\-t::xaxis[3]}\label{structmolfile__volumetric__t_m2}
+
+
+direction (and length) for X axis 
+
+Definition at line 149 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, and open\_\-xsf\_\-read.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!xsize@{xsize}}
+\index{xsize@{xsize}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-volumetric\_\-t::xsize}\label{structmolfile__volumetric__t_m5}
+
+
+number of grid cells along the X axis 
+
+Definition at line 159 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, open\_\-xsf\_\-read, read\_\-avsfield\_\-data, read\_\-brix\_\-data, read\_\-ccp4\_\-data, read\_\-cube\_\-data, read\_\-dsn6\_\-data, read\_\-dx\_\-data, read\_\-edm\_\-data, read\_\-fs4\_\-data, read\_\-grid\_\-data, read\_\-map\_\-data, read\_\-orbital\_\-data, read\_\-plt\_\-data, read\_\-situs\_\-data, read\_\-spider\_\-data, read\_\-uhbd\_\-data, and read\_\-xsf\_\-data.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!yaxis@{yaxis}}
+\index{yaxis@{yaxis}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-volumetric\_\-t::yaxis[3]}\label{structmolfile__volumetric__t_m3}
+
+
+direction (and length) for Y axis 
+
+Definition at line 150 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, and open\_\-xsf\_\-read.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!ysize@{ysize}}
+\index{ysize@{ysize}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-volumetric\_\-t::ysize}\label{structmolfile__volumetric__t_m6}
+
+
+number of grid cells along the Y axis 
+
+Definition at line 160 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, open\_\-xsf\_\-read, read\_\-avsfield\_\-data, read\_\-brix\_\-data, read\_\-ccp4\_\-data, read\_\-cube\_\-data, read\_\-dsn6\_\-data, read\_\-dx\_\-data, read\_\-edm\_\-data, read\_\-fs4\_\-data, read\_\-grid\_\-data, read\_\-map\_\-data, read\_\-orbital\_\-data, read\_\-plt\_\-data, read\_\-situs\_\-data, read\_\-spider\_\-data, read\_\-uhbd\_\-data, and read\_\-xsf\_\-data.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!zaxis@{zaxis}}
+\index{zaxis@{zaxis}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-volumetric\_\-t::zaxis[3]}\label{structmolfile__volumetric__t_m4}
+
+
+direction (and length) for Z axis 
+
+Definition at line 151 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, and open\_\-xsf\_\-read.\index{molfile_volumetric_t@{molfile\_\-volumetric\_\-t}!zsize@{zsize}}
+\index{zsize@{zsize}!molfile_volumetric_t@{molfile\_\-volumetric\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-volumetric\_\-t::zsize}\label{structmolfile__volumetric__t_m7}
+
+
+number of grid cells along the Z axis 
+
+Definition at line 161 of file molfile\_\-plugin.h.
+
+Referenced by calculate\_\-orbital, open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cube\_\-read, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, open\_\-uhbd\_\-read, open\_\-xsf\_\-read, read\_\-avsfield\_\-data, read\_\-brix\_\-data, read\_\-ccp4\_\-data, read\_\-cube\_\-data, read\_\-dsn6\_\-data, read\_\-dx\_\-data, read\_\-edm\_\-data, read\_\-fs4\_\-data, read\_\-grid\_\-data, read\_\-map\_\-data, read\_\-orbital\_\-data, read\_\-plt\_\-data, read\_\-situs\_\-data, read\_\-spider\_\-data, read\_\-uhbd\_\-data, and read\_\-xsf\_\-data.
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin.h}\end{CompactItemize}

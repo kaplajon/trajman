@@ -1,0 +1,82 @@
+\section{vmddir.h File Reference}
+\label{vmddir_8h}\index{vmddir.h@{vmddir.h}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$dirent.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$sys/stat.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf VMDDIR}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf VMD\_\-FILENAME\_\-MAX}\ 1024
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+{\bf VMDDIR} $\ast$ {\bf vmd\_\-opendir} (const char $\ast$)
+\item 
+char $\ast$ {\bf vmd\_\-readdir} ({\bf VMDDIR} $\ast$)
+\item 
+void {\bf vmd\_\-closedir} ({\bf VMDDIR} $\ast$)
+\item 
+int {\bf vmd\_\-file\_\-is\_\-executable} (const char $\ast$filename)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{vmddir.h@{vmddir.h}!VMD_FILENAME_MAX@{VMD\_\-FILENAME\_\-MAX}}
+\index{VMD_FILENAME_MAX@{VMD\_\-FILENAME\_\-MAX}!vmddir.h@{vmddir.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMD\_\-FILENAME\_\-MAX\ 1024}\label{vmddir_8h_a0}
+
+
+
+
+Definition at line 45 of file vmddir.h.
+
+\subsection{Function Documentation}
+\index{vmddir.h@{vmddir.h}!vmd_closedir@{vmd\_\-closedir}}
+\index{vmd_closedir@{vmd\_\-closedir}!vmddir.h@{vmddir.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void vmd\_\-closedir ({\bf VMDDIR} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{vmddir_8h_a3}
+
+
+
+
+Definition at line 124 of file vmddir.h.
+
+References VMDDIR::d.
+
+Referenced by open\_\-babel\_\-read.\index{vmddir.h@{vmddir.h}!vmd_file_is_executable@{vmd\_\-file\_\-is\_\-executable}}
+\index{vmd_file_is_executable@{vmd\_\-file\_\-is\_\-executable}!vmddir.h@{vmddir.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int vmd\_\-file\_\-is\_\-executable (const char $\ast$ {\em filename})\hspace{0.3cm}{\tt  [static]}}\label{vmddir_8h_a4}
+
+
+
+
+Definition at line 132 of file vmddir.h.\index{vmddir.h@{vmddir.h}!vmd_opendir@{vmd\_\-opendir}}
+\index{vmd_opendir@{vmd\_\-opendir}!vmddir.h@{vmddir.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf VMDDIR} $\ast$ vmd\_\-opendir (const char $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{vmddir_8h_a1}
+
+
+
+
+Definition at line 100 of file vmddir.h.
+
+References VMDDIR::d.
+
+Referenced by open\_\-babel\_\-read.\index{vmddir.h@{vmddir.h}!vmd_readdir@{vmd\_\-readdir}}
+\index{vmd_readdir@{vmd\_\-readdir}!vmddir.h@{vmddir.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char $\ast$ vmd\_\-readdir ({\bf VMDDIR} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{vmddir_8h_a2}
+
+
+
+
+Definition at line 115 of file vmddir.h.
+
+References VMDDIR::d.
+
+Referenced by open\_\-babel\_\-read.

@@ -1,0 +1,386 @@
+\section{gromacsplugin.C File Reference}
+\label{gromacsplugin_8C}\index{gromacsplugin.C@{gromacsplugin.C}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include \char`\"{}Gromacs.h\char`\"{}}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf gmxdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI}\ 3.14159265358979323846
+\item 
+\#define {\bf GROMACS\_\-PLUGIN\_\-MAJOR\_\-VERSION}\ 0
+\item 
+\#define {\bf GROMACS\_\-PLUGIN\_\-MINOR\_\-VERSION}\ 8
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-gro\_\-read} (const char $\ast$filename, const char $\ast$, int $\ast$natoms)
+\item 
+int {\bf read\_\-gro\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-gro\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-gro\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-g96\_\-read} (const char $\ast$filename, const char $\ast$, int $\ast$natoms)
+\item 
+int {\bf read\_\-g96\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-g96\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-g96\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-trr\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-trr\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-trr\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-trr\_\-write} (const char $\ast$filename, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-trr\_\-timestep} (void $\ast$mydata, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-trr\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf gro\_\-plugin}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf g96\_\-plugin}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf trr\_\-plugin}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf xtc\_\-plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{gromacsplugin.C@{gromacsplugin.C}!GROMACS_PLUGIN_MAJOR_VERSION@{GROMACS\_\-PLUGIN\_\-MAJOR\_\-VERSION}}
+\index{GROMACS_PLUGIN_MAJOR_VERSION@{GROMACS\_\-PLUGIN\_\-MAJOR\_\-VERSION}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GROMACS\_\-PLUGIN\_\-MAJOR\_\-VERSION\ 0}\label{gromacsplugin_8C_a1}
+
+
+
+
+Definition at line 491 of file gromacsplugin.C.\index{gromacsplugin.C@{gromacsplugin.C}!GROMACS_PLUGIN_MINOR_VERSION@{GROMACS\_\-PLUGIN\_\-MINOR\_\-VERSION}}
+\index{GROMACS_PLUGIN_MINOR_VERSION@{GROMACS\_\-PLUGIN\_\-MINOR\_\-VERSION}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GROMACS\_\-PLUGIN\_\-MINOR\_\-VERSION\ 8}\label{gromacsplugin_8C_a2}
+
+
+
+
+Definition at line 492 of file gromacsplugin.C.\index{gromacsplugin.C@{gromacsplugin.C}!M_PI@{M\_\-PI}}
+\index{M_PI@{M\_\-PI}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\ 3.14159265358979323846}\label{gromacsplugin_8C_a0}
+
+
+
+
+Definition at line 33 of file gromacsplugin.C.
+
+Referenced by write\_\-trr\_\-timestep.
+
+\subsection{Function Documentation}
+\index{gromacsplugin.C@{gromacsplugin.C}!close_g96_read@{close\_\-g96\_\-read}}
+\index{close_g96_read@{close\_\-g96\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-g96\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a14}
+
+
+
+
+Definition at line 296 of file gromacsplugin.C.
+
+References mdio\_\-close, and gmxdata::mf.\index{gromacsplugin.C@{gromacsplugin.C}!close_gro_read@{close\_\-gro\_\-read}}
+\index{close_gro_read@{close\_\-gro\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-gro\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a10}
+
+
+
+
+Definition at line 132 of file gromacsplugin.C.
+
+References mdio\_\-close, and gmxdata::mf.\index{gromacsplugin.C@{gromacsplugin.C}!close_trr_read@{close\_\-trr\_\-read}}
+\index{close_trr_read@{close\_\-trr\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-trr\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a17}
+
+
+
+
+Definition at line 377 of file gromacsplugin.C.
+
+References mdio\_\-close, and gmxdata::mf.\index{gromacsplugin.C@{gromacsplugin.C}!close_trr_write@{close\_\-trr\_\-write}}
+\index{close_trr_write@{close\_\-trr\_\-write}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-trr\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a20}
+
+
+
+
+Definition at line 485 of file gromacsplugin.C.
+
+References mdio\_\-close, and gmxdata::mf.\index{gromacsplugin.C@{gromacsplugin.C}!open_g96_read@{open\_\-g96\_\-read}}
+\index{open_g96_read@{open\_\-g96\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-g96\_\-read (const char $\ast$ {\em filename}, const char $\ast$, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a11}
+
+
+
+
+Definition at line 138 of file gromacsplugin.C.
+
+References g96\_\-countatoms, g96\_\-header, MAX\_\-G96\_\-LINE, MAX\_\-MDIO\_\-TITLE, MDFMT\_\-G96, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-open, mdio\_\-readline, gmxdata::mf, gmxdata::natoms, md\_\-header::timeval, and md\_\-header::title.\index{gromacsplugin.C@{gromacsplugin.C}!open_gro_read@{open\_\-gro\_\-read}}
+\index{open_gro_read@{open\_\-gro\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-gro\_\-read (const char $\ast$ {\em filename}, const char $\ast$, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a7}
+
+
+
+
+Definition at line 46 of file gromacsplugin.C.
+
+References gro\_\-header, MAX\_\-MDIO\_\-TITLE, MDFMT\_\-GRO, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-open, gmxdata::mf, gmxdata::natoms, md\_\-header::natoms, md\_\-header::timeval, and md\_\-header::title.\index{gromacsplugin.C@{gromacsplugin.C}!open_trr_read@{open\_\-trr\_\-read}}
+\index{open_trr_read@{open\_\-trr\_\-read}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-trr\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a15}
+
+
+
+
+Definition at line 307 of file gromacsplugin.C.
+
+References MDFMT\_\-TRR, MDFMT\_\-XTC, mdio\_\-close, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-header, mdio\_\-open, gmxdata::mf, gmxdata::natoms, and md\_\-header::natoms.\index{gromacsplugin.C@{gromacsplugin.C}!open_trr_write@{open\_\-trr\_\-write}}
+\index{open_trr_write@{open\_\-trr\_\-write}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-trr\_\-write (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a18}
+
+
+
+
+Definition at line 384 of file gromacsplugin.C.
+
+References host\_\-is\_\-little\_\-endian, MDFMT\_\-TRR, MDFMT\_\-XTC, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-open, MDIO\_\-WRITE, gmxdata::mf, gmxdata::natoms, md\_\-file::prec, md\_\-file::rev, and gmxdata::step.\index{gromacsplugin.C@{gromacsplugin.C}!read_g96_structure@{read\_\-g96\_\-structure}}
+\index{read_g96_structure@{read\_\-g96\_\-structure}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-g96\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a12}
+
+
+
+
+Definition at line 187 of file gromacsplugin.C.
+
+References md\_\-atom::atomname, molfile\_\-atom\_\-t::chain, md\_\-file::f, g96\_\-rec, MAX\_\-G96\_\-LINE, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-readline, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-NOOPTIONS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, gmxdata::natoms, md\_\-atom::resid, molfile\_\-atom\_\-t::resid, md\_\-atom::resname, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{gromacsplugin.C@{gromacsplugin.C}!read_g96_timestep@{read\_\-g96\_\-timestep}}
+\index{read_g96_timestep@{read\_\-g96\_\-timestep}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-g96\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a13}
+
+
+
+
+Definition at line 272 of file gromacsplugin.C.
+
+References md\_\-box::A, molfile\_\-timestep\_\-t::A, md\_\-box::alpha, molfile\_\-timestep\_\-t::alpha, md\_\-box::B, molfile\_\-timestep\_\-t::B, md\_\-box::beta, molfile\_\-timestep\_\-t::beta, md\_\-ts::box, md\_\-box::C, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, md\_\-box::gamma, molfile\_\-timestep\_\-t::gamma, mdio\_\-timestep, mdio\_\-tsfree, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gmxdata::natoms, md\_\-ts::natoms, and md\_\-ts::pos.\index{gromacsplugin.C@{gromacsplugin.C}!read_gro_structure@{read\_\-gro\_\-structure}}
+\index{read_gro_structure@{read\_\-gro\_\-structure}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-gro\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a8}
+
+
+
+
+Definition at line 75 of file gromacsplugin.C.
+
+References md\_\-atom::atomname, molfile\_\-atom\_\-t::chain, md\_\-file::f, gro\_\-rec, MAX\_\-GRO\_\-LINE, mdio\_\-errmsg, mdio\_\-errno, mdio\_\-readline, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-NOOPTIONS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, gmxdata::natoms, md\_\-atom::resid, molfile\_\-atom\_\-t::resid, md\_\-atom::resname, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{gromacsplugin.C@{gromacsplugin.C}!read_gro_timestep@{read\_\-gro\_\-timestep}}
+\index{read_gro_timestep@{read\_\-gro\_\-timestep}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-gro\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a9}
+
+
+
+
+Definition at line 109 of file gromacsplugin.C.
+
+References md\_\-box::A, molfile\_\-timestep\_\-t::A, md\_\-box::alpha, molfile\_\-timestep\_\-t::alpha, md\_\-box::B, molfile\_\-timestep\_\-t::B, md\_\-box::beta, molfile\_\-timestep\_\-t::beta, md\_\-ts::box, md\_\-box::C, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, md\_\-box::gamma, molfile\_\-timestep\_\-t::gamma, mdio\_\-timestep, mdio\_\-tsfree, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gmxdata::natoms, md\_\-ts::natoms, and md\_\-ts::pos.\index{gromacsplugin.C@{gromacsplugin.C}!read_trr_timestep@{read\_\-trr\_\-timestep}}
+\index{read_trr_timestep@{read\_\-trr\_\-timestep}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-trr\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a16}
+
+
+
+
+Definition at line 341 of file gromacsplugin.C.
+
+References md\_\-box::A, molfile\_\-timestep\_\-t::A, md\_\-box::alpha, molfile\_\-timestep\_\-t::alpha, md\_\-box::B, molfile\_\-timestep\_\-t::B, md\_\-box::beta, molfile\_\-timestep\_\-t::beta, md\_\-ts::box, md\_\-box::C, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, md\_\-box::gamma, molfile\_\-timestep\_\-t::gamma, MDIO\_\-EOF, mdio\_\-errmsg, mdio\_\-errno, MDIO\_\-IOERROR, mdio\_\-timestep, mdio\_\-tsfree, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gmxdata::natoms, md\_\-ts::natoms, and md\_\-ts::pos.\index{gromacsplugin.C@{gromacsplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{gromacsplugin_8C_a23}
+
+
+
+
+Definition at line 605 of file gromacsplugin.C.
+
+References VMDPLUGIN\_\-API.\index{gromacsplugin.C@{gromacsplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{gromacsplugin_8C_a21}
+
+
+
+
+Definition at line 593 of file gromacsplugin.C.
+
+References VMDPLUGIN\_\-API.\index{gromacsplugin.C@{gromacsplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{gromacsplugin_8C_a22}
+
+
+
+
+Definition at line 597 of file gromacsplugin.C.
+
+References VMDPLUGIN\_\-API, and vmdplugin\_\-register\_\-cb.\index{gromacsplugin.C@{gromacsplugin.C}!write_trr_timestep@{write\_\-trr\_\-timestep}}
+\index{write_trr_timestep@{write\_\-trr\_\-timestep}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-trr\_\-timestep (void $\ast$ {\em mydata}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a19}
+
+
+
+
+Definition at line 416 of file gromacsplugin.C.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, md\_\-file::fmt, molfile\_\-timestep\_\-t::gamma, M\_\-PI, MDFMT\_\-TRR, gmxdata::mf, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gmxdata::natoms, put\_\-trx\_\-int, put\_\-trx\_\-real, put\_\-trx\_\-string, gmxdata::step, and TRX\_\-MAGIC.
+
+\subsection{Variable Documentation}
+\index{gromacsplugin.C@{gromacsplugin.C}!g96_plugin@{g96\_\-plugin}}
+\index{g96_plugin@{g96\_\-plugin}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} g96\_\-plugin\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a4}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,               
+  MOLFILE_PLUGIN_TYPE,                
+  "g96",                              
+  "Gromacs g96",                      
+  "David Norris, Justin Gullingsrud", 
+  GROMACS_PLUGIN_MAJOR_VERSION,       
+  GROMACS_PLUGIN_MINOR_VERSION,       
+  VMDPLUGIN_THREADUNSAFE,             
+  "g96",                              
+  open_g96_read,
+  read_g96_structure,
+  0,
+  read_g96_timestep,
+  close_g96_read,
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0                                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 521 of file gromacsplugin.C.\index{gromacsplugin.C@{gromacsplugin.C}!gro_plugin@{gro\_\-plugin}}
+\index{gro_plugin@{gro\_\-plugin}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} gro\_\-plugin\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a3}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,               
+  MOLFILE_PLUGIN_TYPE,                
+  "gro",                              
+  "Gromacs GRO",                      
+  "David Norris, Justin Gullingsrud", 
+  GROMACS_PLUGIN_MAJOR_VERSION,       
+  GROMACS_PLUGIN_MINOR_VERSION,       
+  VMDPLUGIN_THREADUNSAFE,             
+  "gro",                              
+  open_gro_read,
+  read_gro_structure,
+  0,
+  read_gro_timestep,
+  close_gro_read,
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0                                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 497 of file gromacsplugin.C.\index{gromacsplugin.C@{gromacsplugin.C}!trr_plugin@{trr\_\-plugin}}
+\index{trr_plugin@{trr\_\-plugin}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} trr\_\-plugin\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a5}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,               
+  MOLFILE_PLUGIN_TYPE,                
+  "trr",                              
+  "Gromacs TRR Trajectory",           
+  "David Norris, Justin Gullingsrud, Axel Kohlmeyer", 
+  GROMACS_PLUGIN_MAJOR_VERSION,       
+  GROMACS_PLUGIN_MINOR_VERSION,       
+  VMDPLUGIN_THREADUNSAFE,             
+  "trr",                              
+  open_trr_read,
+  0,
+  0,
+  read_trr_timestep,
+  close_trr_read,
+  open_trr_write,
+  0,                            
+  write_trr_timestep,
+  close_trr_write,
+  0,                            
+  0,                            
+  0                             
+}\end{verbatim}\normalsize 
+
+
+Definition at line 545 of file gromacsplugin.C.\index{gromacsplugin.C@{gromacsplugin.C}!xtc_plugin@{xtc\_\-plugin}}
+\index{xtc_plugin@{xtc\_\-plugin}!gromacsplugin.C@{gromacsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} xtc\_\-plugin\hspace{0.3cm}{\tt  [static]}}\label{gromacsplugin_8C_a6}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                
+  MOLFILE_PLUGIN_TYPE,                 
+  "xtc",                               
+  "Gromacs XTC Compressed Trajectory", 
+  "David Norris, Justin Gullingsrud",  
+  GROMACS_PLUGIN_MAJOR_VERSION,        
+  GROMACS_PLUGIN_MINOR_VERSION,        
+  VMDPLUGIN_THREADUNSAFE,              
+  "xtc",                               
+  open_trr_read,
+  0,
+  0,
+  read_trr_timestep,
+  close_trr_read,
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0,                                  
+  0                                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 569 of file gromacsplugin.C.

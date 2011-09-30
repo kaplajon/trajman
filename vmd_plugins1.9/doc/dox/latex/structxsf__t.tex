@@ -1,0 +1,165 @@
+\section{xsf\_\-t  Struct Reference}
+\label{structxsf__t}\index{xsf_t@{xsf\_\-t}}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ {\bf fd}
+\item 
+int {\bf nvolsets}
+\item 
+int {\bf numatoms}
+\item 
+int {\bf animsteps}
+\item 
+int {\bf numsteps}
+\item 
+bool {\bf coord}
+\item 
+char $\ast$ {\bf file\_\-name}
+\item 
+{\bf xsf\_\-keyword\_\-t} {\bf pbctype}
+\item 
+{\bf molfile\_\-volumetric\_\-t} $\ast$ {\bf vol}
+\item 
+int {\bf numvolmeta}
+\item 
+float {\bf origin} [3]
+\item 
+float {\bf rotmat} [3][3]
+\item 
+float {\bf invmat} [3][3]
+\item 
+{\bf xsf\_\-box} {\bf box}
+\end{CompactItemize}
+
+
+\subsection{Member Data Documentation}
+\index{xsf_t@{xsf\_\-t}!animsteps@{animsteps}}
+\index{animsteps@{animsteps}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-t::animsteps}\label{structxsf__t_m3}
+
+
+
+
+Definition at line 114 of file xsfplugin.C.\index{xsf_t@{xsf\_\-t}!box@{box}}
+\index{box@{box}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf xsf\_\-box} xsf\_\-t::box}\label{structxsf__t_m13}
+
+
+
+
+Definition at line 124 of file xsfplugin.C.
+
+Referenced by read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsf_t@{xsf\_\-t}!coord@{coord}}
+\index{coord@{coord}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool xsf\_\-t::coord}\label{structxsf__t_m5}
+
+
+
+
+Definition at line 116 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read.\index{xsf_t@{xsf\_\-t}!fd@{fd}}
+\index{fd@{fd}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ xsf\_\-t::fd}\label{structxsf__t_m0}
+
+
+
+
+Definition at line 111 of file xsfplugin.C.
+
+Referenced by close\_\-xsf\_\-read, open\_\-xsf\_\-read, read\_\-xsf\_\-data, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsf_t@{xsf\_\-t}!file_name@{file\_\-name}}
+\index{file_name@{file\_\-name}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ xsf\_\-t::file\_\-name}\label{structxsf__t_m6}
+
+
+
+
+Definition at line 117 of file xsfplugin.C.
+
+Referenced by close\_\-xsf\_\-read, open\_\-xsf\_\-read, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsf_t@{xsf\_\-t}!invmat@{invmat}}
+\index{invmat@{invmat}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float xsf\_\-t::invmat[3][3]}\label{structxsf__t_m12}
+
+
+
+
+Definition at line 123 of file xsfplugin.C.
+
+Referenced by read\_\-xsf\_\-structure, read\_\-xsf\_\-timestep, and xsf\_\-buildinvmat.\index{xsf_t@{xsf\_\-t}!numatoms@{numatoms}}
+\index{numatoms@{numatoms}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-t::numatoms}\label{structxsf__t_m2}
+
+
+
+
+Definition at line 113 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, and read\_\-xsf\_\-structure.\index{xsf_t@{xsf\_\-t}!numsteps@{numsteps}}
+\index{numsteps@{numsteps}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-t::numsteps}\label{structxsf__t_m4}
+
+
+
+
+Definition at line 115 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read.\index{xsf_t@{xsf\_\-t}!numvolmeta@{numvolmeta}}
+\index{numvolmeta@{numvolmeta}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-t::numvolmeta}\label{structxsf__t_m9}
+
+
+
+
+Definition at line 120 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read.\index{xsf_t@{xsf\_\-t}!nvolsets@{nvolsets}}
+\index{nvolsets@{nvolsets}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-t::nvolsets}\label{structxsf__t_m1}
+
+
+
+
+Definition at line 112 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, and read\_\-xsf\_\-metadata.\index{xsf_t@{xsf\_\-t}!origin@{origin}}
+\index{origin@{origin}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float xsf\_\-t::origin[3]}\label{structxsf__t_m10}
+
+
+
+
+Definition at line 121 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, and read\_\-xsf\_\-timestep.\index{xsf_t@{xsf\_\-t}!pbctype@{pbctype}}
+\index{pbctype@{pbctype}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf xsf\_\-keyword\_\-t} xsf\_\-t::pbctype}\label{structxsf__t_m7}
+
+
+
+
+Definition at line 118 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, and read\_\-xsf\_\-timestep.\index{xsf_t@{xsf\_\-t}!rotmat@{rotmat}}
+\index{rotmat@{rotmat}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float xsf\_\-t::rotmat[3][3]}\label{structxsf__t_m11}
+
+
+
+
+Definition at line 122 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, read\_\-xsf\_\-structure, read\_\-xsf\_\-timestep, and xsf\_\-buildrotmat.\index{xsf_t@{xsf\_\-t}!vol@{vol}}
+\index{vol@{vol}!xsf_t@{xsf\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-volumetric\_\-t}$\ast$ xsf\_\-t::vol}\label{structxsf__t_m8}
+
+
+
+
+Definition at line 119 of file xsfplugin.C.
+
+Referenced by close\_\-xsf\_\-read, open\_\-xsf\_\-read, read\_\-xsf\_\-data, and read\_\-xsf\_\-metadata.
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf xsfplugin.C}\end{CompactItemize}

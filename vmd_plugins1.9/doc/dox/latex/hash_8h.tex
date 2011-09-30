@@ -1,0 +1,118 @@
+\section{hash.h File Reference}
+\label{hash_8h}\index{hash.h@{hash.h}}
+{\tt \#include \char`\"{}hash.c\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf hash\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf HASH\_\-FAIL}\ -1
+\item 
+\#define {\bf VMDEXTERNSTATIC}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef hash\_\-t {\bf hash\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void {\bf hash\_\-init} ({\bf hash\_\-t} $\ast$, int)
+\item 
+int {\bf hash\_\-lookup} (const {\bf hash\_\-t} $\ast$, const char $\ast$)
+\item 
+int {\bf hash\_\-insert} ({\bf hash\_\-t} $\ast$, const char $\ast$, int)
+\item 
+int {\bf hash\_\-delete} ({\bf hash\_\-t} $\ast$, const char $\ast$)
+\item 
+void {\bf hash\_\-destroy} ({\bf hash\_\-t} $\ast$)
+\item 
+char $\ast$ {\bf hash\_\-stats} ({\bf hash\_\-t} $\ast$)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{hash.h@{hash.h}!HASH_FAIL@{HASH\_\-FAIL}}
+\index{HASH_FAIL@{HASH\_\-FAIL}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define HASH\_\-FAIL\ -1}\label{hash_8h_a0}
+
+
+
+
+Definition at line 33 of file hash.h.
+
+Referenced by hash\_\-delete, hash\_\-insert, hash\_\-lookup, and read\_\-mdf\_\-bonds.\index{hash.h@{hash.h}!VMDEXTERNSTATIC@{VMDEXTERNSTATIC}}
+\index{VMDEXTERNSTATIC@{VMDEXTERNSTATIC}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDEXTERNSTATIC}\label{hash_8h_a1}
+
+
+
+
+Definition at line 40 of file hash.h.
+
+Referenced by hash\_\-delete, hash\_\-destroy, hash\_\-init, hash\_\-insert, hash\_\-lookup, and hash\_\-stats.
+
+\subsection{Typedef Documentation}
+\index{hash.h@{hash.h}!hash_t@{hash\_\-t}}
+\index{hash_t@{hash\_\-t}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct hash\_\-t  hash\_\-t}\label{hash_8h_a2}
+
+
+hash table top level data structure 
+
+\subsection{Function Documentation}
+\index{hash.h@{hash.h}!hash_delete@{hash\_\-delete}}
+\index{hash_delete@{hash\_\-delete}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int hash\_\-delete ({\bf hash\_\-t} $\ast$, const char $\ast$)}\label{hash_8h_a6}
+
+
+delete an string from the hash table, given its string name 
+
+Definition at line 183 of file hash.c.\index{hash.h@{hash.h}!hash_destroy@{hash\_\-destroy}}
+\index{hash_destroy@{hash\_\-destroy}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void hash\_\-destroy ({\bf hash\_\-t} $\ast$)}\label{hash_8h_a7}
+
+
+destroy the hash table completely, deallocate memory 
+
+Definition at line 224 of file hash.c.
+
+Referenced by read\_\-mdf\_\-bonds.\index{hash.h@{hash.h}!hash_init@{hash\_\-init}}
+\index{hash_init@{hash\_\-init}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void hash\_\-init ({\bf hash\_\-t} $\ast$, int)}\label{hash_8h_a3}
+
+
+initialize hash table for first use 
+
+Definition at line 63 of file hash.c.
+
+Referenced by read\_\-mdf\_\-bonds, and rebuild\_\-table.\index{hash.h@{hash.h}!hash_insert@{hash\_\-insert}}
+\index{hash_insert@{hash\_\-insert}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int hash\_\-insert ({\bf hash\_\-t} $\ast$, const char $\ast$, int)}\label{hash_8h_a5}
+
+
+insert a string into the hash table, along with an integer key 
+
+Definition at line 151 of file hash.c.
+
+Referenced by read\_\-mdf\_\-bonds.\index{hash.h@{hash.h}!hash_lookup@{hash\_\-lookup}}
+\index{hash_lookup@{hash\_\-lookup}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int hash\_\-lookup (const {\bf hash\_\-t} $\ast$, const char $\ast$)}\label{hash_8h_a4}
+
+
+lookup a string key in the hash table returning its integer key 
+
+Definition at line 127 of file hash.c.
+
+Referenced by hash\_\-insert, and read\_\-mdf\_\-bonds.\index{hash.h@{hash.h}!hash_stats@{hash\_\-stats}}
+\index{hash_stats@{hash\_\-stats}!hash.h@{hash.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ hash\_\-stats ({\bf hash\_\-t} $\ast$)}\label{hash_8h_a8}
+
+
+print hash table vital stats 
+
+Definition at line 270 of file hash.c.

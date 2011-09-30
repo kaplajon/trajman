@@ -1,0 +1,143 @@
+\section{graspplugin.C File Reference}
+\label{graspplugin_8C}\index{graspplugin.C@{graspplugin.C}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf grasp\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf TRASH}\ fread(trash, 4, 1, infile)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf is\_\-little\_\-endian} (void)
+\item 
+void $\ast$ {\bf open\_\-file\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-rawgraphics} (void $\ast$v, int $\ast$nelem, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$data)
+\item 
+void {\bf close\_\-file\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{graspplugin.C@{graspplugin.C}!TRASH@{TRASH}}
+\index{TRASH@{TRASH}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TRASH\ fread(trash, 4, 1, infile)}\label{graspplugin_8C_a0}
+
+
+
+
+\subsection{Function Documentation}
+\index{graspplugin.C@{graspplugin.C}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{graspplugin_8C_a5}
+
+
+
+
+Definition at line 243 of file graspplugin.C.
+
+References grasp\_\-t::fd, and grasp\_\-t::graphics.
+
+Referenced by VMDPLUGIN\_\-register.\index{graspplugin.C@{graspplugin.C}!is_little_endian@{is\_\-little\_\-endian}}
+\index{is_little_endian@{is\_\-little\_\-endian}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-little\_\-endian (void)\hspace{0.3cm}{\tt  [static]}}\label{graspplugin_8C_a2}
+
+
+
+
+Definition at line 30 of file graspplugin.C.
+
+Referenced by read\_\-rawgraphics.\index{graspplugin.C@{graspplugin.C}!open_file_read@{open\_\-file\_\-read}}
+\index{open_file_read@{open\_\-file\_\-read}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-file\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{graspplugin_8C_a3}
+
+
+
+
+Definition at line 40 of file graspplugin.C.
+
+References grasp\_\-t::fd, and grasp\_\-t::graphics.
+
+Referenced by VMDPLUGIN\_\-register.\index{graspplugin.C@{graspplugin.C}!read_rawgraphics@{read\_\-rawgraphics}}
+\index{read_rawgraphics@{read\_\-rawgraphics}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-rawgraphics (void $\ast$ {\em v}, int $\ast$ {\em nelem}, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$ {\em data})\hspace{0.3cm}{\tt  [static]}}\label{graspplugin_8C_a4}
+
+
+
+
+Definition at line 55 of file graspplugin.C.
+
+References molfile\_\-graphics\_\-t::data, grasp\_\-t::fd, grasp\_\-t::graphics, is\_\-little\_\-endian, MOLFILE\_\-ERROR, MOLFILE\_\-NORMS, MOLFILE\_\-SUCCESS, MOLFILE\_\-TRINORM, swap2\_\-aligned, swap4\_\-aligned, and molfile\_\-graphics\_\-t::type.
+
+Referenced by VMDPLUGIN\_\-register.\index{graspplugin.C@{graspplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{graspplugin_8C_a7}
+
+
+
+
+Definition at line 267 of file graspplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{graspplugin.C@{graspplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{graspplugin_8C_a6}
+
+
+
+
+Definition at line 266 of file graspplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{graspplugin.C@{graspplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{graspplugin_8C_a8}
+
+
+
+
+Definition at line 268 of file graspplugin.C.
+
+References close\_\-file\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-file\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-rawgraphics, molfile\_\-plugin\_\-t::read\_\-rawgraphics, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{graspplugin.C@{graspplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!graspplugin.C@{graspplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{graspplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,               
+  MOLFILE_PLUGIN_TYPE,                
+  "grasp",                            
+  "GRASP",                            
+  "Justin Gullingsrud, John Stone",   
+  0,                                  
+  5,                                  
+  VMDPLUGIN_THREADSAFE,               
+  "srf,grasp"                         
+}\end{verbatim}\normalsize 
+
+
+Definition at line 254 of file graspplugin.C.

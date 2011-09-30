@@ -1,0 +1,944 @@
+\section{Gromacs.h File Reference}
+\label{Gromacs_8h}\index{Gromacs.h@{Gromacs.h}}
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf md\_\-atom}
+\item 
+struct {\bf md\_\-box}
+\item 
+struct {\bf md\_\-file}
+\item 
+struct {\bf md\_\-header}
+\item 
+struct {\bf md\_\-ts}
+\item 
+struct {\bf trx\_\-hdr}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI\_\-2}\ 1.57079632679489661922
+\item 
+\#define {\bf MDIO\_\-SUCCESS}\ 0
+\item 
+\#define {\bf MDIO\_\-BADFORMAT}\ 1
+\item 
+\#define {\bf MDIO\_\-EOF}\ 2
+\item 
+\#define {\bf MDIO\_\-BADPARAMS}\ 3
+\item 
+\#define {\bf MDIO\_\-IOERROR}\ 4
+\item 
+\#define {\bf MDIO\_\-BADPRECISION}\ 5
+\item 
+\#define {\bf MDIO\_\-BADMALLOC}\ 6
+\item 
+\#define {\bf MDIO\_\-CANTOPEN}\ 7
+\item 
+\#define {\bf MDIO\_\-BADEXTENSION}\ 8
+\item 
+\#define {\bf MDIO\_\-UNKNOWNFMT}\ 9
+\item 
+\#define {\bf MDIO\_\-CANTCLOSE}\ 10
+\item 
+\#define {\bf MDIO\_\-WRONGFORMAT}\ 11
+\item 
+\#define {\bf MDIO\_\-SIZEERROR}\ 12
+\item 
+\#define {\bf MDIO\_\-UNKNOWNERROR}\ 1000
+\item 
+\#define {\bf MDIO\_\-READ}\ 0
+\item 
+\#define {\bf MDIO\_\-WRITE}\ 1
+\item 
+\#define {\bf MDIO\_\-MAX\_\-ERRVAL}\ 11
+\item 
+\#define {\bf TRX\_\-MAGIC}\ 1993
+\item 
+\#define {\bf XTC\_\-MAGIC}\ 1995
+\item 
+\#define {\bf MAX\_\-GRO\_\-LINE}\ 500
+\item 
+\#define {\bf MAX\_\-G96\_\-LINE}\ 500
+\item 
+\#define {\bf MAX\_\-TRX\_\-TITLE}\ 80
+\item 
+\#define {\bf MAX\_\-MDIO\_\-TITLE}\ 80
+\item 
+\#define {\bf ANGS\_\-PER\_\-NM}\ 10
+\item 
+\#define {\bf MDFMT\_\-GRO}\ 1
+\item 
+\#define {\bf MDFMT\_\-TRR}\ 2
+\item 
+\#define {\bf MDFMT\_\-G96}\ 3
+\item 
+\#define {\bf MDFMT\_\-TRJ}\ 4
+\item 
+\#define {\bf MDFMT\_\-XTC}\ 5
+\item 
+\#define {\bf FIRSTIDX}\ 9
+\item 
+\#define {\bf LASTIDX}\ (sizeof({\bf xtc\_\-magicints}) / sizeof($\ast${\bf xtc\_\-magicints}))
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+{\bf md\_\-file} $\ast$ {\bf mdio\_\-open} (const char $\ast$, const int, const int=MDIO\_\-READ)
+\item 
+int {\bf mdio\_\-close} ({\bf md\_\-file} $\ast$)
+\item 
+int {\bf mdio\_\-header} ({\bf md\_\-file} $\ast$, {\bf md\_\-header} $\ast$)
+\item 
+int {\bf mdio\_\-timestep} ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)
+\item 
+int {\bf gro\_\-header} ({\bf md\_\-file} $\ast$, char $\ast$, int, float $\ast$, int $\ast$, int=1)
+\item 
+int {\bf gro\_\-rec} ({\bf md\_\-file} $\ast$, {\bf md\_\-atom} $\ast$)
+\item 
+int {\bf gro\_\-timestep} ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)
+\item 
+int {\bf trx\_\-header} ({\bf md\_\-file} $\ast$, int=0)
+\item 
+int {\bf trx\_\-int} ({\bf md\_\-file} $\ast$, int $\ast$)
+\item 
+int {\bf trx\_\-real} ({\bf md\_\-file} $\ast$, float $\ast$)
+\item 
+int {\bf trx\_\-rvector} ({\bf md\_\-file} $\ast$, float $\ast$)
+\item 
+int {\bf trx\_\-string} ({\bf md\_\-file} $\ast$, char $\ast$, int)
+\item 
+int {\bf trx\_\-timestep} ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)
+\item 
+int {\bf g96\_\-header} ({\bf md\_\-file} $\ast$, char $\ast$, int, float $\ast$)
+\item 
+int {\bf g96\_\-timestep} ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)
+\item 
+int {\bf g96\_\-rec} ({\bf md\_\-file} $\ast$, {\bf md\_\-atom} $\ast$)
+\item 
+int {\bf g96\_\-countatoms} ({\bf md\_\-file} $\ast$)
+\item 
+int {\bf xtc\_\-int} ({\bf md\_\-file} $\ast$, int $\ast$)
+\item 
+int {\bf xtc\_\-float} ({\bf md\_\-file} $\ast$, float $\ast$)
+\item 
+int {\bf xtc\_\-timestep} ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)
+\item 
+int {\bf xtc\_\-3dfcoord} ({\bf md\_\-file} $\ast$, float $\ast$, int $\ast$, float $\ast$)
+\item 
+int {\bf mdio\_\-errno} (void)
+\item 
+const char $\ast$ {\bf mdio\_\-errmsg} (int)
+\item 
+int {\bf mdio\_\-seterror} (int)
+\item 
+int {\bf strip\_\-white} (char $\ast$)
+\item 
+int {\bf mdio\_\-readline} ({\bf md\_\-file} $\ast$, char $\ast$, int, int=1)
+\item 
+int {\bf mdio\_\-tsfree} ({\bf md\_\-ts} $\ast$, int=0)
+\item 
+int {\bf mdio\_\-readbox} ({\bf md\_\-box} $\ast$, float $\ast$, float $\ast$, float $\ast$)
+\item 
+int {\bf xtc\_\-receivebits} (int $\ast$, int)
+\item 
+int {\bf host\_\-is\_\-little\_\-endian} (void)
+\item 
+int {\bf put\_\-trx\_\-int} ({\bf md\_\-file} $\ast$mf, int y)
+\item 
+int {\bf put\_\-trx\_\-real} ({\bf md\_\-file} $\ast$mf, float y)
+\item 
+int {\bf put\_\-trx\_\-string} ({\bf md\_\-file} $\ast$mf, const char $\ast$s)
+\item 
+int {\bf xtc\_\-data} ({\bf md\_\-file} $\ast$mf, char $\ast$buf, int len)
+\item 
+int {\bf xtc\_\-sizeofint} (int size)
+\item 
+int {\bf xtc\_\-sizeofints} (int nints, unsigned int $\ast$sizes)
+\item 
+void {\bf xtc\_\-receiveints} (int $\ast$buf, const int nints, int nbits, unsigned int $\ast$sizes, int $\ast$nums)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const char $\ast$ {\bf mdio\_\-fmtexts} [$\,$]
+\item 
+int {\bf mdio\_\-errcode}
+\item 
+const char $\ast$ {\bf mdio\_\-errdescs} [$\,$]
+\item 
+int {\bf xtc\_\-magicints} [$\,$]
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{Gromacs.h@{Gromacs.h}!ANGS_PER_NM@{ANGS\_\-PER\_\-NM}}
+\index{ANGS_PER_NM@{ANGS\_\-PER\_\-NM}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ANGS\_\-PER\_\-NM\ 10}\label{Gromacs_8h_a24}
+
+
+
+
+Definition at line 99 of file Gromacs.h.
+
+Referenced by g96\_\-rec, g96\_\-timestep, gro\_\-rec, gro\_\-timestep, mdio\_\-readbox, trx\_\-timestep, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!FIRSTIDX@{FIRSTIDX}}
+\index{FIRSTIDX@{FIRSTIDX}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIRSTIDX\ 9}\label{Gromacs_8h_a30}
+
+
+
+
+Definition at line 1631 of file Gromacs.h.
+
+Referenced by xtc\_\-3dfcoord.\index{Gromacs.h@{Gromacs.h}!LASTIDX@{LASTIDX}}
+\index{LASTIDX@{LASTIDX}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LASTIDX\ (sizeof({\bf xtc\_\-magicints}) / sizeof($\ast${\bf xtc\_\-magicints}))}\label{Gromacs_8h_a31}
+
+
+
+
+Definition at line 1633 of file Gromacs.h.\index{Gromacs.h@{Gromacs.h}!M_PI_2@{M\_\-PI\_\-2}}
+\index{M_PI_2@{M\_\-PI\_\-2}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\_\-2\ 1.57079632679489661922}\label{Gromacs_8h_a0}
+
+
+
+
+Definition at line 55 of file Gromacs.h.
+
+Referenced by mdio\_\-readbox.\index{Gromacs.h@{Gromacs.h}!MAX_G96_LINE@{MAX\_\-G96\_\-LINE}}
+\index{MAX_G96_LINE@{MAX\_\-G96\_\-LINE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-G96\_\-LINE\ 500}\label{Gromacs_8h_a21}
+
+
+
+
+Definition at line 96 of file Gromacs.h.
+
+Referenced by g96\_\-countatoms, g96\_\-header, g96\_\-rec, g96\_\-timestep, open\_\-g96\_\-read, and read\_\-g96\_\-structure.\index{Gromacs.h@{Gromacs.h}!MAX_GRO_LINE@{MAX\_\-GRO\_\-LINE}}
+\index{MAX_GRO_LINE@{MAX\_\-GRO\_\-LINE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-GRO\_\-LINE\ 500}\label{Gromacs_8h_a20}
+
+
+
+
+Definition at line 95 of file Gromacs.h.
+
+Referenced by gro\_\-header, gro\_\-rec, gro\_\-timestep, and read\_\-gro\_\-structure.\index{Gromacs.h@{Gromacs.h}!MAX_MDIO_TITLE@{MAX\_\-MDIO\_\-TITLE}}
+\index{MAX_MDIO_TITLE@{MAX\_\-MDIO\_\-TITLE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-MDIO\_\-TITLE\ 80}\label{Gromacs_8h_a23}
+
+
+
+
+Definition at line 98 of file Gromacs.h.
+
+Referenced by mdio\_\-header, open\_\-g96\_\-read, and open\_\-gro\_\-read.\index{Gromacs.h@{Gromacs.h}!MAX_TRX_TITLE@{MAX\_\-TRX\_\-TITLE}}
+\index{MAX_TRX_TITLE@{MAX\_\-TRX\_\-TITLE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-TRX\_\-TITLE\ 80}\label{Gromacs_8h_a22}
+
+
+
+
+Definition at line 97 of file Gromacs.h.
+
+Referenced by trx\_\-header.\index{Gromacs.h@{Gromacs.h}!MDFMT_G96@{MDFMT\_\-G96}}
+\index{MDFMT_G96@{MDFMT\_\-G96}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDFMT\_\-G96\ 3}\label{Gromacs_8h_a27}
+
+
+
+
+Definition at line 105 of file Gromacs.h.
+
+Referenced by mdio\_\-header, mdio\_\-open, mdio\_\-timestep, and open\_\-g96\_\-read.\index{Gromacs.h@{Gromacs.h}!MDFMT_GRO@{MDFMT\_\-GRO}}
+\index{MDFMT_GRO@{MDFMT\_\-GRO}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDFMT\_\-GRO\ 1}\label{Gromacs_8h_a25}
+
+
+
+
+Definition at line 103 of file Gromacs.h.
+
+Referenced by mdio\_\-header, mdio\_\-open, mdio\_\-timestep, and open\_\-gro\_\-read.\index{Gromacs.h@{Gromacs.h}!MDFMT_TRJ@{MDFMT\_\-TRJ}}
+\index{MDFMT_TRJ@{MDFMT\_\-TRJ}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDFMT\_\-TRJ\ 4}\label{Gromacs_8h_a28}
+
+
+
+
+Definition at line 106 of file Gromacs.h.
+
+Referenced by mdio\_\-open, and trx\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDFMT_TRR@{MDFMT\_\-TRR}}
+\index{MDFMT_TRR@{MDFMT\_\-TRR}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDFMT\_\-TRR\ 2}\label{Gromacs_8h_a26}
+
+
+
+
+Definition at line 104 of file Gromacs.h.
+
+Referenced by mdio\_\-header, mdio\_\-open, mdio\_\-timestep, open\_\-trr\_\-read, open\_\-trr\_\-write, trx\_\-timestep, and write\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDFMT_XTC@{MDFMT\_\-XTC}}
+\index{MDFMT_XTC@{MDFMT\_\-XTC}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDFMT\_\-XTC\ 5}\label{Gromacs_8h_a29}
+
+
+
+
+Definition at line 107 of file Gromacs.h.
+
+Referenced by mdio\_\-header, mdio\_\-open, mdio\_\-timestep, open\_\-trr\_\-read, open\_\-trr\_\-write, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_BADEXTENSION@{MDIO\_\-BADEXTENSION}}
+\index{MDIO_BADEXTENSION@{MDIO\_\-BADEXTENSION}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-BADEXTENSION\ 8}\label{Gromacs_8h_a9}
+
+
+
+
+Definition at line 67 of file Gromacs.h.
+
+Referenced by mdio\_\-open.\index{Gromacs.h@{Gromacs.h}!MDIO_BADFORMAT@{MDIO\_\-BADFORMAT}}
+\index{MDIO_BADFORMAT@{MDIO\_\-BADFORMAT}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-BADFORMAT\ 1}\label{Gromacs_8h_a2}
+
+
+
+
+Definition at line 60 of file Gromacs.h.
+
+Referenced by g96\_\-header, g96\_\-rec, g96\_\-timestep, gro\_\-header, gro\_\-rec, gro\_\-timestep, mdio\_\-header, trx\_\-header, xtc\_\-3dfcoord, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_BADMALLOC@{MDIO\_\-BADMALLOC}}
+\index{MDIO_BADMALLOC@{MDIO\_\-BADMALLOC}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-BADMALLOC\ 6}\label{Gromacs_8h_a7}
+
+
+
+
+Definition at line 65 of file Gromacs.h.
+
+Referenced by g96\_\-timestep, gro\_\-timestep, mdio\_\-open, trx\_\-timestep, xtc\_\-3dfcoord, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_BADPARAMS@{MDIO\_\-BADPARAMS}}
+\index{MDIO_BADPARAMS@{MDIO\_\-BADPARAMS}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-BADPARAMS\ 3}\label{Gromacs_8h_a4}
+
+
+
+
+Definition at line 62 of file Gromacs.h.
+
+Referenced by g96\_\-countatoms, g96\_\-header, g96\_\-rec, g96\_\-timestep, gro\_\-header, gro\_\-rec, gro\_\-timestep, mdio\_\-close, mdio\_\-header, mdio\_\-open, mdio\_\-readbox, mdio\_\-readline, mdio\_\-timestep, mdio\_\-tsfree, put\_\-trx\_\-int, put\_\-trx\_\-real, put\_\-trx\_\-string, trx\_\-header, trx\_\-int, trx\_\-real, trx\_\-rvector, trx\_\-string, trx\_\-timestep, xtc\_\-data, xtc\_\-float, xtc\_\-int, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_BADPRECISION@{MDIO\_\-BADPRECISION}}
+\index{MDIO_BADPRECISION@{MDIO\_\-BADPRECISION}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-BADPRECISION\ 5}\label{Gromacs_8h_a6}
+
+
+
+
+Definition at line 64 of file Gromacs.h.
+
+Referenced by trx\_\-header, and trx\_\-real.\index{Gromacs.h@{Gromacs.h}!MDIO_CANTCLOSE@{MDIO\_\-CANTCLOSE}}
+\index{MDIO_CANTCLOSE@{MDIO\_\-CANTCLOSE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-CANTCLOSE\ 10}\label{Gromacs_8h_a11}
+
+
+
+
+Definition at line 69 of file Gromacs.h.
+
+Referenced by mdio\_\-close.\index{Gromacs.h@{Gromacs.h}!MDIO_CANTOPEN@{MDIO\_\-CANTOPEN}}
+\index{MDIO_CANTOPEN@{MDIO\_\-CANTOPEN}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-CANTOPEN\ 7}\label{Gromacs_8h_a8}
+
+
+
+
+Definition at line 66 of file Gromacs.h.
+
+Referenced by mdio\_\-open.\index{Gromacs.h@{Gromacs.h}!MDIO_EOF@{MDIO\_\-EOF}}
+\index{MDIO_EOF@{MDIO\_\-EOF}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-EOF\ 2}\label{Gromacs_8h_a3}
+
+
+
+
+Definition at line 61 of file Gromacs.h.
+
+Referenced by g96\_\-timestep, mdio\_\-readline, read\_\-trr\_\-timestep, xtc\_\-data, xtc\_\-float, and xtc\_\-int.\index{Gromacs.h@{Gromacs.h}!MDIO_IOERROR@{MDIO\_\-IOERROR}}
+\index{MDIO_IOERROR@{MDIO\_\-IOERROR}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-IOERROR\ 4}\label{Gromacs_8h_a5}
+
+
+
+
+Definition at line 63 of file Gromacs.h.
+
+Referenced by mdio\_\-readline, put\_\-trx\_\-int, put\_\-trx\_\-real, put\_\-trx\_\-string, read\_\-trr\_\-timestep, trx\_\-int, trx\_\-real, trx\_\-string, xtc\_\-data, xtc\_\-float, and xtc\_\-int.\index{Gromacs.h@{Gromacs.h}!MDIO_MAX_ERRVAL@{MDIO\_\-MAX\_\-ERRVAL}}
+\index{MDIO_MAX_ERRVAL@{MDIO\_\-MAX\_\-ERRVAL}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-MAX\_\-ERRVAL\ 11}\label{Gromacs_8h_a17}
+
+
+
+
+Definition at line 77 of file Gromacs.h.
+
+Referenced by mdio\_\-errmsg.\index{Gromacs.h@{Gromacs.h}!MDIO_READ@{MDIO\_\-READ}}
+\index{MDIO_READ@{MDIO\_\-READ}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-READ\ 0}\label{Gromacs_8h_a15}
+
+
+
+
+Definition at line 74 of file Gromacs.h.\index{Gromacs.h@{Gromacs.h}!MDIO_SIZEERROR@{MDIO\_\-SIZEERROR}}
+\index{MDIO_SIZEERROR@{MDIO\_\-SIZEERROR}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-SIZEERROR\ 12}\label{Gromacs_8h_a13}
+
+
+
+
+Definition at line 71 of file Gromacs.h.
+
+Referenced by put\_\-trx\_\-int, trx\_\-int, and xtc\_\-int.\index{Gromacs.h@{Gromacs.h}!MDIO_SUCCESS@{MDIO\_\-SUCCESS}}
+\index{MDIO_SUCCESS@{MDIO\_\-SUCCESS}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-SUCCESS\ 0}\label{Gromacs_8h_a1}
+
+
+
+
+Definition at line 59 of file Gromacs.h.
+
+Referenced by g96\_\-header, g96\_\-timestep, mdio\_\-close, mdio\_\-open, mdio\_\-readbox, mdio\_\-tsfree, put\_\-trx\_\-int, put\_\-trx\_\-real, put\_\-trx\_\-string, trx\_\-int, trx\_\-real, trx\_\-rvector, trx\_\-timestep, xtc\_\-float, xtc\_\-int, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_UNKNOWNERROR@{MDIO\_\-UNKNOWNERROR}}
+\index{MDIO_UNKNOWNERROR@{MDIO\_\-UNKNOWNERROR}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-UNKNOWNERROR\ 1000}\label{Gromacs_8h_a14}
+
+
+
+
+Definition at line 72 of file Gromacs.h.
+
+Referenced by xtc\_\-data, xtc\_\-float, and xtc\_\-int.\index{Gromacs.h@{Gromacs.h}!MDIO_UNKNOWNFMT@{MDIO\_\-UNKNOWNFMT}}
+\index{MDIO_UNKNOWNFMT@{MDIO\_\-UNKNOWNFMT}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-UNKNOWNFMT\ 9}\label{Gromacs_8h_a10}
+
+
+
+
+Definition at line 68 of file Gromacs.h.
+
+Referenced by mdio\_\-header, mdio\_\-open, and mdio\_\-timestep.\index{Gromacs.h@{Gromacs.h}!MDIO_WRITE@{MDIO\_\-WRITE}}
+\index{MDIO_WRITE@{MDIO\_\-WRITE}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-WRITE\ 1}\label{Gromacs_8h_a16}
+
+
+
+
+Definition at line 75 of file Gromacs.h.
+
+Referenced by open\_\-trr\_\-write.\index{Gromacs.h@{Gromacs.h}!MDIO_WRONGFORMAT@{MDIO\_\-WRONGFORMAT}}
+\index{MDIO_WRONGFORMAT@{MDIO\_\-WRONGFORMAT}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDIO\_\-WRONGFORMAT\ 11}\label{Gromacs_8h_a12}
+
+
+
+
+Definition at line 70 of file Gromacs.h.
+
+Referenced by trx\_\-timestep, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!TRX_MAGIC@{TRX\_\-MAGIC}}
+\index{TRX_MAGIC@{TRX\_\-MAGIC}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TRX\_\-MAGIC\ 1993}\label{Gromacs_8h_a18}
+
+
+
+
+Definition at line 93 of file Gromacs.h.
+
+Referenced by trx\_\-header, and write\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!XTC_MAGIC@{XTC\_\-MAGIC}}
+\index{XTC_MAGIC@{XTC\_\-MAGIC}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define XTC\_\-MAGIC\ 1995}\label{Gromacs_8h_a19}
+
+
+
+
+Definition at line 94 of file Gromacs.h.
+
+Referenced by mdio\_\-header, and xtc\_\-timestep.
+
+\subsection{Function Documentation}
+\index{Gromacs.h@{Gromacs.h}!g96_countatoms@{g96\_\-countatoms}}
+\index{g96_countatoms@{g96\_\-countatoms}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int g96\_\-countatoms ({\bf md\_\-file} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a52}
+
+
+
+
+Definition at line 657 of file Gromacs.h.
+
+References md\_\-file::f, MAX\_\-G96\_\-LINE, MDIO\_\-BADPARAMS, mdio\_\-readline, mdio\_\-seterror, and strip\_\-white.
+
+Referenced by open\_\-g96\_\-read.\index{Gromacs.h@{Gromacs.h}!g96_header@{g96\_\-header}}
+\index{g96_header@{g96\_\-header}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int g96\_\-header ({\bf md\_\-file} $\ast$, char $\ast$, int, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a49}
+
+
+
+
+Definition at line 593 of file Gromacs.h.
+
+References MAX\_\-G96\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, mdio\_\-readline, mdio\_\-seterror, MDIO\_\-SUCCESS, and strip\_\-white.
+
+Referenced by mdio\_\-header, and open\_\-g96\_\-read.\index{Gromacs.h@{Gromacs.h}!g96_rec@{g96\_\-rec}}
+\index{g96_rec@{g96\_\-rec}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int g96\_\-rec ({\bf md\_\-file} $\ast$, {\bf md\_\-atom} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a51}
+
+
+
+
+Definition at line 686 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-atom::atomname, md\_\-atom::atomnum, MAX\_\-G96\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, mdio\_\-readline, mdio\_\-seterror, md\_\-atom::pos, md\_\-atom::resid, md\_\-atom::resname, and strip\_\-white.
+
+Referenced by read\_\-g96\_\-structure.\index{Gromacs.h@{Gromacs.h}!g96_timestep@{g96\_\-timestep}}
+\index{g96_timestep@{g96\_\-timestep}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int g96\_\-timestep ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a50}
+
+
+
+
+Definition at line 729 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-ts::box, md\_\-file::f, MAX\_\-G96\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADMALLOC, MDIO\_\-BADPARAMS, MDIO\_\-EOF, mdio\_\-errcode, mdio\_\-readbox, mdio\_\-readline, mdio\_\-seterror, MDIO\_\-SUCCESS, md\_\-ts::natoms, md\_\-ts::pos, md\_\-ts::step, strip\_\-white, and md\_\-ts::time.
+
+Referenced by mdio\_\-timestep.\index{Gromacs.h@{Gromacs.h}!gro_header@{gro\_\-header}}
+\index{gro_header@{gro\_\-header}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gro\_\-header ({\bf md\_\-file} $\ast$, char $\ast$, int, float $\ast$, int $\ast$, int = 1)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a40}
+
+
+
+
+Definition at line 976 of file Gromacs.h.
+
+References md\_\-file::f, MAX\_\-GRO\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, mdio\_\-readline, mdio\_\-seterror, and strip\_\-white.
+
+Referenced by gro\_\-timestep, mdio\_\-header, and open\_\-gro\_\-read.\index{Gromacs.h@{Gromacs.h}!gro_rec@{gro\_\-rec}}
+\index{gro_rec@{gro\_\-rec}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gro\_\-rec ({\bf md\_\-file} $\ast$, {\bf md\_\-atom} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a41}
+
+
+
+
+Definition at line 1042 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-atom::atomname, md\_\-atom::atomnum, MAX\_\-GRO\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, mdio\_\-readline, mdio\_\-seterror, md\_\-atom::pos, md\_\-atom::resid, md\_\-atom::resname, and strip\_\-white.
+
+Referenced by read\_\-gro\_\-structure.\index{Gromacs.h@{Gromacs.h}!gro_timestep@{gro\_\-timestep}}
+\index{gro_timestep@{gro\_\-timestep}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gro\_\-timestep ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a42}
+
+
+
+
+Definition at line 1088 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-ts::box, gro\_\-header, MAX\_\-GRO\_\-LINE, MDIO\_\-BADFORMAT, MDIO\_\-BADMALLOC, MDIO\_\-BADPARAMS, mdio\_\-readbox, mdio\_\-readline, mdio\_\-seterror, md\_\-ts::natoms, md\_\-ts::pos, and md\_\-ts::time.
+
+Referenced by mdio\_\-timestep.\index{Gromacs.h@{Gromacs.h}!host_is_little_endian@{host\_\-is\_\-little\_\-endian}}
+\index{host_is_little_endian@{host\_\-is\_\-little\_\-endian}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static inline bool host\_\-is\_\-little\_\-endian (void)\hspace{0.3cm}{\tt  [inline, static]}}\label{Gromacs_8h_a65}
+
+
+detect endiannes of host machine. returns true on little endian machines. 
+
+Definition at line 269 of file Gromacs.h.
+
+Referenced by open\_\-trr\_\-write.\index{Gromacs.h@{Gromacs.h}!mdio_close@{mdio\_\-close}}
+\index{mdio_close@{mdio\_\-close}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-close ({\bf md\_\-file} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a37}
+
+
+
+
+Definition at line 385 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-CANTCLOSE, mdio\_\-seterror, MDIO\_\-SUCCESS, and md\_\-file::trx.
+
+Referenced by close\_\-g96\_\-read, close\_\-gro\_\-read, close\_\-trr\_\-read, close\_\-trr\_\-write, and open\_\-trr\_\-read.\index{Gromacs.h@{Gromacs.h}!mdio_errmsg@{mdio\_\-errmsg}}
+\index{mdio_errmsg@{mdio\_\-errmsg}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ mdio\_\-errmsg (int)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a58}
+
+
+
+
+Definition at line 404 of file Gromacs.h.
+
+References mdio\_\-errdescs, and MDIO\_\-MAX\_\-ERRVAL.
+
+Referenced by open\_\-g96\_\-read, open\_\-gro\_\-read, open\_\-trr\_\-read, open\_\-trr\_\-write, read\_\-g96\_\-structure, read\_\-gro\_\-structure, and read\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!mdio_errno@{mdio\_\-errno}}
+\index{mdio_errno@{mdio\_\-errno}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-errno (void)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a57}
+
+
+
+
+Definition at line 398 of file Gromacs.h.
+
+References mdio\_\-errcode.
+
+Referenced by open\_\-g96\_\-read, open\_\-gro\_\-read, open\_\-trr\_\-read, open\_\-trr\_\-write, read\_\-g96\_\-structure, read\_\-gro\_\-structure, and read\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!mdio_header@{mdio\_\-header}}
+\index{mdio_header@{mdio\_\-header}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-header ({\bf md\_\-file} $\ast$, {\bf md\_\-header} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a38}
+
+
+
+
+Definition at line 525 of file Gromacs.h.
+
+References md\_\-file::f, md\_\-file::fmt, g96\_\-header, gro\_\-header, MAX\_\-MDIO\_\-TITLE, MDFMT\_\-G96, MDFMT\_\-GRO, MDFMT\_\-TRR, MDFMT\_\-XTC, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, mdio\_\-seterror, MDIO\_\-UNKNOWNFMT, trx\_\-hdr::natoms, md\_\-header::natoms, trx\_\-hdr::t, md\_\-header::timeval, trx\_\-hdr::title, md\_\-header::title, md\_\-file::trx, trx\_\-header, xtc\_\-int, and XTC\_\-MAGIC.
+
+Referenced by open\_\-trr\_\-read.\index{Gromacs.h@{Gromacs.h}!mdio_open@{mdio\_\-open}}
+\index{mdio_open@{mdio\_\-open}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf md\_\-file} $\ast$ mdio\_\-open (const char $\ast$, const {\em int}, const {\em int} = MDIO\_\-READ)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a36}
+
+
+
+
+Definition at line 286 of file Gromacs.h.
+
+References md\_\-file::f, md\_\-file::fmt, MDFMT\_\-G96, MDFMT\_\-GRO, MDFMT\_\-TRJ, MDFMT\_\-TRR, MDFMT\_\-XTC, MDIO\_\-BADEXTENSION, MDIO\_\-BADMALLOC, MDIO\_\-BADPARAMS, MDIO\_\-CANTOPEN, mdio\_\-fmtexts, mdio\_\-seterror, MDIO\_\-SUCCESS, MDIO\_\-UNKNOWNFMT, and md\_\-file::trx.
+
+Referenced by open\_\-g96\_\-read, open\_\-gro\_\-read, open\_\-trr\_\-read, and open\_\-trr\_\-write.\index{Gromacs.h@{Gromacs.h}!mdio_readbox@{mdio\_\-readbox}}
+\index{mdio_readbox@{mdio\_\-readbox}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-readbox ({\bf md\_\-box} $\ast$, float $\ast$, float $\ast$, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a63}
+
+
+
+
+Definition at line 494 of file Gromacs.h.
+
+References md\_\-box::A, md\_\-box::alpha, ANGS\_\-PER\_\-NM, md\_\-box::B, md\_\-box::beta, md\_\-box::C, md\_\-box::gamma, M\_\-PI\_\-2, MDIO\_\-BADPARAMS, mdio\_\-seterror, and MDIO\_\-SUCCESS.
+
+Referenced by g96\_\-timestep, gro\_\-timestep, trx\_\-timestep, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!mdio_readline@{mdio\_\-readline}}
+\index{mdio_readline@{mdio\_\-readline}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-readline ({\bf md\_\-file} $\ast$, char $\ast$, int, int = 1)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a61}
+
+
+
+
+Definition at line 421 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-EOF, MDIO\_\-IOERROR, mdio\_\-seterror, and strip\_\-white.
+
+Referenced by g96\_\-countatoms, g96\_\-header, g96\_\-rec, g96\_\-timestep, gro\_\-header, gro\_\-rec, gro\_\-timestep, open\_\-g96\_\-read, read\_\-g96\_\-structure, and read\_\-gro\_\-structure.\index{Gromacs.h@{Gromacs.h}!mdio_seterror@{mdio\_\-seterror}}
+\index{mdio_seterror@{mdio\_\-seterror}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-seterror (int)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a59}
+
+
+
+
+Definition at line 412 of file Gromacs.h.
+
+References mdio\_\-errcode.
+
+Referenced by g96\_\-countatoms, g96\_\-header, g96\_\-rec, g96\_\-timestep, gro\_\-header, gro\_\-rec, gro\_\-timestep, mdio\_\-close, mdio\_\-header, mdio\_\-open, mdio\_\-readbox, mdio\_\-readline, mdio\_\-timestep, mdio\_\-tsfree, put\_\-trx\_\-int, put\_\-trx\_\-real, put\_\-trx\_\-string, trx\_\-header, trx\_\-int, trx\_\-real, trx\_\-rvector, trx\_\-string, trx\_\-timestep, xtc\_\-3dfcoord, xtc\_\-data, xtc\_\-float, xtc\_\-int, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!mdio_timestep@{mdio\_\-timestep}}
+\index{mdio_timestep@{mdio\_\-timestep}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-timestep ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a39}
+
+
+
+
+Definition at line 569 of file Gromacs.h.
+
+References md\_\-file::f, md\_\-file::fmt, g96\_\-timestep, gro\_\-timestep, MDFMT\_\-G96, MDFMT\_\-GRO, MDFMT\_\-TRR, MDFMT\_\-XTC, MDIO\_\-BADPARAMS, mdio\_\-seterror, MDIO\_\-UNKNOWNFMT, trx\_\-timestep, and xtc\_\-timestep.
+
+Referenced by read\_\-g96\_\-timestep, read\_\-gro\_\-timestep, and read\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!mdio_tsfree@{mdio\_\-tsfree}}
+\index{mdio_tsfree@{mdio\_\-tsfree}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-tsfree ({\bf md\_\-ts} $\ast$, int = 0)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a62}
+
+
+
+
+Definition at line 476 of file Gromacs.h.
+
+References md\_\-ts::box, MDIO\_\-BADPARAMS, mdio\_\-seterror, MDIO\_\-SUCCESS, md\_\-ts::natoms, and md\_\-ts::pos.
+
+Referenced by read\_\-g96\_\-timestep, read\_\-gro\_\-timestep, read\_\-trr\_\-timestep, and trx\_\-timestep.\index{Gromacs.h@{Gromacs.h}!put_trx_int@{put\_\-trx\_\-int}}
+\index{put_trx_int@{put\_\-trx\_\-int}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int put\_\-trx\_\-int ({\bf md\_\-file} $\ast$ {\em mf}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a66}
+
+
+
+
+Definition at line 1437 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SIZEERROR, MDIO\_\-SUCCESS, md\_\-file::rev, and swap4\_\-aligned.
+
+Referenced by put\_\-trx\_\-string, and write\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!put_trx_real@{put\_\-trx\_\-real}}
+\index{put_trx_real@{put\_\-trx\_\-real}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int put\_\-trx\_\-real ({\bf md\_\-file} $\ast$ {\em mf}, float {\em y})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a67}
+
+
+
+
+Definition at line 1452 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SUCCESS, md\_\-file::rev, and swap4\_\-aligned.
+
+Referenced by write\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!put_trx_string@{put\_\-trx\_\-string}}
+\index{put_trx_string@{put\_\-trx\_\-string}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int put\_\-trx\_\-string ({\bf md\_\-file} $\ast$ {\em mf}, const char $\ast$ {\em s})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a68}
+
+
+
+
+Definition at line 1465 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SUCCESS, and put\_\-trx\_\-int.
+
+Referenced by write\_\-trr\_\-timestep.\index{Gromacs.h@{Gromacs.h}!strip_white@{strip\_\-white}}
+\index{strip_white@{strip\_\-white}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int strip\_\-white (char $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a60}
+
+
+
+
+Definition at line 443 of file Gromacs.h.
+
+Referenced by g96\_\-countatoms, g96\_\-header, g96\_\-rec, g96\_\-timestep, gro\_\-header, gro\_\-rec, and mdio\_\-readline.\index{Gromacs.h@{Gromacs.h}!trx_header@{trx\_\-header}}
+\index{trx_header@{trx\_\-header}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-header ({\bf md\_\-file} $\ast$, int = 0)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a43}
+
+
+
+
+Definition at line 1160 of file Gromacs.h.
+
+References trx\_\-hdr::box\_\-size, trx\_\-hdr::e\_\-size, md\_\-file::f, trx\_\-hdr::f\_\-size, trx\_\-hdr::ir\_\-size, trx\_\-hdr::lambda, MAX\_\-TRX\_\-TITLE, MDIO\_\-BADFORMAT, MDIO\_\-BADPARAMS, MDIO\_\-BADPRECISION, mdio\_\-seterror, trx\_\-hdr::natoms, trx\_\-hdr::nre, md\_\-file::prec, trx\_\-hdr::pres\_\-size, md\_\-file::rev, trx\_\-hdr::step, swap4\_\-aligned, trx\_\-hdr::sym\_\-size, trx\_\-hdr::t, trx\_\-hdr::title, trx\_\-hdr::top\_\-size, md\_\-file::trx, trx\_\-int, TRX\_\-MAGIC, trx\_\-real, trx\_\-string, trx\_\-hdr::v\_\-size, trx\_\-hdr::version, trx\_\-hdr::vir\_\-size, and trx\_\-hdr::x\_\-size.
+
+Referenced by mdio\_\-header, and trx\_\-timestep.\index{Gromacs.h@{Gromacs.h}!trx_int@{trx\_\-int}}
+\index{trx_int@{trx\_\-int}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-int ({\bf md\_\-file} $\ast$, int $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a44}
+
+
+
+
+Definition at line 1242 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SIZEERROR, MDIO\_\-SUCCESS, md\_\-file::rev, and swap4\_\-aligned.
+
+Referenced by trx\_\-header, and trx\_\-string.\index{Gromacs.h@{Gromacs.h}!trx_real@{trx\_\-real}}
+\index{trx_real@{trx\_\-real}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-real ({\bf md\_\-file} $\ast$, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a45}
+
+
+
+
+Definition at line 1263 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-BADPRECISION, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SUCCESS, md\_\-file::prec, md\_\-file::rev, swap4\_\-aligned, and swap8\_\-aligned.
+
+Referenced by trx\_\-header, and trx\_\-rvector.\index{Gromacs.h@{Gromacs.h}!trx_rvector@{trx\_\-rvector}}
+\index{trx_rvector@{trx\_\-rvector}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-rvector ({\bf md\_\-file} $\ast$, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a46}
+
+
+
+
+Definition at line 1302 of file Gromacs.h.
+
+References MDIO\_\-BADPARAMS, mdio\_\-seterror, MDIO\_\-SUCCESS, and trx\_\-real.
+
+Referenced by trx\_\-timestep.\index{Gromacs.h@{Gromacs.h}!trx_string@{trx\_\-string}}
+\index{trx_string@{trx\_\-string}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-string ({\bf md\_\-file} $\ast$, char $\ast$, int)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a47}
+
+
+
+
+Definition at line 1324 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-IOERROR, mdio\_\-seterror, and trx\_\-int.
+
+Referenced by trx\_\-header.\index{Gromacs.h@{Gromacs.h}!trx_timestep@{trx\_\-timestep}}
+\index{trx_timestep@{trx\_\-timestep}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int trx\_\-timestep ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a48}
+
+
+
+
+Definition at line 1355 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-ts::box, trx\_\-hdr::box\_\-size, trx\_\-hdr::f\_\-size, md\_\-file::fmt, MDFMT\_\-TRJ, MDFMT\_\-TRR, MDIO\_\-BADMALLOC, MDIO\_\-BADPARAMS, mdio\_\-readbox, mdio\_\-seterror, MDIO\_\-SUCCESS, mdio\_\-tsfree, MDIO\_\-WRONGFORMAT, md\_\-ts::natoms, trx\_\-hdr::natoms, md\_\-ts::pos, trx\_\-hdr::pres\_\-size, md\_\-file::trx, trx\_\-header, trx\_\-rvector, trx\_\-hdr::v\_\-size, trx\_\-hdr::vir\_\-size, and trx\_\-hdr::x\_\-size.
+
+Referenced by mdio\_\-timestep.\index{Gromacs.h@{Gromacs.h}!xtc_3dfcoord@{xtc\_\-3dfcoord}}
+\index{xtc_3dfcoord@{xtc\_\-3dfcoord}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-3dfcoord ({\bf md\_\-file} $\ast$, float $\ast$, int $\ast$, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a56}
+
+
+
+
+Definition at line 1743 of file Gromacs.h.
+
+References FIRSTIDX, MDIO\_\-BADFORMAT, MDIO\_\-BADMALLOC, mdio\_\-seterror, xtc\_\-data, xtc\_\-float, xtc\_\-int, xtc\_\-magicints, xtc\_\-receivebits, xtc\_\-receiveints, xtc\_\-sizeofint, and xtc\_\-sizeofints.
+
+Referenced by xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!xtc_data@{xtc\_\-data}}
+\index{xtc_data@{xtc\_\-data}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-data ({\bf md\_\-file} $\ast$ {\em mf}, char $\ast$ {\em buf}, int {\em len})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a69}
+
+
+
+
+Definition at line 1524 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-EOF, MDIO\_\-IOERROR, mdio\_\-seterror, and MDIO\_\-UNKNOWNERROR.
+
+Referenced by xtc\_\-3dfcoord.\index{Gromacs.h@{Gromacs.h}!xtc_float@{xtc\_\-float}}
+\index{xtc_float@{xtc\_\-float}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-float ({\bf md\_\-file} $\ast$, float $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a54}
+
+
+
+
+Definition at line 1499 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-EOF, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SUCCESS, and MDIO\_\-UNKNOWNERROR.
+
+Referenced by xtc\_\-3dfcoord, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!xtc_int@{xtc\_\-int}}
+\index{xtc_int@{xtc\_\-int}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-int ({\bf md\_\-file} $\ast$, int $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a53}
+
+
+
+
+Definition at line 1480 of file Gromacs.h.
+
+References md\_\-file::f, MDIO\_\-BADPARAMS, MDIO\_\-EOF, MDIO\_\-IOERROR, mdio\_\-seterror, MDIO\_\-SIZEERROR, MDIO\_\-SUCCESS, and MDIO\_\-UNKNOWNERROR.
+
+Referenced by mdio\_\-header, xtc\_\-3dfcoord, and xtc\_\-timestep.\index{Gromacs.h@{Gromacs.h}!xtc_receivebits@{xtc\_\-receivebits}}
+\index{xtc_receivebits@{xtc\_\-receivebits}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-receivebits (int $\ast$, int)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a64}
+
+
+
+
+Definition at line 1682 of file Gromacs.h.
+
+Referenced by xtc\_\-3dfcoord, and xtc\_\-receiveints.\index{Gromacs.h@{Gromacs.h}!xtc_receiveints@{xtc\_\-receiveints}}
+\index{xtc_receiveints@{xtc\_\-receiveints}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void xtc\_\-receiveints (int $\ast$ {\em buf}, const int {\em nints}, int {\em nbits}, unsigned int $\ast$ {\em sizes}, int $\ast$ {\em nums})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a72}
+
+
+
+
+Definition at line 1715 of file Gromacs.h.
+
+References xtc\_\-receivebits.
+
+Referenced by xtc\_\-3dfcoord.\index{Gromacs.h@{Gromacs.h}!xtc_sizeofint@{xtc\_\-sizeofint}}
+\index{xtc_sizeofint@{xtc\_\-sizeofint}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-sizeofint (int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a70}
+
+
+
+
+Definition at line 1638 of file Gromacs.h.
+
+Referenced by xtc\_\-3dfcoord.\index{Gromacs.h@{Gromacs.h}!xtc_sizeofints@{xtc\_\-sizeofints}}
+\index{xtc_sizeofints@{xtc\_\-sizeofints}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-sizeofints (int {\em nints}, unsigned int $\ast$ {\em sizes})\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a71}
+
+
+
+
+Definition at line 1652 of file Gromacs.h.
+
+Referenced by xtc\_\-3dfcoord.\index{Gromacs.h@{Gromacs.h}!xtc_timestep@{xtc\_\-timestep}}
+\index{xtc_timestep@{xtc\_\-timestep}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-timestep ({\bf md\_\-file} $\ast$, {\bf md\_\-ts} $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a55}
+
+
+
+
+Definition at line 1556 of file Gromacs.h.
+
+References ANGS\_\-PER\_\-NM, md\_\-ts::box, md\_\-file::f, md\_\-file::fmt, MDFMT\_\-XTC, MDIO\_\-BADFORMAT, MDIO\_\-BADMALLOC, MDIO\_\-BADPARAMS, mdio\_\-readbox, mdio\_\-seterror, MDIO\_\-SUCCESS, MDIO\_\-WRONGFORMAT, md\_\-ts::natoms, md\_\-ts::pos, md\_\-ts::step, md\_\-ts::time, xtc\_\-3dfcoord, xtc\_\-float, xtc\_\-int, and XTC\_\-MAGIC.
+
+Referenced by mdio\_\-timestep.
+
+\subsection{Variable Documentation}
+\index{Gromacs.h@{Gromacs.h}!mdio_errcode@{mdio\_\-errcode}}
+\index{mdio_errcode@{mdio\_\-errcode}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdio\_\-errcode\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a33}
+
+
+
+
+Definition at line 91 of file Gromacs.h.
+
+Referenced by g96\_\-timestep, mdio\_\-errno, and mdio\_\-seterror.\index{Gromacs.h@{Gromacs.h}!mdio_errdescs@{mdio\_\-errdescs}}
+\index{mdio_errdescs@{mdio\_\-errdescs}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ mdio\_\-errdescs[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a34}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+        "no error",
+        "file does not match format",
+        "unexpected end-of-file reached",
+        "function called with bad parameters",
+        "file i/o error",
+        "unsupported precision",
+        "out of memory",
+        "cannot open file",
+        "bad file extension",
+        "unknown file format",
+        "cannot close file",
+        "wrong file format for this function",
+        "binary i/o error: sizeof(int) != 4",
+        NULL
+}\end{verbatim}\normalsize 
+
+
+Definition at line 250 of file Gromacs.h.
+
+Referenced by mdio\_\-errmsg.\index{Gromacs.h@{Gromacs.h}!mdio_fmtexts@{mdio\_\-fmtexts}}
+\index{mdio_fmtexts@{mdio\_\-fmtexts}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ mdio\_\-fmtexts[$\,$]}\label{Gromacs_8h_a32}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+    "",
+    ".gro",
+    ".trr",
+    ".g96",
+    ".trj",
+    ".xtc",
+    NULL
+}\end{verbatim}\normalsize 
+
+
+Definition at line 80 of file Gromacs.h.
+
+Referenced by mdio\_\-open.\index{Gromacs.h@{Gromacs.h}!xtc_magicints@{xtc\_\-magicints}}
+\index{xtc_magicints@{xtc\_\-magicints}!Gromacs.h@{Gromacs.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xtc\_\-magicints[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{Gromacs_8h_a35}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+        0, 0, 0, 0, 0, 0, 0, 0, 0,8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
+        80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290,
+        1625, 2048, 2580, 3250, 4096, 5060, 6501, 8192, 10321, 13003, 16384,
+        20642, 26007, 32768, 41285, 52015, 65536, 82570, 104031, 131072,
+        165140, 208063, 262144, 330280, 416127, 524287, 660561, 832255,
+        1048576, 1321122, 1664510, 2097152, 2642245, 3329021, 4194304,
+        5284491, 6658042, 8388607, 10568983, 13316085, 16777216 }\end{verbatim}\normalsize 
+
+
+Definition at line 1622 of file Gromacs.h.
+
+Referenced by xtc\_\-3dfcoord.

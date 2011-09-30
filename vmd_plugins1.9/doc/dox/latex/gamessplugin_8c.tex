@@ -1,0 +1,493 @@
+\section{gamessplugin.c File Reference}
+\label{gamessplugin_8c}\index{gamessplugin.c@{gamessplugin.c}}
+{\tt \#include \char`\"{}gamessplugin.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf GRID}\ 0
+\item 
+\#define {\bf PRINTERR}\ (void)(0)
+\item 
+\#define {\bf ERR\_\-FALSE}(x)\ if ( x == NULL ) return FALSE;
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-gamess\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-gamess\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf read\_\-orbital\_\-metadata} (void $\ast$mydata, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-orbital\_\-data} (void $\ast$mydata, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-gamess\_\-read} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+int {\bf parse\_\-gamess\_\-log\_\-static} (void $\ast$mydata, int $\ast$natoms)
+\item 
+int {\bf get\_\-trajectory} (void $\ast$mydata, {\bf molfile\_\-timestep\_\-t} $\ast$ts, int natoms)
+\item 
+int {\bf get\_\-initial\_\-info} (void $\ast$mydata)
+\item 
+int {\bf initialize\_\-animated\_\-mode} (void $\ast$mydata)
+\item 
+int {\bf animate\_\-normal\_\-mode} (void $\ast$mydata, unsigned int mode)
+\item 
+int {\bf get\_\-normal\_\-modes} (void $\ast$mydata)
+\item 
+int {\bf get\_\-cart\_\-hessian} (void $\ast$mydata)
+\item 
+int {\bf get\_\-int\_\-coords} (void $\ast$mydata)
+\item 
+int {\bf get\_\-guess} (void $\ast$mydata)
+\item 
+int {\bf get\_\-basis} (void $\ast$mydata)
+\item 
+float {\bf renorm\_\-coefficient} (float coefficient, float exponent, char orb)
+\item 
+int {\bf atomic\_\-basis} (int oldcounter, void $\ast$mydata, float $\ast$basis, char $\ast$orbital\_\-symmetry, int $\ast$atomic\_\-shells, int $\ast$shell\_\-primitives)
+\item 
+int {\bf get\_\-num\_\-orbitals} (void $\ast$mydata)
+\item 
+int {\bf get\_\-wavefunction} (void $\ast$mydata)
+\item 
+int {\bf find\_\-homo} (void $\ast$mydata)
+\item 
+int {\bf orbital\_\-grid\_\-driver} (void $\ast$mydata)
+\item 
+int {\bf calculate\_\-orbital} (void $\ast$mydata)
+\item 
+int {\bf get\_\-system\_\-dimensions} (void $\ast$mydata)
+\item 
+int {\bf get\_\-proc\_\-mem} (void $\ast$mydata)
+\item 
+int {\bf have\_\-gamess} (void $\ast$mydata)
+\item 
+int {\bf get\_\-gbasis} (void $\ast$mydata)
+\item 
+int {\bf get\_\-runtitle} (void $\ast$mydata)
+\item 
+int {\bf have\_\-supported\_\-gbasis} (void $\ast$mydata)
+\item 
+int {\bf check\_\-contrl} (void $\ast$mydata)
+\item 
+void {\bf get\_\-time} (char $\ast$mytime)
+\item 
+char $\ast$ {\bf chop\_\-string\_\-all} (char $\ast$the\_\-string)
+\item 
+char $\ast$ {\bf chop\_\-string\_\-nl} (char $\ast$the\_\-string)
+\item 
+float {\bf orbital\_\-at\_\-grid\_\-xyz} (void $\ast$mydata, float $\ast$wave\_\-function, float grid\_\-size, float grid\_\-x, float grid\_\-y, float grid\_\-z)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf gamessplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{gamessplugin.c@{gamessplugin.c}!ERR_FALSE@{ERR\_\-FALSE}}
+\index{ERR_FALSE@{ERR\_\-FALSE}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ERR\_\-FALSE(x)\ if ( x == NULL ) return FALSE;}\label{gamessplugin_8c_a2}
+
+
+
+
+Definition at line 45 of file gamessplugin.c.
+
+Referenced by atomic\_\-basis, check\_\-contrl, get\_\-basis, get\_\-cart\_\-hessian, get\_\-gbasis, get\_\-guess, get\_\-initial\_\-info, get\_\-int\_\-coords, get\_\-normal\_\-modes, get\_\-num\_\-orbitals, get\_\-proc\_\-mem, get\_\-runtitle, get\_\-trajectory, get\_\-wavefunction, and have\_\-gamess.\index{gamessplugin.c@{gamessplugin.c}!GRID@{GRID}}
+\index{GRID@{GRID}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRID\ 0}\label{gamessplugin_8c_a0}
+
+
+
+
+Definition at line 28 of file gamessplugin.c.
+
+Referenced by parse\_\-gamess\_\-log\_\-static.\index{gamessplugin.c@{gamessplugin.c}!PRINTERR@{PRINTERR}}
+\index{PRINTERR@{PRINTERR}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PRINTERR\ (void)(0)}\label{gamessplugin_8c_a1}
+
+
+
+
+Definition at line 38 of file gamessplugin.c.
+
+Referenced by calculate\_\-orbital, get\_\-basis, get\_\-cart\_\-hessian, get\_\-initial\_\-info, get\_\-int\_\-coords, get\_\-normal\_\-modes, get\_\-system\_\-dimensions, get\_\-wavefunction, initialize\_\-animated\_\-mode, and open\_\-gamess\_\-read.
+
+\subsection{Function Documentation}
+\index{gamessplugin.c@{gamessplugin.c}!animate_normal_mode@{animate\_\-normal\_\-mode}}
+\index{animate_normal_mode@{animate\_\-normal\_\-mode}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int animate\_\-normal\_\-mode (void $\ast$ {\em mydata}, unsigned int {\em mode})}\label{gamessplugin_8c_a17}
+
+
+
+
+Definition at line 1210 of file gamessplugin.c.
+
+References gamessdata::animated\_\-mode, mode\_\-data::mode\_\-frames, mode\_\-data::mode\_\-num\_\-frames, mode\_\-data::mode\_\-scaling, gamessdata::normal\_\-modes, gamessdata::numatoms, gamessdata::temporary, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!atomic_basis@{atomic\_\-basis}}
+\index{atomic_basis@{atomic\_\-basis}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int atomic\_\-basis (int {\em oldcounter}, void $\ast$ {\em mydata}, float $\ast$ {\em basis}, char $\ast$ {\em orbital\_\-symmetry}, int $\ast$ {\em atomic\_\-shells}, int $\ast$ {\em shell\_\-primitives})}\label{gamessplugin_8c_a24}
+
+
+
+
+Definition at line 2425 of file gamessplugin.c.
+
+References eatline, ERR\_\-FALSE, gamessdata::file, MOLFILE\_\-ERROR, and renorm\_\-coefficient.\index{gamessplugin.c@{gamessplugin.c}!calculate_orbital@{calculate\_\-orbital}}
+\index{calculate_orbital@{calculate\_\-orbital}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calculate\_\-orbital (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a29}
+
+
+
+
+Definition at line 2952 of file gamessplugin.c.
+
+References molfile\_\-volumetric\_\-t::dataname, FALSE, molfile\_\-volumetric\_\-t::has\_\-color, gamessdata::homo\_\-index, MAX\_\-GRIDPOINTS, gamessdata::num\_\-gauss\_\-basis\_\-funcs, gamessdata::num\_\-gridpoints, orbital\_\-at\_\-grid\_\-xyz, gamessdata::orbital\_\-grid, molfile\_\-volumetric\_\-t::origin, PRINTERR, gamessdata::system\_\-center, gamessdata::system\_\-dimensions, TRUE, gamessdata::vol, gamessdata::wave\_\-function, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.\index{gamessplugin.c@{gamessplugin.c}!check_contrl@{check\_\-contrl}}
+\index{check_contrl@{check\_\-contrl}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int check\_\-contrl (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a36}
+
+
+
+
+Definition at line 3966 of file gamessplugin.c.
+
+References chop\_\-string\_\-all, eatline, ENERGY, ERR\_\-FALSE, FALSE, gamessdata::file, gamessdata::geometry, GVB, HESSIAN, MCSCF, OPTIMIZE, RHF, ROHF, gamessdata::runtyp, gamessdata::runtyp\_\-string, SADPOINT, gamessdata::scfenergies, gamessdata::scftyp, gamessdata::scftyp\_\-string, TRUE, and UHF.\index{gamessplugin.c@{gamessplugin.c}!chop_string_all@{chop\_\-string\_\-all}}
+\index{chop_string_all@{chop\_\-string\_\-all}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ chop\_\-string\_\-all (char $\ast$ {\em the\_\-string})}\label{gamessplugin_8c_a38}
+
+
+
+
+Definition at line 4152 of file gamessplugin.c.
+
+Referenced by check\_\-contrl.\index{gamessplugin.c@{gamessplugin.c}!chop_string_nl@{chop\_\-string\_\-nl}}
+\index{chop_string_nl@{chop\_\-string\_\-nl}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ chop\_\-string\_\-nl (char $\ast$ {\em the\_\-string})}\label{gamessplugin_8c_a39}
+
+
+
+
+Definition at line 4175 of file gamessplugin.c.
+
+Referenced by get\_\-runtitle.\index{gamessplugin.c@{gamessplugin.c}!close_gamess_read@{close\_\-gamess\_\-read}}
+\index{close_gamess_read@{close\_\-gamess\_\-read}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-gamess\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a9}
+
+
+
+
+Definition at line 495 of file gamessplugin.c.
+
+References gamessdata::angle\_\-force\_\-const, gamessdata::angles, gamessdata::animated\_\-mode, gamessdata::atomic\_\-number, gamessdata::atomic\_\-shells, gamessdata::basis, gamessdata::basis\_\-counter, gamessdata::bond\_\-force\_\-const, gamessdata::bonds, gamessdata::carthessian, gamessdata::dihedral\_\-force\_\-const, gamessdata::dihedrals, gamessdata::esp\_\-charges, gamessdata::file, HESSIAN, gamessdata::improper\_\-force\_\-const, gamessdata::impropers, gamessdata::intensities, gamessdata::internal\_\-coordinates, gamessdata::inthessian, mode\_\-data::mode\_\-frames, gamessdata::mulliken\_\-charges, gamessdata::normal\_\-modes, gamessdata::orbital\_\-energy, gamessdata::orbital\_\-grid, gamessdata::orbital\_\-symmetry, gamessdata::runtyp, gamessdata::scfenergies, gamessdata::shell\_\-primitives, gamessdata::system\_\-center, gamessdata::system\_\-dimensions, gamessdata::temporary, gamessdata::vol, gamessdata::wave\_\-function, and gamessdata::wavenumbers.\index{gamessplugin.c@{gamessplugin.c}!find_homo@{find\_\-homo}}
+\index{find_homo@{find\_\-homo}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int find\_\-homo (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a27}
+
+
+
+
+Definition at line 2864 of file gamessplugin.c.
+
+References gamessdata::homo\_\-index, gamessdata::orbital\_\-counter, gamessdata::orbital\_\-energy, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_basis@{get\_\-basis}}
+\index{get_basis@{get\_\-basis}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-basis (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a22}
+
+
+
+
+Definition at line 2201 of file gamessplugin.c.
+
+References atomic\_\-basis, gamessdata::atomic\_\-shells, gamessdata::basis, gamessdata::basis\_\-counter, eatline, ERR\_\-FALSE, FALSE, gamessdata::file, MAXBASISFUNCTIONS, MAXQMATOMS, MOLFILE\_\-ERROR, gamessdata::num\_\-basis\_\-funcs, gamessdata::numatoms, gamessdata::orbital\_\-symmetry, PRINTERR, gamessdata::shell\_\-primitives, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_cart_hessian@{get\_\-cart\_\-hessian}}
+\index{get_cart_hessian@{get\_\-cart\_\-hessian}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-cart\_\-hessian (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a19}
+
+
+
+
+Definition at line 1636 of file gamessplugin.c.
+
+References gamessdata::carthessian, eatline, ERR\_\-FALSE, FALSE, gamessdata::file, gamessdata::numatoms, PRINTERR, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_gbasis@{get\_\-gbasis}}
+\index{get_gbasis@{get\_\-gbasis}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-gbasis (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a33}
+
+
+
+
+Definition at line 3690 of file gamessplugin.c.
+
+References gamessdata::basis\_\-string, gamessdata::diffs, gamessdata::diffsp, eatline, ERR\_\-FALSE, gamessdata::file, gamessdata::gbasis, gamessdata::ndfunc, gamessdata::nffunc, gamessdata::ngauss, gamessdata::npfunc, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_guess@{get\_\-guess}}
+\index{get_guess@{get\_\-guess}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-guess (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a21}
+
+
+
+
+Definition at line 2150 of file gamessplugin.c.
+
+References eatline, ERR\_\-FALSE, gamessdata::file, gamessdata::guess, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_initial_info@{get\_\-initial\_\-info}}
+\index{get_initial_info@{get\_\-initial\_\-info}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-initial\_\-info (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a15}
+
+
+
+
+Definition at line 805 of file gamessplugin.c.
+
+References animate\_\-normal\_\-mode, gamessdata::atomic\_\-number, BOHR\_\-TO\_\-ANGS, gamess\_\-temp::charge, eatline, ENERGY, ERR\_\-FALSE, gamessdata::esp\_\-charges, FALSE, gamessdata::file, get\_\-cart\_\-hessian, get\_\-int\_\-coords, get\_\-normal\_\-modes, gamessdata::have\_\-cart\_\-hessian, gamessdata::have\_\-esp, gamessdata::have\_\-internals, gamessdata::have\_\-mulliken, HESSIAN, initialize\_\-animated\_\-mode, MAXQMATOMS, gamessdata::mulliken\_\-charges, gamessdata::num\_\-scfenergies, gamessdata::numatoms, PRINTERR, gamessdata::runtyp, gamessdata::scfenergies, gamessdata::temporary, TRUE, gamess\_\-temp::type, gamess\_\-temp::x, gamess\_\-temp::y, and gamess\_\-temp::z.\index{gamessplugin.c@{gamessplugin.c}!get_int_coords@{get\_\-int\_\-coords}}
+\index{get_int_coords@{get\_\-int\_\-coords}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-int\_\-coords (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a20}
+
+
+
+
+Definition at line 1749 of file gamessplugin.c.
+
+References gamessdata::angle\_\-force\_\-const, gamessdata::angles, BOHR\_\-TO\_\-ANGS, gamessdata::bond\_\-force\_\-const, gamessdata::bonds, gamessdata::dihedral\_\-force\_\-const, gamessdata::dihedrals, eatline, ERR\_\-FALSE, FALSE, gamessdata::file, HARTREE\_\-TO\_\-KCAL, gamessdata::improper\_\-force\_\-const, gamessdata::impropers, gamessdata::internal\_\-coordinates, gamessdata::inthessian, gamessdata::nangles, gamessdata::nbonds, gamessdata::ndiheds, gamessdata::nimprops, gamessdata::nintcoords, PRINTERR, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_normal_modes@{get\_\-normal\_\-modes}}
+\index{get_normal_modes@{get\_\-normal\_\-modes}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-normal\_\-modes (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a18}
+
+
+
+
+Definition at line 1294 of file gamessplugin.c.
+
+References eatline, ERR\_\-FALSE, FALSE, gamessdata::file, gamessdata::intensities, gamessdata::nimag, gamessdata::normal\_\-modes, gamessdata::numatoms, PRINTERR, TRUE, and gamessdata::wavenumbers.\index{gamessplugin.c@{gamessplugin.c}!get_num_orbitals@{get\_\-num\_\-orbitals}}
+\index{get_num_orbitals@{get\_\-num\_\-orbitals}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-num\_\-orbitals (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a25}
+
+
+
+
+Definition at line 2605 of file gamessplugin.c.
+
+References ERR\_\-FALSE, gamessdata::file, gamessdata::multiplicity, gamessdata::num\_\-electrons, gamessdata::num\_\-gauss\_\-basis\_\-funcs, gamessdata::num\_\-orbitals\_\-A, gamessdata::num\_\-orbitals\_\-B, gamessdata::totalcharge, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_proc_mem@{get\_\-proc\_\-mem}}
+\index{get_proc_mem@{get\_\-proc\_\-mem}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-proc\_\-mem (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a31}
+
+
+
+
+Definition at line 3551 of file gamessplugin.c.
+
+References eatline, ERR\_\-FALSE, gamessdata::file, gamessdata::memory, gamessdata::nproc, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_runtitle@{get\_\-runtitle}}
+\index{get_runtitle@{get\_\-runtitle}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-runtitle (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a34}
+
+
+
+
+Definition at line 3898 of file gamessplugin.c.
+
+References chop\_\-string\_\-nl, eatline, ERR\_\-FALSE, gamessdata::file, gamessdata::runtitle, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!get_system_dimensions@{get\_\-system\_\-dimensions}}
+\index{get_system_dimensions@{get\_\-system\_\-dimensions}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-system\_\-dimensions (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a30}
+
+
+
+
+Definition at line 3448 of file gamessplugin.c.
+
+References FALSE, gamessdata::numatoms, PRINTERR, gamessdata::system\_\-center, gamessdata::system\_\-dimensions, gamessdata::temporary, TRUE, gamess\_\-temp::x, gamess\_\-temp::y, and gamess\_\-temp::z.\index{gamessplugin.c@{gamessplugin.c}!get_time@{get\_\-time}}
+\index{get_time@{get\_\-time}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-time (char $\ast$ {\em mytime})}\label{gamessplugin_8c_a37}
+
+
+
+
+Definition at line 4122 of file gamessplugin.c.\index{gamessplugin.c@{gamessplugin.c}!get_trajectory@{get\_\-trajectory}}
+\index{get_trajectory@{get\_\-trajectory}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-trajectory (void $\ast$ {\em mydata}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts}, int {\em natoms})}\label{gamessplugin_8c_a14}
+
+
+
+
+Definition at line 701 of file gamessplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, eatline, ERR\_\-FALSE, gamessdata::file, gamessdata::num\_\-scfenergies, gamessdata::num\_\-traj\_\-points, gamessdata::scfenergies, TRUE, and gamessdata::version.\index{gamessplugin.c@{gamessplugin.c}!get_wavefunction@{get\_\-wavefunction}}
+\index{get_wavefunction@{get\_\-wavefunction}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-wavefunction (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a26}
+
+
+
+
+Definition at line 2710 of file gamessplugin.c.
+
+References eatline, ERR\_\-FALSE, FALSE, gamessdata::file, gamessdata::got\_\-wavefunction, gamessdata::num\_\-gauss\_\-basis\_\-funcs, gamessdata::orbital\_\-counter, gamessdata::orbital\_\-energy, PRINTERR, TRUE, and gamessdata::wave\_\-function.\index{gamessplugin.c@{gamessplugin.c}!have_gamess@{have\_\-gamess}}
+\index{have_gamess@{have\_\-gamess}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int have\_\-gamess (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a32}
+
+
+
+
+Definition at line 3623 of file gamessplugin.c.
+
+References ERR\_\-FALSE, gamessdata::file, TRUE, gamessdata::version, and gamessdata::version\_\-string.\index{gamessplugin.c@{gamessplugin.c}!have_supported_gbasis@{have\_\-supported\_\-gbasis}}
+\index{have_supported_gbasis@{have\_\-supported\_\-gbasis}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int have\_\-supported\_\-gbasis (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a35}
+
+
+
+
+Definition at line 3937 of file gamessplugin.c.
+
+References FALSE, gamessdata::gbasis, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!initialize_animated_mode@{initialize\_\-animated\_\-mode}}
+\index{initialize_animated_mode@{initialize\_\-animated\_\-mode}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int initialize\_\-animated\_\-mode (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a16}
+
+
+
+
+Definition at line 1161 of file gamessplugin.c.
+
+References gamessdata::animated\_\-mode, mode\_\-data::current\_\-mode\_\-frame, FALSE, mode\_\-data::mode\_\-frames, mode\_\-data::mode\_\-num\_\-frames, mode\_\-data::mode\_\-scaling, gamessdata::numatoms, PRINTERR, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!open_gamess_read@{open\_\-gamess\_\-read}}
+\index{open_gamess_read@{open\_\-gamess\_\-read}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-gamess\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a4}
+
+
+
+
+Definition at line 55 of file gamessplugin.c.
+
+References gamessdata::basis\_\-string, gamessdata::diffs, gamessdata::diffsp, FALSE, gamessdata::file, gamessdata::file\_\-name, get\_\-time, gamessdata::got\_\-wavefunction, gamessdata::have\_\-cart\_\-hessian, have\_\-gamess, gamessdata::have\_\-internals, gamessdata::have\_\-trajectory, gamessdata::have\_\-volumetric, gamessdata::homo\_\-index, gamessdata::memory, gamessdata::ndfunc, gamessdata::nffunc, gamessdata::ngauss, gamessdata::nimag, gamessdata::npfunc, gamessdata::num\_\-scfenergies, gamessdata::num\_\-traj\_\-points, parse\_\-gamess\_\-log\_\-static, PRINTERR, gamessdata::runtyp, gamessdata::runtyp\_\-string, gamessdata::scftyp\_\-string, TRUE, gamessdata::version, and gamessdata::version\_\-string.\index{gamessplugin.c@{gamessplugin.c}!orbital_at_grid_xyz@{orbital\_\-at\_\-grid\_\-xyz}}
+\index{orbital_at_grid_xyz@{orbital\_\-at\_\-grid\_\-xyz}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float orbital\_\-at\_\-grid\_\-xyz (void $\ast$ {\em mydata}, float $\ast$ {\em wave\_\-function}, float {\em grid\_\-size}, float {\em grid\_\-x}, float {\em grid\_\-y}, float {\em grid\_\-z})}\label{gamessplugin_8c_a40}
+
+
+
+
+Definition at line 4197 of file gamessplugin.c.
+
+References gamessdata::atomic\_\-shells, gamessdata::basis, gamessdata::basis\_\-counter, FALSE, gamessdata::numatoms, gamessdata::orbital\_\-symmetry, gamessdata::shell\_\-primitives, gamessdata::temporary, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!orbital_grid_driver@{orbital\_\-grid\_\-driver}}
+\index{orbital_grid_driver@{orbital\_\-grid\_\-driver}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int orbital\_\-grid\_\-driver (void $\ast$ {\em mydata})}\label{gamessplugin_8c_a28}
+
+
+
+
+Definition at line 2919 of file gamessplugin.c.
+
+References calculate\_\-orbital, FALSE, get\_\-system\_\-dimensions, gamessdata::have\_\-volumetric, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!parse_gamess_log_static@{parse\_\-gamess\_\-log\_\-static}}
+\index{parse_gamess_log_static@{parse\_\-gamess\_\-log\_\-static}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-gamess\_\-log\_\-static (void $\ast$ {\em mydata}, int $\ast$ {\em natoms})}\label{gamessplugin_8c_a13}
+
+
+
+
+Definition at line 607 of file gamessplugin.c.
+
+References check\_\-contrl, ENERGY, FALSE, find\_\-homo, get\_\-basis, get\_\-gbasis, get\_\-guess, get\_\-initial\_\-info, get\_\-num\_\-orbitals, get\_\-proc\_\-mem, get\_\-runtitle, get\_\-wavefunction, GRID, have\_\-supported\_\-gbasis, gamessdata::num\_\-orbitals\_\-A, gamessdata::num\_\-orbitals\_\-B, gamessdata::numatoms, orbital\_\-grid\_\-driver, gamessdata::runtyp, and TRUE.\index{gamessplugin.c@{gamessplugin.c}!read_gamess_structure@{read\_\-gamess\_\-structure}}
+\index{read_gamess_structure@{read\_\-gamess\_\-structure}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-gamess\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a5}
+
+
+
+
+Definition at line 209 of file gamessplugin.c.
+
+References molfile\_\-atom\_\-t::chain, gamess\_\-temp::charge, molfile\_\-atom\_\-t::charge, MOLFILE\_\-NOOPTIONS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, gamessdata::numatoms, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, gamessdata::temporary, molfile\_\-atom\_\-t::type, and gamess\_\-temp::type.\index{gamessplugin.c@{gamessplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a6}
+
+
+
+
+Definition at line 255 of file gamessplugin.c.
+
+References gamessdata::animated\_\-mode, molfile\_\-timestep\_\-t::coords, mode\_\-data::current\_\-mode\_\-frame, ENERGY, FALSE, get\_\-trajectory, gamessdata::have\_\-trajectory, HESSIAN, mode\_\-data::mode\_\-frames, mode\_\-data::mode\_\-num\_\-frames, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gamessdata::num\_\-traj\_\-points, OPTIMIZE, gamessdata::runtyp, SADPOINT, gamessdata::temporary, gamess\_\-temp::x, gamess\_\-temp::y, and gamess\_\-temp::z.\index{gamessplugin.c@{gamessplugin.c}!read_orbital_data@{read\_\-orbital\_\-data}}
+\index{read_orbital_data@{read\_\-orbital\_\-data}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-orbital\_\-data (void $\ast$ {\em mydata}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a8}
+
+
+
+
+Definition at line 460 of file gamessplugin.c.
+
+References MOLFILE\_\-SUCCESS, gamessdata::orbital\_\-grid, gamessdata::temporary, gamessdata::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.\index{gamessplugin.c@{gamessplugin.c}!read_orbital_metadata@{read\_\-orbital\_\-metadata}}
+\index{read_orbital_metadata@{read\_\-orbital\_\-metadata}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-orbital\_\-metadata (void $\ast$ {\em mydata}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a7}
+
+
+
+
+Definition at line 427 of file gamessplugin.c.
+
+References gamessdata::have\_\-volumetric, MOLFILE\_\-SUCCESS, and gamessdata::vol.\index{gamessplugin.c@{gamessplugin.c}!renorm_coefficient@{renorm\_\-coefficient}}
+\index{renorm_coefficient@{renorm\_\-coefficient}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float renorm\_\-coefficient (float {\em coefficient}, float {\em exponent}, char {\em orb})}\label{gamessplugin_8c_a23}
+
+
+
+
+Definition at line 2378 of file gamessplugin.c.
+
+References MY\_\-PI.\index{gamessplugin.c@{gamessplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{gamessplugin_8c_a12}
+
+
+
+
+Definition at line 582 of file gamessplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{gamessplugin.c@{gamessplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{gamessplugin_8c_a10}
+
+
+
+
+Definition at line 573 of file gamessplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{gamessplugin.c@{gamessplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{gamessplugin_8c_a11}
+
+
+
+
+Definition at line 577 of file gamessplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{gamessplugin.c@{gamessplugin.c}!gamessplugin@{gamessplugin}}
+\index{gamessplugin@{gamessplugin}!gamessplugin.c@{gamessplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} gamessplugin\hspace{0.3cm}{\tt  [static]}}\label{gamessplugin_8c_a3}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "gamess",                                    
+  "GAMESS",                                    
+  "Markus Dittrich",                           
+  0,                                           
+  3,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "log",
+  open_gamess_read,
+  read_gamess_structure,
+  0,
+  read_next_timestep,
+  close_gamess_read,
+  0,
+  0,
+  0,
+  0,
+  read_orbital_metadata,
+  read_orbital_data
+}\end{verbatim}\normalsize 
+
+
+Definition at line 549 of file gamessplugin.c.

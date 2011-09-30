@@ -1,0 +1,85 @@
+\section{Read\-MDLMol.C File Reference}
+\label{ReadMDLMol_8C}\index{ReadMDLMol.C@{Read\-MDLMol.C}}
+{\tt \#include \char`\"{}Read\-MDLMol.h\char`\"{}}\par
+{\tt \#include \char`\"{}Molecule.h\char`\"{}}\par
+{\tt \#include \char`\"{}Atom.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf read\_\-mdl\_\-header} (FILE $\ast$infile, int $\ast$natoms, int $\ast$nbonds)
+\item 
+int {\bf write\_\-mdl\_\-atom} (FILE $\ast$outfile, const {\bf mdl\_\-atom} \&atom)
+\item 
+int {\bf read\_\-mdl\_\-atom} (FILE $\ast$infile, {\bf mdl\_\-atom} $\ast$atom)
+\item 
+int {\bf read\_\-mdl\_\-bond} (FILE $\ast$infile, {\bf mdl\_\-bond} $\ast$bond)
+\item 
+int {\bf write\_\-mdl\_\-bond} (FILE $\ast$infile, const {\bf mdl\_\-bond} \&bond)
+\item 
+int {\bf write\_\-mdl\_\-trailer} (FILE $\ast$outfile)
+\item 
+int {\bf molecule\_\-mdl} (Molecule $\ast$mol, const char $\ast$molfile)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{ReadMDLMol.C@{Read\-MDLMol.C}!molecule_mdl@{molecule\_\-mdl}}
+\index{molecule_mdl@{molecule\_\-mdl}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molecule\_\-mdl (Molecule $\ast$ {\em mol}, const char $\ast$ {\em molfile})}\label{ReadMDLMol_8C_a6}
+
+
+
+
+Definition at line 149 of file Read\-MDLMol.C.
+
+References mdl\_\-bond::bond\_\-from, mdl\_\-bond::bond\_\-to, mdl\_\-atom::charge, FALSE, mdl\_\-atom::mass\_\-difference, read\_\-mdl\_\-atom, read\_\-mdl\_\-bond, read\_\-mdl\_\-header, mdl\_\-atom::symbol, TRUE, mdl\_\-atom::x, mdl\_\-atom::y, and mdl\_\-atom::z.\index{ReadMDLMol.C@{Read\-MDLMol.C}!read_mdl_atom@{read\_\-mdl\_\-atom}}
+\index{read_mdl_atom@{read\_\-mdl\_\-atom}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mdl\_\-atom (FILE $\ast$ {\em infile}, {\bf mdl\_\-atom} $\ast$ {\em atom})}\label{ReadMDLMol_8C_a2}
+
+
+
+
+Definition at line 71 of file Read\-MDLMol.C.
+
+References mdl\_\-atom::charge, mdl\_\-atom::hcount, mdl\_\-atom::mass\_\-difference, mdl\_\-atom::stereo\_\-care\_\-box, mdl\_\-atom::stereo\_\-parity, mdl\_\-atom::symbol, mdl\_\-atom::valence, mdl\_\-atom::x, mdl\_\-atom::y, and mdl\_\-atom::z.\index{ReadMDLMol.C@{Read\-MDLMol.C}!read_mdl_bond@{read\_\-mdl\_\-bond}}
+\index{read_mdl_bond@{read\_\-mdl\_\-bond}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mdl\_\-bond (FILE $\ast$ {\em infile}, {\bf mdl\_\-bond} $\ast$ {\em bond})}\label{ReadMDLMol_8C_a3}
+
+
+
+
+Definition at line 107 of file Read\-MDLMol.C.
+
+References mdl\_\-bond::bond\_\-from, mdl\_\-bond::bond\_\-stereo, mdl\_\-bond::bond\_\-to, and mdl\_\-bond::bond\_\-type.\index{ReadMDLMol.C@{Read\-MDLMol.C}!read_mdl_header@{read\_\-mdl\_\-header}}
+\index{read_mdl_header@{read\_\-mdl\_\-header}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mdl\_\-header (FILE $\ast$ {\em infile}, int $\ast$ {\em natoms}, int $\ast$ {\em nbonds})}\label{ReadMDLMol_8C_a0}
+
+
+
+
+Definition at line 33 of file Read\-MDLMol.C.\index{ReadMDLMol.C@{Read\-MDLMol.C}!write_mdl_atom@{write\_\-mdl\_\-atom}}
+\index{write_mdl_atom@{write\_\-mdl\_\-atom}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-mdl\_\-atom (FILE $\ast$ {\em outfile}, const {\bf mdl\_\-atom} \& {\em atom})}\label{ReadMDLMol_8C_a1}
+
+
+
+
+Definition at line 57 of file Read\-MDLMol.C.
+
+References mdl\_\-atom::charge, mdl\_\-atom::hcount, mdl\_\-atom::mass\_\-difference, mdl\_\-atom::stereo\_\-care\_\-box, mdl\_\-atom::stereo\_\-parity, mdl\_\-atom::symbol, mdl\_\-atom::valence, mdl\_\-atom::x, mdl\_\-atom::y, and mdl\_\-atom::z.\index{ReadMDLMol.C@{Read\-MDLMol.C}!write_mdl_bond@{write\_\-mdl\_\-bond}}
+\index{write_mdl_bond@{write\_\-mdl\_\-bond}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-mdl\_\-bond (FILE $\ast$ {\em infile}, const {\bf mdl\_\-bond} \& {\em bond})}\label{ReadMDLMol_8C_a4}
+
+
+
+
+Definition at line 133 of file Read\-MDLMol.C.
+
+References mdl\_\-bond::bond\_\-from, mdl\_\-bond::bond\_\-stereo, mdl\_\-bond::bond\_\-to, and mdl\_\-bond::bond\_\-type.\index{ReadMDLMol.C@{Read\-MDLMol.C}!write_mdl_trailer@{write\_\-mdl\_\-trailer}}
+\index{write_mdl_trailer@{write\_\-mdl\_\-trailer}!ReadMDLMol.C@{Read\-MDLMol.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-mdl\_\-trailer (FILE $\ast$ {\em outfile})}\label{ReadMDLMol_8C_a5}
+
+
+
+
+Definition at line 142 of file Read\-MDLMol.C.

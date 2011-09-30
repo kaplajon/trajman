@@ -43,20 +43,33 @@ to check the commit log for suitable revisions and changes.
 
 Dependencies:
 
-Trajman needs the Visual Molecular Dynamics molfile plugin to
-be functional. Get the source code, and compile the plugins.
+Trajman needs the Visual Molecular Dynamics molfile_plugin to
+be functional. There is a version of the molfile_plugin 
+in the trajman build dir. You have also the possibility to 
+download and build the latest version from:
 
 http://www.ks.uiuc.edu/Research/vmd/
 
 Make sure you also compile the fortran c wrapper located in 
 the molfile_plugin/f77 folder.
 
-Build:
+For dependencies of the vmd plugins, please see the vmd homepage.
+
+BUILD EXAMPLE:
+
+Compile vmd plugins (Please read the license file in the
+vmd_plugins1.9 dir):
+
+> cd vmd_plugins1.9
+> make LINUXAMD64 TCLINC=-I/usr/include/tcl TCLLIB=-F/usr/lib
+> cd molfile_plugin/f77
+> make ARCH=LINUXAMD64 FC=gfortran TCLLIB=-L/usr/lib NETCDFLIB=-L/usr/libTCLLDFLAGS=-ltcl8.5 f77_molfile.o
 
 When you have VMD plugins compiled. Compile trajman by telling
 make where your VMD plugins are situated, and what archflag you
 used. Note that you need gfortran. Here's a 64-bit example:
 
-make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=/home/jon/src/vmd/plugins
+make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=vmd_plugins1.9/
+(or set the environment variables in the Makefile directly and use 'make')
 
 Run trajman -h for more information about usage.

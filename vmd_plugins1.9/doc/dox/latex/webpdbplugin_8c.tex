@@ -1,0 +1,216 @@
+\section{webpdbplugin.c File Reference}
+\label{webpdbplugin_8c}\index{webpdbplugin.c@{webpdbplugin.c}}
+{\tt \#include $<$tcl.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}readpdb.h\char`\"{}}\par
+{\tt \#include \char`\"{}periodic\_\-table.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf pdbdata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf my\_\-read\_\-pdb\_\-record} (const char $\ast$pdb, char $\ast$$\ast$pos)
+\item 
+void $\ast$ {\bf pdb\_\-read} (char $\ast$pdbstr, int $\ast$natoms)
+\item 
+void $\ast$ {\bf open\_\-file\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-pdb\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorder)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-pdb\_\-read} (void $\ast$v)
+\item 
+int {\bf read\_\-molecule\_\-metadata} (void $\ast$v, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$metadata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const char $\ast$ {\bf rcsbmsg} [$\,$]
+\item 
+int {\bf show\_\-msg} = 1
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{webpdbplugin.c@{webpdbplugin.c}!close_pdb_read@{close\_\-pdb\_\-read}}
+\index{close_pdb_read@{close\_\-pdb\_\-read}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-pdb\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a9}
+
+
+
+
+Definition at line 383 of file webpdbplugin.c.
+
+References pdbdata::idxmap, pdbdata::meta, pdbdata::pdbstr, and molfile\_\-metadata\_\-t::remarks.\index{webpdbplugin.c@{webpdbplugin.c}!my_read_pdb_record@{my\_\-read\_\-pdb\_\-record}}
+\index{my_read_pdb_record@{my\_\-read\_\-pdb\_\-record}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int my\_\-read\_\-pdb\_\-record (const char $\ast$ {\em pdb}, char $\ast$$\ast$ {\em pos})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a3}
+
+
+
+
+Definition at line 37 of file webpdbplugin.c.
+
+References PDB\_\-ATOM, PDB\_\-CRYST1, PDB\_\-END, PDB\_\-EOF, PDB\_\-HEADER, PDB\_\-REMARK, and PDB\_\-UNKNOWN.
+
+Referenced by pdb\_\-read, read\_\-next\_\-timestep, and read\_\-pdb\_\-structure.\index{webpdbplugin.c@{webpdbplugin.c}!open_file_read@{open\_\-file\_\-read}}
+\index{open_file_read@{open\_\-file\_\-read}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-file\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a5}
+
+
+
+
+Definition at line 162 of file webpdbplugin.c.
+
+References pdb\_\-read, rcsbmsg, and show\_\-msg.\index{webpdbplugin.c@{webpdbplugin.c}!pdb_read@{pdb\_\-read}}
+\index{pdb_read@{pdb\_\-read}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ pdb\_\-read (char $\ast$ {\em pdbstr}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a4}
+
+
+
+
+Definition at line 87 of file webpdbplugin.c.
+
+References molfile\_\-metadata\_\-t::accession, molfile\_\-metadata\_\-t::database, molfile\_\-metadata\_\-t::date, pdbdata::from, get\_\-pdb\_\-header, pdbdata::idxmap, pdbdata::maxbnum, pdbdata::meta, my\_\-read\_\-pdb\_\-record, pdbdata::natoms, pdbdata::nbonds, pdbdata::nconect, PDB\_\-ATOM, PDB\_\-CONECT, PDB\_\-END, PDB\_\-EOF, PDB\_\-HEADER, PDB\_\-REMARK, PDB\_\-UNKNOWN, pdbdata::pdbstr, pdbdata::pos, molfile\_\-metadata\_\-t::remarklen, molfile\_\-metadata\_\-t::remarks, and pdbdata::to.
+
+Referenced by open\_\-file\_\-read.\index{webpdbplugin.c@{webpdbplugin.c}!read_bonds@{read\_\-bonds}}
+\index{read_bonds@{read\_\-bonds}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorder})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a7}
+
+
+
+
+Definition at line 307 of file webpdbplugin.c.
+
+References pdbdata::from, MOLFILE\_\-SUCCESS, pdbdata::natoms, pdbdata::nbonds, pdbdata::nconect, and pdbdata::to.\index{webpdbplugin.c@{webpdbplugin.c}!read_molecule_metadata@{read\_\-molecule\_\-metadata}}
+\index{read_molecule_metadata@{read\_\-molecule\_\-metadata}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-molecule\_\-metadata (void $\ast$ {\em v}, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a10}
+
+
+
+
+Definition at line 397 of file webpdbplugin.c.
+
+References pdbdata::meta, and MOLFILE\_\-SUCCESS.\index{webpdbplugin.c@{webpdbplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a8}
+
+
+
+
+Definition at line 340 of file webpdbplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, molfile\_\-timestep\_\-t::gamma, get\_\-pdb\_\-coordinates, get\_\-pdb\_\-cryst1, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, my\_\-read\_\-pdb\_\-record, pdbdata::natoms, PDB\_\-ATOM, PDB\_\-CRYST1, PDB\_\-END, PDB\_\-EOF, and pdbdata::pos.\index{webpdbplugin.c@{webpdbplugin.c}!read_pdb_structure@{read\_\-pdb\_\-structure}}
+\index{read_pdb_structure@{read\_\-pdb\_\-structure}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pdb\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a6}
+
+
+
+
+Definition at line 227 of file webpdbplugin.c.
+
+References molfile\_\-atom\_\-t::altloc, molfile\_\-atom\_\-t::atomicnumber, molfile\_\-atom\_\-t::bfactor, molfile\_\-atom\_\-t::chain, pdbdata::from, get\_\-pdb\_\-conect, get\_\-pdb\_\-fields, get\_\-pte\_\-idx\_\-from\_\-string, get\_\-pte\_\-mass, get\_\-pte\_\-vdw\_\-radius, pdbdata::idxmap, molfile\_\-atom\_\-t::insertion, molfile\_\-atom\_\-t::mass, pdbdata::maxbnum, MOLFILE\_\-ALTLOC, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-BFACTOR, MOLFILE\_\-BONDSSPECIAL, MOLFILE\_\-INSERTION, MOLFILE\_\-MASS, MOLFILE\_\-OCCUPANCY, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, my\_\-read\_\-pdb\_\-record, molfile\_\-atom\_\-t::name, pdbdata::natoms, pdbdata::nbonds, molfile\_\-atom\_\-t::occupancy, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CONECT, PDB\_\-END, PDB\_\-EOF, pdbdata::pdbstr, molfile\_\-atom\_\-t::radius, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, pdbdata::to, and molfile\_\-atom\_\-t::type.\index{webpdbplugin.c@{webpdbplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{webpdbplugin_8c_a13}
+
+
+
+
+Definition at line 441 of file webpdbplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{webpdbplugin.c@{webpdbplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{webpdbplugin_8c_a11}
+
+
+
+
+Definition at line 432 of file webpdbplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{webpdbplugin.c@{webpdbplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{webpdbplugin_8c_a12}
+
+
+
+
+Definition at line 436 of file webpdbplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{webpdbplugin.c@{webpdbplugin.c}!plugin@{plugin}}
+\index{plugin@{plugin}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a2}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,             
+  MOLFILE_PLUGIN_TYPE,              
+  "webpdb",                         
+  "Web PDB Download",               
+  "Justin Gullingsrud, John Stone", 
+  1,                                
+  10,                               
+  VMDPLUGIN_THREADSAFE,             
+  "",                               
+  open_file_read,
+  read_pdb_structure,
+  read_bonds,
+  read_next_timestep,
+  close_pdb_read,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  read_molecule_metadata
+}\end{verbatim}\normalsize 
+
+
+Definition at line 407 of file webpdbplugin.c.\index{webpdbplugin.c@{webpdbplugin.c}!rcsbmsg@{rcsbmsg}}
+\index{rcsbmsg@{rcsbmsg}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rcsbmsg[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  "  The PDB is supported by RCSB, the NSF, US PHS, NIH, NCRP, NIGMS, NLM,",
+  "and US DoE, who are not liable for the data.  PDB files shall not be",
+  "sold.  See ftp://ftp.rcsb.org/advisory.doc for full details."
+}\end{verbatim}\normalsize 
+
+
+Definition at line 154 of file webpdbplugin.c.
+
+Referenced by open\_\-file\_\-read.\index{webpdbplugin.c@{webpdbplugin.c}!show_msg@{show\_\-msg}}
+\index{show_msg@{show\_\-msg}!webpdbplugin.c@{webpdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int show\_\-msg = 1\hspace{0.3cm}{\tt  [static]}}\label{webpdbplugin_8c_a1}
+
+
+
+
+Definition at line 160 of file webpdbplugin.c.
+
+Referenced by open\_\-file\_\-read.

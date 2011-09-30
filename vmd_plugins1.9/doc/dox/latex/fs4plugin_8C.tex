@@ -1,0 +1,152 @@
+\section{fs4plugin.C File Reference}
+\label{fs4plugin_8C}\index{fs4plugin.C@{fs4plugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+{\tt \#include \char`\"{}fortread.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf fs4\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI}\ 3.14159265358979323846
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-fs4\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-fs4\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-fs4\_\-data} (void $\ast$v, int set, float $\ast$dst\-Block, float $\ast$colorblock)
+\item 
+void {\bf close\_\-fs4\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{fs4plugin.C@{fs4plugin.C}!M_PI@{M\_\-PI}}
+\index{M_PI@{M\_\-PI}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\ 3.14159265358979323846}\label{fs4plugin_8C_a0}
+
+
+
+
+Definition at line 46 of file fs4plugin.C.
+
+Referenced by open\_\-fs4\_\-read.
+
+\subsection{Function Documentation}
+\index{fs4plugin.C@{fs4plugin.C}!close_fs4_read@{close\_\-fs4\_\-read}}
+\index{close_fs4_read@{close\_\-fs4\_\-read}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-fs4\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{fs4plugin_8C_a5}
+
+
+
+
+Definition at line 298 of file fs4plugin.C.
+
+References fs4\_\-t::fd, and fs4\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{fs4plugin.C@{fs4plugin.C}!open_fs4_read@{open\_\-fs4\_\-read}}
+\index{open_fs4_read@{open\_\-fs4\_\-read}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-fs4\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{fs4plugin_8C_a2}
+
+
+
+
+Definition at line 59 of file fs4plugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, fs4\_\-t::f, fs4\_\-t::fd, fortread\_\-4, molfile\_\-volumetric\_\-t::has\_\-color, fs4\_\-t::m, M\_\-PI, MOLFILE\_\-NUMATOMS\_\-NONE, fs4\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, fs4\_\-t::s, fs4\_\-t::scale, fs4\_\-t::swap, swap4\_\-aligned, fs4\_\-t::vol, fs4\_\-t::x, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, fs4\_\-t::y, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, fs4\_\-t::z, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{fs4plugin.C@{fs4plugin.C}!read_fs4_data@{read\_\-fs4\_\-data}}
+\index{read_fs4_data@{read\_\-fs4\_\-data}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-fs4\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em dst\-Block}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{fs4plugin_8C_a4}
+
+
+
+
+Definition at line 252 of file fs4plugin.C.
+
+References fs4\_\-t::f, fs4\_\-t::fd, fortread\_\-4, fs4\_\-t::m, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, fs4\_\-t::s, fs4\_\-t::scale, fs4\_\-t::swap, fs4\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{fs4plugin.C@{fs4plugin.C}!read_fs4_metadata@{read\_\-fs4\_\-metadata}}
+\index{read_fs4_metadata@{read\_\-fs4\_\-metadata}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-fs4\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{fs4plugin_8C_a3}
+
+
+
+
+Definition at line 242 of file fs4plugin.C.
+
+References MOLFILE\_\-SUCCESS, fs4\_\-t::nsets, and fs4\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{fs4plugin.C@{fs4plugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{fs4plugin_8C_a7}
+
+
+
+
+Definition at line 323 of file fs4plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{fs4plugin.C@{fs4plugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{fs4plugin_8C_a6}
+
+
+
+
+Definition at line 322 of file fs4plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{fs4plugin.C@{fs4plugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{fs4plugin_8C_a8}
+
+
+
+
+Definition at line 324 of file fs4plugin.C.
+
+References molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-fs4\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, open\_\-fs4\_\-read, read\_\-fs4\_\-data, read\_\-fs4\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{fs4plugin.C@{fs4plugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!fs4plugin.C@{fs4plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{fs4plugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "fs",                   
+  "FS4 Density Map",      
+  "Eamon Caddigan",       
+  0,                      
+  5,                      
+  VMDPLUGIN_THREADSAFE,   
+  "fs,fs4"                
+}\end{verbatim}\normalsize 
+
+
+Definition at line 310 of file fs4plugin.C.

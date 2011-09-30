@@ -1,0 +1,244 @@
+\section{mol2plugin.C File Reference}
+\label{mol2plugin_8C}\index{mol2plugin.C@{mol2plugin.C}}
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf mol2data}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 256
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-mol2\_\-read} (const char $\ast$path, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-mol2} (void $\ast$v, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-mol2\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorderptr)
+\item 
+int {\bf read\_\-mol2\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void $\ast$ {\bf open\_\-mol2\_\-write} (const char $\ast$filename, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-mol2\_\-structure} (void $\ast$mydata, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+void {\bf getmol2ff} (char $\ast$outputtype, const char $\ast$psftype)
+\item 
+int {\bf write\_\-mol2\_\-timestep} (void $\ast$mydata, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf write\_\-bonds} (void $\ast$v, int nbonds, int $\ast$fromptr, int $\ast$toptr, float $\ast$bondorderptr)
+\item 
+void {\bf close\_\-mol2\_\-write} (void $\ast$mydata)
+\item 
+void {\bf close\_\-mol2\_\-read} (void $\ast$v)
+\item 
+int {\bf read\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorderptr)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf mol2plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mol2plugin.C@{mol2plugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 256}\label{mol2plugin_8C_a0}
+
+
+
+
+Definition at line 44 of file mol2plugin.C.
+
+Referenced by open\_\-mol2\_\-read, read\_\-mol2, read\_\-mol2\_\-bonds, and read\_\-mol2\_\-timestep.
+
+\subsection{Function Documentation}
+\index{mol2plugin.C@{mol2plugin.C}!close_mol2_read@{close\_\-mol2\_\-read}}
+\index{close_mol2_read@{close\_\-mol2\_\-read}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-mol2\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a12}
+
+
+
+
+Definition at line 484 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::file, mol2data::from, and mol2data::to.\index{mol2plugin.C@{mol2plugin.C}!close_mol2_write@{close\_\-mol2\_\-write}}
+\index{close_mol2_write@{close\_\-mol2\_\-write}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-mol2\_\-write (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a11}
+
+
+
+
+Definition at line 471 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::file, mol2data::from, and mol2data::to.\index{mol2plugin.C@{mol2plugin.C}!getmol2ff@{getmol2ff}}
+\index{getmol2ff@{getmol2ff}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void getmol2ff (char $\ast$ {\em outputtype}, const char $\ast$ {\em psftype})}\label{mol2plugin_8C_a8}
+
+
+
+
+Definition at line 335 of file mol2plugin.C.
+
+Referenced by write\_\-mol2\_\-timestep.\index{mol2plugin.C@{mol2plugin.C}!open_mol2_read@{open\_\-mol2\_\-read}}
+\index{open_mol2_read@{open\_\-mol2\_\-read}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-mol2\_\-read (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a2}
+
+
+
+
+Definition at line 56 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::coords\_\-read, mol2data::file, mol2data::from, LINESIZE, MOLFILE\_\-CHARGE, MOLFILE\_\-NOOPTIONS, mol2data::natoms, mol2data::nbonds, mol2data::optflags, and mol2data::to.\index{mol2plugin.C@{mol2plugin.C}!open_mol2_write@{open\_\-mol2\_\-write}}
+\index{open_mol2_write@{open\_\-mol2\_\-write}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-mol2\_\-write (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a6}
+
+
+
+
+Definition at line 307 of file mol2plugin.C.
+
+References mol2data::file, and mol2data::natoms.\index{mol2plugin.C@{mol2plugin.C}!read_bonds@{read\_\-bonds}}
+\index{read_bonds@{read\_\-bonds}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a13}
+
+
+
+
+Definition at line 496 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::file, mol2data::from, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, mol2data::nbonds, read\_\-mol2\_\-bonds, and mol2data::to.\index{mol2plugin.C@{mol2plugin.C}!read_mol2@{read\_\-mol2}}
+\index{read_mol2@{read\_\-mol2}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mol2 (void $\ast$ {\em v}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a3}
+
+
+
+
+Definition at line 110 of file mol2plugin.C.
+
+References molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, mol2data::file, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, mol2data::natoms, mol2data::optflags, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{mol2plugin.C@{mol2plugin.C}!read_mol2_bonds@{read\_\-mol2\_\-bonds}}
+\index{read_mol2_bonds@{read\_\-mol2\_\-bonds}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mol2\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a4}
+
+
+
+
+Definition at line 173 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::file, mol2data::from, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, mol2data::nbonds, and mol2data::to.
+
+Referenced by read\_\-bonds.\index{mol2plugin.C@{mol2plugin.C}!read_mol2_timestep@{read\_\-mol2\_\-timestep}}
+\index{read_mol2_timestep@{read\_\-mol2\_\-timestep}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mol2\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a5}
+
+
+
+
+Definition at line 257 of file mol2plugin.C.
+
+References molfile\_\-timestep\_\-t::coords, mol2data::coords\_\-read, mol2data::file, LINESIZE, MOLFILE\_\-EOF, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, and mol2data::natoms.\index{mol2plugin.C@{mol2plugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{mol2plugin_8C_a16}
+
+
+
+
+Definition at line 558 of file mol2plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{mol2plugin.C@{mol2plugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{mol2plugin_8C_a14}
+
+
+
+
+Definition at line 549 of file mol2plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{mol2plugin.C@{mol2plugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{mol2plugin_8C_a15}
+
+
+
+
+Definition at line 553 of file mol2plugin.C.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{mol2plugin.C@{mol2plugin.C}!write_bonds@{write\_\-bonds}}
+\index{write_bonds@{write\_\-bonds}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-bonds (void $\ast$ {\em v}, int {\em nbonds}, int $\ast$ {\em fromptr}, int $\ast$ {\em toptr}, float $\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a10}
+
+
+
+
+Definition at line 455 of file mol2plugin.C.
+
+References mol2data::bondorder, mol2data::from, MOLFILE\_\-SUCCESS, mol2data::nbonds, and mol2data::to.\index{mol2plugin.C@{mol2plugin.C}!write_mol2_structure@{write\_\-mol2\_\-structure}}
+\index{write_mol2_structure@{write\_\-mol2\_\-structure}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-mol2\_\-structure (void $\ast$ {\em mydata}, int {\em optflags}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a7}
+
+
+
+
+Definition at line 327 of file mol2plugin.C.
+
+References mol2data::atomlist, MOLFILE\_\-SUCCESS, and mol2data::natoms.\index{mol2plugin.C@{mol2plugin.C}!write_mol2_timestep@{write\_\-mol2\_\-timestep}}
+\index{write_mol2_timestep@{write\_\-mol2\_\-timestep}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-mol2\_\-timestep (void $\ast$ {\em mydata}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a9}
+
+
+
+
+Definition at line 385 of file mol2plugin.C.
+
+References mol2data::atomlist, mol2data::bondorder, molfile\_\-atom\_\-t::charge, molfile\_\-timestep\_\-t::coords, mol2data::file, mol2data::from, getmol2ff, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, mol2data::natoms, mol2data::nbonds, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, mol2data::to, and molfile\_\-atom\_\-t::type.
+
+\subsection{Variable Documentation}
+\index{mol2plugin.C@{mol2plugin.C}!mol2plugin@{mol2plugin}}
+\index{mol2plugin@{mol2plugin}!mol2plugin.C@{mol2plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} mol2plugin\hspace{0.3cm}{\tt  [static]}}\label{mol2plugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "mol2",                                      
+  "MDL mol2",                                  
+  "Peter Freddolino and Eamon Caddigan",       
+  0,                                           
+  8,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "mol2",
+  open_mol2_read,               
+  read_mol2,                    
+  read_bonds,                   
+  read_mol2_timestep,           
+  close_mol2_read,              
+  open_mol2_write,              
+  write_mol2_structure,         
+  write_mol2_timestep,          
+  close_mol2_write,             
+  0,                            
+  0,                            
+  0,                            
+  0,                            
+  write_bonds                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 523 of file mol2plugin.C.

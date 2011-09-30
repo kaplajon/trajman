@@ -1,0 +1,182 @@
+\section{xyzplugin.c File Reference}
+\label{xyzplugin_8c}\index{xyzplugin.c@{xyzplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}periodic\_\-table.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf xyzdata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-xyz\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-xyz\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-xyz\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-xyz\_\-read} (void $\ast$mydata)
+\item 
+void $\ast$ {\bf open\_\-xyz\_\-write} (const char $\ast$filename, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-xyz\_\-structure} (void $\ast$mydata, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf write\_\-xyz\_\-timestep} (void $\ast$mydata, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-xyz\_\-write} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf xyzplugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{xyzplugin.c@{xyzplugin.c}!close_xyz_read@{close\_\-xyz\_\-read}}
+\index{close_xyz_read@{close\_\-xyz\_\-read}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-xyz\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a4}
+
+
+
+
+Definition at line 176 of file xyzplugin.c.
+
+References xyzdata::file, and xyzdata::file\_\-name.\index{xyzplugin.c@{xyzplugin.c}!close_xyz_write@{close\_\-xyz\_\-write}}
+\index{close_xyz_write@{close\_\-xyz\_\-write}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-xyz\_\-write (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a8}
+
+
+
+
+Definition at line 232 of file xyzplugin.c.
+
+References xyzdata::atomlist, xyzdata::file, and xyzdata::file\_\-name.\index{xyzplugin.c@{xyzplugin.c}!open_xyz_read@{open\_\-xyz\_\-read}}
+\index{open_xyz_read@{open\_\-xyz\_\-read}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-xyz\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a1}
+
+
+
+
+Definition at line 55 of file xyzplugin.c.
+
+References xyzdata::file, xyzdata::file\_\-name, and xyzdata::numatoms.\index{xyzplugin.c@{xyzplugin.c}!open_xyz_write@{open\_\-xyz\_\-write}}
+\index{open_xyz_write@{open\_\-xyz\_\-write}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-xyz\_\-write (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a5}
+
+
+
+
+Definition at line 184 of file xyzplugin.c.
+
+References xyzdata::file, xyzdata::file\_\-name, and xyzdata::numatoms.\index{xyzplugin.c@{xyzplugin.c}!read_xyz_structure@{read\_\-xyz\_\-structure}}
+\index{read_xyz_structure@{read\_\-xyz\_\-structure}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xyz\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a2}
+
+
+
+
+Definition at line 83 of file xyzplugin.c.
+
+References molfile\_\-atom\_\-t::atomicnumber, molfile\_\-atom\_\-t::chain, xyzdata::file, xyzdata::file\_\-name, get\_\-pte\_\-idx, get\_\-pte\_\-mass, get\_\-pte\_\-vdw\_\-radius, molfile\_\-atom\_\-t::mass, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-ERROR, MOLFILE\_\-MASS, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, xyzdata::numatoms, molfile\_\-atom\_\-t::radius, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{xyzplugin.c@{xyzplugin.c}!read_xyz_timestep@{read\_\-xyz\_\-timestep}}
+\index{read_xyz_timestep@{read\_\-xyz\_\-timestep}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xyz\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a3}
+
+
+
+
+Definition at line 138 of file xyzplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, xyzdata::file, xyzdata::file\_\-name, MOLFILE\_\-ERROR, and MOLFILE\_\-SUCCESS.\index{xyzplugin.c@{xyzplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{xyzplugin_8c_a11}
+
+
+The Fini method is called when the application will no longer use  any plugins in the library. 
+
+Definition at line 274 of file xyzplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{xyzplugin.c@{xyzplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{xyzplugin_8c_a9}
+
+
+Init routine: called the first time the library is loaded by the  application and before any other API functions are referenced. Return 0 on success. 
+
+Definition at line 265 of file xyzplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{xyzplugin.c@{xyzplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$, {\bf vmdplugin\_\-register\_\-cb})}\label{xyzplugin_8c_a10}
+
+
+Allow the library to register plugins with the application. The callback should be called using the passed-in void pointer, which should not be interpreted in any way by the library. Each {\bf vmdplugin\_\-t} {\rm (p.\,\pageref{structvmdplugin__t})} pointer passed to the application should point to statically-allocated or heap-allocated memory and should never be later modified by the plugin. Applications must be permitted to retain only a copy of the the plugin pointer, without making any deep copy of the items in the struct. 
+
+Definition at line 269 of file xyzplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{xyzplugin.c@{xyzplugin.c}!write_xyz_structure@{write\_\-xyz\_\-structure}}
+\index{write_xyz_structure@{write\_\-xyz\_\-structure}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-xyz\_\-structure (void $\ast$ {\em mydata}, int {\em optflags}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a6}
+
+
+
+
+Definition at line 203 of file xyzplugin.c.
+
+References xyzdata::atomlist, MOLFILE\_\-SUCCESS, and xyzdata::numatoms.\index{xyzplugin.c@{xyzplugin.c}!write_xyz_timestep@{write\_\-xyz\_\-timestep}}
+\index{write_xyz_timestep@{write\_\-xyz\_\-timestep}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-xyz\_\-timestep (void $\ast$ {\em mydata}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a7}
+
+
+
+
+Definition at line 211 of file xyzplugin.c.
+
+References xyzdata::atomlist, molfile\_\-timestep\_\-t::coords, xyzdata::file, MOLFILE\_\-SUCCESS, xyzdata::numatoms, and molfile\_\-atom\_\-t::type.
+
+\subsection{Variable Documentation}
+\index{xyzplugin.c@{xyzplugin.c}!xyzplugin@{xyzplugin}}
+\index{xyzplugin@{xyzplugin}!xyzplugin.c@{xyzplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} xyzplugin\hspace{0.3cm}{\tt  [static]}}\label{xyzplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "xyz",                                       
+  "XYZ",                                       
+  "Mauricio Carrillo Tripp, John E. Stone, Axel Kohlmeyer",    
+  0,                                           
+  9,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "xyz",
+  open_xyz_read,
+  read_xyz_structure,
+  0,
+  read_xyz_timestep,
+  close_xyz_read,
+  open_xyz_write,
+  write_xyz_structure,
+  write_xyz_timestep,
+  close_xyz_write,
+  0,                            
+  0,                            
+  0                             
+}\end{verbatim}\normalsize 
+
+
+Definition at line 241 of file xyzplugin.c.

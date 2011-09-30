@@ -1,0 +1,244 @@
+\section{avsplugin.C File Reference}
+\label{avsplugin_8C}\index{avsplugin.C@{avsplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf avsfield\_\-t}
+\item 
+struct {\bf datasource\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 256
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \{ {\bf NONE}, 
+{\bf ASCII}, 
+{\bf BINARY}, 
+{\bf UNFORMATTED}
+ \}
+\item 
+enum \{ {\bf UNIFORM}, 
+{\bf IRREGULAR}, 
+{\bf RECTILINEAR}
+ \}
+\item 
+enum \{ {\bf AVSFLOAT}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+char $\ast$ {\bf get\_\-string} (char $\ast$s, int n, FILE $\ast$stream)
+\item 
+int {\bf read\_\-datasource} (char $\ast$s, {\bf datasource\_\-t} $\ast$data)
+\item 
+void $\ast$ {\bf open\_\-avsfield\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-avsfield\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-avsfield\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-avsfield\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{avsplugin.C@{avsplugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 256}\label{avsplugin_8C_a0}
+
+
+
+
+Definition at line 50 of file avsplugin.C.
+
+Referenced by open\_\-avsfield\_\-read, and read\_\-avsfield\_\-data.
+
+\subsection{Enumeration Type Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{avsplugin_8C_a19}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{NONE@{NONE}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!NONE@{NONE}}\item[{\em 
+{\em NONE}\label{avsplugin_8C_a19a2}
+}]\index{ASCII@{ASCII}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!ASCII@{ASCII}}\item[{\em 
+{\em ASCII}\label{avsplugin_8C_a19a3}
+}]\index{BINARY@{BINARY}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!BINARY@{BINARY}}\item[{\em 
+{\em BINARY}\label{avsplugin_8C_a19a4}
+}]\index{UNFORMATTED@{UNFORMATTED}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!UNFORMATTED@{UNFORMATTED}}\item[{\em 
+{\em UNFORMATTED}\label{avsplugin_8C_a19a5}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 63 of file avsplugin.C.\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{avsplugin_8C_a20}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{UNIFORM@{UNIFORM}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!UNIFORM@{UNIFORM}}\item[{\em 
+{\em UNIFORM}\label{avsplugin_8C_a20a6}
+}]\index{IRREGULAR@{IRREGULAR}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!IRREGULAR@{IRREGULAR}}\item[{\em 
+{\em IRREGULAR}\label{avsplugin_8C_a20a7}
+}]\index{RECTILINEAR@{RECTILINEAR}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!RECTILINEAR@{RECTILINEAR}}\item[{\em 
+{\em RECTILINEAR}\label{avsplugin_8C_a20a8}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 64 of file avsplugin.C.\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{avsplugin_8C_a21}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{AVSFLOAT@{AVSFLOAT}!avsplugin.C@{avsplugin.C}}\index{avsplugin.C@{avsplugin.C}!AVSFLOAT@{AVSFLOAT}}\item[{\em 
+{\em AVSFLOAT}\label{avsplugin_8C_a21a9}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 65 of file avsplugin.C.
+
+\subsection{Function Documentation}
+\index{avsplugin.C@{avsplugin.C}!close_avsfield_read@{close\_\-avsfield\_\-read}}
+\index{close_avsfield_read@{close\_\-avsfield\_\-read}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-avsfield\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a15}
+
+
+
+
+Definition at line 539 of file avsplugin.C.
+
+References avsfield\_\-t::data, and avsfield\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{avsplugin.C@{avsplugin.C}!get_string@{get\_\-string}}
+\index{get_string@{get\_\-string}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ get\_\-string (char $\ast$ {\em s}, int {\em n}, FILE $\ast$ {\em stream})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a10}
+
+
+
+
+Definition at line 71 of file avsplugin.C.
+
+Referenced by open\_\-avsfield\_\-read.\index{avsplugin.C@{avsplugin.C}!open_avsfield_read@{open\_\-avsfield\_\-read}}
+\index{open_avsfield_read@{open\_\-avsfield\_\-read}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-avsfield\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a12}
+
+
+
+
+Definition at line 178 of file avsplugin.C.
+
+References avsfield\_\-t::data, molfile\_\-volumetric\_\-t::dataname, get\_\-string, molfile\_\-volumetric\_\-t::has\_\-color, LINESIZE, MOLFILE\_\-NUMATOMS\_\-NONE, avsfield\_\-t::nsets, datasource\_\-t::offset, molfile\_\-volumetric\_\-t::origin, read\_\-datasource, datasource\_\-t::skip, datasource\_\-t::stride, avsfield\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{avsplugin.C@{avsplugin.C}!read_avsfield_data@{read\_\-avsfield\_\-data}}
+\index{read_avsfield_data@{read\_\-avsfield\_\-data}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-avsfield\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a14}
+
+
+
+
+Definition at line 476 of file avsplugin.C.
+
+References avsfield\_\-t::data, datasource\_\-t::filename, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, datasource\_\-t::offset, datasource\_\-t::skip, datasource\_\-t::stride, avsfield\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{avsplugin.C@{avsplugin.C}!read_avsfield_metadata@{read\_\-avsfield\_\-metadata}}
+\index{read_avsfield_metadata@{read\_\-avsfield\_\-metadata}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-avsfield\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a13}
+
+
+
+
+Definition at line 467 of file avsplugin.C.
+
+References MOLFILE\_\-SUCCESS, avsfield\_\-t::nsets, and avsfield\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{avsplugin.C@{avsplugin.C}!read_datasource@{read\_\-datasource}}
+\index{read_datasource@{read\_\-datasource}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-datasource (char $\ast$ {\em s}, {\bf datasource\_\-t} $\ast$ {\em data})\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a11}
+
+
+
+
+Definition at line 84 of file avsplugin.C.
+
+References ASCII, datasource\_\-t::filename, datasource\_\-t::filetype, NONE, datasource\_\-t::offset, datasource\_\-t::skip, and datasource\_\-t::stride.
+
+Referenced by open\_\-avsfield\_\-read.\index{avsplugin.C@{avsplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{avsplugin_8C_a17}
+
+
+
+
+Definition at line 565 of file avsplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{avsplugin.C@{avsplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{avsplugin_8C_a16}
+
+
+
+
+Definition at line 564 of file avsplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{avsplugin.C@{avsplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{avsplugin_8C_a18}
+
+
+
+
+Definition at line 566 of file avsplugin.C.
+
+References close\_\-avsfield\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-avsfield\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-avsfield\_\-data, read\_\-avsfield\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{avsplugin.C@{avsplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!avsplugin.C@{avsplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{avsplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "fld",                  
+  "AVS Field",            
+  "Eamon Caddigan",       
+  0,                      
+  3,                      
+  VMDPLUGIN_THREADSAFE,   
+  "fld"                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 552 of file avsplugin.C.

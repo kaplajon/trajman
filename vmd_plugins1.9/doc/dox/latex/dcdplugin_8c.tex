@@ -1,0 +1,559 @@
+\section{dcdplugin.c File Reference}
+\label{dcdplugin_8c}\index{dcdplugin.c@{dcdplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$sys/stat.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$time.h$>$}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+{\tt \#include \char`\"{}fastio.h\char`\"{}}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf dcdhandle}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI\_\-2}\ 1.57079632679489661922
+\item 
+\#define {\bf RECSCALE32BIT}\ 1
+\item 
+\#define {\bf RECSCALE64BIT}\ 2
+\item 
+\#define {\bf RECSCALEMAX}\ 2
+\item 
+\#define {\bf DCD\_\-SUCCESS}\ 0
+\item 
+\#define {\bf DCD\_\-EOF}\ -1
+\item 
+\#define {\bf DCD\_\-DNE}\ -2
+\item 
+\#define {\bf DCD\_\-OPENFAILED}\ -3
+\item 
+\#define {\bf DCD\_\-BADREAD}\ -4
+\item 
+\#define {\bf DCD\_\-BADEOF}\ -5
+\item 
+\#define {\bf DCD\_\-BADFORMAT}\ -6
+\item 
+\#define {\bf DCD\_\-FILEEXISTS}\ -7
+\item 
+\#define {\bf DCD\_\-BADMALLOC}\ -8
+\item 
+\#define {\bf DCD\_\-BADWRITE}\ -9
+\item 
+\#define {\bf DCD\_\-IS\_\-CHARMM}\ 0x01
+\item 
+\#define {\bf DCD\_\-HAS\_\-4DIMS}\ 0x02
+\item 
+\#define {\bf DCD\_\-HAS\_\-EXTRA\_\-BLOCK}\ 0x04
+\item 
+\#define {\bf DCD\_\-HAS\_\-64BIT\_\-REC}\ 0x08
+\item 
+\#define {\bf NFILE\_\-POS}\ 8L
+\item 
+\#define {\bf NSTEP\_\-POS}\ 20L
+\item 
+\#define {\bf READ}(fd, buf, size)\ fio\_\-fread(((void $\ast$) buf), (size), 1, (fd))
+\item 
+\#define {\bf WRITE}(fd, buf, size)\ fio\_\-fwrite(((void $\ast$) buf), (size), 1, (fd))
+\item 
+\#define {\bf CHECK\_\-FREAD}(X, msg)\ if (X==-1) \{ return(DCD\_\-BADREAD); \}
+\item 
+\#define {\bf CHECK\_\-FEOF}(X, msg)\ if (X==0)  \{ return(DCD\_\-BADEOF); \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void {\bf print\_\-dcderror} (const char $\ast$func, int errcode)
+\item 
+int {\bf read\_\-dcdheader} ({\bf fio\_\-fd} fd, int $\ast$N, int $\ast$NSET, int $\ast$ISTART, int $\ast$NSAVC, double $\ast$DELTA, int $\ast$NAMNF, int $\ast$$\ast$FREEINDEXES, float $\ast$$\ast$fixedcoords, int $\ast$reverse\-Endian, int $\ast$charmm)
+\item 
+int {\bf read\_\-charmm\_\-extrablock} ({\bf fio\_\-fd} fd, int charmm, int reverse\-Endian, float $\ast$unitcell)
+\item 
+int {\bf read\_\-fixed\_\-atoms} ({\bf fio\_\-fd} fd, int N, int num\_\-free, const int $\ast$indexes, int reverse\-Endian, const float $\ast$fixedcoords, float $\ast$freeatoms, float $\ast$pos, int charmm)
+\item 
+int {\bf read\_\-charmm\_\-4dim} ({\bf fio\_\-fd} fd, int charmm, int reverse\-Endian)
+\item 
+int {\bf read\_\-dcdstep} ({\bf fio\_\-fd} fd, int N, float $\ast$X, float $\ast$Y, float $\ast$Z, float $\ast$unitcell, int num\_\-fixed, int first, int $\ast$indexes, float $\ast$fixedcoords, int reverse\-Endian, int charmm)
+\item 
+int {\bf skip\_\-dcdstep} ({\bf fio\_\-fd} fd, int natoms, int nfixed, int charmm)
+\item 
+int {\bf write\_\-dcdstep} ({\bf fio\_\-fd} fd, int curframe, int curstep, int N, const float $\ast$X, const float $\ast$Y, const float $\ast$Z, const double $\ast$unitcell, int charmm)
+\item 
+int {\bf write\_\-dcdheader} ({\bf fio\_\-fd} fd, const char $\ast$remarks, int N, int ISTART, int NSAVC, double DELTA, int with\_\-unitcell, int charmm)
+\item 
+void {\bf close\_\-dcd\_\-read} (int $\ast$indexes, float $\ast$fixedcoords)
+\item 
+void $\ast$ {\bf open\_\-dcd\_\-read} (const char $\ast$path, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-dcd\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf dcdplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{dcdplugin.c@{dcdplugin.c}!CHECK_FEOF@{CHECK\_\-FEOF}}
+\index{CHECK_FEOF@{CHECK\_\-FEOF}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CHECK\_\-FEOF(X, msg)\ if (X==0)  \{ return(DCD\_\-BADEOF); \}}\label{dcdplugin_8c_a23}
+
+
+
+
+Definition at line 114 of file dcdplugin.c.
+
+Referenced by read\_\-dcdheader.\index{dcdplugin.c@{dcdplugin.c}!CHECK_FREAD@{CHECK\_\-FREAD}}
+\index{CHECK_FREAD@{CHECK\_\-FREAD}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CHECK\_\-FREAD(X, msg)\ if (X==-1) \{ return(DCD\_\-BADREAD); \}}\label{dcdplugin_8c_a22}
+
+
+
+
+Definition at line 113 of file dcdplugin.c.
+
+Referenced by read\_\-dcdheader.\index{dcdplugin.c@{dcdplugin.c}!DCD_BADEOF@{DCD\_\-BADEOF}}
+\index{DCD_BADEOF@{DCD\_\-BADEOF}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-BADEOF\ -5}\label{dcdplugin_8c_a9}
+
+
+
+
+Definition at line 90 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_BADFORMAT@{DCD\_\-BADFORMAT}}
+\index{DCD_BADFORMAT@{DCD\_\-BADFORMAT}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-BADFORMAT\ -6}\label{dcdplugin_8c_a10}
+
+
+
+
+Definition at line 91 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, read\_\-dcdheader, read\_\-dcdstep, and read\_\-fixed\_\-atoms.\index{dcdplugin.c@{dcdplugin.c}!DCD_BADMALLOC@{DCD\_\-BADMALLOC}}
+\index{DCD_BADMALLOC@{DCD\_\-BADMALLOC}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-BADMALLOC\ -8}\label{dcdplugin_8c_a12}
+
+
+
+
+Definition at line 93 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, and read\_\-dcdheader.\index{dcdplugin.c@{dcdplugin.c}!DCD_BADREAD@{DCD\_\-BADREAD}}
+\index{DCD_BADREAD@{DCD\_\-BADREAD}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-BADREAD\ -4}\label{dcdplugin_8c_a8}
+
+
+
+
+Definition at line 89 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdstep, and read\_\-fixed\_\-atoms.\index{dcdplugin.c@{dcdplugin.c}!DCD_BADWRITE@{DCD\_\-BADWRITE}}
+\index{DCD_BADWRITE@{DCD\_\-BADWRITE}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-BADWRITE\ -9}\label{dcdplugin_8c_a13}
+
+
+
+
+Definition at line 94 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, and write\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_DNE@{DCD\_\-DNE}}
+\index{DCD_DNE@{DCD\_\-DNE}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-DNE\ -2}\label{dcdplugin_8c_a6}
+
+
+
+
+Definition at line 87 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror.\index{dcdplugin.c@{dcdplugin.c}!DCD_EOF@{DCD\_\-EOF}}
+\index{DCD_EOF@{DCD\_\-EOF}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-EOF\ -1}\label{dcdplugin_8c_a5}
+
+
+
+
+Definition at line 86 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror.\index{dcdplugin.c@{dcdplugin.c}!DCD_FILEEXISTS@{DCD\_\-FILEEXISTS}}
+\index{DCD_FILEEXISTS@{DCD\_\-FILEEXISTS}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-FILEEXISTS\ -7}\label{dcdplugin_8c_a11}
+
+
+
+
+Definition at line 92 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror.\index{dcdplugin.c@{dcdplugin.c}!DCD_HAS_4DIMS@{DCD\_\-HAS\_\-4DIMS}}
+\index{DCD_HAS_4DIMS@{DCD\_\-HAS\_\-4DIMS}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-HAS\_\-4DIMS\ 0x02}\label{dcdplugin_8c_a15}
+
+
+
+
+Definition at line 98 of file dcdplugin.c.
+
+Referenced by open\_\-dcd\_\-read, read\_\-charmm\_\-4dim, read\_\-dcdheader, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_HAS_64BIT_REC@{DCD\_\-HAS\_\-64BIT\_\-REC}}
+\index{DCD_HAS_64BIT_REC@{DCD\_\-HAS\_\-64BIT\_\-REC}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-HAS\_\-64BIT\_\-REC\ 0x08}\label{dcdplugin_8c_a17}
+
+
+
+
+Definition at line 100 of file dcdplugin.c.
+
+Referenced by read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-dcdstep, read\_\-fixed\_\-atoms, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_HAS_EXTRA_BLOCK@{DCD\_\-HAS\_\-EXTRA\_\-BLOCK}}
+\index{DCD_HAS_EXTRA_BLOCK@{DCD\_\-HAS\_\-EXTRA\_\-BLOCK}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-HAS\_\-EXTRA\_\-BLOCK\ 0x04}\label{dcdplugin_8c_a16}
+
+
+
+
+Definition at line 99 of file dcdplugin.c.
+
+Referenced by open\_\-dcd\_\-read, open\_\-dcd\_\-write, read\_\-charmm\_\-extrablock, read\_\-dcdheader, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_IS_CHARMM@{DCD\_\-IS\_\-CHARMM}}
+\index{DCD_IS_CHARMM@{DCD\_\-IS\_\-CHARMM}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-IS\_\-CHARMM\ 0x01}\label{dcdplugin_8c_a14}
+
+
+
+
+Definition at line 97 of file dcdplugin.c.
+
+Referenced by open\_\-dcd\_\-write, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!DCD_OPENFAILED@{DCD\_\-OPENFAILED}}
+\index{DCD_OPENFAILED@{DCD\_\-OPENFAILED}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-OPENFAILED\ -3}\label{dcdplugin_8c_a7}
+
+
+
+
+Definition at line 88 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror.\index{dcdplugin.c@{dcdplugin.c}!DCD_SUCCESS@{DCD\_\-SUCCESS}}
+\index{DCD_SUCCESS@{DCD\_\-SUCCESS}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DCD\_\-SUCCESS\ 0}\label{dcdplugin_8c_a4}
+
+
+
+
+Definition at line 85 of file dcdplugin.c.
+
+Referenced by print\_\-dcderror, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-dcdstep, read\_\-fixed\_\-atoms, skip\_\-dcdstep, write\_\-dcdheader, and write\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!M_PI_2@{M\_\-PI\_\-2}}
+\index{M_PI_2@{M\_\-PI\_\-2}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\_\-2\ 1.57079632679489661922}\label{dcdplugin_8c_a0}
+
+
+
+
+Definition at line 59 of file dcdplugin.c.
+
+Referenced by read\_\-next\_\-timestep, and write\_\-timestep.\index{dcdplugin.c@{dcdplugin.c}!NFILE_POS@{NFILE\_\-POS}}
+\index{NFILE_POS@{NFILE\_\-POS}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NFILE\_\-POS\ 8L}\label{dcdplugin_8c_a18}
+
+
+
+
+Definition at line 103 of file dcdplugin.c.
+
+Referenced by write\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!NSTEP_POS@{NSTEP\_\-POS}}
+\index{NSTEP_POS@{NSTEP\_\-POS}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NSTEP\_\-POS\ 20L}\label{dcdplugin_8c_a19}
+
+
+
+
+Definition at line 104 of file dcdplugin.c.
+
+Referenced by write\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!READ@{READ}}
+\index{READ@{READ}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define READ(fd, buf, size)\ fio\_\-fread(((void $\ast$) buf), (size), 1, (fd))}\label{dcdplugin_8c_a20}
+
+
+
+
+Definition at line 107 of file dcdplugin.c.
+
+Referenced by read\_\-dcdheader.\index{dcdplugin.c@{dcdplugin.c}!RECSCALE32BIT@{RECSCALE32BIT}}
+\index{RECSCALE32BIT@{RECSCALE32BIT}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define RECSCALE32BIT\ 1}\label{dcdplugin_8c_a1}
+
+
+
+
+Definition at line 62 of file dcdplugin.c.
+
+Referenced by read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-dcdstep, read\_\-fixed\_\-atoms, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!RECSCALE64BIT@{RECSCALE64BIT}}
+\index{RECSCALE64BIT@{RECSCALE64BIT}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define RECSCALE64BIT\ 2}\label{dcdplugin_8c_a2}
+
+
+
+
+Definition at line 63 of file dcdplugin.c.
+
+Referenced by read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-dcdstep, read\_\-fixed\_\-atoms, and skip\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!RECSCALEMAX@{RECSCALEMAX}}
+\index{RECSCALEMAX@{RECSCALEMAX}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define RECSCALEMAX\ 2}\label{dcdplugin_8c_a3}
+
+
+
+
+Definition at line 64 of file dcdplugin.c.
+
+Referenced by read\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!WRITE@{WRITE}}
+\index{WRITE@{WRITE}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define WRITE(fd, buf, size)\ fio\_\-fwrite(((void $\ast$) buf), (size), 1, (fd))}\label{dcdplugin_8c_a21}
+
+
+
+
+Definition at line 110 of file dcdplugin.c.
+
+Referenced by write\_\-dcdheader, and write\_\-dcdstep.
+
+\subsection{Function Documentation}
+\index{dcdplugin.c@{dcdplugin.c}!close_dcd_read@{close\_\-dcd\_\-read}}
+\index{close_dcd_read@{close\_\-dcd\_\-read}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-dcd\_\-read (int $\ast$ {\em indexes}, float $\ast$ {\em fixedcoords})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a34}
+
+
+
+
+Definition at line 781 of file dcdplugin.c.
+
+Referenced by close\_\-file\_\-read.\index{dcdplugin.c@{dcdplugin.c}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a37}
+
+
+
+
+Definition at line 977 of file dcdplugin.c.
+
+References close\_\-dcd\_\-read, dcdhandle::fd, fio\_\-fclose, dcdhandle::fixedcoords, dcdhandle::freeind, dcdhandle::x, dcdhandle::y, and dcdhandle::z.\index{dcdplugin.c@{dcdplugin.c}!close_file_write@{close\_\-file\_\-write}}
+\index{close_file_write@{close\_\-file\_\-write}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a40}
+
+
+
+
+Definition at line 1074 of file dcdplugin.c.
+
+References dcdhandle::fd, fio\_\-fclose, dcdhandle::x, dcdhandle::y, and dcdhandle::z.\index{dcdplugin.c@{dcdplugin.c}!open_dcd_read@{open\_\-dcd\_\-read}}
+\index{open_dcd_read@{open\_\-dcd\_\-read}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-dcd\_\-read (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a35}
+
+
+
+
+Definition at line 790 of file dcdplugin.c.
+
+References dcdhandle::charmm, DCD\_\-HAS\_\-4DIMS, DCD\_\-HAS\_\-EXTRA\_\-BLOCK, dcdhandle::delta, dcdhandle::fd, fio\_\-fclose, fio\_\-fd, fio\_\-fseek, fio\_\-ftell, fio\_\-open, FIO\_\-READ, FIO\_\-SEEK\_\-END, FIO\_\-SEEK\_\-SET, fio\_\-size\_\-t, dcdhandle::first, dcdhandle::fixedcoords, dcdhandle::freeind, dcdhandle::istart, dcdhandle::natoms, dcdhandle::nfixed, dcdhandle::nsavc, dcdhandle::nsets, print\_\-dcderror, read\_\-dcdheader, dcdhandle::reverse, dcdhandle::setsread, dcdhandle::x, dcdhandle::y, and dcdhandle::z.\index{dcdplugin.c@{dcdplugin.c}!open_dcd_write@{open\_\-dcd\_\-write}}
+\index{open_dcd_write@{open\_\-dcd\_\-write}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-dcd\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a38}
+
+
+
+
+Definition at line 988 of file dcdplugin.c.
+
+References dcdhandle::charmm, DCD\_\-HAS\_\-EXTRA\_\-BLOCK, DCD\_\-IS\_\-CHARMM, dcdhandle::fd, fio\_\-fclose, fio\_\-fd, fio\_\-open, FIO\_\-WRITE, dcdhandle::istart, dcdhandle::natoms, dcdhandle::nsavc, dcdhandle::nsets, print\_\-dcderror, dcdhandle::with\_\-unitcell, write\_\-dcdheader, dcdhandle::x, dcdhandle::y, and dcdhandle::z.\index{dcdplugin.c@{dcdplugin.c}!print_dcderror@{print\_\-dcderror}}
+\index{print_dcderror@{print\_\-dcderror}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-dcderror (const char $\ast$ {\em func}, int {\em errcode})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a25}
+
+
+
+
+Definition at line 118 of file dcdplugin.c.
+
+References DCD\_\-BADEOF, DCD\_\-BADFORMAT, DCD\_\-BADMALLOC, DCD\_\-BADREAD, DCD\_\-BADWRITE, DCD\_\-DNE, DCD\_\-EOF, DCD\_\-FILEEXISTS, DCD\_\-OPENFAILED, and DCD\_\-SUCCESS.
+
+Referenced by open\_\-dcd\_\-read, open\_\-dcd\_\-write, read\_\-next\_\-timestep, and write\_\-timestep.\index{dcdplugin.c@{dcdplugin.c}!read_charmm_4dim@{read\_\-charmm\_\-4dim}}
+\index{read_charmm_4dim@{read\_\-charmm\_\-4dim}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-charmm\_\-4dim ({\bf fio\_\-fd} {\em fd}, int {\em charmm}, int {\em reverse\-Endian})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a29}
+
+
+
+
+Definition at line 459 of file dcdplugin.c.
+
+References DCD\_\-BADREAD, DCD\_\-HAS\_\-4DIMS, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-IS\_\-CHARMM, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fread, fio\_\-fseek, FIO\_\-SEEK\_\-CUR, RECSCALE32BIT, RECSCALE64BIT, and swap4\_\-aligned.
+
+Referenced by read\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!read_charmm_extrablock@{read\_\-charmm\_\-extrablock}}
+\index{read_charmm_extrablock@{read\_\-charmm\_\-extrablock}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-charmm\_\-extrablock ({\bf fio\_\-fd} {\em fd}, int {\em charmm}, int {\em reverse\-Endian}, float $\ast$ {\em unitcell})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a27}
+
+
+
+
+Definition at line 391 of file dcdplugin.c.
+
+References DCD\_\-BADREAD, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-HAS\_\-EXTRA\_\-BLOCK, DCD\_\-IS\_\-CHARMM, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fread, fio\_\-fseek, FIO\_\-SEEK\_\-CUR, RECSCALE32BIT, RECSCALE64BIT, swap4\_\-aligned, and swap8\_\-aligned.
+
+Referenced by read\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!read_dcdheader@{read\_\-dcdheader}}
+\index{read_dcdheader@{read\_\-dcdheader}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dcdheader ({\bf fio\_\-fd} {\em fd}, int $\ast$ {\em N}, int $\ast$ {\em NSET}, int $\ast$ {\em ISTART}, int $\ast$ {\em NSAVC}, double $\ast$ {\em DELTA}, int $\ast$ {\em NAMNF}, int $\ast$$\ast$ {\em FREEINDEXES}, float $\ast$$\ast$ {\em fixedcoords}, int $\ast$ {\em reverse\-Endian}, int $\ast$ {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a26}
+
+
+
+
+Definition at line 154 of file dcdplugin.c.
+
+References CHECK\_\-FEOF, CHECK\_\-FREAD, DCD\_\-BADFORMAT, DCD\_\-BADMALLOC, DCD\_\-HAS\_\-4DIMS, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-HAS\_\-EXTRA\_\-BLOCK, DCD\_\-IS\_\-CHARMM, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fseek, FIO\_\-SEEK\_\-CUR, READ, RECSCALE32BIT, RECSCALE64BIT, swap4\_\-aligned, swap4\_\-unaligned, and swap8\_\-unaligned.
+
+Referenced by open\_\-dcd\_\-read.\index{dcdplugin.c@{dcdplugin.c}!read_dcdstep@{read\_\-dcdstep}}
+\index{read_dcdstep@{read\_\-dcdstep}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dcdstep ({\bf fio\_\-fd} {\em fd}, int {\em N}, float $\ast$ {\em X}, float $\ast$ {\em Y}, float $\ast$ {\em Z}, float $\ast$ {\em unitcell}, int {\em num\_\-fixed}, int {\em first}, int $\ast$ {\em indexes}, float $\ast$ {\em fixedcoords}, int {\em reverse\-Endian}, int {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a30}
+
+
+
+
+Definition at line 495 of file dcdplugin.c.
+
+References DCD\_\-BADFORMAT, DCD\_\-BADREAD, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-readv, fio\_\-size\_\-t, fio\_\-iovec::iov\_\-base, fio\_\-iovec::iov\_\-len, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-fixed\_\-atoms, RECSCALE32BIT, RECSCALE64BIT, RECSCALEMAX, and swap4\_\-aligned.
+
+Referenced by read\_\-next\_\-timestep.\index{dcdplugin.c@{dcdplugin.c}!read_fixed_atoms@{read\_\-fixed\_\-atoms}}
+\index{read_fixed_atoms@{read\_\-fixed\_\-atoms}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-fixed\_\-atoms ({\bf fio\_\-fd} {\em fd}, int {\em N}, int {\em num\_\-free}, const int $\ast$ {\em indexes}, int {\em reverse\-Endian}, const float $\ast$ {\em fixedcoords}, float $\ast$ {\em freeatoms}, float $\ast$ {\em pos}, int {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a28}
+
+
+
+
+Definition at line 423 of file dcdplugin.c.
+
+References DCD\_\-BADFORMAT, DCD\_\-BADREAD, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fread, RECSCALE32BIT, RECSCALE64BIT, and swap4\_\-aligned.
+
+Referenced by read\_\-dcdstep.\index{dcdplugin.c@{dcdplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a36}
+
+
+
+
+Definition at line 896 of file dcdplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, dcdhandle::charmm, molfile\_\-timestep\_\-t::coords, dcdhandle::fd, dcdhandle::first, dcdhandle::fixedcoords, dcdhandle::freeind, molfile\_\-timestep\_\-t::gamma, M\_\-PI\_\-2, MOLFILE\_\-EOF, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, dcdhandle::natoms, dcdhandle::nfixed, dcdhandle::nsets, print\_\-dcderror, read\_\-dcdstep, dcdhandle::reverse, dcdhandle::setsread, skip\_\-dcdstep, dcdhandle::x, dcdhandle::y, and dcdhandle::z.\index{dcdplugin.c@{dcdplugin.c}!skip_dcdstep@{skip\_\-dcdstep}}
+\index{skip_dcdstep@{skip\_\-dcdstep}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int skip\_\-dcdstep ({\bf fio\_\-fd} {\em fd}, int {\em natoms}, int {\em nfixed}, int {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a31}
+
+
+
+
+Definition at line 619 of file dcdplugin.c.
+
+References DCD\_\-BADEOF, DCD\_\-HAS\_\-4DIMS, DCD\_\-HAS\_\-64BIT\_\-REC, DCD\_\-HAS\_\-EXTRA\_\-BLOCK, DCD\_\-IS\_\-CHARMM, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fseek, FIO\_\-SEEK\_\-CUR, RECSCALE32BIT, and RECSCALE64BIT.
+
+Referenced by read\_\-next\_\-timestep.\index{dcdplugin.c@{dcdplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{dcdplugin_8c_a43}
+
+
+
+
+Definition at line 1117 of file dcdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dcdplugin.c@{dcdplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{dcdplugin_8c_a41}
+
+
+
+
+Definition at line 1108 of file dcdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dcdplugin.c@{dcdplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{dcdplugin_8c_a42}
+
+
+
+
+Definition at line 1112 of file dcdplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{dcdplugin.c@{dcdplugin.c}!write_dcdheader@{write\_\-dcdheader}}
+\index{write_dcdheader@{write\_\-dcdheader}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-dcdheader ({\bf fio\_\-fd} {\em fd}, const char $\ast$ {\em remarks}, int {\em N}, int {\em ISTART}, int {\em NSAVC}, double {\em DELTA}, int {\em with\_\-unitcell}, int {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a33}
+
+
+
+
+Definition at line 706 of file dcdplugin.c.
+
+References DCD\_\-SUCCESS, fio\_\-fd, fio\_\-write\_\-int32, and WRITE.
+
+Referenced by open\_\-dcd\_\-write.\index{dcdplugin.c@{dcdplugin.c}!write_dcdstep@{write\_\-dcdstep}}
+\index{write_dcdstep@{write\_\-dcdstep}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-dcdstep ({\bf fio\_\-fd} {\em fd}, int {\em curframe}, int {\em curstep}, int {\em N}, const float $\ast$ {\em X}, const float $\ast$ {\em Y}, const float $\ast$ {\em Z}, const double $\ast$ {\em unitcell}, int {\em charmm})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a32}
+
+
+
+
+Definition at line 659 of file dcdplugin.c.
+
+References DCD\_\-BADWRITE, DCD\_\-SUCCESS, fio\_\-fd, fio\_\-fseek, fio\_\-fwrite, FIO\_\-SEEK\_\-END, FIO\_\-SEEK\_\-SET, fio\_\-write\_\-int32, NFILE\_\-POS, NSTEP\_\-POS, and WRITE.
+
+Referenced by write\_\-timestep.\index{dcdplugin.c@{dcdplugin.c}!write_timestep@{write\_\-timestep}}
+\index{write_timestep@{write\_\-timestep}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a39}
+
+
+
+
+Definition at line 1038 of file dcdplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, dcdhandle::charmm, molfile\_\-timestep\_\-t::coords, dcdhandle::fd, molfile\_\-timestep\_\-t::gamma, dcdhandle::istart, M\_\-PI\_\-2, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, dcdhandle::natoms, dcdhandle::nsavc, dcdhandle::nsets, print\_\-dcderror, dcdhandle::with\_\-unitcell, write\_\-dcdstep, dcdhandle::x, dcdhandle::y, and dcdhandle::z.
+
+\subsection{Variable Documentation}
+\index{dcdplugin.c@{dcdplugin.c}!dcdplugin@{dcdplugin}}
+\index{dcdplugin@{dcdplugin}!dcdplugin.c@{dcdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} dcdplugin\hspace{0.3cm}{\tt  [static]}}\label{dcdplugin_8c_a24}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                         
+  MOLFILE_PLUGIN_TYPE,                          
+  "dcd",                                        
+  "CHARMM,NAMD,XPLOR DCD Trajectory",           
+  "Justin Gullingsrud, John Stone",             
+  1,                                            
+  8,                                            
+  VMDPLUGIN_THREADSAFE,                         
+  "dcd",                                        
+  open_dcd_read,
+  0,
+  0,
+  read_next_timestep,
+  close_file_read,
+  open_dcd_write,
+  0,
+  write_timestep,
+  close_file_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 1087 of file dcdplugin.c.

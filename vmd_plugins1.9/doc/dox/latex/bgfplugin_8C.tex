@@ -1,0 +1,280 @@
+\section{bgfplugin.C File Reference}
+\label{bgfplugin_8C}\index{bgfplugin.C@{bgfplugin.C}}
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf bgfdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 256
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-bgf\_\-read} (const char $\ast$path, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+void {\bf adjust\_\-bgf\_\-field\_\-string} (char $\ast$field)
+\item 
+void {\bf get\_\-bgf\_\-coordinates} (const char $\ast$record, float $\ast$x, float $\ast$y, float $\ast$z)
+\item 
+void {\bf get\_\-bgf\_\-fields} (const char $\ast$record, char $\ast${\bf name}, char $\ast$resname, char $\ast$chain, char $\ast$segname, int $\ast$resid, char $\ast$type, float $\ast$charge, float $\ast$x, float $\ast$y, float $\ast$z)
+\item 
+int {\bf read\_\-bgf\_\-structure} (void $\ast$v, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-bgf\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void $\ast$ {\bf open\_\-bgf\_\-write} (const char $\ast$filename, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-bgf\_\-structure} (void $\ast$mydata, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+void {\bf getatomfield} (char $\ast$atomfield, const char $\ast$resname)
+\item 
+void {\bf getdreiidff} (char $\ast$outputtype, const char $\ast$psftype, int \&numbonds, int \&lp)
+\item 
+int {\bf read\_\-bgf\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorderptr)
+\item 
+int {\bf read\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorderptr)
+\item 
+int {\bf write\_\-bgf\_\-timestep} (void $\ast$mydata, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf write\_\-bonds} (void $\ast$v, int nbonds, int $\ast$fromptr, int $\ast$toptr, float $\ast$bondorderptr)
+\item 
+void {\bf close\_\-bgf\_\-write} (void $\ast$mydata)
+\item 
+void {\bf close\_\-bgf\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf bgfplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{bgfplugin.C@{bgfplugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 256}\label{bgfplugin_8C_a0}
+
+
+
+
+Definition at line 28 of file bgfplugin.C.
+
+Referenced by open\_\-bgf\_\-read, read\_\-bgf\_\-bonds, read\_\-bgf\_\-structure, and read\_\-bgf\_\-timestep.
+
+\subsection{Function Documentation}
+\index{bgfplugin.C@{bgfplugin.C}!adjust_bgf_field_string@{adjust\_\-bgf\_\-field\_\-string}}
+\index{adjust_bgf_field_string@{adjust\_\-bgf\_\-field\_\-string}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void adjust\_\-bgf\_\-field\_\-string (char $\ast$ {\em field})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a3}
+
+
+
+
+Definition at line 91 of file bgfplugin.C.\index{bgfplugin.C@{bgfplugin.C}!close_bgf_read@{close\_\-bgf\_\-read}}
+\index{close_bgf_read@{close\_\-bgf\_\-read}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-bgf\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a17}
+
+
+
+
+Definition at line 652 of file bgfplugin.C.
+
+References bgfdata::bondorder, bgfdata::file, bgfdata::from, and bgfdata::to.\index{bgfplugin.C@{bgfplugin.C}!close_bgf_write@{close\_\-bgf\_\-write}}
+\index{close_bgf_write@{close\_\-bgf\_\-write}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-bgf\_\-write (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a16}
+
+
+
+
+Definition at line 639 of file bgfplugin.C.
+
+References bgfdata::atomlist, bgfdata::bondorder, bgfdata::file, bgfdata::from, and bgfdata::to.\index{bgfplugin.C@{bgfplugin.C}!get_bgf_coordinates@{get\_\-bgf\_\-coordinates}}
+\index{get_bgf_coordinates@{get\_\-bgf\_\-coordinates}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-bgf\_\-coordinates (const char $\ast$ {\em record}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a4}
+
+
+
+
+Definition at line 108 of file bgfplugin.C.\index{bgfplugin.C@{bgfplugin.C}!get_bgf_fields@{get\_\-bgf\_\-fields}}
+\index{get_bgf_fields@{get\_\-bgf\_\-fields}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-bgf\_\-fields (const char $\ast$ {\em record}, char $\ast$ {\em name}, char $\ast$ {\em resname}, char $\ast$ {\em chain}, char $\ast$ {\em segname}, int $\ast$ {\em resid}, char $\ast$ {\em type}, float $\ast$ {\em charge}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a5}
+
+
+
+
+Definition at line 129 of file bgfplugin.C.
+
+References adjust\_\-bgf\_\-field\_\-string, get\_\-bgf\_\-coordinates, and name.\index{bgfplugin.C@{bgfplugin.C}!getatomfield@{getatomfield}}
+\index{getatomfield@{getatomfield}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void getatomfield (char $\ast$ {\em atomfield}, const char $\ast$ {\em resname})}\label{bgfplugin_8C_a10}
+
+
+
+
+Definition at line 293 of file bgfplugin.C.
+
+Referenced by write\_\-bgf\_\-timestep.\index{bgfplugin.C@{bgfplugin.C}!getdreiidff@{getdreiidff}}
+\index{getdreiidff@{getdreiidff}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void getdreiidff (char $\ast$ {\em outputtype}, const char $\ast$ {\em psftype}, int \& {\em numbonds}, int \& {\em lp})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a11}
+
+
+
+
+Definition at line 301 of file bgfplugin.C.\index{bgfplugin.C@{bgfplugin.C}!open_bgf_read@{open\_\-bgf\_\-read}}
+\index{open_bgf_read@{open\_\-bgf\_\-read}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-bgf\_\-read (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a2}
+
+
+
+
+Definition at line 40 of file bgfplugin.C.
+
+References bgfdata::bondorder, bgfdata::coords\_\-read, bgfdata::file, bgfdata::from, LINESIZE, MOLFILE\_\-CHARGE, MOLFILE\_\-INSERTION, bgfdata::natoms, bgfdata::nbonds, bgfdata::optflags, and bgfdata::to.\index{bgfplugin.C@{bgfplugin.C}!open_bgf_write@{open\_\-bgf\_\-write}}
+\index{open_bgf_write@{open\_\-bgf\_\-write}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-bgf\_\-write (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a8}
+
+
+
+
+Definition at line 268 of file bgfplugin.C.
+
+References bgfdata::file, and bgfdata::natoms.\index{bgfplugin.C@{bgfplugin.C}!read_bgf_bonds@{read\_\-bgf\_\-bonds}}
+\index{read_bgf_bonds@{read\_\-bgf\_\-bonds}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bgf\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a12}
+
+
+
+
+Definition at line 368 of file bgfplugin.C.
+
+References bgfdata::bondorder, bgfdata::file, bgfdata::from, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, bgfdata::nbonds, and bgfdata::to.\index{bgfplugin.C@{bgfplugin.C}!read_bgf_structure@{read\_\-bgf\_\-structure}}
+\index{read_bgf_structure@{read\_\-bgf\_\-structure}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bgf\_\-structure (void $\ast$ {\em v}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a6}
+
+
+
+
+Definition at line 176 of file bgfplugin.C.
+
+References molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, bgfdata::file, get\_\-bgf\_\-fields, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, bgfdata::natoms, bgfdata::optflags, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{bgfplugin.C@{bgfplugin.C}!read_bgf_timestep@{read\_\-bgf\_\-timestep}}
+\index{read_bgf_timestep@{read\_\-bgf\_\-timestep}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bgf\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a7}
+
+
+
+
+Definition at line 220 of file bgfplugin.C.
+
+References molfile\_\-timestep\_\-t::coords, bgfdata::coords\_\-read, bgfdata::file, get\_\-bgf\_\-coordinates, LINESIZE, MOLFILE\_\-EOF, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, and bgfdata::natoms.\index{bgfplugin.C@{bgfplugin.C}!read_bonds@{read\_\-bonds}}
+\index{read_bonds@{read\_\-bonds}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a13}
+
+
+
+
+Definition at line 499 of file bgfplugin.C.
+
+References bgfdata::bondorder, bgfdata::file, bgfdata::from, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, bgfdata::nbonds, read\_\-bgf\_\-bonds, and bgfdata::to.\index{bgfplugin.C@{bgfplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{bgfplugin_8C_a20}
+
+
+
+
+Definition at line 699 of file bgfplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{bgfplugin.C@{bgfplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{bgfplugin_8C_a18}
+
+
+
+
+Definition at line 690 of file bgfplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{bgfplugin.C@{bgfplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{bgfplugin_8C_a19}
+
+
+
+
+Definition at line 694 of file bgfplugin.C.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{bgfplugin.C@{bgfplugin.C}!write_bgf_structure@{write\_\-bgf\_\-structure}}
+\index{write_bgf_structure@{write\_\-bgf\_\-structure}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-bgf\_\-structure (void $\ast$ {\em mydata}, int {\em optflags}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a9}
+
+
+
+
+Definition at line 285 of file bgfplugin.C.
+
+References bgfdata::atomlist, MOLFILE\_\-SUCCESS, and bgfdata::natoms.\index{bgfplugin.C@{bgfplugin.C}!write_bgf_timestep@{write\_\-bgf\_\-timestep}}
+\index{write_bgf_timestep@{write\_\-bgf\_\-timestep}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-bgf\_\-timestep (void $\ast$ {\em mydata}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a14}
+
+
+
+
+Definition at line 528 of file bgfplugin.C.
+
+References bgfdata::atomlist, bgfdata::bondorder, molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, molfile\_\-timestep\_\-t::coords, bgfdata::file, bgfdata::from, getatomfield, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, bgfdata::natoms, bgfdata::nbonds, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, bgfdata::to, and molfile\_\-atom\_\-t::type.\index{bgfplugin.C@{bgfplugin.C}!write_bonds@{write\_\-bonds}}
+\index{write_bonds@{write\_\-bonds}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-bonds (void $\ast$ {\em v}, int {\em nbonds}, int $\ast$ {\em fromptr}, int $\ast$ {\em toptr}, float $\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a15}
+
+
+
+
+Definition at line 622 of file bgfplugin.C.
+
+References bgfdata::bondorder, bgfdata::from, MOLFILE\_\-SUCCESS, bgfdata::nbonds, and bgfdata::to.
+
+\subsection{Variable Documentation}
+\index{bgfplugin.C@{bgfplugin.C}!bgfplugin@{bgfplugin}}
+\index{bgfplugin@{bgfplugin}!bgfplugin.C@{bgfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} bgfplugin\hspace{0.3cm}{\tt  [static]}}\label{bgfplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                      
+  "bgf",                                    
+  "MSI Biograf Format",
+  "Peter Freddolino ",    
+  0,                                        
+  9,                                        
+  VMDPLUGIN_THREADSAFE,                     
+  "bgf",
+  open_bgf_read,
+  read_bgf_structure,
+  read_bonds,
+  read_bgf_timestep,
+  close_bgf_read,
+  open_bgf_write,
+  write_bgf_structure,
+  write_bgf_timestep,
+  close_bgf_write,
+  0,                            
+  0,                            
+  0,
+  0,
+  write_bonds  
+}\end{verbatim}\normalsize 
+
+
+Definition at line 664 of file bgfplugin.C.

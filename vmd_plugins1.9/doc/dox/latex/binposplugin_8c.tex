@@ -1,0 +1,156 @@
+\section{binposplugin.c File Reference}
+\label{binposplugin_8c}\index{binposplugin.c@{binposplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$limits.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf binposhandle}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-binpos\_\-read} (const char $\ast$path, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-binpos\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{binposplugin.c@{binposplugin.c}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a3}
+
+
+
+
+Definition at line 151 of file binposplugin.c.
+
+References binposhandle::fd, and binposhandle::xyz.\index{binposplugin.c@{binposplugin.c}!close_file_write@{close\_\-file\_\-write}}
+\index{close_file_write@{close\_\-file\_\-write}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a6}
+
+
+
+
+Definition at line 210 of file binposplugin.c.
+
+References binposhandle::fd.\index{binposplugin.c@{binposplugin.c}!open_binpos_read@{open\_\-binpos\_\-read}}
+\index{open_binpos_read@{open\_\-binpos\_\-read}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-binpos\_\-read (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a1}
+
+
+
+
+Definition at line 42 of file binposplugin.c.
+
+References binposhandle::fd, binposhandle::numatoms, binposhandle::wrongendian, and binposhandle::xyz.\index{binposplugin.c@{binposplugin.c}!open_binpos_write@{open\_\-binpos\_\-write}}
+\index{open_binpos_write@{open\_\-binpos\_\-write}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-binpos\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a4}
+
+
+
+
+Definition at line 159 of file binposplugin.c.
+
+References binposhandle::fd, and binposhandle::numatoms.\index{binposplugin.c@{binposplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a2}
+
+
+
+
+Definition at line 101 of file binposplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, binposhandle::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, binposhandle::numatoms, binposhandle::wrongendian, and binposhandle::xyz.\index{binposplugin.c@{binposplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{binposplugin_8c_a9}
+
+
+
+
+Definition at line 251 of file binposplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{binposplugin.c@{binposplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{binposplugin_8c_a7}
+
+
+
+
+Definition at line 242 of file binposplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{binposplugin.c@{binposplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{binposplugin_8c_a8}
+
+
+
+
+Definition at line 246 of file binposplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{binposplugin.c@{binposplugin.c}!write_timestep@{write\_\-timestep}}
+\index{write_timestep@{write\_\-timestep}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a5}
+
+
+
+
+Definition at line 177 of file binposplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, binposhandle::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, and binposhandle::numatoms.
+
+\subsection{Variable Documentation}
+\index{binposplugin.c@{binposplugin.c}!plugin@{plugin}}
+\index{plugin@{plugin}!binposplugin.c@{binposplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{binposplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,         
+  MOLFILE_PLUGIN_TYPE,          
+  "binpos",                     
+  "Scripps Binpos",             
+  "Brian Bennion",              
+  0,                            
+  3,                            
+  VMDPLUGIN_THREADSAFE,         
+  "binpos",                     
+  open_binpos_read,
+  0,
+  0,
+  read_next_timestep,
+  close_file_read,
+  open_binpos_write,
+  0,
+  write_timestep,
+  close_file_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 221 of file binposplugin.c.

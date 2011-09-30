@@ -1,0 +1,229 @@
+\section{pdbdata  Struct Reference}
+\label{structpdbdata}\index{pdbdata@{pdbdata}}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ {\bf fd}
+\item 
+int {\bf natoms}
+\item 
+char $\ast$ {\bf original\_\-file}
+\item 
+char $\ast$ {\bf current\_\-file}
+\item 
+int {\bf babel\_\-num}
+\item 
+int {\bf babel\_\-i}
+\item 
+FILE $\ast$ {\bf fd}
+\item 
+int {\bf first\_\-frame}
+\item 
+{\bf molfile\_\-atom\_\-t} $\ast$ {\bf atomlist}
+\item 
+{\bf molfile\_\-metadata\_\-t} $\ast$ {\bf meta}
+\item 
+int {\bf nconect}
+\item 
+int {\bf nbonds}
+\item 
+int {\bf maxbnum}
+\item 
+int $\ast$ {\bf from}
+\item 
+int $\ast$ {\bf to}
+\item 
+int $\ast$ {\bf idxmap}
+\item 
+char $\ast$ {\bf pdbstr}
+\item 
+char $\ast$ {\bf pos}
+\item 
+{\bf molfile\_\-metadata\_\-t} $\ast$ {\bf meta}
+\item 
+int $\ast$ {\bf from}
+\end{CompactItemize}
+
+
+\subsection{Member Data Documentation}
+\index{pdbdata@{pdbdata}!atomlist@{atomlist}}
+\index{atomlist@{atomlist}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-atom\_\-t}$\ast$ pdbdata::atomlist}\label{structpdbdata_m8}
+
+
+
+
+Definition at line 40 of file pdbplugin.c.
+
+Referenced by close\_\-file\_\-write, open\_\-file\_\-write, open\_\-pdb\_\-read, write\_\-structure, and write\_\-timestep.\index{pdbdata@{pdbdata}!babel_i@{babel\_\-i}}
+\index{babel_i@{babel\_\-i}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::babel\_\-i}\label{structpdbdata_m5}
+
+
+
+
+Definition at line 46 of file babelplugin.c.
+
+Referenced by open\_\-babel\_\-read, and read\_\-next\_\-timestep.\index{pdbdata@{pdbdata}!babel_num@{babel\_\-num}}
+\index{babel_num@{babel\_\-num}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::babel\_\-num}\label{structpdbdata_m4}
+
+
+
+
+Definition at line 45 of file babelplugin.c.
+
+Referenced by open\_\-babel\_\-read, and read\_\-next\_\-timestep.\index{pdbdata@{pdbdata}!current_file@{current\_\-file}}
+\index{current_file@{current\_\-file}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ pdbdata::current\_\-file}\label{structpdbdata_m3}
+
+
+
+
+Definition at line 44 of file babelplugin.c.
+
+Referenced by close\_\-pdb\_\-read, open\_\-babel\_\-read, and read\_\-next\_\-timestep.\index{pdbdata@{pdbdata}!fd@{fd}}
+\index{fd@{fd}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ pdbdata::fd}\label{structpdbdata_m6}
+
+
+
+
+Definition at line 37 of file pdbplugin.c.\index{pdbdata@{pdbdata}!fd@{fd}}
+\index{fd@{fd}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ pdbdata::fd}\label{structpdbdata_m0}
+
+
+
+
+Definition at line 41 of file babelplugin.c.
+
+Referenced by close\_\-file\_\-write, close\_\-pdb\_\-read, open\_\-file\_\-write, open\_\-pdb\_\-read, read\_\-next\_\-timestep, read\_\-pdb\_\-structure, and write\_\-timestep.\index{pdbdata@{pdbdata}!first_frame@{first\_\-frame}}
+\index{first_frame@{first\_\-frame}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::first\_\-frame}\label{structpdbdata_m7}
+
+
+
+
+Definition at line 38 of file pdbplugin.c.
+
+Referenced by open\_\-file\_\-write, and write\_\-timestep.\index{pdbdata@{pdbdata}!from@{from}}
+\index{from@{from}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ pdbdata::from}\label{structpdbdata_m19}
+
+
+
+
+Definition at line 83 of file webpdbplugin.c.\index{pdbdata@{pdbdata}!from@{from}}
+\index{from@{from}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ pdbdata::from}\label{structpdbdata_m13}
+
+
+
+
+Definition at line 44 of file pdbplugin.c.
+
+Referenced by open\_\-pdb\_\-read, pdb\_\-read, read\_\-bonds, and read\_\-pdb\_\-structure.\index{pdbdata@{pdbdata}!idxmap@{idxmap}}
+\index{idxmap@{idxmap}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int $\ast$ pdbdata::idxmap}\label{structpdbdata_m15}
+
+
+
+
+Definition at line 83 of file webpdbplugin.c.
+
+Referenced by close\_\-pdb\_\-read, open\_\-pdb\_\-read, pdb\_\-read, and read\_\-pdb\_\-structure.\index{pdbdata@{pdbdata}!maxbnum@{maxbnum}}
+\index{maxbnum@{maxbnum}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::maxbnum}\label{structpdbdata_m12}
+
+
+
+
+Definition at line 82 of file webpdbplugin.c.
+
+Referenced by open\_\-pdb\_\-read, pdb\_\-read, and read\_\-pdb\_\-structure.\index{pdbdata@{pdbdata}!meta@{meta}}
+\index{meta@{meta}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-metadata\_\-t}$\ast$ pdbdata::meta}\label{structpdbdata_m18}
+
+
+
+
+Definition at line 80 of file webpdbplugin.c.\index{pdbdata@{pdbdata}!meta@{meta}}
+\index{meta@{meta}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-metadata\_\-t}$\ast$ pdbdata::meta}\label{structpdbdata_m9}
+
+
+
+
+Definition at line 41 of file pdbplugin.c.
+
+Referenced by close\_\-pdb\_\-read, open\_\-pdb\_\-read, pdb\_\-read, and read\_\-molecule\_\-metadata.\index{pdbdata@{pdbdata}!natoms@{natoms}}
+\index{natoms@{natoms}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::natoms}\label{structpdbdata_m1}
+
+
+
+
+Definition at line 79 of file webpdbplugin.c.
+
+Referenced by open\_\-file\_\-write, open\_\-pdb\_\-read, pdb\_\-read, read\_\-bonds, read\_\-next\_\-timestep, read\_\-pdb\_\-structure, write\_\-structure, and write\_\-timestep.\index{pdbdata@{pdbdata}!nbonds@{nbonds}}
+\index{nbonds@{nbonds}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::nbonds}\label{structpdbdata_m11}
+
+
+
+
+Definition at line 82 of file webpdbplugin.c.
+
+Referenced by open\_\-pdb\_\-read, pdb\_\-read, read\_\-bonds, and read\_\-pdb\_\-structure.\index{pdbdata@{pdbdata}!nconect@{nconect}}
+\index{nconect@{nconect}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int pdbdata::nconect}\label{structpdbdata_m10}
+
+
+
+
+Definition at line 81 of file webpdbplugin.c.
+
+Referenced by open\_\-pdb\_\-read, pdb\_\-read, and read\_\-bonds.\index{pdbdata@{pdbdata}!original_file@{original\_\-file}}
+\index{original_file@{original\_\-file}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ pdbdata::original\_\-file}\label{structpdbdata_m2}
+
+
+
+
+Definition at line 43 of file babelplugin.c.
+
+Referenced by open\_\-babel\_\-read, and read\_\-next\_\-timestep.\index{pdbdata@{pdbdata}!pdbstr@{pdbstr}}
+\index{pdbstr@{pdbstr}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ pdbdata::pdbstr}\label{structpdbdata_m16}
+
+
+
+
+Definition at line 77 of file webpdbplugin.c.
+
+Referenced by close\_\-pdb\_\-read, pdb\_\-read, and read\_\-pdb\_\-structure.\index{pdbdata@{pdbdata}!pos@{pos}}
+\index{pos@{pos}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ pdbdata::pos}\label{structpdbdata_m17}
+
+
+
+
+Definition at line 78 of file webpdbplugin.c.
+
+Referenced by pdb\_\-read, and read\_\-next\_\-timestep.\index{pdbdata@{pdbdata}!to@{to}}
+\index{to@{to}!pdbdata@{pdbdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int $\ast$ pdbdata::to}\label{structpdbdata_m14}
+
+
+
+
+Definition at line 83 of file webpdbplugin.c.
+
+Referenced by open\_\-pdb\_\-read, pdb\_\-read, read\_\-bonds, and read\_\-pdb\_\-structure.
+
+The documentation for this struct was generated from the following files:\begin{CompactItemize}
+\item 
+{\bf babelplugin.c}\item 
+{\bf pdbplugin.c}\item 
+{\bf webpdbplugin.c}\end{CompactItemize}

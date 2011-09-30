@@ -1,0 +1,151 @@
+\section{dsn6plugin.C File Reference}
+\label{dsn6plugin_8C}\index{dsn6plugin.C@{dsn6plugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf dsn6\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI}\ 3.14159265358979323846
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-dsn6\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-dsn6\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-dsn6\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-dsn6\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{dsn6plugin.C@{dsn6plugin.C}!M_PI@{M\_\-PI}}
+\index{M_PI@{M\_\-PI}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\ 3.14159265358979323846}\label{dsn6plugin_8C_a0}
+
+
+
+
+Definition at line 54 of file dsn6plugin.C.
+
+Referenced by open\_\-dsn6\_\-read.
+
+\subsection{Function Documentation}
+\index{dsn6plugin.C@{dsn6plugin.C}!close_dsn6_read@{close\_\-dsn6\_\-read}}
+\index{close_dsn6_read@{close\_\-dsn6\_\-read}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-dsn6\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{dsn6plugin_8C_a5}
+
+
+
+
+Definition at line 278 of file dsn6plugin.C.
+
+References dsn6\_\-t::fd, and dsn6\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{dsn6plugin.C@{dsn6plugin.C}!open_dsn6_read@{open\_\-dsn6\_\-read}}
+\index{open_dsn6_read@{open\_\-dsn6\_\-read}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-dsn6\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{dsn6plugin_8C_a2}
+
+
+
+
+Definition at line 68 of file dsn6plugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, dsn6\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, M\_\-PI, MOLFILE\_\-NUMATOMS\_\-NONE, dsn6\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, dsn6\_\-t::plus, dsn6\_\-t::prod, swap2\_\-aligned, dsn6\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{dsn6plugin.C@{dsn6plugin.C}!read_dsn6_data@{read\_\-dsn6\_\-data}}
+\index{read_dsn6_data@{read\_\-dsn6\_\-data}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dsn6\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{dsn6plugin_8C_a4}
+
+
+
+
+Definition at line 187 of file dsn6plugin.C.
+
+References dsn6\_\-t::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, dsn6\_\-t::plus, dsn6\_\-t::prod, swap2\_\-unaligned, dsn6\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{dsn6plugin.C@{dsn6plugin.C}!read_dsn6_metadata@{read\_\-dsn6\_\-metadata}}
+\index{read_dsn6_metadata@{read\_\-dsn6\_\-metadata}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dsn6\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{dsn6plugin_8C_a3}
+
+
+
+
+Definition at line 178 of file dsn6plugin.C.
+
+References MOLFILE\_\-SUCCESS, dsn6\_\-t::nsets, and dsn6\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{dsn6plugin.C@{dsn6plugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{dsn6plugin_8C_a7}
+
+
+
+
+Definition at line 303 of file dsn6plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dsn6plugin.C@{dsn6plugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{dsn6plugin_8C_a6}
+
+
+
+
+Definition at line 302 of file dsn6plugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dsn6plugin.C@{dsn6plugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{dsn6plugin_8C_a8}
+
+
+
+
+Definition at line 304 of file dsn6plugin.C.
+
+References close\_\-dsn6\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-dsn6\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-dsn6\_\-data, read\_\-dsn6\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{dsn6plugin.C@{dsn6plugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!dsn6plugin.C@{dsn6plugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{dsn6plugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "DSN6",                 
+  "DSN6",                 
+  "Eamon Caddigan",       
+  0,                      
+  4,                      
+  VMDPLUGIN_THREADSAFE,   
+  "ds6"                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 290 of file dsn6plugin.C.

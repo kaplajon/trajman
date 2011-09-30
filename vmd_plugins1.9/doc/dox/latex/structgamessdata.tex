@@ -1,0 +1,882 @@
+\section{gamessdata  Struct Reference}
+\label{structgamessdata}\index{gamessdata@{gamessdata}}
+{\tt \#include $<$gamessplugin.h$>$}
+
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ {\bf file}
+\item 
+int {\bf numatoms}
+\item 
+int {\bf runtyp}
+\item 
+char {\bf runtyp\_\-string} [BUFSIZ]
+\item 
+char {\bf gbasis} [10]
+\item 
+char {\bf basis\_\-string} [BUFSIZ]
+\item 
+int {\bf ngauss}
+\item 
+int {\bf npfunc}
+\item 
+int {\bf ndfunc}
+\item 
+int {\bf nffunc}
+\item 
+int {\bf diffs}
+\item 
+int {\bf diffsp}
+\item 
+char {\bf runtitle} [BUFSIZ]
+\item 
+char {\bf geometry} [BUFSIZ]
+\item 
+char {\bf guess} [BUFSIZ]
+\item 
+char {\bf version\_\-string} [BUFSIZ]
+\item 
+int {\bf version}
+\item 
+char $\ast$ {\bf file\_\-name}
+\item 
+int {\bf scftyp}
+\item 
+char {\bf scftyp\_\-string} [BUFSIZ]
+\item 
+int $\ast$ {\bf atomic\_\-number}
+\item 
+int {\bf totalcharge}
+\item 
+int {\bf multiplicity}
+\item 
+int {\bf num\_\-electrons}
+\item 
+int {\bf nimag}
+\item 
+int $\ast$ {\bf nimag\_\-modes}
+\item 
+int {\bf num\_\-scfenergies}
+\item 
+double $\ast$ {\bf scfenergies}
+\item 
+double $\ast$ {\bf wavenumbers}
+\item 
+double $\ast$ {\bf intensities}
+\item 
+double $\ast$ {\bf normal\_\-modes}
+\item 
+int {\bf nproc}
+\item 
+char {\bf memory} [256]
+\item 
+double $\ast$ {\bf mulliken\_\-charges}
+\item 
+double $\ast$ {\bf esp\_\-charges}
+\item 
+int {\bf have\_\-mulliken}
+\item 
+int {\bf have\_\-esp}
+\item 
+int {\bf have\_\-internals}
+\item 
+int {\bf have\_\-cart\_\-hessian}
+\item 
+int {\bf nintcoords}
+\item 
+int {\bf nbonds}
+\item 
+int {\bf nangles}
+\item 
+int {\bf ndiheds}
+\item 
+int {\bf nimprops}
+\item 
+int $\ast$ {\bf bonds}
+\item 
+int $\ast$ {\bf angles}
+\item 
+int $\ast$ {\bf dihedrals}
+\item 
+int $\ast$ {\bf impropers}
+\item 
+double $\ast$ {\bf internal\_\-coordinates}
+\item 
+double $\ast$ {\bf bond\_\-force\_\-const}
+\item 
+double $\ast$ {\bf angle\_\-force\_\-const}
+\item 
+double $\ast$ {\bf dihedral\_\-force\_\-const}
+\item 
+double $\ast$ {\bf improper\_\-force\_\-const}
+\item 
+double $\ast$ {\bf carthessian}
+\item 
+double $\ast$ {\bf inthessian}
+\item 
+float $\ast$ {\bf system\_\-dimensions}
+\item 
+float $\ast$ {\bf system\_\-center}
+\item 
+float $\ast$ {\bf orbital\_\-grid}
+\item 
+int {\bf num\_\-gridpoints}
+\item 
+int {\bf have\_\-volumetric}
+\item 
+{\bf molfile\_\-volumetric\_\-t} $\ast$ {\bf vol}
+\item 
+float $\ast$ {\bf basis}
+\item 
+int $\ast$ {\bf basis\_\-counter}
+\item 
+int {\bf num\_\-basis\_\-funcs}
+\item 
+int $\ast$ {\bf atomic\_\-shells}
+\item 
+int $\ast$ {\bf shell\_\-primitives}
+\item 
+char $\ast$ {\bf orbital\_\-symmetry}
+\item 
+float $\ast$ {\bf wave\_\-function}
+\item 
+float $\ast$ {\bf orbital\_\-energy}
+\item 
+int {\bf num\_\-orbitals\_\-A}
+\item 
+int {\bf num\_\-orbitals\_\-B}
+\item 
+int {\bf homo\_\-index}
+\item 
+int {\bf num\_\-gauss\_\-basis\_\-funcs}
+\item 
+int {\bf got\_\-wavefunction}
+\item 
+int {\bf orbital\_\-counter}
+\item 
+{\bf gamess\_\-temp} $\ast$ {\bf temporary}
+\item 
+{\bf mode\_\-data} $\ast$ {\bf animated\_\-mode}
+\item 
+int {\bf have\_\-trajectory}
+\item 
+int {\bf num\_\-traj\_\-points}
+\end{CompactItemize}
+
+
+\subsection{Member Data Documentation}
+\index{gamessdata@{gamessdata}!angle_force_const@{angle\_\-force\_\-const}}
+\index{angle_force_const@{angle\_\-force\_\-const}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::angle\_\-force\_\-const}\label{structgamessdata_m50}
+
+
+
+
+Definition at line 402 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!angles@{angles}}
+\index{angles@{angles}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::angles}\label{structgamessdata_m45}
+
+
+
+
+Definition at line 392 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!animated_mode@{animated\_\-mode}}
+\index{animated_mode@{animated\_\-mode}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf mode\_\-data}$\ast$ gamessdata::animated\_\-mode}\label{structgamessdata_m76}
+
+
+
+
+Definition at line 547 of file gamessplugin.h.
+
+Referenced by animate\_\-normal\_\-mode, close\_\-gamess\_\-read, initialize\_\-animated\_\-mode, and read\_\-next\_\-timestep.\index{gamessdata@{gamessdata}!atomic_number@{atomic\_\-number}}
+\index{atomic_number@{atomic\_\-number}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::atomic\_\-number}\label{structgamessdata_m20}
+
+
+
+
+Definition at line 336 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-initial\_\-info.\index{gamessdata@{gamessdata}!atomic_shells@{atomic\_\-shells}}
+\index{atomic_shells@{atomic\_\-shells}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::atomic\_\-shells}\label{structgamessdata_m64}
+
+
+
+
+Definition at line 482 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, get\_\-basis, and orbital\_\-at\_\-grid\_\-xyz.\index{gamessdata@{gamessdata}!basis@{basis}}
+\index{basis@{basis}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::basis}\label{structgamessdata_m61}
+
+
+
+
+Definition at line 475 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, get\_\-basis, and orbital\_\-at\_\-grid\_\-xyz.\index{gamessdata@{gamessdata}!basis_counter@{basis\_\-counter}}
+\index{basis_counter@{basis\_\-counter}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::basis\_\-counter}\label{structgamessdata_m62}
+
+
+
+
+Definition at line 476 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, get\_\-basis, and orbital\_\-at\_\-grid\_\-xyz.\index{gamessdata@{gamessdata}!basis_string@{basis\_\-string}}
+\index{basis_string@{basis\_\-string}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::basis\_\-string[BUFSIZ]}\label{structgamessdata_m5}
+
+
+
+
+Definition at line 302 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!bond_force_const@{bond\_\-force\_\-const}}
+\index{bond_force_const@{bond\_\-force\_\-const}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::bond\_\-force\_\-const}\label{structgamessdata_m49}
+
+
+
+
+Definition at line 401 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!bonds@{bonds}}
+\index{bonds@{bonds}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::bonds}\label{structgamessdata_m44}
+
+
+
+
+Definition at line 391 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!carthessian@{carthessian}}
+\index{carthessian@{carthessian}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::carthessian}\label{structgamessdata_m53}
+
+
+
+
+Definition at line 410 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-cart\_\-hessian.\index{gamessdata@{gamessdata}!diffs@{diffs}}
+\index{diffs@{diffs}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::diffs}\label{structgamessdata_m10}
+
+
+
+
+Definition at line 308 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!diffsp@{diffsp}}
+\index{diffsp@{diffsp}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::diffsp}\label{structgamessdata_m11}
+
+
+
+
+Definition at line 309 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!dihedral_force_const@{dihedral\_\-force\_\-const}}
+\index{dihedral_force_const@{dihedral\_\-force\_\-const}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::dihedral\_\-force\_\-const}\label{structgamessdata_m51}
+
+
+
+
+Definition at line 403 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!dihedrals@{dihedrals}}
+\index{dihedrals@{dihedrals}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::dihedrals}\label{structgamessdata_m46}
+
+
+
+
+Definition at line 393 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!esp_charges@{esp\_\-charges}}
+\index{esp_charges@{esp\_\-charges}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::esp\_\-charges}\label{structgamessdata_m34}
+
+
+
+
+Definition at line 367 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-initial\_\-info.\index{gamessdata@{gamessdata}!file@{file}}
+\index{file@{file}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ gamessdata::file}\label{structgamessdata_m0}
+
+
+
+
+Definition at line 296 of file gamessplugin.h.
+
+Referenced by atomic\_\-basis, check\_\-contrl, close\_\-gamess\_\-read, get\_\-basis, get\_\-cart\_\-hessian, get\_\-gbasis, get\_\-guess, get\_\-initial\_\-info, get\_\-int\_\-coords, get\_\-normal\_\-modes, get\_\-num\_\-orbitals, get\_\-proc\_\-mem, get\_\-runtitle, get\_\-trajectory, get\_\-wavefunction, have\_\-gamess, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!file_name@{file\_\-name}}
+\index{file_name@{file\_\-name}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ gamessdata::file\_\-name}\label{structgamessdata_m17}
+
+
+
+
+Definition at line 327 of file gamessplugin.h.
+
+Referenced by open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!gbasis@{gbasis}}
+\index{gbasis@{gbasis}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::gbasis[10]}\label{structgamessdata_m4}
+
+
+
+
+Definition at line 300 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and have\_\-supported\_\-gbasis.\index{gamessdata@{gamessdata}!geometry@{geometry}}
+\index{geometry@{geometry}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::geometry[BUFSIZ]}\label{structgamessdata_m13}
+
+
+
+
+Definition at line 313 of file gamessplugin.h.
+
+Referenced by check\_\-contrl.\index{gamessdata@{gamessdata}!got_wavefunction@{got\_\-wavefunction}}
+\index{got_wavefunction@{got\_\-wavefunction}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::got\_\-wavefunction}\label{structgamessdata_m73}
+
+
+
+
+Definition at line 523 of file gamessplugin.h.
+
+Referenced by get\_\-wavefunction, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!guess@{guess}}
+\index{guess@{guess}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::guess[BUFSIZ]}\label{structgamessdata_m14}
+
+
+
+
+Definition at line 314 of file gamessplugin.h.
+
+Referenced by get\_\-guess.\index{gamessdata@{gamessdata}!have_cart_hessian@{have\_\-cart\_\-hessian}}
+\index{have_cart_hessian@{have\_\-cart\_\-hessian}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-cart\_\-hessian}\label{structgamessdata_m38}
+
+
+
+
+Definition at line 381 of file gamessplugin.h.
+
+Referenced by get\_\-initial\_\-info, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!have_esp@{have\_\-esp}}
+\index{have_esp@{have\_\-esp}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-esp}\label{structgamessdata_m36}
+
+
+
+
+Definition at line 370 of file gamessplugin.h.
+
+Referenced by get\_\-initial\_\-info.\index{gamessdata@{gamessdata}!have_internals@{have\_\-internals}}
+\index{have_internals@{have\_\-internals}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-internals}\label{structgamessdata_m37}
+
+
+
+
+Definition at line 377 of file gamessplugin.h.
+
+Referenced by get\_\-initial\_\-info, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!have_mulliken@{have\_\-mulliken}}
+\index{have_mulliken@{have\_\-mulliken}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-mulliken}\label{structgamessdata_m35}
+
+
+
+
+Definition at line 369 of file gamessplugin.h.
+
+Referenced by get\_\-initial\_\-info.\index{gamessdata@{gamessdata}!have_trajectory@{have\_\-trajectory}}
+\index{have_trajectory@{have\_\-trajectory}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-trajectory}\label{structgamessdata_m77}
+
+
+
+
+Definition at line 552 of file gamessplugin.h.
+
+Referenced by open\_\-gamess\_\-read, and read\_\-next\_\-timestep.\index{gamessdata@{gamessdata}!have_volumetric@{have\_\-volumetric}}
+\index{have_volumetric@{have\_\-volumetric}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::have\_\-volumetric}\label{structgamessdata_m59}
+
+
+
+
+Definition at line 457 of file gamessplugin.h.
+
+Referenced by open\_\-gamess\_\-read, orbital\_\-grid\_\-driver, and read\_\-orbital\_\-metadata.\index{gamessdata@{gamessdata}!homo_index@{homo\_\-index}}
+\index{homo_index@{homo\_\-index}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::homo\_\-index}\label{structgamessdata_m71}
+
+
+
+
+Definition at line 512 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, find\_\-homo, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!improper_force_const@{improper\_\-force\_\-const}}
+\index{improper_force_const@{improper\_\-force\_\-const}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::improper\_\-force\_\-const}\label{structgamessdata_m52}
+
+
+
+
+Definition at line 404 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!impropers@{impropers}}
+\index{impropers@{impropers}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::impropers}\label{structgamessdata_m47}
+
+
+
+
+Definition at line 394 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!intensities@{intensities}}
+\index{intensities@{intensities}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::intensities}\label{structgamessdata_m29}
+
+
+
+
+Definition at line 351 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-normal\_\-modes.\index{gamessdata@{gamessdata}!internal_coordinates@{internal\_\-coordinates}}
+\index{internal_coordinates@{internal\_\-coordinates}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::internal\_\-coordinates}\label{structgamessdata_m48}
+
+
+
+
+Definition at line 396 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!inthessian@{inthessian}}
+\index{inthessian@{inthessian}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::inthessian}\label{structgamessdata_m54}
+
+
+
+
+Definition at line 416 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!memory@{memory}}
+\index{memory@{memory}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::memory[256]}\label{structgamessdata_m32}
+
+
+
+
+Definition at line 356 of file gamessplugin.h.
+
+Referenced by get\_\-proc\_\-mem, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!mulliken_charges@{mulliken\_\-charges}}
+\index{mulliken_charges@{mulliken\_\-charges}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::mulliken\_\-charges}\label{structgamessdata_m33}
+
+
+
+
+Definition at line 365 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-initial\_\-info.\index{gamessdata@{gamessdata}!multiplicity@{multiplicity}}
+\index{multiplicity@{multiplicity}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::multiplicity}\label{structgamessdata_m22}
+
+
+
+
+Definition at line 340 of file gamessplugin.h.
+
+Referenced by get\_\-num\_\-orbitals.\index{gamessdata@{gamessdata}!nangles@{nangles}}
+\index{nangles@{nangles}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nangles}\label{structgamessdata_m41}
+
+
+
+
+Definition at line 387 of file gamessplugin.h.
+
+Referenced by get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!nbonds@{nbonds}}
+\index{nbonds@{nbonds}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nbonds}\label{structgamessdata_m40}
+
+
+
+
+Definition at line 386 of file gamessplugin.h.
+
+Referenced by get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!ndfunc@{ndfunc}}
+\index{ndfunc@{ndfunc}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::ndfunc}\label{structgamessdata_m8}
+
+
+
+
+Definition at line 306 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!ndiheds@{ndiheds}}
+\index{ndiheds@{ndiheds}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::ndiheds}\label{structgamessdata_m42}
+
+
+
+
+Definition at line 388 of file gamessplugin.h.
+
+Referenced by get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!nffunc@{nffunc}}
+\index{nffunc@{nffunc}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nffunc}\label{structgamessdata_m9}
+
+
+
+
+Definition at line 307 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!ngauss@{ngauss}}
+\index{ngauss@{ngauss}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::ngauss}\label{structgamessdata_m6}
+
+
+
+
+Definition at line 303 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!nimag@{nimag}}
+\index{nimag@{nimag}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nimag}\label{structgamessdata_m24}
+
+
+
+
+Definition at line 342 of file gamessplugin.h.
+
+Referenced by get\_\-normal\_\-modes, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!nimag_modes@{nimag\_\-modes}}
+\index{nimag_modes@{nimag\_\-modes}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::nimag\_\-modes}\label{structgamessdata_m25}
+
+
+
+
+Definition at line 343 of file gamessplugin.h.\index{gamessdata@{gamessdata}!nimprops@{nimprops}}
+\index{nimprops@{nimprops}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nimprops}\label{structgamessdata_m43}
+
+
+
+
+Definition at line 389 of file gamessplugin.h.
+
+Referenced by get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!nintcoords@{nintcoords}}
+\index{nintcoords@{nintcoords}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nintcoords}\label{structgamessdata_m39}
+
+
+
+
+Definition at line 385 of file gamessplugin.h.
+
+Referenced by get\_\-int\_\-coords.\index{gamessdata@{gamessdata}!normal_modes@{normal\_\-modes}}
+\index{normal_modes@{normal\_\-modes}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::normal\_\-modes}\label{structgamessdata_m30}
+
+
+
+
+Definition at line 353 of file gamessplugin.h.
+
+Referenced by animate\_\-normal\_\-mode, close\_\-gamess\_\-read, and get\_\-normal\_\-modes.\index{gamessdata@{gamessdata}!npfunc@{npfunc}}
+\index{npfunc@{npfunc}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::npfunc}\label{structgamessdata_m7}
+
+
+
+
+Definition at line 305 of file gamessplugin.h.
+
+Referenced by get\_\-gbasis, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!nproc@{nproc}}
+\index{nproc@{nproc}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::nproc}\label{structgamessdata_m31}
+
+
+
+
+Definition at line 355 of file gamessplugin.h.
+
+Referenced by get\_\-proc\_\-mem.\index{gamessdata@{gamessdata}!num_basis_funcs@{num\_\-basis\_\-funcs}}
+\index{num_basis_funcs@{num\_\-basis\_\-funcs}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-basis\_\-funcs}\label{structgamessdata_m63}
+
+
+
+
+Definition at line 477 of file gamessplugin.h.
+
+Referenced by get\_\-basis.\index{gamessdata@{gamessdata}!num_electrons@{num\_\-electrons}}
+\index{num_electrons@{num\_\-electrons}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-electrons}\label{structgamessdata_m23}
+
+
+
+
+Definition at line 341 of file gamessplugin.h.
+
+Referenced by get\_\-num\_\-orbitals.\index{gamessdata@{gamessdata}!num_gauss_basis_funcs@{num\_\-gauss\_\-basis\_\-funcs}}
+\index{num_gauss_basis_funcs@{num\_\-gauss\_\-basis\_\-funcs}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-gauss\_\-basis\_\-funcs}\label{structgamessdata_m72}
+
+
+
+
+Definition at line 515 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, get\_\-num\_\-orbitals, and get\_\-wavefunction.\index{gamessdata@{gamessdata}!num_gridpoints@{num\_\-gridpoints}}
+\index{num_gridpoints@{num\_\-gridpoints}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-gridpoints}\label{structgamessdata_m58}
+
+
+
+
+Definition at line 451 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital.\index{gamessdata@{gamessdata}!num_orbitals_A@{num\_\-orbitals\_\-A}}
+\index{num_orbitals_A@{num\_\-orbitals\_\-A}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-orbitals\_\-A}\label{structgamessdata_m69}
+
+
+
+
+Definition at line 507 of file gamessplugin.h.
+
+Referenced by get\_\-num\_\-orbitals, and parse\_\-gamess\_\-log\_\-static.\index{gamessdata@{gamessdata}!num_orbitals_B@{num\_\-orbitals\_\-B}}
+\index{num_orbitals_B@{num\_\-orbitals\_\-B}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-orbitals\_\-B}\label{structgamessdata_m70}
+
+
+
+
+Definition at line 508 of file gamessplugin.h.
+
+Referenced by get\_\-num\_\-orbitals, and parse\_\-gamess\_\-log\_\-static.\index{gamessdata@{gamessdata}!num_scfenergies@{num\_\-scfenergies}}
+\index{num_scfenergies@{num\_\-scfenergies}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-scfenergies}\label{structgamessdata_m26}
+
+
+
+
+Definition at line 345 of file gamessplugin.h.
+
+Referenced by get\_\-initial\_\-info, get\_\-trajectory, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!num_traj_points@{num\_\-traj\_\-points}}
+\index{num_traj_points@{num\_\-traj\_\-points}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::num\_\-traj\_\-points}\label{structgamessdata_m78}
+
+
+
+
+Definition at line 556 of file gamessplugin.h.
+
+Referenced by get\_\-trajectory, open\_\-gamess\_\-read, and read\_\-next\_\-timestep.\index{gamessdata@{gamessdata}!numatoms@{numatoms}}
+\index{numatoms@{numatoms}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::numatoms}\label{structgamessdata_m1}
+
+
+
+
+Definition at line 297 of file gamessplugin.h.
+
+Referenced by animate\_\-normal\_\-mode, get\_\-basis, get\_\-cart\_\-hessian, get\_\-initial\_\-info, get\_\-normal\_\-modes, get\_\-system\_\-dimensions, initialize\_\-animated\_\-mode, orbital\_\-at\_\-grid\_\-xyz, parse\_\-gamess\_\-log\_\-static, and read\_\-gamess\_\-structure.\index{gamessdata@{gamessdata}!orbital_counter@{orbital\_\-counter}}
+\index{orbital_counter@{orbital\_\-counter}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::orbital\_\-counter}\label{structgamessdata_m74}
+
+
+
+
+Definition at line 528 of file gamessplugin.h.
+
+Referenced by find\_\-homo, and get\_\-wavefunction.\index{gamessdata@{gamessdata}!orbital_energy@{orbital\_\-energy}}
+\index{orbital_energy@{orbital\_\-energy}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::orbital\_\-energy}\label{structgamessdata_m68}
+
+
+
+
+Definition at line 503 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, find\_\-homo, and get\_\-wavefunction.\index{gamessdata@{gamessdata}!orbital_grid@{orbital\_\-grid}}
+\index{orbital_grid@{orbital\_\-grid}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::orbital\_\-grid}\label{structgamessdata_m57}
+
+
+
+
+Definition at line 444 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, close\_\-gamess\_\-read, and read\_\-orbital\_\-data.\index{gamessdata@{gamessdata}!orbital_symmetry@{orbital\_\-symmetry}}
+\index{orbital_symmetry@{orbital\_\-symmetry}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ gamessdata::orbital\_\-symmetry}\label{structgamessdata_m66}
+
+
+
+
+Definition at line 492 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, get\_\-basis, and orbital\_\-at\_\-grid\_\-xyz.\index{gamessdata@{gamessdata}!runtitle@{runtitle}}
+\index{runtitle@{runtitle}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::runtitle[BUFSIZ]}\label{structgamessdata_m12}
+
+
+
+
+Definition at line 311 of file gamessplugin.h.
+
+Referenced by get\_\-runtitle.\index{gamessdata@{gamessdata}!runtyp@{runtyp}}
+\index{runtyp@{runtyp}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::runtyp}\label{structgamessdata_m2}
+
+
+
+
+Definition at line 298 of file gamessplugin.h.
+
+Referenced by check\_\-contrl, close\_\-gamess\_\-read, get\_\-initial\_\-info, open\_\-gamess\_\-read, parse\_\-gamess\_\-log\_\-static, and read\_\-next\_\-timestep.\index{gamessdata@{gamessdata}!runtyp_string@{runtyp\_\-string}}
+\index{runtyp_string@{runtyp\_\-string}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::runtyp\_\-string[BUFSIZ]}\label{structgamessdata_m3}
+
+
+
+
+Definition at line 299 of file gamessplugin.h.
+
+Referenced by check\_\-contrl, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!scfenergies@{scfenergies}}
+\index{scfenergies@{scfenergies}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::scfenergies}\label{structgamessdata_m27}
+
+
+
+
+Definition at line 346 of file gamessplugin.h.
+
+Referenced by check\_\-contrl, close\_\-gamess\_\-read, get\_\-initial\_\-info, and get\_\-trajectory.\index{gamessdata@{gamessdata}!scftyp@{scftyp}}
+\index{scftyp@{scftyp}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::scftyp}\label{structgamessdata_m18}
+
+
+
+
+Definition at line 333 of file gamessplugin.h.
+
+Referenced by check\_\-contrl.\index{gamessdata@{gamessdata}!scftyp_string@{scftyp\_\-string}}
+\index{scftyp_string@{scftyp\_\-string}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::scftyp\_\-string[BUFSIZ]}\label{structgamessdata_m19}
+
+
+
+
+Definition at line 335 of file gamessplugin.h.
+
+Referenced by check\_\-contrl, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!shell_primitives@{shell\_\-primitives}}
+\index{shell_primitives@{shell\_\-primitives}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ gamessdata::shell\_\-primitives}\label{structgamessdata_m65}
+
+
+
+
+Definition at line 487 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, get\_\-basis, and orbital\_\-at\_\-grid\_\-xyz.\index{gamessdata@{gamessdata}!system_center@{system\_\-center}}
+\index{system_center@{system\_\-center}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::system\_\-center}\label{structgamessdata_m56}
+
+
+
+
+Definition at line 442 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, close\_\-gamess\_\-read, and get\_\-system\_\-dimensions.\index{gamessdata@{gamessdata}!system_dimensions@{system\_\-dimensions}}
+\index{system_dimensions@{system\_\-dimensions}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::system\_\-dimensions}\label{structgamessdata_m55}
+
+
+
+
+Definition at line 440 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, close\_\-gamess\_\-read, and get\_\-system\_\-dimensions.\index{gamessdata@{gamessdata}!temporary@{temporary}}
+\index{temporary@{temporary}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf gamess\_\-temp}$\ast$ gamessdata::temporary}\label{structgamessdata_m75}
+
+
+
+
+Definition at line 542 of file gamessplugin.h.
+
+Referenced by animate\_\-normal\_\-mode, close\_\-gamess\_\-read, get\_\-initial\_\-info, get\_\-system\_\-dimensions, orbital\_\-at\_\-grid\_\-xyz, read\_\-gamess\_\-structure, read\_\-next\_\-timestep, and read\_\-orbital\_\-data.\index{gamessdata@{gamessdata}!totalcharge@{totalcharge}}
+\index{totalcharge@{totalcharge}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::totalcharge}\label{structgamessdata_m21}
+
+
+
+
+Definition at line 339 of file gamessplugin.h.
+
+Referenced by get\_\-num\_\-orbitals.\index{gamessdata@{gamessdata}!version@{version}}
+\index{version@{version}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int gamessdata::version}\label{structgamessdata_m16}
+
+
+
+
+Definition at line 317 of file gamessplugin.h.
+
+Referenced by get\_\-trajectory, have\_\-gamess, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!version_string@{version\_\-string}}
+\index{version_string@{version\_\-string}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char gamessdata::version\_\-string[BUFSIZ]}\label{structgamessdata_m15}
+
+
+
+
+Definition at line 316 of file gamessplugin.h.
+
+Referenced by have\_\-gamess, and open\_\-gamess\_\-read.\index{gamessdata@{gamessdata}!vol@{vol}}
+\index{vol@{vol}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-volumetric\_\-t}$\ast$ gamessdata::vol}\label{structgamessdata_m60}
+
+
+
+
+Definition at line 462 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, close\_\-gamess\_\-read, read\_\-orbital\_\-data, and read\_\-orbital\_\-metadata.\index{gamessdata@{gamessdata}!wave_function@{wave\_\-function}}
+\index{wave_function@{wave\_\-function}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ gamessdata::wave\_\-function}\label{structgamessdata_m67}
+
+
+
+
+Definition at line 498 of file gamessplugin.h.
+
+Referenced by calculate\_\-orbital, close\_\-gamess\_\-read, and get\_\-wavefunction.\index{gamessdata@{gamessdata}!wavenumbers@{wavenumbers}}
+\index{wavenumbers@{wavenumbers}!gamessdata@{gamessdata}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ gamessdata::wavenumbers}\label{structgamessdata_m28}
+
+
+
+
+Definition at line 348 of file gamessplugin.h.
+
+Referenced by close\_\-gamess\_\-read, and get\_\-normal\_\-modes.
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf gamessplugin.h}\end{CompactItemize}

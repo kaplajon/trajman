@@ -1,0 +1,246 @@
+\section{fastio.h File Reference}
+\label{fastio_8h}\index{fastio.h@{fastio.h}}
+{\tt \#include $<$unistd.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$sys/stat.h$>$}\par
+{\tt \#include $<$fcntl.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf fio\_\-iovec}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf FIO\_\-READ}\ 0x01
+\item 
+\#define {\bf FIO\_\-WRITE}\ 0x02
+\item 
+\#define {\bf FIO\_\-SEEK\_\-CUR}\ SEEK\_\-CUR
+\item 
+\#define {\bf FIO\_\-SEEK\_\-SET}\ SEEK\_\-SET
+\item 
+\#define {\bf FIO\_\-SEEK\_\-END}\ SEEK\_\-END
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef int {\bf fio\_\-fd}
+\item 
+typedef off\_\-t {\bf fio\_\-size\_\-t}
+\item 
+typedef void $\ast$ {\bf fio\_\-caddr\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf fio\_\-open} (const char $\ast$filename, int mode, {\bf fio\_\-fd} $\ast$fd)
+\item 
+int {\bf fio\_\-fclose} ({\bf fio\_\-fd} fd)
+\item 
+{\bf fio\_\-size\_\-t} {\bf fio\_\-fread} (void $\ast$ptr, {\bf fio\_\-size\_\-t} size, {\bf fio\_\-size\_\-t} nitems, {\bf fio\_\-fd} fd)
+\item 
+{\bf fio\_\-size\_\-t} {\bf fio\_\-readv} ({\bf fio\_\-fd} fd, const {\bf fio\_\-iovec} $\ast$iov, int iovcnt)
+\item 
+{\bf fio\_\-size\_\-t} {\bf fio\_\-fwrite} (void $\ast$ptr, {\bf fio\_\-size\_\-t} size, {\bf fio\_\-size\_\-t} nitems, {\bf fio\_\-fd} fd)
+\item 
+{\bf fio\_\-size\_\-t} {\bf fio\_\-fseek} ({\bf fio\_\-fd} fd, {\bf fio\_\-size\_\-t} offset, int whence)
+\item 
+{\bf fio\_\-size\_\-t} {\bf fio\_\-ftell} ({\bf fio\_\-fd} fd)
+\item 
+int {\bf fio\_\-write\_\-int32} ({\bf fio\_\-fd} fd, int i)
+\item 
+int {\bf fio\_\-read\_\-int32} ({\bf fio\_\-fd} fd, int $\ast$i)
+\item 
+int {\bf fio\_\-write\_\-str} ({\bf fio\_\-fd} fd, const char $\ast$str)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{fastio.h@{fastio.h}!FIO_READ@{FIO\_\-READ}}
+\index{FIO_READ@{FIO\_\-READ}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIO\_\-READ\ 0x01}\label{fastio_8h_a0}
+
+
+
+
+Definition at line 344 of file fastio.h.
+
+Referenced by fio\_\-open, open\_\-dcd\_\-read, and open\_\-js\_\-read.\index{fastio.h@{fastio.h}!FIO_SEEK_CUR@{FIO\_\-SEEK\_\-CUR}}
+\index{FIO_SEEK_CUR@{FIO\_\-SEEK\_\-CUR}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIO\_\-SEEK\_\-CUR\ SEEK\_\-CUR}\label{fastio_8h_a2}
+
+
+
+
+Definition at line 347 of file fastio.h.
+
+Referenced by read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-js\_\-timestep, and skip\_\-dcdstep.\index{fastio.h@{fastio.h}!FIO_SEEK_END@{FIO\_\-SEEK\_\-END}}
+\index{FIO_SEEK_END@{FIO\_\-SEEK\_\-END}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIO\_\-SEEK\_\-END\ SEEK\_\-END}\label{fastio_8h_a4}
+
+
+
+
+Definition at line 349 of file fastio.h.
+
+Referenced by close\_\-js\_\-write, open\_\-dcd\_\-read, and write\_\-dcdstep.\index{fastio.h@{fastio.h}!FIO_SEEK_SET@{FIO\_\-SEEK\_\-SET}}
+\index{FIO_SEEK_SET@{FIO\_\-SEEK\_\-SET}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIO\_\-SEEK\_\-SET\ SEEK\_\-SET}\label{fastio_8h_a3}
+
+
+
+
+Definition at line 348 of file fastio.h.
+
+Referenced by close\_\-js\_\-write, open\_\-dcd\_\-read, and write\_\-dcdstep.\index{fastio.h@{fastio.h}!FIO_WRITE@{FIO\_\-WRITE}}
+\index{FIO_WRITE@{FIO\_\-WRITE}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIO\_\-WRITE\ 0x02}\label{fastio_8h_a1}
+
+
+
+
+Definition at line 345 of file fastio.h.
+
+Referenced by fio\_\-open, open\_\-dcd\_\-write, and open\_\-js\_\-write.
+
+\subsection{Typedef Documentation}
+\index{fastio.h@{fastio.h}!fio_caddr_t@{fio\_\-caddr\_\-t}}
+\index{fio_caddr_t@{fio\_\-caddr\_\-t}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef void$\ast$ fio\_\-caddr\_\-t}\label{fastio_8h_a7}
+
+
+
+
+Definition at line 330 of file fastio.h.\index{fastio.h@{fastio.h}!fio_fd@{fio\_\-fd}}
+\index{fio_fd@{fio\_\-fd}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef int fio\_\-fd}\label{fastio_8h_a5}
+
+
+
+
+Definition at line 322 of file fastio.h.
+
+Referenced by fio\_\-fclose, fio\_\-fread, fio\_\-fseek, fio\_\-ftell, fio\_\-fwrite, fio\_\-open, fio\_\-read\_\-int32, fio\_\-readv, fio\_\-write\_\-int32, fio\_\-write\_\-str, open\_\-dcd\_\-read, open\_\-dcd\_\-write, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-dcdstep, read\_\-fixed\_\-atoms, skip\_\-dcdstep, write\_\-dcdheader, and write\_\-dcdstep.\index{fastio.h@{fastio.h}!fio_size_t@{fio\_\-size\_\-t}}
+\index{fio_size_t@{fio\_\-size\_\-t}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef off\_\-t fio\_\-size\_\-t}\label{fastio_8h_a6}
+
+
+
+
+Definition at line 323 of file fastio.h.
+
+Referenced by fio\_\-fread, fio\_\-fseek, fio\_\-ftell, fio\_\-fwrite, fio\_\-readv, open\_\-dcd\_\-read, and read\_\-dcdstep.
+
+\subsection{Function Documentation}
+\index{fastio.h@{fastio.h}!fio_fclose@{fio\_\-fclose}}
+\index{fio_fclose@{fio\_\-fclose}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int fio\_\-fclose ({\bf fio\_\-fd} {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a9}
+
+
+
+
+Definition at line 370 of file fastio.h.
+
+References fio\_\-fd.
+
+Referenced by close\_\-file\_\-read, close\_\-file\_\-write, close\_\-js\_\-read, close\_\-js\_\-write, open\_\-dcd\_\-read, open\_\-dcd\_\-write, and open\_\-js\_\-read.\index{fastio.h@{fastio.h}!fio_fread@{fio\_\-fread}}
+\index{fio_fread@{fio\_\-fread}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf fio\_\-size\_\-t} fio\_\-fread (void $\ast$ {\em ptr}, {\bf fio\_\-size\_\-t} {\em size}, {\bf fio\_\-size\_\-t} {\em nitems}, {\bf fio\_\-fd} {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a10}
+
+
+
+
+Definition at line 374 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-size\_\-t.
+
+Referenced by fio\_\-read\_\-int32, open\_\-js\_\-read, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, and read\_\-fixed\_\-atoms.\index{fastio.h@{fastio.h}!fio_fseek@{fio\_\-fseek}}
+\index{fio_fseek@{fio\_\-fseek}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf fio\_\-size\_\-t} fio\_\-fseek ({\bf fio\_\-fd} {\em fd}, {\bf fio\_\-size\_\-t} {\em offset}, int {\em whence})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a13}
+
+
+
+
+Definition at line 426 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-size\_\-t.
+
+Referenced by close\_\-js\_\-write, open\_\-dcd\_\-read, read\_\-charmm\_\-4dim, read\_\-charmm\_\-extrablock, read\_\-dcdheader, read\_\-js\_\-timestep, skip\_\-dcdstep, and write\_\-dcdstep.\index{fastio.h@{fastio.h}!fio_ftell@{fio\_\-ftell}}
+\index{fio_ftell@{fio\_\-ftell}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf fio\_\-size\_\-t} fio\_\-ftell ({\bf fio\_\-fd} {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a14}
+
+
+
+
+Definition at line 433 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-size\_\-t.
+
+Referenced by open\_\-dcd\_\-read.\index{fastio.h@{fastio.h}!fio_fwrite@{fio\_\-fwrite}}
+\index{fio_fwrite@{fio\_\-fwrite}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf fio\_\-size\_\-t} fio\_\-fwrite (void $\ast$ {\em ptr}, {\bf fio\_\-size\_\-t} {\em size}, {\bf fio\_\-size\_\-t} {\em nitems}, {\bf fio\_\-fd} {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a12}
+
+
+
+
+Definition at line 409 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-size\_\-t.
+
+Referenced by fio\_\-write\_\-int32, fio\_\-write\_\-str, write\_\-dcdstep, and write\_\-js\_\-timestep.\index{fastio.h@{fastio.h}!fio_open@{fio\_\-open}}
+\index{fio_open@{fio\_\-open}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int fio\_\-open (const char $\ast$ {\em filename}, int {\em mode}, {\bf fio\_\-fd} $\ast$ {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a8}
+
+
+
+
+Definition at line 351 of file fastio.h.
+
+References fio\_\-fd, FIO\_\-READ, and FIO\_\-WRITE.
+
+Referenced by open\_\-dcd\_\-read, open\_\-dcd\_\-write, open\_\-js\_\-read, and open\_\-js\_\-write.\index{fastio.h@{fastio.h}!fio_read_int32@{fio\_\-read\_\-int32}}
+\index{fio_read_int32@{fio\_\-read\_\-int32}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int fio\_\-read\_\-int32 ({\bf fio\_\-fd} {\em fd}, int $\ast$ {\em i})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a16}
+
+
+
+
+Definition at line 446 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-fread.
+
+Referenced by open\_\-js\_\-read.\index{fastio.h@{fastio.h}!fio_readv@{fio\_\-readv}}
+\index{fio_readv@{fio\_\-readv}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf fio\_\-size\_\-t} fio\_\-readv ({\bf fio\_\-fd} {\em fd}, const {\bf fio\_\-iovec} $\ast$ {\em iov}, int {\em iovcnt})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a11}
+
+
+
+
+Definition at line 391 of file fastio.h.
+
+References fio\_\-fd, fio\_\-size\_\-t, and fio\_\-iovec::iov\_\-len.
+
+Referenced by read\_\-dcdstep, and read\_\-js\_\-timestep.\index{fastio.h@{fastio.h}!fio_write_int32@{fio\_\-write\_\-int32}}
+\index{fio_write_int32@{fio\_\-write\_\-int32}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int fio\_\-write\_\-int32 ({\bf fio\_\-fd} {\em fd}, int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a15}
+
+
+
+
+Definition at line 442 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-fwrite.
+
+Referenced by close\_\-js\_\-write, open\_\-js\_\-write, write\_\-dcdheader, and write\_\-dcdstep.\index{fastio.h@{fastio.h}!fio_write_str@{fio\_\-write\_\-str}}
+\index{fio_write_str@{fio\_\-write\_\-str}!fastio.h@{fastio.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int fio\_\-write\_\-str ({\bf fio\_\-fd} {\em fd}, const char $\ast$ {\em str})\hspace{0.3cm}{\tt  [static]}}\label{fastio_8h_a17}
+
+
+
+
+Definition at line 450 of file fastio.h.
+
+References fio\_\-fd, and fio\_\-fwrite.
+
+Referenced by open\_\-js\_\-write.

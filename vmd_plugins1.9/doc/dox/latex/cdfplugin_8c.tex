@@ -1,0 +1,294 @@
+\section{cdfplugin.c File Reference}
+\label{cdfplugin_8c}\index{cdfplugin.c@{cdfplugin.c}}
+{\tt \#include $<$netcdf.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf amberdata}
+\item 
+struct {\bf cdfdata}
+\item 
+struct {\bf mmtkdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf CDF\_\-TYPE\_\-UNKNOWN}\ 0
+\item 
+\#define {\bf CDF\_\-TYPE\_\-AMBER}\ 1
+\item 
+\#define {\bf CDF\_\-TYPE\_\-MMTK}\ 2
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void {\bf close\_\-cdf\_\-read} (void $\ast$mydata)
+\item 
+int {\bf open\_\-amber\_\-cdf\_\-read} ({\bf cdfdata} $\ast$cdf)
+\item 
+int {\bf open\_\-mmtk\_\-cdf\_\-read} ({\bf cdfdata} $\ast$cdf)
+\item 
+void $\ast$ {\bf open\_\-cdf\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+char $\ast$ {\bf find\_\-closing\_\-bracket} (char $\ast$s)
+\item 
+void {\bf atom\_\-name\_\-replace} (char $\ast${\bf name}, char $\ast$substring, char letter)
+\item 
+void {\bf atom\_\-name\_\-remove\_\-underscores} (char $\ast${\bf name})
+\item 
+void {\bf set\_\-atom\_\-attributes} ({\bf molfile\_\-atom\_\-t} $\ast$atoms, int natoms, char $\ast$$\ast$atom\_\-pointers, char chain\_\-id, char $\ast$resname, int resnum, char $\ast$start, char $\ast$end, int name\_\-correction\_\-type)
+\item 
+int {\bf read\_\-mmtk\_\-cdf\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-cdf\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-amber\_\-cdf\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf read\_\-mmtk\_\-cdf\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf read\_\-cdf\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf cdfplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cdfplugin.c@{cdfplugin.c}!CDF_TYPE_AMBER@{CDF\_\-TYPE\_\-AMBER}}
+\index{CDF_TYPE_AMBER@{CDF\_\-TYPE\_\-AMBER}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CDF\_\-TYPE\_\-AMBER\ 1}\label{cdfplugin_8c_a1}
+
+
+
+
+Definition at line 30 of file cdfplugin.c.
+
+Referenced by open\_\-amber\_\-cdf\_\-read, read\_\-cdf\_\-structure, and read\_\-cdf\_\-timestep.\index{cdfplugin.c@{cdfplugin.c}!CDF_TYPE_MMTK@{CDF\_\-TYPE\_\-MMTK}}
+\index{CDF_TYPE_MMTK@{CDF\_\-TYPE\_\-MMTK}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CDF\_\-TYPE\_\-MMTK\ 2}\label{cdfplugin_8c_a2}
+
+
+
+
+Definition at line 31 of file cdfplugin.c.
+
+Referenced by open\_\-mmtk\_\-cdf\_\-read, read\_\-cdf\_\-structure, and read\_\-cdf\_\-timestep.\index{cdfplugin.c@{cdfplugin.c}!CDF_TYPE_UNKNOWN@{CDF\_\-TYPE\_\-UNKNOWN}}
+\index{CDF_TYPE_UNKNOWN@{CDF\_\-TYPE\_\-UNKNOWN}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CDF\_\-TYPE\_\-UNKNOWN\ 0}\label{cdfplugin_8c_a0}
+
+
+
+
+Definition at line 29 of file cdfplugin.c.
+
+Referenced by open\_\-cdf\_\-read.
+
+\subsection{Function Documentation}
+\index{cdfplugin.c@{cdfplugin.c}!atom_name_remove_underscores@{atom\_\-name\_\-remove\_\-underscores}}
+\index{atom_name_remove_underscores@{atom\_\-name\_\-remove\_\-underscores}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void atom\_\-name\_\-remove\_\-underscores (char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a10}
+
+
+
+
+Definition at line 454 of file cdfplugin.c.
+
+References name.
+
+Referenced by set\_\-atom\_\-attributes.\index{cdfplugin.c@{cdfplugin.c}!atom_name_replace@{atom\_\-name\_\-replace}}
+\index{atom_name_replace@{atom\_\-name\_\-replace}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void atom\_\-name\_\-replace (char $\ast$ {\em name}, char $\ast$ {\em substring}, char {\em letter})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a9}
+
+
+
+
+Definition at line 446 of file cdfplugin.c.
+
+References name.
+
+Referenced by set\_\-atom\_\-attributes.\index{cdfplugin.c@{cdfplugin.c}!close_cdf_read@{close\_\-cdf\_\-read}}
+\index{close_cdf_read@{close\_\-cdf\_\-read}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-cdf\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a4}
+
+
+
+
+Definition at line 95 of file cdfplugin.c.
+
+References cdfdata::amber, amberdata::application, mmtkdata::comment, cdfdata::conventions, amberdata::conventionversion, cdfdata::mmtk, cdfdata::ncid, amberdata::program, amberdata::programversion, and amberdata::title.
+
+Referenced by open\_\-cdf\_\-read.\index{cdfplugin.c@{cdfplugin.c}!find_closing_bracket@{find\_\-closing\_\-bracket}}
+\index{find_closing_bracket@{find\_\-closing\_\-bracket}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ find\_\-closing\_\-bracket (char $\ast$ {\em s})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a8}
+
+
+
+
+Definition at line 433 of file cdfplugin.c.
+
+Referenced by read\_\-mmtk\_\-cdf\_\-structure.\index{cdfplugin.c@{cdfplugin.c}!open_amber_cdf_read@{open\_\-amber\_\-cdf\_\-read}}
+\index{open_amber_cdf_read@{open\_\-amber\_\-cdf\_\-read}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int open\_\-amber\_\-cdf\_\-read ({\bf cdfdata} $\ast$ {\em cdf})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a5}
+
+
+
+
+Definition at line 129 of file cdfplugin.c.
+
+References cdfdata::amber, amberdata::application, amberdata::atomdim, amberdata::atomdimid, CDF\_\-TYPE\_\-AMBER, amberdata::cell\_\-angles\_\-id, amberdata::cell\_\-lengths\_\-id, amberdata::conventionversion, amberdata::coordinates\_\-id, amberdata::framedim, amberdata::framedimid, amberdata::has\_\-box, cdfdata::natoms, cdfdata::ncid, amberdata::program, amberdata::programversion, amberdata::spatial\_\-id, amberdata::spatialdim, amberdata::spatialdimid, amberdata::title, cdfdata::type, and amberdata::velocities\_\-id.
+
+Referenced by open\_\-cdf\_\-read.\index{cdfplugin.c@{cdfplugin.c}!open_cdf_read@{open\_\-cdf\_\-read}}
+\index{open_cdf_read@{open\_\-cdf\_\-read}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-cdf\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a7}
+
+
+
+
+Definition at line 383 of file cdfplugin.c.
+
+References CDF\_\-TYPE\_\-UNKNOWN, close\_\-cdf\_\-read, cdfdata::conventions, cdfdata::natoms, cdfdata::ncid, open\_\-amber\_\-cdf\_\-read, open\_\-mmtk\_\-cdf\_\-read, and cdfdata::type.\index{cdfplugin.c@{cdfplugin.c}!open_mmtk_cdf_read@{open\_\-mmtk\_\-cdf\_\-read}}
+\index{open_mmtk_cdf_read@{open\_\-mmtk\_\-cdf\_\-read}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int open\_\-mmtk\_\-cdf\_\-read ({\bf cdfdata} $\ast$ {\em cdf})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a6}
+
+
+
+
+Definition at line 269 of file cdfplugin.c.
+
+References mmtkdata::atom\_\-numberdim, mmtkdata::atom\_\-numberdimid, mmtkdata::box\_\-size\_\-id, CDF\_\-TYPE\_\-MMTK, mmtkdata::comment, mmtkdata::configuration\_\-id, mmtkdata::description\_\-id, mmtkdata::description\_\-lengthdim, mmtkdata::description\_\-lengthdimid, mmtkdata::has\_\-box, mmtkdata::minor\_\-step\_\-numberdim, mmtkdata::minor\_\-step\_\-numberdimid, cdfdata::mmtk, cdfdata::natoms, cdfdata::ncid, mmtkdata::step\_\-numberdim, mmtkdata::step\_\-numberdimid, cdfdata::type, mmtkdata::xyzdim, and mmtkdata::xyzdimid.
+
+Referenced by open\_\-cdf\_\-read.\index{cdfplugin.c@{cdfplugin.c}!read_amber_cdf_timestep@{read\_\-amber\_\-cdf\_\-timestep}}
+\index{read_amber_cdf_timestep@{read\_\-amber\_\-cdf\_\-timestep}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-amber\_\-cdf\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a14}
+
+
+
+
+Definition at line 798 of file cdfplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, cdfdata::amber, amberdata::atomdim, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, amberdata::cell\_\-angles\_\-id, amberdata::cell\_\-lengths\_\-id, amberdata::coordinates\_\-id, molfile\_\-timestep\_\-t::coords, cdfdata::curframe, molfile\_\-timestep\_\-t::gamma, amberdata::has\_\-box, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, cdfdata::ncid, and amberdata::spatialdim.
+
+Referenced by read\_\-cdf\_\-timestep.\index{cdfplugin.c@{cdfplugin.c}!read_cdf_structure@{read\_\-cdf\_\-structure}}
+\index{read_cdf_structure@{read\_\-cdf\_\-structure}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-cdf\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a13}
+
+
+
+
+Definition at line 782 of file cdfplugin.c.
+
+References CDF\_\-TYPE\_\-AMBER, CDF\_\-TYPE\_\-MMTK, MOLFILE\_\-ERROR, MOLFILE\_\-NOSTRUCTUREDATA, read\_\-mmtk\_\-cdf\_\-structure, and cdfdata::type.\index{cdfplugin.c@{cdfplugin.c}!read_cdf_timestep@{read\_\-cdf\_\-timestep}}
+\index{read_cdf_timestep@{read\_\-cdf\_\-timestep}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-cdf\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a16}
+
+
+
+
+Definition at line 942 of file cdfplugin.c.
+
+References CDF\_\-TYPE\_\-AMBER, CDF\_\-TYPE\_\-MMTK, MOLFILE\_\-ERROR, read\_\-amber\_\-cdf\_\-timestep, read\_\-mmtk\_\-cdf\_\-timestep, and cdfdata::type.\index{cdfplugin.c@{cdfplugin.c}!read_mmtk_cdf_structure@{read\_\-mmtk\_\-cdf\_\-structure}}
+\index{read_mmtk_cdf_structure@{read\_\-mmtk\_\-cdf\_\-structure}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mmtk\_\-cdf\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a12}
+
+
+
+
+Definition at line 515 of file cdfplugin.c.
+
+References molfile\_\-atom\_\-t::chain, cdfdata::curframe, mmtkdata::description, mmtkdata::description\_\-id, mmtkdata::description\_\-lengthdim, find\_\-closing\_\-bracket, cdfdata::mmtk, MOLFILE\_\-ERROR, MOLFILE\_\-NOOPTIONS, MOLFILE\_\-SUCCESS, name, molfile\_\-atom\_\-t::name, cdfdata::natoms, cdfdata::ncid, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, set\_\-atom\_\-attributes, and molfile\_\-atom\_\-t::type.
+
+Referenced by read\_\-cdf\_\-structure.\index{cdfplugin.c@{cdfplugin.c}!read_mmtk_cdf_timestep@{read\_\-mmtk\_\-cdf\_\-timestep}}
+\index{read_mmtk_cdf_timestep@{read\_\-mmtk\_\-cdf\_\-timestep}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-mmtk\_\-cdf\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a15}
+
+
+
+
+Definition at line 858 of file cdfplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, mmtkdata::atom\_\-numberdim, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, mmtkdata::box\_\-size\_\-id, molfile\_\-timestep\_\-t::C, mmtkdata::configuration\_\-id, molfile\_\-timestep\_\-t::coords, cdfdata::curframe, molfile\_\-timestep\_\-t::gamma, mmtkdata::has\_\-box, mmtkdata::minor\_\-step\_\-numberdim, cdfdata::mmtk, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, cdfdata::ncid, and mmtkdata::xyzdim.
+
+Referenced by read\_\-cdf\_\-timestep.\index{cdfplugin.c@{cdfplugin.c}!set_atom_attributes@{set\_\-atom\_\-attributes}}
+\index{set_atom_attributes@{set\_\-atom\_\-attributes}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void set\_\-atom\_\-attributes ({\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, int {\em natoms}, char $\ast$$\ast$ {\em atom\_\-pointers}, char {\em chain\_\-id}, char $\ast$ {\em resname}, int {\em resnum}, char $\ast$ {\em start}, char $\ast$ {\em end}, int {\em name\_\-correction\_\-type})\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a11}
+
+
+
+
+Definition at line 466 of file cdfplugin.c.
+
+References atom\_\-name\_\-remove\_\-underscores, atom\_\-name\_\-replace, molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::name, molfile\_\-atom\_\-t::resid, and molfile\_\-atom\_\-t::resname.
+
+Referenced by read\_\-mmtk\_\-cdf\_\-structure.\index{cdfplugin.c@{cdfplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{cdfplugin_8c_a18}
+
+
+
+
+Definition at line 979 of file cdfplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{cdfplugin.c@{cdfplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{cdfplugin_8c_a17}
+
+
+
+
+Definition at line 978 of file cdfplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{cdfplugin.c@{cdfplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{cdfplugin_8c_a19}
+
+
+
+
+Definition at line 980 of file cdfplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{cdfplugin.c@{cdfplugin.c}!cdfplugin@{cdfplugin}}
+\index{cdfplugin@{cdfplugin}!cdfplugin.c@{cdfplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} cdfplugin\hspace{0.3cm}{\tt  [static]}}\label{cdfplugin_8c_a3}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                         
+  MOLFILE_PLUGIN_TYPE,                          
+  "netcdf",                                     
+  "NetCDF (AMBER, MMTK)",                       
+  "John E. Stone",                              
+  0,                                            
+  5,                                            
+  VMDPLUGIN_THREADSAFE,                         
+  "nc",                                         
+  open_cdf_read,
+  read_cdf_structure,
+  0,
+  read_cdf_timestep,
+  close_cdf_read,
+  0,
+  0,
+  0,
+  0,
+}\end{verbatim}\normalsize 
+
+
+Definition at line 957 of file cdfplugin.c.

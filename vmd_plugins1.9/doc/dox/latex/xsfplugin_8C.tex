@@ -1,0 +1,412 @@
+\section{xsfplugin.C File Reference}
+\label{xsfplugin_8C}\index{xsfplugin.C@{xsfplugin.C}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}periodic\_\-table.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf xsf\_\-box}
+\item 
+struct {\bf xsf\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI\_\-2}\ 1.57079632679489661922
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum {\bf xsf\_\-keyword\_\-t} \{ {\bf xsf\_\-UNKNOWN} =  0, 
+{\bf xsf\_\-COMMENT}, 
+{\bf xsf\_\-BEGINFO}, 
+{\bf xsf\_\-ENDINFO}, 
+{\bf xsf\_\-BEG\_\-2D\_\-BLOCK}, 
+{\bf xsf\_\-END\_\-2D\_\-BLOCK}, 
+{\bf xsf\_\-BEG\_\-2D\_\-DATA}, 
+{\bf xsf\_\-END\_\-2D\_\-DATA}, 
+{\bf xsf\_\-BEG\_\-3D\_\-BLOCK}, 
+{\bf xsf\_\-END\_\-3D\_\-BLOCK}, 
+{\bf xsf\_\-BEG\_\-3D\_\-DATA}, 
+{\bf xsf\_\-END\_\-3D\_\-DATA}, 
+{\bf xsf\_\-BEG\_\-3D\_\-BAND}, 
+{\bf xsf\_\-END\_\-3D\_\-BAND}, 
+{\bf xsf\_\-ATOMS}, 
+{\bf xsf\_\-ANIMSTEPS}, 
+{\bf xsf\_\-BAND}, 
+{\bf xsf\_\-MOLECULE}, 
+{\bf xsf\_\-POLYMER}, 
+{\bf xsf\_\-SLAB}, 
+{\bf xsf\_\-CRYSTAL}, 
+{\bf xsf\_\-PRIMVEC}, 
+{\bf xsf\_\-CONVVEC}, 
+{\bf xsf\_\-PRIMCOORD}, 
+{\bf xsf\_\-CONVCOORD}, 
+{\bf xsf\_\-NR\_\-KEYWORDS}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+{\bf xsf\_\-keyword\_\-t} {\bf lookup\_\-keyword} (const char $\ast$word)
+\item 
+int {\bf xsf\_\-readbox} ({\bf xsf\_\-box} $\ast$box, float $\ast$x, float $\ast$y, float $\ast$z)
+\item 
+void {\bf xsf\_\-buildrotmat} ({\bf xsf\_\-t} $\ast$xsf, float $\ast$a, float $\ast$b)
+\item 
+void {\bf xsf\_\-buildinvmat} ({\bf xsf\_\-t} $\ast$xsf, float $\ast$a, float $\ast$b, float $\ast$c)
+\item 
+void {\bf eatline} (FILE $\ast$fd)
+\item 
+bool {\bf xsf\_\-read\_\-cell} (FILE $\ast$fd, float $\ast$a, float $\ast$b, float $\ast$c)
+\item 
+void {\bf close\_\-xsf\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-xsf\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-xsf\_\-structure} (void $\ast$v, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-xsf\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf read\_\-xsf\_\-metadata} (void $\ast$v, int $\ast$nvolsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-xsf\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const char $\ast$ {\bf xsf\_\-symtab} [$\,$]
+\item 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+struct \{\\
+\>const char $\ast$ {\bf name}\\
+\>{\bf xsf\_keyword\_t} {\bf kw}\\
+\} {\bf xsf\_aliases} [$\,$]
+\end{tabbing}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{xsfplugin.C@{xsfplugin.C}!M_PI_2@{M\_\-PI\_\-2}}
+\index{M_PI_2@{M\_\-PI\_\-2}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\_\-2\ 1.57079632679489661922}\label{xsfplugin_8C_a0}
+
+
+
+
+Definition at line 28 of file xsfplugin.C.
+
+Referenced by xsf\_\-readbox.
+
+\subsection{Enumeration Type Documentation}
+\index{xsfplugin.C@{xsfplugin.C}!xsf_keyword_t@{xsf\_\-keyword\_\-t}}
+\index{xsf_keyword_t@{xsf\_\-keyword\_\-t}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum xsf\_\-keyword\_\-t}\label{xsfplugin_8C_a47}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{xsf_UNKNOWN@{xsf\_\-UNKNOWN}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_UNKNOWN@{xsf\_\-UNKNOWN}}\item[{\em 
+{\em xsf\_\-UNKNOWN}\label{xsfplugin_8C_a47a6}
+}]\index{xsf_COMMENT@{xsf\_\-COMMENT}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_COMMENT@{xsf\_\-COMMENT}}\item[{\em 
+{\em xsf\_\-COMMENT}\label{xsfplugin_8C_a47a7}
+}]\index{xsf_BEGINFO@{xsf\_\-BEGINFO}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEGINFO@{xsf\_\-BEGINFO}}\item[{\em 
+{\em xsf\_\-BEGINFO}\label{xsfplugin_8C_a47a8}
+}]\index{xsf_ENDINFO@{xsf\_\-ENDINFO}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_ENDINFO@{xsf\_\-ENDINFO}}\item[{\em 
+{\em xsf\_\-ENDINFO}\label{xsfplugin_8C_a47a9}
+}]\index{xsf_BEG_2D_BLOCK@{xsf\_\-BEG\_\-2D\_\-BLOCK}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEG_2D_BLOCK@{xsf\_\-BEG\_\-2D\_\-BLOCK}}\item[{\em 
+{\em xsf\_\-BEG\_\-2D\_\-BLOCK}\label{xsfplugin_8C_a47a10}
+}]\index{xsf_END_2D_BLOCK@{xsf\_\-END\_\-2D\_\-BLOCK}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_END_2D_BLOCK@{xsf\_\-END\_\-2D\_\-BLOCK}}\item[{\em 
+{\em xsf\_\-END\_\-2D\_\-BLOCK}\label{xsfplugin_8C_a47a11}
+}]\index{xsf_BEG_2D_DATA@{xsf\_\-BEG\_\-2D\_\-DATA}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEG_2D_DATA@{xsf\_\-BEG\_\-2D\_\-DATA}}\item[{\em 
+{\em xsf\_\-BEG\_\-2D\_\-DATA}\label{xsfplugin_8C_a47a12}
+}]\index{xsf_END_2D_DATA@{xsf\_\-END\_\-2D\_\-DATA}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_END_2D_DATA@{xsf\_\-END\_\-2D\_\-DATA}}\item[{\em 
+{\em xsf\_\-END\_\-2D\_\-DATA}\label{xsfplugin_8C_a47a13}
+}]\index{xsf_BEG_3D_BLOCK@{xsf\_\-BEG\_\-3D\_\-BLOCK}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEG_3D_BLOCK@{xsf\_\-BEG\_\-3D\_\-BLOCK}}\item[{\em 
+{\em xsf\_\-BEG\_\-3D\_\-BLOCK}\label{xsfplugin_8C_a47a14}
+}]\index{xsf_END_3D_BLOCK@{xsf\_\-END\_\-3D\_\-BLOCK}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_END_3D_BLOCK@{xsf\_\-END\_\-3D\_\-BLOCK}}\item[{\em 
+{\em xsf\_\-END\_\-3D\_\-BLOCK}\label{xsfplugin_8C_a47a15}
+}]\index{xsf_BEG_3D_DATA@{xsf\_\-BEG\_\-3D\_\-DATA}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEG_3D_DATA@{xsf\_\-BEG\_\-3D\_\-DATA}}\item[{\em 
+{\em xsf\_\-BEG\_\-3D\_\-DATA}\label{xsfplugin_8C_a47a16}
+}]\index{xsf_END_3D_DATA@{xsf\_\-END\_\-3D\_\-DATA}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_END_3D_DATA@{xsf\_\-END\_\-3D\_\-DATA}}\item[{\em 
+{\em xsf\_\-END\_\-3D\_\-DATA}\label{xsfplugin_8C_a47a17}
+}]\index{xsf_BEG_3D_BAND@{xsf\_\-BEG\_\-3D\_\-BAND}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BEG_3D_BAND@{xsf\_\-BEG\_\-3D\_\-BAND}}\item[{\em 
+{\em xsf\_\-BEG\_\-3D\_\-BAND}\label{xsfplugin_8C_a47a18}
+}]\index{xsf_END_3D_BAND@{xsf\_\-END\_\-3D\_\-BAND}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_END_3D_BAND@{xsf\_\-END\_\-3D\_\-BAND}}\item[{\em 
+{\em xsf\_\-END\_\-3D\_\-BAND}\label{xsfplugin_8C_a47a19}
+}]\index{xsf_ATOMS@{xsf\_\-ATOMS}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_ATOMS@{xsf\_\-ATOMS}}\item[{\em 
+{\em xsf\_\-ATOMS}\label{xsfplugin_8C_a47a20}
+}]\index{xsf_ANIMSTEPS@{xsf\_\-ANIMSTEPS}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_ANIMSTEPS@{xsf\_\-ANIMSTEPS}}\item[{\em 
+{\em xsf\_\-ANIMSTEPS}\label{xsfplugin_8C_a47a21}
+}]\index{xsf_BAND@{xsf\_\-BAND}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_BAND@{xsf\_\-BAND}}\item[{\em 
+{\em xsf\_\-BAND}\label{xsfplugin_8C_a47a22}
+}]\index{xsf_MOLECULE@{xsf\_\-MOLECULE}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_MOLECULE@{xsf\_\-MOLECULE}}\item[{\em 
+{\em xsf\_\-MOLECULE}\label{xsfplugin_8C_a47a23}
+}]\index{xsf_POLYMER@{xsf\_\-POLYMER}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_POLYMER@{xsf\_\-POLYMER}}\item[{\em 
+{\em xsf\_\-POLYMER}\label{xsfplugin_8C_a47a24}
+}]\index{xsf_SLAB@{xsf\_\-SLAB}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_SLAB@{xsf\_\-SLAB}}\item[{\em 
+{\em xsf\_\-SLAB}\label{xsfplugin_8C_a47a25}
+}]\index{xsf_CRYSTAL@{xsf\_\-CRYSTAL}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_CRYSTAL@{xsf\_\-CRYSTAL}}\item[{\em 
+{\em xsf\_\-CRYSTAL}\label{xsfplugin_8C_a47a26}
+}]\index{xsf_PRIMVEC@{xsf\_\-PRIMVEC}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_PRIMVEC@{xsf\_\-PRIMVEC}}\item[{\em 
+{\em xsf\_\-PRIMVEC}\label{xsfplugin_8C_a47a27}
+}]\index{xsf_CONVVEC@{xsf\_\-CONVVEC}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_CONVVEC@{xsf\_\-CONVVEC}}\item[{\em 
+{\em xsf\_\-CONVVEC}\label{xsfplugin_8C_a47a28}
+}]\index{xsf_PRIMCOORD@{xsf\_\-PRIMCOORD}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_PRIMCOORD@{xsf\_\-PRIMCOORD}}\item[{\em 
+{\em xsf\_\-PRIMCOORD}\label{xsfplugin_8C_a47a29}
+}]\index{xsf_CONVCOORD@{xsf\_\-CONVCOORD}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_CONVCOORD@{xsf\_\-CONVCOORD}}\item[{\em 
+{\em xsf\_\-CONVCOORD}\label{xsfplugin_8C_a47a30}
+}]\index{xsf_NR_KEYWORDS@{xsf\_\-NR\_\-KEYWORDS}!xsfplugin.C@{xsfplugin.C}}\index{xsfplugin.C@{xsfplugin.C}!xsf_NR_KEYWORDS@{xsf\_\-NR\_\-KEYWORDS}}\item[{\em 
+{\em xsf\_\-NR\_\-KEYWORDS}\label{xsfplugin_8C_a47a31}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 46 of file xsfplugin.C.
+
+Referenced by lookup\_\-keyword, and open\_\-xsf\_\-read.
+
+\subsection{Function Documentation}
+\index{xsfplugin.C@{xsfplugin.C}!close_xsf_read@{close\_\-xsf\_\-read}}
+\index{close_xsf_read@{close\_\-xsf\_\-read}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-xsf\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a38}
+
+
+
+
+Definition at line 883 of file xsfplugin.C.
+
+References xsf\_\-t::fd, xsf\_\-t::file\_\-name, and xsf\_\-t::vol.\index{xsfplugin.C@{xsfplugin.C}!eatline@{eatline}}
+\index{eatline@{eatline}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void eatline (FILE $\ast$ {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a36}
+
+
+
+
+Definition at line 226 of file xsfplugin.C.
+
+Referenced by atomic\_\-basis, check\_\-contrl, get\_\-basis, get\_\-cart\_\-hessian, get\_\-gbasis, get\_\-guess, get\_\-initial\_\-info, get\_\-int\_\-coords, get\_\-normal\_\-modes, get\_\-proc\_\-mem, get\_\-runtitle, get\_\-trajectory, get\_\-wavefunction, open\_\-cube\_\-read, open\_\-edm\_\-read, open\_\-molden\_\-read, open\_\-xsf\_\-read, read\_\-edm\_\-data, read\_\-molden\_\-structure, read\_\-next\_\-timestep, read\_\-xsf\_\-data, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsfplugin.C@{xsfplugin.C}!lookup_keyword@{lookup\_\-keyword}}
+\index{lookup_keyword@{lookup\_\-keyword}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf xsf\_\-keyword\_\-t} lookup\_\-keyword (const char $\ast$ {\em word})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a32}
+
+
+
+
+Definition at line 75 of file xsfplugin.C.
+
+References name, xsf\_\-aliases, xsf\_\-keyword\_\-t, xsf\_\-NR\_\-KEYWORDS, xsf\_\-symtab, and xsf\_\-UNKNOWN.
+
+Referenced by open\_\-xsf\_\-read, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsfplugin.C@{xsfplugin.C}!open_xsf_read@{open\_\-xsf\_\-read}}
+\index{open_xsf_read@{open\_\-xsf\_\-read}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-xsf\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a39}
+
+
+
+
+Definition at line 241 of file xsfplugin.C.
+
+References xsf\_\-t::coord, molfile\_\-volumetric\_\-t::dataname, eatline, xsf\_\-t::fd, xsf\_\-t::file\_\-name, molfile\_\-volumetric\_\-t::has\_\-color, kw, lookup\_\-keyword, xsf\_\-t::numatoms, xsf\_\-t::numsteps, xsf\_\-t::numvolmeta, xsf\_\-t::nvolsets, molfile\_\-volumetric\_\-t::origin, xsf\_\-t::origin, xsf\_\-t::pbctype, xsf\_\-t::rotmat, xsf\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, xsf\_\-ANIMSTEPS, xsf\_\-ATOMS, xsf\_\-BEG\_\-2D\_\-BLOCK, xsf\_\-BEG\_\-3D\_\-BLOCK, xsf\_\-BEG\_\-3D\_\-DATA, xsf\_\-buildrotmat, xsf\_\-COMMENT, xsf\_\-CONVCOORD, xsf\_\-CONVVEC, xsf\_\-CRYSTAL, xsf\_\-END\_\-2D\_\-BLOCK, xsf\_\-END\_\-3D\_\-BLOCK, xsf\_\-END\_\-3D\_\-DATA, xsf\_\-keyword\_\-t, xsf\_\-MOLECULE, xsf\_\-POLYMER, xsf\_\-PRIMCOORD, xsf\_\-PRIMVEC, xsf\_\-read\_\-cell, xsf\_\-SLAB, xsf\_\-UNKNOWN, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.\index{xsfplugin.C@{xsfplugin.C}!read_xsf_data@{read\_\-xsf\_\-data}}
+\index{read_xsf_data@{read\_\-xsf\_\-data}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xsf\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a43}
+
+
+
+
+Definition at line 837 of file xsfplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, eatline, xsf\_\-t::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, xsf\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.\index{xsfplugin.C@{xsfplugin.C}!read_xsf_metadata@{read\_\-xsf\_\-metadata}}
+\index{read_xsf_metadata@{read\_\-xsf\_\-metadata}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xsf\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nvolsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a42}
+
+
+
+
+Definition at line 828 of file xsfplugin.C.
+
+References MOLFILE\_\-SUCCESS, xsf\_\-t::nvolsets, and xsf\_\-t::vol.\index{xsfplugin.C@{xsfplugin.C}!read_xsf_structure@{read\_\-xsf\_\-structure}}
+\index{read_xsf_structure@{read\_\-xsf\_\-structure}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xsf\_\-structure (void $\ast$ {\em v}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a40}
+
+
+
+
+Definition at line 526 of file xsfplugin.C.
+
+References xsf\_\-box::A, xsf\_\-box::alpha, molfile\_\-atom\_\-t::atomicnumber, xsf\_\-box::B, xsf\_\-box::beta, xsf\_\-t::box, xsf\_\-box::C, molfile\_\-atom\_\-t::chain, eatline, xsf\_\-t::fd, xsf\_\-t::file\_\-name, xsf\_\-box::gamma, get\_\-pte\_\-idx, get\_\-pte\_\-mass, get\_\-pte\_\-vdw\_\-radius, xsf\_\-t::invmat, lookup\_\-keyword, molfile\_\-atom\_\-t::mass, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-ERROR, MOLFILE\_\-MASS, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, xsf\_\-t::numatoms, molfile\_\-atom\_\-t::radius, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, xsf\_\-t::rotmat, molfile\_\-atom\_\-t::segid, molfile\_\-atom\_\-t::type, xsf\_\-ATOMS, xsf\_\-buildinvmat, xsf\_\-buildrotmat, xsf\_\-PRIMCOORD, xsf\_\-PRIMVEC, xsf\_\-read\_\-cell, and xsf\_\-readbox.\index{xsfplugin.C@{xsfplugin.C}!read_xsf_timestep@{read\_\-xsf\_\-timestep}}
+\index{read_xsf_timestep@{read\_\-xsf\_\-timestep}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-xsf\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a41}
+
+
+
+
+Definition at line 656 of file xsfplugin.C.
+
+References xsf\_\-box::A, molfile\_\-timestep\_\-t::A, xsf\_\-box::alpha, molfile\_\-timestep\_\-t::alpha, xsf\_\-box::B, molfile\_\-timestep\_\-t::B, xsf\_\-box::beta, molfile\_\-timestep\_\-t::beta, xsf\_\-t::box, xsf\_\-box::C, molfile\_\-timestep\_\-t::C, xsf\_\-box::cell, molfile\_\-timestep\_\-t::coords, eatline, xsf\_\-t::fd, xsf\_\-t::file\_\-name, xsf\_\-box::gamma, molfile\_\-timestep\_\-t::gamma, xsf\_\-t::invmat, lookup\_\-keyword, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, xsf\_\-t::origin, xsf\_\-t::pbctype, xsf\_\-t::rotmat, xsf\_\-ATOMS, xsf\_\-buildinvmat, xsf\_\-buildrotmat, xsf\_\-CRYSTAL, xsf\_\-MOLECULE, xsf\_\-POLYMER, xsf\_\-PRIMCOORD, xsf\_\-PRIMVEC, xsf\_\-read\_\-cell, xsf\_\-readbox, and xsf\_\-SLAB.\index{xsfplugin.C@{xsfplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{xsfplugin_8C_a45}
+
+
+
+
+Definition at line 922 of file xsfplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{xsfplugin.C@{xsfplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{xsfplugin_8C_a44}
+
+
+
+
+Definition at line 921 of file xsfplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{xsfplugin.C@{xsfplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{xsfplugin_8C_a46}
+
+
+
+
+Definition at line 923 of file xsfplugin.C.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{xsfplugin.C@{xsfplugin.C}!xsf_buildinvmat@{xsf\_\-buildinvmat}}
+\index{xsf_buildinvmat@{xsf\_\-buildinvmat}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void xsf\_\-buildinvmat ({\bf xsf\_\-t} $\ast$ {\em xsf}, float $\ast$ {\em a}, float $\ast$ {\em b}, float $\ast$ {\em c})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a35}
+
+
+
+
+Definition at line 205 of file xsfplugin.C.
+
+References xsf\_\-t::invmat.
+
+Referenced by read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsfplugin.C@{xsfplugin.C}!xsf_buildrotmat@{xsf\_\-buildrotmat}}
+\index{xsf_buildrotmat@{xsf\_\-buildrotmat}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void xsf\_\-buildrotmat ({\bf xsf\_\-t} $\ast$ {\em xsf}, float $\ast$ {\em a}, float $\ast$ {\em b})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a34}
+
+
+
+
+Definition at line 175 of file xsfplugin.C.
+
+References xsf\_\-t::rotmat.
+
+Referenced by open\_\-xsf\_\-read, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsfplugin.C@{xsfplugin.C}!xsf_read_cell@{xsf\_\-read\_\-cell}}
+\index{xsf_read_cell@{xsf\_\-read\_\-cell}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool xsf\_\-read\_\-cell (FILE $\ast$ {\em fd}, float $\ast$ {\em a}, float $\ast$ {\em b}, float $\ast$ {\em c})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a37}
+
+
+
+
+Definition at line 231 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read, read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.\index{xsfplugin.C@{xsfplugin.C}!xsf_readbox@{xsf\_\-readbox}}
+\index{xsf_readbox@{xsf\_\-readbox}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int xsf\_\-readbox ({\bf xsf\_\-box} $\ast$ {\em box}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z})\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a33}
+
+
+
+
+Definition at line 131 of file xsfplugin.C.
+
+References xsf\_\-box::A, xsf\_\-box::alpha, xsf\_\-box::B, xsf\_\-box::beta, xsf\_\-box::C, xsf\_\-box::cell, xsf\_\-box::gamma, and M\_\-PI\_\-2.
+
+Referenced by read\_\-xsf\_\-structure, and read\_\-xsf\_\-timestep.
+
+\subsection{Variable Documentation}
+\index{xsfplugin.C@{xsfplugin.C}!kw@{kw}}
+\index{kw@{kw}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf xsf\_\-keyword\_\-t} kw}\label{xsfplugin_8C_a3}
+
+
+
+
+Definition at line 64 of file xsfplugin.C.
+
+Referenced by open\_\-xsf\_\-read.\index{xsfplugin.C@{xsfplugin.C}!name@{name}}
+\index{name@{name}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ name}\label{xsfplugin_8C_a2}
+
+
+
+
+Definition at line 63 of file xsfplugin.C.
+
+Referenced by atom\_\-name\_\-remove\_\-underscores, atom\_\-name\_\-replace, babel16type\_\-from\_\-name, get\_\-atom\_\-radius, get\_\-bgf\_\-fields, Read\-PARM::get\_\-parm\_\-atom, get\_\-pdb\_\-fields, get\_\-pqr\_\-fields, get\_\-psf\_\-atom, lookup\_\-keyword, open\_\-parm7\_\-file, Read\-PARM::open\_\-parm\_\-file, openbabel11type\_\-from\_\-name, read\_\-car\_\-structure\_\-line, and read\_\-mmtk\_\-cdf\_\-structure.\index{xsfplugin.C@{xsfplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a5}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "xsf",                  
+  "XSF",                  
+  "Axel Kohlmeyer, John E. Stone", 
+  0,                      
+  5,                      
+  VMDPLUGIN_THREADSAFE,   
+  "xsf",                  
+  open_xsf_read,               
+  read_xsf_structure,
+  0,                      
+  read_xsf_timestep,
+  close_xsf_read,
+  0,                      
+  0,                      
+  0,                      
+  0,                      
+  read_xsf_metadata,
+  read_xsf_data,
+  0                       
+}\end{verbatim}\normalsize 
+
+
+Definition at line 897 of file xsfplugin.C.\index{xsfplugin.C@{xsfplugin.C}!xsf_aliases@{xsf\_\-aliases}}
+\index{xsf_aliases@{xsf\_\-aliases}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const \{ ... \}    xsf\_\-aliases[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a4}
+
+
+
+
+Referenced by lookup\_\-keyword.\index{xsfplugin.C@{xsfplugin.C}!xsf_symtab@{xsf\_\-symtab}}
+\index{xsf_symtab@{xsf\_\-symtab}!xsfplugin.C@{xsfplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ xsf\_\-symtab[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{xsfplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  "(unknown keyword)", "#",
+  "BEGIN_INFO", "END_INFO",
+  "BEGIN_BLOCK_DATAGRID_2D", "END_BLOCK_DATAGRID_2D",
+  "BEGIN_DATAGRID_2D", "END_DATAGRID_2D",
+  "BEGIN_BLOCK_DATAGRID_3D", "END_BLOCK_DATAGRID_3D",
+  "BEGIN_DATAGRID_3D", "END_DATAGRID_3D",
+  "BEGIN_BLOCK_BANDGRID_3D", "END_BLOCK_BANDGRID_3D",
+  "ATOMS", "ANIMSTEPS", "BAND",
+  "MOLECULE", "POLYMER", "SLAB", "CRYSTAL",
+  "PRIMVEC", "CONVVEC", "PRIMCOORD", "CONVCOORD"
+}\end{verbatim}\normalsize 
+
+
+Definition at line 33 of file xsfplugin.C.
+
+Referenced by lookup\_\-keyword.

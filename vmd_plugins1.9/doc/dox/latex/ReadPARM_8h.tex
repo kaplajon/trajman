@@ -1,0 +1,85 @@
+\section{Read\-PARM.h File Reference}
+\label{ReadPARM_8h}\index{ReadPARM.h@{Read\-PARM.h}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$sys/stat.h$>$}\par
+{\tt \#include $<$errno.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf parm}
+\item 
+class {\bf Read\-PARM}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf USENEWCODE}\ 1
+\item 
+\#define {\bf \_\-REAL}\ float
+\item 
+\#define {\bf DBLFMT}\ \char`\"{}\%f\char`\"{}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef {\bf parm} {\bf parmstruct}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf readtoeoln} (FILE $\ast$f)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ReadPARM.h@{Read\-PARM.h}!_REAL@{\_\-REAL}}
+\index{_REAL@{\_\-REAL}!ReadPARM.h@{Read\-PARM.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \_\-REAL\ float}\label{ReadPARM_8h_a1}
+
+
+
+
+Definition at line 55 of file Read\-PARM.h.
+
+Referenced by Read\-PARM::readparm.\index{ReadPARM.h@{Read\-PARM.h}!DBLFMT@{DBLFMT}}
+\index{DBLFMT@{DBLFMT}!ReadPARM.h@{Read\-PARM.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DBLFMT\ \char`\"{}\%f\char`\"{}}\label{ReadPARM_8h_a2}
+
+
+
+
+Definition at line 56 of file Read\-PARM.h.
+
+Referenced by Read\-PARM::readparm.\index{ReadPARM.h@{Read\-PARM.h}!USENEWCODE@{USENEWCODE}}
+\index{USENEWCODE@{USENEWCODE}!ReadPARM.h@{Read\-PARM.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define USENEWCODE\ 1}\label{ReadPARM_8h_a0}
+
+
+
+
+Definition at line 40 of file Read\-PARM.h.
+
+\subsection{Typedef Documentation}
+\index{ReadPARM.h@{Read\-PARM.h}!parmstruct@{parmstruct}}
+\index{parmstruct@{parmstruct}!ReadPARM.h@{Read\-PARM.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf parm}  parmstruct}\label{ReadPARM_8h_a3}
+
+
+
+
+\subsection{Function Documentation}
+\index{ReadPARM.h@{Read\-PARM.h}!readtoeoln@{readtoeoln}}
+\index{readtoeoln@{readtoeoln}!ReadPARM.h@{Read\-PARM.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int readtoeoln (FILE $\ast$ {\em f})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM_8h_a4}
+
+
+
+
+Definition at line 112 of file Read\-PARM.h.
+
+Referenced by Read\-PARM::read\_\-fortran\_\-12I6, and Read\-PARM::readparm.

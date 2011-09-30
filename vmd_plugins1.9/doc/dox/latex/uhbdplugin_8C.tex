@@ -1,0 +1,161 @@
+\section{uhbdplugin.C File Reference}
+\label{uhbdplugin_8C}\index{uhbdplugin.C@{uhbdplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf uhbd\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 85
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+char $\ast$ {\bf uhbdgets} (char $\ast$s, int n, FILE $\ast$stream, const char $\ast$msg)
+\item 
+void $\ast$ {\bf open\_\-uhbd\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-uhbd\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-uhbd\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-uhbd\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{uhbdplugin.C@{uhbdplugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 85}\label{uhbdplugin_8C_a0}
+
+
+
+
+Definition at line 43 of file uhbdplugin.C.
+
+Referenced by open\_\-uhbd\_\-read, and read\_\-uhbd\_\-data.
+
+\subsection{Function Documentation}
+\index{uhbdplugin.C@{uhbdplugin.C}!close_uhbd_read@{close\_\-uhbd\_\-read}}
+\index{close_uhbd_read@{close\_\-uhbd\_\-read}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-uhbd\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a6}
+
+
+
+
+Definition at line 222 of file uhbdplugin.C.
+
+References uhbd\_\-t::fd, and uhbd\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{uhbdplugin.C@{uhbdplugin.C}!open_uhbd_read@{open\_\-uhbd\_\-read}}
+\index{open_uhbd_read@{open\_\-uhbd\_\-read}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-uhbd\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a3}
+
+
+
+
+Definition at line 76 of file uhbdplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, uhbd\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, LINESIZE, MOLFILE\_\-NUMATOMS\_\-NONE, uhbd\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, uhbdgets, uhbd\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{uhbdplugin.C@{uhbdplugin.C}!read_uhbd_data@{read\_\-uhbd\_\-data}}
+\index{read_uhbd_data@{read\_\-uhbd\_\-data}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-uhbd\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a5}
+
+
+
+
+Definition at line 164 of file uhbdplugin.C.
+
+References uhbd\_\-t::fd, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, uhbdgets, uhbd\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{uhbdplugin.C@{uhbdplugin.C}!read_uhbd_metadata@{read\_\-uhbd\_\-metadata}}
+\index{read_uhbd_metadata@{read\_\-uhbd\_\-metadata}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-uhbd\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a4}
+
+
+
+
+Definition at line 155 of file uhbdplugin.C.
+
+References MOLFILE\_\-SUCCESS, uhbd\_\-t::nsets, and uhbd\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{uhbdplugin.C@{uhbdplugin.C}!uhbdgets@{uhbdgets}}
+\index{uhbdgets@{uhbdgets}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ uhbdgets (char $\ast$ {\em s}, int {\em n}, FILE $\ast$ {\em stream}, const char $\ast$ {\em msg})\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a2}
+
+
+
+
+Definition at line 53 of file uhbdplugin.C.
+
+Referenced by open\_\-uhbd\_\-read, and read\_\-uhbd\_\-data.\index{uhbdplugin.C@{uhbdplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{uhbdplugin_8C_a8}
+
+
+
+
+Definition at line 249 of file uhbdplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{uhbdplugin.C@{uhbdplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{uhbdplugin_8C_a7}
+
+
+
+
+Definition at line 248 of file uhbdplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{uhbdplugin.C@{uhbdplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{uhbdplugin_8C_a9}
+
+
+
+
+Definition at line 250 of file uhbdplugin.C.
+
+References molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-uhbd\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, open\_\-uhbd\_\-read, read\_\-uhbd\_\-data, read\_\-uhbd\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{uhbdplugin.C@{uhbdplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!uhbdplugin.C@{uhbdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{uhbdplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "uhbd",                 
+  "UHBD Grid",            
+  "Alexander Spaar",      
+  0,                      
+  2,                      
+  VMDPLUGIN_THREADSAFE,   
+  "uhbdgrd,grd"           
+}\end{verbatim}\normalsize 
+
+
+Definition at line 235 of file uhbdplugin.C.

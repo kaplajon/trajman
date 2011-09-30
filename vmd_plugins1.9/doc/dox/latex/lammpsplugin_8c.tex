@@ -1,0 +1,144 @@
+\section{lammpsplugin.c File Reference}
+\label{lammpsplugin_8c}\index{lammpsplugin.c@{lammpsplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf lammpsdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf M\_\-PI\_\-2}\ 1.57079632679489661922
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-lammps\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-lammps\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-lammps\_\-read} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf lammpsplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{lammpsplugin.c@{lammpsplugin.c}!M_PI_2@{M\_\-PI\_\-2}}
+\index{M_PI_2@{M\_\-PI\_\-2}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PI\_\-2\ 1.57079632679489661922}\label{lammpsplugin_8c_a0}
+
+
+
+
+Definition at line 44 of file lammpsplugin.c.
+
+Referenced by read\_\-lammps\_\-timestep.
+
+\subsection{Function Documentation}
+\index{lammpsplugin.c@{lammpsplugin.c}!close_lammps_read@{close\_\-lammps\_\-read}}
+\index{close_lammps_read@{close\_\-lammps\_\-read}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-lammps\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{lammpsplugin_8c_a4}
+
+
+
+
+Definition at line 157 of file lammpsplugin.c.
+
+References lammpsdata::file, and lammpsdata::file\_\-name.\index{lammpsplugin.c@{lammpsplugin.c}!open_lammps_read@{open\_\-lammps\_\-read}}
+\index{open_lammps_read@{open\_\-lammps\_\-read}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-lammps\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{lammpsplugin_8c_a2}
+
+
+
+
+Definition at line 54 of file lammpsplugin.c.
+
+References lammpsdata::file, lammpsdata::file\_\-name, and lammpsdata::numatoms.\index{lammpsplugin.c@{lammpsplugin.c}!read_lammps_timestep@{read\_\-lammps\_\-timestep}}
+\index{read_lammps_timestep@{read\_\-lammps\_\-timestep}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-lammps\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{lammpsplugin_8c_a3}
+
+
+
+
+Definition at line 85 of file lammpsplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, lammpsdata::file, lammpsdata::file\_\-name, molfile\_\-timestep\_\-t::gamma, M\_\-PI\_\-2, MOLFILE\_\-ERROR, and MOLFILE\_\-SUCCESS.\index{lammpsplugin.c@{lammpsplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{lammpsplugin_8c_a7}
+
+
+
+
+Definition at line 199 of file lammpsplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{lammpsplugin.c@{lammpsplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{lammpsplugin_8c_a5}
+
+
+
+
+Definition at line 190 of file lammpsplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{lammpsplugin.c@{lammpsplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{lammpsplugin_8c_a6}
+
+
+
+
+Definition at line 194 of file lammpsplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{lammpsplugin.c@{lammpsplugin.c}!lammpsplugin@{lammpsplugin}}
+\index{lammpsplugin@{lammpsplugin}!lammpsplugin.c@{lammpsplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} lammpsplugin\hspace{0.3cm}{\tt  [static]}}\label{lammpsplugin_8c_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "lammpstrj",                                 
+  "LAMMPS Trajectory",                         
+  "John E. Stone",                             
+  0,                                           
+  3,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "lammpstrj",
+  open_lammps_read,
+  0,
+  0,
+  read_lammps_timestep,
+  close_lammps_read,
+  0,                            
+  0,
+  0,
+  0,
+  0,                            
+  0,                            
+  0                             
+}\end{verbatim}\normalsize 
+
+
+Definition at line 166 of file lammpsplugin.c.

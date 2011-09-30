@@ -1,0 +1,321 @@
+\section{babelplugin.c File Reference}
+\label{babelplugin_8c}\index{babelplugin.c@{babelplugin.c}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$unistd.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}readpdb.h\char`\"{}}\par
+{\tt \#include \char`\"{}vmddir.h\char`\"{}}\par
+{\tt \#include \char`\"{}periodic\_\-table.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf pdbdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf BABEL\_\-TMPDIR}\ \char`\"{}/tmp/\char`\"{}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf vmd\_\-getuid} (void)
+\item 
+int {\bf vmd\_\-delete\_\-file} (const char $\ast$path)
+\item 
+char $\ast$ {\bf file} (const char $\ast$filename, int idx, int has\_\-multi)
+\item 
+void {\bf delete\_\-all} (const char $\ast$filename)
+\item 
+void $\ast$ {\bf open\_\-pdb\_\-read} (const char $\ast$filepath, int $\ast$natoms)
+\item 
+const char $\ast$ {\bf babel16type\_\-from\_\-name} (const char $\ast${\bf name})
+\item 
+const char $\ast$ {\bf openbabel11type\_\-from\_\-name} (const char $\ast${\bf name})
+\item 
+void $\ast$ {\bf open\_\-babel\_\-read} (const char $\ast$filename, const char $\ast$filetypename, int $\ast$natoms)
+\item 
+int {\bf read\_\-pdb\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-pdb\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const char $\ast$ {\bf babel16filetypes} [$\,$]
+\item 
+const char $\ast$ {\bf babel16filetypenames} [$\,$]
+\item 
+const char $\ast$ {\bf openbabel11filetypes} [$\,$]
+\item 
+const char $\ast$ {\bf openbabel11filetypenames} [$\,$]
+\item 
+{\bf molfile\_\-plugin\_\-t} $\ast$ {\bf plugins}
+\item 
+int {\bf nplugins}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{babelplugin.c@{babelplugin.c}!BABEL_TMPDIR@{BABEL\_\-TMPDIR}}
+\index{BABEL_TMPDIR@{BABEL\_\-TMPDIR}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BABEL\_\-TMPDIR\ \char`\"{}/tmp/\char`\"{}}\label{babelplugin_8c_a0}
+
+
+
+
+Definition at line 71 of file babelplugin.c.
+
+Referenced by file, and open\_\-babel\_\-read.
+
+\subsection{Function Documentation}
+\index{babelplugin.c@{babelplugin.c}!babel16type_from_name@{babel16type\_\-from\_\-name}}
+\index{babel16type_from_name@{babel16type\_\-from\_\-name}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ babel16type\_\-from\_\-name (const char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a12}
+
+
+
+
+Definition at line 307 of file babelplugin.c.
+
+References babel16filetypenames, babel16filetypes, and name.
+
+Referenced by open\_\-babel\_\-read.\index{babelplugin.c@{babelplugin.c}!close_pdb_read@{close\_\-pdb\_\-read}}
+\index{close_pdb_read@{close\_\-pdb\_\-read}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-pdb\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a17}
+
+
+
+
+Definition at line 588 of file babelplugin.c.
+
+References pdbdata::current\_\-file, pdbdata::fd, and vmd\_\-delete\_\-file.
+
+Referenced by VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!delete_all@{delete\_\-all}}
+\index{delete_all@{delete\_\-all}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void delete\_\-all (const char $\ast$ {\em filename})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a10}
+
+
+
+
+Definition at line 118 of file babelplugin.c.
+
+References file.
+
+Referenced by open\_\-babel\_\-read.\index{babelplugin.c@{babelplugin.c}!file@{file}}
+\index{file@{file}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ file (const char $\ast$ {\em filename}, int {\em idx}, int {\em has\_\-multi})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a9}
+
+
+
+
+Definition at line 79 of file babelplugin.c.
+
+References BABEL\_\-TMPDIR, and vmd\_\-getuid.
+
+Referenced by delete\_\-all, open\_\-babel\_\-read, and read\_\-next\_\-timestep.\index{babelplugin.c@{babelplugin.c}!open_babel_read@{open\_\-babel\_\-read}}
+\index{open_babel_read@{open\_\-babel\_\-read}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-babel\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetypename}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a14}
+
+
+
+
+Definition at line 336 of file babelplugin.c.
+
+References babel16type\_\-from\_\-name, pdbdata::babel\_\-i, pdbdata::babel\_\-num, BABEL\_\-TMPDIR, pdbdata::current\_\-file, delete\_\-all, file, open\_\-pdb\_\-read, openbabel11type\_\-from\_\-name, pdbdata::original\_\-file, vmd\_\-closedir, vmd\_\-opendir, and vmd\_\-readdir.
+
+Referenced by VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!open_pdb_read@{open\_\-pdb\_\-read}}
+\index{open_pdb_read@{open\_\-pdb\_\-read}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-pdb\_\-read (const char $\ast$ {\em filepath}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a11}
+
+
+
+
+Definition at line 133 of file babelplugin.c.
+
+References pdbdata::fd, pdbdata::natoms, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-END, PDB\_\-EOF, and read\_\-pdb\_\-record.\index{babelplugin.c@{babelplugin.c}!openbabel11type_from_name@{openbabel11type\_\-from\_\-name}}
+\index{openbabel11type_from_name@{openbabel11type\_\-from\_\-name}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ openbabel11type\_\-from\_\-name (const char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a13}
+
+
+
+
+Definition at line 319 of file babelplugin.c.
+
+References name, openbabel11filetypenames, and openbabel11filetypes.
+
+Referenced by open\_\-babel\_\-read.\index{babelplugin.c@{babelplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a16}
+
+
+
+
+Definition at line 516 of file babelplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, pdbdata::babel\_\-i, pdbdata::babel\_\-num, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, pdbdata::current\_\-file, pdbdata::fd, file, molfile\_\-timestep\_\-t::gamma, get\_\-pdb\_\-coordinates, get\_\-pdb\_\-cryst1, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, pdbdata::natoms, pdbdata::original\_\-file, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CRYST1, PDB\_\-EOF, read\_\-pdb\_\-record, and vmd\_\-delete\_\-file.
+
+Referenced by VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!read_pdb_structure@{read\_\-pdb\_\-structure}}
+\index{read_pdb_structure@{read\_\-pdb\_\-structure}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pdb\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a15}
+
+
+
+
+Definition at line 462 of file babelplugin.c.
+
+References molfile\_\-atom\_\-t::altloc, molfile\_\-atom\_\-t::atomicnumber, molfile\_\-atom\_\-t::bfactor, molfile\_\-atom\_\-t::chain, pdbdata::fd, get\_\-pdb\_\-fields, get\_\-pte\_\-idx\_\-from\_\-string, get\_\-pte\_\-mass, get\_\-pte\_\-vdw\_\-radius, molfile\_\-atom\_\-t::insertion, molfile\_\-atom\_\-t::mass, MOLFILE\_\-ALTLOC, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-BFACTOR, MOLFILE\_\-INSERTION, MOLFILE\_\-MASS, MOLFILE\_\-OCCUPANCY, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, molfile\_\-atom\_\-t::occupancy, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-END, PDB\_\-EOF, molfile\_\-atom\_\-t::radius, read\_\-pdb\_\-record, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.
+
+Referenced by VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!vmd_delete_file@{vmd\_\-delete\_\-file}}
+\index{vmd_delete_file@{vmd\_\-delete\_\-file}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int vmd\_\-delete\_\-file (const char $\ast$ {\em path})\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a8}
+
+
+
+
+Definition at line 60 of file babelplugin.c.
+
+Referenced by close\_\-pdb\_\-read, and read\_\-next\_\-timestep.\index{babelplugin.c@{babelplugin.c}!vmd_getuid@{vmd\_\-getuid}}
+\index{vmd_getuid@{vmd\_\-getuid}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int vmd\_\-getuid (void)\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a7}
+
+
+
+
+Definition at line 52 of file babelplugin.c.
+
+Referenced by file.\index{babelplugin.c@{babelplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{babelplugin_8c_a20}
+
+
+
+
+Definition at line 675 of file babelplugin.c.
+
+References nplugins, VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{babelplugin.c@{babelplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{babelplugin_8c_a18}
+
+
+
+
+Definition at line 609 of file babelplugin.c.
+
+References babel16filetypenames, babel16filetypes, molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-pdb\_\-read, molfile\_\-plugin\_\-t::filename\_\-extension, MOLFILE\_\-CONVERTER\_\-PLUGIN\_\-TYPE, nplugins, open\_\-babel\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, openbabel11filetypenames, openbabel11filetypes, read\_\-next\_\-timestep, molfile\_\-plugin\_\-t::read\_\-next\_\-timestep, read\_\-pdb\_\-structure, molfile\_\-plugin\_\-t::read\_\-structure, vmdplugin\_\-ABIVERSION, VMDPLUGIN\_\-API, VMDPLUGIN\_\-SUCCESS, and VMDPLUGIN\_\-THREADUNSAFE.\index{babelplugin.c@{babelplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{babelplugin_8c_a19}
+
+
+
+
+Definition at line 663 of file babelplugin.c.
+
+References nplugins, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{babelplugin.c@{babelplugin.c}!babel16filetypenames@{babel16filetypenames}}
+\index{babel16filetypenames@{babel16filetypenames}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ babel16filetypenames[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a2}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  "Alchemy",          "AMBERPREP",       "BallStick",      
+  "MSIBGF",           "BiosymCAR",       "Boogie",
+  "Cacao",            "CADPAC",          "CHARMm",
+  "Chem3d-1",         "Chem3d-2",        "CSSR",
+  "FDAT",             "GSTAT",           "Dock",
+  "DockPDB",          "Feature",         "Fractional",    
+  "GAMESSoutput",     "GaussianZmatrix", "Gaussian92output", 
+  "Guassian94output", "Gromos96A",       "Gromos96N",
+  "HyperchemHIN",     "IsisSDF",         "M3D",
+  "MacMolecule",      "Macromodel",      "MicroWorld",
+  "MM2Input",         "MM2Output",       "MM3",
+  "MMADS",            "MDLMOL",          "MOLIN",
+  "MopacCartesian",   "MopacInternal",   "MopacOutput",
+  "PCModel",          "PSGVBin",         "PSGVBout",
+  "QuantaMSF",        "Schakal",         "ShelX",
+  "SMILES",
+  "Spartan",          "SpartanSE",       "SpartanMM",
+  "SybylMol",         "SybylMol2",       "Conjure",
+  "UniChemXYZ",       "XYZ",             "XED", 
+  0
+}\end{verbatim}\normalsize 
+
+
+Definition at line 217 of file babelplugin.c.
+
+Referenced by babel16type\_\-from\_\-name, and VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!babel16filetypes@{babel16filetypes}}
+\index{babel16filetypes@{babel16filetypes}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ babel16filetypes[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a1}
+
+
+
+
+Definition at line 155 of file babelplugin.c.
+
+Referenced by babel16type\_\-from\_\-name, and VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!nplugins@{nplugins}}
+\index{nplugins@{nplugins}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int nplugins\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a6}
+
+
+
+
+Definition at line 607 of file babelplugin.c.
+
+Referenced by VMDPLUGIN\_\-fini, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{babelplugin.c@{babelplugin.c}!openbabel11filetypenames@{openbabel11filetypenames}}
+\index{openbabel11filetypenames@{openbabel11filetypenames}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ openbabel11filetypenames[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a4}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  "Alchemy",          "AMBERPREP",       "BallStick",      
+  "Cacao",            "CCC",           
+  "Chem3d-1",         "Chem3d-2",        "ChemicalMarkup"
+  "CRK2D",            "CRK3D",           "Dock35Box",
+  "Dmol3Coord",       "Feature",         "GAMESSoutput",     
+  "GhemicalProj",     "GhemicalMM",      "GhemicalQM",
+  "HyperchemHIN",     "JaguarOutput",    "OpenEyeBinary",
+  "Macromodel",       "BiosymCAR",       "IsisSDF",
+  "MDLMOL",           "MopacCartesian",  "MopacOutput",     
+  "MMADS",            "MPQC",            "MSIBGF",  
+  "NWChemOutput",     "PQS",             "QChemOutput",
+  "ShelX",            "SMILES",          "SybylMol2",   
+  "UniChemXYZ",       "ViewMol",         "XYZ",
+  0
+}\end{verbatim}\normalsize 
+
+
+Definition at line 289 of file babelplugin.c.
+
+Referenced by openbabel11type\_\-from\_\-name, and VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!openbabel11filetypes@{openbabel11filetypes}}
+\index{openbabel11filetypes@{openbabel11filetypes}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ openbabel11filetypes[$\,$]\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a3}
+
+
+
+
+Definition at line 244 of file babelplugin.c.
+
+Referenced by openbabel11type\_\-from\_\-name, and VMDPLUGIN\_\-init.\index{babelplugin.c@{babelplugin.c}!plugins@{plugins}}
+\index{plugins@{plugins}!babelplugin.c@{babelplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t}$\ast$ plugins\hspace{0.3cm}{\tt  [static]}}\label{babelplugin_8c_a5}
+
+
+
+
+Definition at line 606 of file babelplugin.c.

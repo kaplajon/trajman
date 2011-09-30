@@ -1,0 +1,127 @@
+\section{parmplugin.C File Reference}
+\label{parmplugin_8C}\index{parmplugin.C@{parmplugin.C}}
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}Read\-PARM.h\char`\"{}}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf parmdata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-parm\_\-read} (const char $\ast$filename, const char $\ast$, int $\ast$natoms)
+\item 
+int {\bf read\_\-parm\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-parm\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorderptr)
+\item 
+void {\bf close\_\-parm\_\-read} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{parmplugin.C@{parmplugin.C}!close_parm_read@{close\_\-parm\_\-read}}
+\index{close_parm_read@{close\_\-parm\_\-read}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-parm\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{parmplugin_8C_a4}
+
+
+
+
+Definition at line 103 of file parmplugin.C.
+
+References Read\-PARM::close\_\-parm\_\-file, parmdata::from, parmdata::parm, parmdata::rp, and parmdata::to.\index{parmplugin.C@{parmplugin.C}!open_parm_read@{open\_\-parm\_\-read}}
+\index{open_parm_read@{open\_\-parm\_\-read}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-parm\_\-read (const char $\ast$ {\em filename}, const char $\ast$, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{parmplugin_8C_a1}
+
+
+
+
+Definition at line 29 of file parmplugin.C.
+
+References Read\-PARM::get\_\-parm\_\-natoms, parmdata::natoms, Read\-PARM::open\_\-parm\_\-file, parmdata::parm, Read\-PARM::readparm, and parmdata::rp.\index{parmplugin.C@{parmplugin.C}!read_parm_bonds@{read\_\-parm\_\-bonds}}
+\index{read_parm_bonds@{read\_\-parm\_\-bonds}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-parm\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorderptr})\hspace{0.3cm}{\tt  [static]}}\label{parmplugin_8C_a3}
+
+
+
+
+Definition at line 76 of file parmplugin.C.
+
+References parmdata::from, Read\-PARM::get\_\-parm\_\-bond, Read\-PARM::get\_\-parm\_\-nbonds, MOLFILE\_\-SUCCESS, parmdata::natoms, parmdata::rp, and parmdata::to.\index{parmplugin.C@{parmplugin.C}!read_parm_structure@{read\_\-parm\_\-structure}}
+\index{read_parm_structure@{read\_\-parm\_\-structure}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-parm\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{parmplugin_8C_a2}
+
+
+
+
+Definition at line 55 of file parmplugin.C.
+
+References molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, Read\-PARM::get\_\-parm\_\-atom, Read\-PARM::get\_\-parm\_\-box\-Info, molfile\_\-atom\_\-t::mass, MOLFILE\_\-CHARGE, MOLFILE\_\-MASS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, parmdata::natoms, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, parmdata::rp, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{parmplugin.C@{parmplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{parmplugin_8C_a6}
+
+
+
+
+Definition at line 133 of file parmplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{parmplugin.C@{parmplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{parmplugin_8C_a5}
+
+
+
+
+Definition at line 132 of file parmplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{parmplugin.C@{parmplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{parmplugin_8C_a7}
+
+
+
+
+Definition at line 134 of file parmplugin.C.
+
+References VMDPLUGIN\_\-API, and vmdplugin\_\-register\_\-cb.
+
+\subsection{Variable Documentation}
+\index{parmplugin.C@{parmplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!parmplugin.C@{parmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{parmplugin_8C_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim}  {
+  vmdplugin_ABIVERSION,                                 
+  MOLFILE_PLUGIN_TYPE,                                  
+  "parm",                                               
+  "AMBER Parm",                                         
+  "Justin Gullingsrud, John E. Stone",                  
+  0,                                                    
+  4,                                                    
+  VMDPLUGIN_THREADSAFE,                                 
+  "parm",                                               
+  open_parm_read,        
+  read_parm_structure,   
+  read_parm_bonds,
+  0,                     
+  close_parm_read        
+}\end{verbatim}\normalsize 
+
+
+Definition at line 115 of file parmplugin.C.

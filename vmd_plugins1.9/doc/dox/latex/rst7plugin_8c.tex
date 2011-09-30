@@ -1,0 +1,154 @@
+\section{rst7plugin.c File Reference}
+\label{rst7plugin_8c}\index{rst7plugin.c@{rst7plugin.c}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf rstdata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-rst\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-rst\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-rst\_\-read} (void $\ast$mydata)
+\item 
+void $\ast$ {\bf open\_\-rst\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-rst\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-rst\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf rst7plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{rst7plugin.c@{rst7plugin.c}!close_rst_read@{close\_\-rst\_\-read}}
+\index{close_rst_read@{close\_\-rst\_\-read}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-rst\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a3}
+
+
+
+
+Definition at line 143 of file rst7plugin.c.
+
+References rstdata::file.\index{rst7plugin.c@{rst7plugin.c}!close_rst_write@{close\_\-rst\_\-write}}
+\index{close_rst_write@{close\_\-rst\_\-write}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-rst\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a6}
+
+
+
+
+Definition at line 183 of file rst7plugin.c.
+
+References rstdata::file.\index{rst7plugin.c@{rst7plugin.c}!open_rst_read@{open\_\-rst\_\-read}}
+\index{open_rst_read@{open\_\-rst\_\-read}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-rst\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a1}
+
+
+
+
+Definition at line 31 of file rst7plugin.c.
+
+References rstdata::file, rstdata::has\_\-box, rstdata::numatoms, and rstdata::rstfile.\index{rst7plugin.c@{rst7plugin.c}!open_rst_write@{open\_\-rst\_\-write}}
+\index{open_rst_write@{open\_\-rst\_\-write}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-rst\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a4}
+
+
+
+
+Definition at line 149 of file rst7plugin.c.
+
+References rstdata::file, rstdata::has\_\-box, and rstdata::numatoms.\index{rst7plugin.c@{rst7plugin.c}!read_rst_timestep@{read\_\-rst\_\-timestep}}
+\index{read_rst_timestep@{read\_\-rst\_\-timestep}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-rst\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a2}
+
+
+
+
+Definition at line 110 of file rst7plugin.c.
+
+References molfile\_\-timestep\_\-t::coords, rstdata::count, rstdata::file, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, rstdata::numatoms, and rstdata::rstfile.\index{rst7plugin.c@{rst7plugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{rst7plugin_8c_a8}
+
+
+
+
+Definition at line 214 of file rst7plugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{rst7plugin.c@{rst7plugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{rst7plugin_8c_a7}
+
+
+
+
+Definition at line 211 of file rst7plugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{rst7plugin.c@{rst7plugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{rst7plugin_8c_a9}
+
+
+
+
+Definition at line 217 of file rst7plugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{rst7plugin.c@{rst7plugin.c}!write_rst_timestep@{write\_\-rst\_\-timestep}}
+\index{write_rst_timestep@{write\_\-rst\_\-timestep}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-rst\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a5}
+
+
+
+
+Definition at line 168 of file rst7plugin.c.
+
+References molfile\_\-timestep\_\-t::coords, rstdata::file, rstdata::has\_\-box, MOLFILE\_\-SUCCESS, and rstdata::numatoms.
+
+\subsection{Variable Documentation}
+\index{rst7plugin.c@{rst7plugin.c}!rst7plugin@{rst7plugin}}
+\index{rst7plugin@{rst7plugin}!rst7plugin.c@{rst7plugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} rst7plugin\hspace{0.3cm}{\tt  [static]}}\label{rst7plugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+    vmdplugin_ABIVERSION,   
+    MOLFILE_PLUGIN_TYPE,    
+    "rst7",                 
+    "AMBER7 Restart",       
+    "Brian Bennion",        
+    0,                      
+    2,                      
+    VMDPLUGIN_THREADUNSAFE, 
+    "rst7",                 
+    open_rst_read,
+    0,
+    0,
+    read_rst_timestep,
+    close_rst_read,
+    open_rst_write,
+    0,
+    write_rst_timestep,
+    close_rst_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 190 of file rst7plugin.c.

@@ -1,0 +1,37 @@
+\section{Plugin source files and directory structure}\label{filestruct}
+ 
+
+ The plugin source tree is split into several directories comprised of various shell scripts, C/C++ source code,  Tcl/Python components, link libraries, installers, etc. The list below briefly enumerates the main directories of  interest and what they contain:
+
+\begin{CompactItemize}
+\item 
+The top level directory contains README files, a Makefile simplifying  plugin compilation, and any log files generated during compilation.
+
+\item 
+{\bf molfile\_\-plugin}  This directory contains the source code and makefiles for all of the molecule file reader/translator plugins.
+
+\item 
+{\bf CVS} This directory is used by the CVS revision control system we use to develop the plugins. It doesn't contain anything of  direct interest to a normal developer.
+
+\item 
+{\bf compile}  Compiled plugin object files, header files, shared libraries, and static libraries, split out by target architecture.
+
+\item 
+{\bf doc}  Documentation related files
+
+\end{CompactItemize}
+
+
+
+
+\section{Plugin Makefiles and build scripts}\label{buildscripts}
+ 
+
+ The scripts and Makefiles listed below are of particular interest to people compiling their own plugins: \begin{CompactItemize}
+\item 
+{\bf build.csh} The build.csh script contains platform-specific configurations and runs a sequence of commands to build plugins on a network of workstations. This file must be customized if it is to be used by people outside of UIUC.
+
+\item 
+{\bf Makefile} This makefile contains all of the standard plugin compilations options we use to compile the plugins we distribute with VMD.
+
+\end{CompactItemize}
