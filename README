@@ -63,7 +63,7 @@ vmd_plugins1.9 dir):
 > cd vmd_plugins1.9
 > make LINUXAMD64 TCLINC=-I/usr/include/tcl TCLLIB=-F/usr/lib
 > cd molfile_plugin/f77
-> make ARCH=LINUXAMD64 FC=gfortran TCLLIB=-L/usr/lib NETCDFLIB=-L/usr/libTCLLDFLAGS=-ltcl8.5 f77_molfile.o
+> make ARCH=LINUXAMD64 FC=gfortran TCLLIB=-L/usr/lib NETCDFLIB=-L/usr/lib TCLLDFLAGS=-ltcl8.5 f77_molfile.o
 
 When you have VMD plugins compiled. Compile trajman by telling
 make where your VMD plugins are situated, and what archflag you
