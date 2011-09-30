@@ -1,0 +1,141 @@
+\section{edmplugin.C File Reference}
+\label{edmplugin_8C}\index{edmplugin.C@{edmplugin.C}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf edm\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void {\bf eatline} (FILE $\ast$fd)
+\item 
+void $\ast$ {\bf open\_\-edm\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-edm\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-edm\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-edm\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{edmplugin.C@{edmplugin.C}!close_edm_read@{close\_\-edm\_\-read}}
+\index{close_edm_read@{close\_\-edm\_\-read}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-edm\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a5}
+
+
+
+
+Definition at line 269 of file edmplugin.C.
+
+References edm\_\-t::fd, and edm\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{edmplugin.C@{edmplugin.C}!eatline@{eatline}}
+\index{eatline@{eatline}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void eatline (FILE $\ast$ {\em fd})\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a1}
+
+
+
+
+Definition at line 31 of file edmplugin.C.\index{edmplugin.C@{edmplugin.C}!open_edm_read@{open\_\-edm\_\-read}}
+\index{open_edm_read@{open\_\-edm\_\-read}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-edm\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a2}
+
+
+
+
+Definition at line 36 of file edmplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, eatline, edm\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, MOLFILE\_\-NUMATOMS\_\-NONE, edm\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, edm\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{edmplugin.C@{edmplugin.C}!read_edm_data@{read\_\-edm\_\-data}}
+\index{read_edm_data@{read\_\-edm\_\-data}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-edm\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a4}
+
+
+
+
+Definition at line 192 of file edmplugin.C.
+
+References eatline, edm\_\-t::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, edm\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{edmplugin.C@{edmplugin.C}!read_edm_metadata@{read\_\-edm\_\-metadata}}
+\index{read_edm_metadata@{read\_\-edm\_\-metadata}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-edm\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a3}
+
+
+
+
+Definition at line 183 of file edmplugin.C.
+
+References MOLFILE\_\-SUCCESS, edm\_\-t::nsets, and edm\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{edmplugin.C@{edmplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{edmplugin_8C_a7}
+
+
+
+
+Definition at line 293 of file edmplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{edmplugin.C@{edmplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{edmplugin_8C_a6}
+
+
+
+
+Definition at line 292 of file edmplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{edmplugin.C@{edmplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{edmplugin_8C_a8}
+
+
+
+
+Definition at line 294 of file edmplugin.C.
+
+References close\_\-edm\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-edm\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-edm\_\-data, read\_\-edm\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{edmplugin.C@{edmplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!edmplugin.C@{edmplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{edmplugin_8C_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,         
+  MOLFILE_PLUGIN_TYPE,          
+  "edm",                        
+  "XPLOR Electron Density Map", 
+  "John E. Stone",              
+  0,                            
+  4,                            
+  VMDPLUGIN_THREADSAFE,         
+  "edm"                         
+}\end{verbatim}\normalsize 
+
+
+Definition at line 280 of file edmplugin.C.

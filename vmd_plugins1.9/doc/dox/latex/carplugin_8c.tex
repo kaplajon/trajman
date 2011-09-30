@@ -1,0 +1,198 @@
+\section{carplugin.c File Reference}
+\label{carplugin_8c}\index{carplugin.c@{carplugin.c}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf cardata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 1024
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \{ {\bf PBC\_\-ON}, 
+{\bf PBC\_\-OFF}, 
+{\bf PBC\_\-2D}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf read\_\-car\_\-structure\_\-line} ({\bf molfile\_\-atom\_\-t} $\ast$atom, char $\ast$line)
+\item 
+int {\bf read\_\-car\_\-coordinates} (float $\ast$coords, char $\ast$line)
+\item 
+void $\ast$ {\bf open\_\-car\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-car\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-car\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-car\_\-read} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf carplugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{carplugin.c@{carplugin.c}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 1024}\label{carplugin_8c_a0}
+
+
+
+
+Definition at line 86 of file carplugin.c.
+
+Referenced by open\_\-car\_\-read, read\_\-car\_\-structure, read\_\-car\_\-structure\_\-line, and read\_\-car\_\-timestep.
+
+\subsection{Enumeration Type Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{carplugin_8c_a14}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{PBC_ON@{PBC\_\-ON}!carplugin.c@{carplugin.c}}\index{carplugin.c@{carplugin.c}!PBC_ON@{PBC\_\-ON}}\item[{\em 
+{\em PBC\_\-ON}\label{carplugin_8c_a14a2}
+}]\index{PBC_OFF@{PBC\_\-OFF}!carplugin.c@{carplugin.c}}\index{carplugin.c@{carplugin.c}!PBC_OFF@{PBC\_\-OFF}}\item[{\em 
+{\em PBC\_\-OFF}\label{carplugin_8c_a14a3}
+}]\index{PBC_2D@{PBC\_\-2D}!carplugin.c@{carplugin.c}}\index{carplugin.c@{carplugin.c}!PBC_2D@{PBC\_\-2D}}\item[{\em 
+{\em PBC\_\-2D}\label{carplugin_8c_a14a4}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 89 of file carplugin.c.
+
+\subsection{Function Documentation}
+\index{carplugin.c@{carplugin.c}!close_car_read@{close\_\-car\_\-read}}
+\index{close_car_read@{close\_\-car\_\-read}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-car\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a10}
+
+
+
+
+Definition at line 369 of file carplugin.c.
+
+References cardata::file.\index{carplugin.c@{carplugin.c}!open_car_read@{open\_\-car\_\-read}}
+\index{open_car_read@{open\_\-car\_\-read}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-car\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a7}
+
+
+
+
+Definition at line 151 of file carplugin.c.
+
+References cardata::coord\_\-location, cardata::eof, cardata::file, cardata::helix, LINESIZE, cardata::numatoms, cardata::pbc, PBC\_\-2D, PBC\_\-OFF, and PBC\_\-ON.\index{carplugin.c@{carplugin.c}!read_car_coordinates@{read\_\-car\_\-coordinates}}
+\index{read_car_coordinates@{read\_\-car\_\-coordinates}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-car\_\-coordinates (float $\ast$ {\em coords}, char $\ast$ {\em line})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a6}
+
+
+
+
+Definition at line 137 of file carplugin.c.
+
+Referenced by read\_\-car\_\-timestep.\index{carplugin.c@{carplugin.c}!read_car_structure@{read\_\-car\_\-structure}}
+\index{read_car_structure@{read\_\-car\_\-structure}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-car\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a8}
+
+
+
+
+Definition at line 247 of file carplugin.c.
+
+References molfile\_\-atom\_\-t::chain, cardata::coord\_\-location, cardata::file, cardata::helix, LINESIZE, MOLFILE\_\-CHARGE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, cardata::pbc, PBC\_\-OFF, and read\_\-car\_\-structure\_\-line.\index{carplugin.c@{carplugin.c}!read_car_structure_line@{read\_\-car\_\-structure\_\-line}}
+\index{read_car_structure_line@{read\_\-car\_\-structure\_\-line}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-car\_\-structure\_\-line ({\bf molfile\_\-atom\_\-t} $\ast$ {\em atom}, char $\ast$ {\em line})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a5}
+
+
+
+
+Definition at line 101 of file carplugin.c.
+
+References molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, LINESIZE, molfile\_\-atom\_\-t::name, name, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.
+
+Referenced by read\_\-car\_\-structure.\index{carplugin.c@{carplugin.c}!read_car_timestep@{read\_\-car\_\-timestep}}
+\index{read_car_timestep@{read\_\-car\_\-timestep}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-car\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a9}
+
+
+
+
+Definition at line 299 of file carplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, cardata::coord\_\-location, molfile\_\-timestep\_\-t::coords, cardata::eof, cardata::file, molfile\_\-timestep\_\-t::gamma, cardata::helix, LINESIZE, MOLFILE\_\-EOF, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, cardata::pbc, PBC\_\-2D, PBC\_\-ON, and read\_\-car\_\-coordinates.\index{carplugin.c@{carplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{carplugin_8c_a13}
+
+
+
+
+Definition at line 405 of file carplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{carplugin.c@{carplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{carplugin_8c_a11}
+
+
+
+
+Definition at line 396 of file carplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{carplugin.c@{carplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{carplugin_8c_a12}
+
+
+
+
+Definition at line 400 of file carplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{carplugin.c@{carplugin.c}!carplugin@{carplugin}}
+\index{carplugin@{carplugin}!carplugin.c@{carplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} carplugin\hspace{0.3cm}{\tt  [static]}}\label{carplugin_8c_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "car",                                       
+  "InsightII car",                             
+  "Eamon Caddigan",                            
+  0,                                           
+  3,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "car",
+  open_car_read,
+  read_car_structure,
+  0,
+  read_car_timestep,
+  close_car_read,
+}\end{verbatim}\normalsize 
+
+
+Definition at line 379 of file carplugin.c.

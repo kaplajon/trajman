@@ -1,0 +1,186 @@
+\section{crdplugin.c File Reference}
+\label{crdplugin_8c}\index{crdplugin.c@{crdplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf crddata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-crd\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-crd\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-crd\_\-read} (void $\ast$mydata)
+\item 
+void $\ast$ {\bf open\_\-crd\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-crd\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-crd\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf crdplugin}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf crdboxplugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{crdplugin.c@{crdplugin.c}!close_crd_read@{close\_\-crd\_\-read}}
+\index{close_crd_read@{close\_\-crd\_\-read}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-crd\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a4}
+
+
+
+
+Definition at line 125 of file crdplugin.c.
+
+References crddata::file.\index{crdplugin.c@{crdplugin.c}!close_crd_write@{close\_\-crd\_\-write}}
+\index{close_crd_write@{close\_\-crd\_\-write}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-crd\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a7}
+
+
+
+
+Definition at line 165 of file crdplugin.c.
+
+References crddata::file.\index{crdplugin.c@{crdplugin.c}!open_crd_read@{open\_\-crd\_\-read}}
+\index{open_crd_read@{open\_\-crd\_\-read}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-crd\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a2}
+
+
+
+
+Definition at line 39 of file crdplugin.c.
+
+References crddata::file, crddata::has\_\-box, and MOLFILE\_\-NUMATOMS\_\-UNKNOWN.\index{crdplugin.c@{crdplugin.c}!open_crd_write@{open\_\-crd\_\-write}}
+\index{open_crd_write@{open\_\-crd\_\-write}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-crd\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a5}
+
+
+
+
+Definition at line 131 of file crdplugin.c.
+
+References crddata::file, crddata::has\_\-box, and crddata::numatoms.\index{crdplugin.c@{crdplugin.c}!read_crd_timestep@{read\_\-crd\_\-timestep}}
+\index{read_crd_timestep@{read\_\-crd\_\-timestep}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-crd\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a3}
+
+
+
+
+Definition at line 69 of file crdplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, crddata::file, molfile\_\-timestep\_\-t::gamma, crddata::has\_\-box, MOLFILE\_\-ERROR, and MOLFILE\_\-SUCCESS.\index{crdplugin.c@{crdplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{crdplugin_8c_a9}
+
+
+
+
+Definition at line 216 of file crdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{crdplugin.c@{crdplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{crdplugin_8c_a8}
+
+
+
+
+Definition at line 215 of file crdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{crdplugin.c@{crdplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{crdplugin_8c_a10}
+
+
+
+
+Definition at line 217 of file crdplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{crdplugin.c@{crdplugin.c}!write_crd_timestep@{write\_\-crd\_\-timestep}}
+\index{write_crd_timestep@{write\_\-crd\_\-timestep}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-crd\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a6}
+
+
+
+
+Definition at line 150 of file crdplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, crddata::file, crddata::has\_\-box, MOLFILE\_\-SUCCESS, and crddata::numatoms.
+
+\subsection{Variable Documentation}
+\index{crdplugin.c@{crdplugin.c}!crdboxplugin@{crdboxplugin}}
+\index{crdboxplugin@{crdboxplugin}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} crdboxplugin\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                         
+  MOLFILE_PLUGIN_TYPE,                          
+  "crdbox",                                     
+  "AMBER Coordinates with Periodic Box",        
+  "Justin Gullingsrud, John E. Stone",          
+  0,                                            
+  4,                                            
+  VMDPLUGIN_THREADSAFE,                         
+  "mdcrd,crd",                                  
+  open_crd_read,
+  0,
+  0,
+  read_crd_timestep,
+  close_crd_read,
+  open_crd_write,
+  0,
+  write_crd_timestep,
+  close_crd_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 194 of file crdplugin.c.\index{crdplugin.c@{crdplugin.c}!crdplugin@{crdplugin}}
+\index{crdplugin@{crdplugin}!crdplugin.c@{crdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} crdplugin\hspace{0.3cm}{\tt  [static]}}\label{crdplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                         
+  MOLFILE_PLUGIN_TYPE,                          
+  "crd",                                        
+  "AMBER Coordinates",                          
+  "Justin Gullingsrud, John E. Stone",          
+  0,                                            
+  5,                                            
+  VMDPLUGIN_THREADSAFE,                         
+  "mdcrd,crd",                                  
+  open_crd_read,
+  0,
+  0,
+  read_crd_timestep,
+  close_crd_read,
+  open_crd_write,
+  0,
+  write_crd_timestep,
+  close_crd_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 173 of file crdplugin.c.

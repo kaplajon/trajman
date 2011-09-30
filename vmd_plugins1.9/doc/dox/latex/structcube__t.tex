@@ -1,0 +1,145 @@
+\section{cube\_\-t  Struct Reference}
+\label{structcube__t}\index{cube_t@{cube\_\-t}}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ {\bf fd}
+\item 
+int {\bf nsets}
+\item 
+int {\bf numatoms}
+\item 
+bool {\bf coord}
+\item 
+long {\bf crdpos}
+\item 
+long {\bf datapos}
+\item 
+char $\ast$ {\bf file\_\-name}
+\item 
+float $\ast$ {\bf datacache}
+\item 
+{\bf molfile\_\-volumetric\_\-t} $\ast$ {\bf vol}
+\item 
+float {\bf origin} [3]
+\item 
+float {\bf rotmat} [3][3]
+\item 
+{\bf cube\_\-box} {\bf box}
+\end{CompactItemize}
+
+
+\subsection{Member Data Documentation}
+\index{cube_t@{cube\_\-t}!box@{box}}
+\index{box@{box}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf cube\_\-box} cube\_\-t::box}\label{structcube__t_m11}
+
+
+
+
+Definition at line 56 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!coord@{coord}}
+\index{coord@{coord}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool cube\_\-t::coord}\label{structcube__t_m3}
+
+
+
+
+Definition at line 49 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!crdpos@{crdpos}}
+\index{crdpos@{crdpos}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long cube\_\-t::crdpos}\label{structcube__t_m4}
+
+
+
+
+Definition at line 50 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, read\_\-cube\_\-structure, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!datacache@{datacache}}
+\index{datacache@{datacache}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ cube\_\-t::datacache}\label{structcube__t_m7}
+
+
+
+
+Definition at line 52 of file cubeplugin.C.
+
+Referenced by close\_\-cube\_\-read, open\_\-cube\_\-read, and read\_\-cube\_\-data.\index{cube_t@{cube\_\-t}!datapos@{datapos}}
+\index{datapos@{datapos}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long cube\_\-t::datapos}\label{structcube__t_m5}
+
+
+
+
+Definition at line 50 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, and read\_\-cube\_\-data.\index{cube_t@{cube\_\-t}!fd@{fd}}
+\index{fd@{fd}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ cube\_\-t::fd}\label{structcube__t_m0}
+
+
+
+
+Definition at line 46 of file cubeplugin.C.
+
+Referenced by close\_\-cube\_\-read, open\_\-cube\_\-read, read\_\-cube\_\-data, read\_\-cube\_\-structure, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!file_name@{file\_\-name}}
+\index{file_name@{file\_\-name}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ cube\_\-t::file\_\-name}\label{structcube__t_m6}
+
+
+
+
+Definition at line 51 of file cubeplugin.C.
+
+Referenced by close\_\-cube\_\-read, open\_\-cube\_\-read, read\_\-cube\_\-structure, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!nsets@{nsets}}
+\index{nsets@{nsets}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cube\_\-t::nsets}\label{structcube__t_m1}
+
+
+
+
+Definition at line 47 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, read\_\-cube\_\-data, and read\_\-cube\_\-metadata.\index{cube_t@{cube\_\-t}!numatoms@{numatoms}}
+\index{numatoms@{numatoms}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cube\_\-t::numatoms}\label{structcube__t_m2}
+
+
+
+
+Definition at line 48 of file cubeplugin.C.
+
+Referenced by open\_\-cube\_\-read, read\_\-cube\_\-structure, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!origin@{origin}}
+\index{origin@{origin}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float cube\_\-t::origin[3]}\label{structcube__t_m9}
+
+
+
+
+Definition at line 54 of file cubeplugin.C.
+
+Referenced by cube\_\-buildrotmat, open\_\-cube\_\-read, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!rotmat@{rotmat}}
+\index{rotmat@{rotmat}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float cube\_\-t::rotmat[3][3]}\label{structcube__t_m10}
+
+
+
+
+Definition at line 55 of file cubeplugin.C.
+
+Referenced by cube\_\-buildrotmat, open\_\-cube\_\-read, and read\_\-cube\_\-timestep.\index{cube_t@{cube\_\-t}!vol@{vol}}
+\index{vol@{vol}!cube_t@{cube\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-volumetric\_\-t}$\ast$ cube\_\-t::vol}\label{structcube__t_m8}
+
+
+
+
+Definition at line 53 of file cubeplugin.C.
+
+Referenced by close\_\-cube\_\-read, open\_\-cube\_\-read, read\_\-cube\_\-data, and read\_\-cube\_\-metadata.
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf cubeplugin.C}\end{CompactItemize}

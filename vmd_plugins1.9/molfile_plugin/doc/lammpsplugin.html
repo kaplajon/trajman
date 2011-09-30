@@ -1,0 +1,31 @@
+<!--#set var="TITLE" value="LAMMPS Plugin, Version 0.16"-->
+<!--#include virtual="/Research/vmd/include/header-vmd.shtml"-->
+
+<p>
+This plugin reads LAMMPS trajectory files, a minimalistic plain text 
+format for storing molecular coordinate trajectories. 
+
+<p>
+A brief summary of the LAMMPS trajectory format, as read by VMD follows:
+
+<pre>
+ITEM: TIMESTEP
+ %d (timestep number)
+ITEM: NUMBER OF ATOMS
+  %d (number of atoms)
+ITEM: BOX BOUNDS
+  %f %f (alpha, a)
+  %f %f (beta,  b)
+  %f %f (gamma, c)
+ITEM: ATOMS
+  %d %d %f %f %f  (atomid, ?, x, y, z)
+  ...
+</pre>
+
+<h3>Notes:</h3>
+
+<p><b>Unused Data</b>
+<br>This plugin only reads the index and coordinates for each atom. Any
+additional data recorded for an atom is ignored.</p>
+
+<!--#include virtual="/Research/vmd/include/footer-vmd.shtml"-->

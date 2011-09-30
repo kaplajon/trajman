@@ -1,0 +1,290 @@
+\section{pqrplugin.c File Reference}
+\label{pqrplugin_8c}\index{pqrplugin.c@{pqrplugin.c}}
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf pqrdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf PQR\_\-RECORD\_\-LENGTH}\ 80
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \{ {\bf PQR\_\-REMARK}, 
+{\bf PQR\_\-ATOM}, 
+{\bf PQR\_\-UNKNOWN}, 
+{\bf PQR\_\-EOF}, 
+{\bf PQR\_\-ERROR}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf read\_\-pqr\_\-record} (FILE $\ast$f, char $\ast$ret\-Str)
+\item 
+int {\bf get\_\-pqr\_\-fields} (char $\ast$record, char $\ast${\bf name}, char $\ast$resname, char $\ast$chain, char $\ast$segname, char $\ast$resid, float $\ast$x, float $\ast$y, float $\ast$z, float $\ast$charge, float $\ast$radius)
+\item 
+int {\bf get\_\-pqr\_\-coordinates} (char $\ast$record, float $\ast$x, float $\ast$y, float $\ast$z)
+\item 
+float {\bf get\_\-atom\_\-radius} ({\bf molfile\_\-atom\_\-t} $\ast$atom)
+\item 
+int {\bf write\_\-pqr\_\-atom} (FILE $\ast$fd, int index, const {\bf molfile\_\-atom\_\-t} $\ast$atom, float x, float y, float z)
+\item 
+void $\ast$ {\bf open\_\-pqr\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-pqr\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-pqr\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-pqr\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-pqr\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-pqr\_\-structure} (void $\ast$v, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf write\_\-pqr\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-pqr\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{pqrplugin.c@{pqrplugin.c}!PQR_RECORD_LENGTH@{PQR\_\-RECORD\_\-LENGTH}}
+\index{PQR_RECORD_LENGTH@{PQR\_\-RECORD\_\-LENGTH}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PQR\_\-RECORD\_\-LENGTH\ 80}\label{pqrplugin_8c_a0}
+
+
+
+
+Definition at line 31 of file pqrplugin.c.
+
+Referenced by open\_\-pqr\_\-read, read\_\-pqr\_\-record, read\_\-pqr\_\-structure, and read\_\-pqr\_\-timestep.
+
+\subsection{Enumeration Type Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{pqrplugin_8c_a23}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{PQR_REMARK@{PQR\_\-REMARK}!pqrplugin.c@{pqrplugin.c}}\index{pqrplugin.c@{pqrplugin.c}!PQR_REMARK@{PQR\_\-REMARK}}\item[{\em 
+{\em PQR\_\-REMARK}\label{pqrplugin_8c_a23a2}
+}]\index{PQR_ATOM@{PQR\_\-ATOM}!pqrplugin.c@{pqrplugin.c}}\index{pqrplugin.c@{pqrplugin.c}!PQR_ATOM@{PQR\_\-ATOM}}\item[{\em 
+{\em PQR\_\-ATOM}\label{pqrplugin_8c_a23a3}
+}]\index{PQR_UNKNOWN@{PQR\_\-UNKNOWN}!pqrplugin.c@{pqrplugin.c}}\index{pqrplugin.c@{pqrplugin.c}!PQR_UNKNOWN@{PQR\_\-UNKNOWN}}\item[{\em 
+{\em PQR\_\-UNKNOWN}\label{pqrplugin_8c_a23a4}
+}]\index{PQR_EOF@{PQR\_\-EOF}!pqrplugin.c@{pqrplugin.c}}\index{pqrplugin.c@{pqrplugin.c}!PQR_EOF@{PQR\_\-EOF}}\item[{\em 
+{\em PQR\_\-EOF}\label{pqrplugin_8c_a23a5}
+}]\index{PQR_ERROR@{PQR\_\-ERROR}!pqrplugin.c@{pqrplugin.c}}\index{pqrplugin.c@{pqrplugin.c}!PQR_ERROR@{PQR\_\-ERROR}}\item[{\em 
+{\em PQR\_\-ERROR}\label{pqrplugin_8c_a23a6}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 34 of file pqrplugin.c.
+
+\subsection{Function Documentation}
+\index{pqrplugin.c@{pqrplugin.c}!close_pqr_read@{close\_\-pqr\_\-read}}
+\index{close_pqr_read@{close\_\-pqr\_\-read}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-pqr\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a15}
+
+
+
+
+Definition at line 302 of file pqrplugin.c.
+
+References pqrdata::fd.\index{pqrplugin.c@{pqrplugin.c}!close_pqr_write@{close\_\-pqr\_\-write}}
+\index{close_pqr_write@{close\_\-pqr\_\-write}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-pqr\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a19}
+
+
+
+
+Definition at line 374 of file pqrplugin.c.
+
+References pqrdata::atomlist, and pqrdata::fd.\index{pqrplugin.c@{pqrplugin.c}!get_atom_radius@{get\_\-atom\_\-radius}}
+\index{get_atom_radius@{get\_\-atom\_\-radius}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float get\_\-atom\_\-radius ({\bf molfile\_\-atom\_\-t} $\ast$ {\em atom})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a10}
+
+
+
+
+Definition at line 133 of file pqrplugin.c.
+
+References molfile\_\-atom\_\-t::name, name, and molfile\_\-atom\_\-t::type.
+
+Referenced by write\_\-pqr\_\-structure.\index{pqrplugin.c@{pqrplugin.c}!get_pqr_coordinates@{get\_\-pqr\_\-coordinates}}
+\index{get_pqr_coordinates@{get\_\-pqr\_\-coordinates}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-pqr\_\-coordinates (char $\ast$ {\em record}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a9}
+
+
+
+
+Definition at line 117 of file pqrplugin.c.
+
+Referenced by read\_\-pqr\_\-timestep.\index{pqrplugin.c@{pqrplugin.c}!get_pqr_fields@{get\_\-pqr\_\-fields}}
+\index{get_pqr_fields@{get\_\-pqr\_\-fields}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-pqr\_\-fields (char $\ast$ {\em record}, char $\ast$ {\em name}, char $\ast$ {\em resname}, char $\ast$ {\em chain}, char $\ast$ {\em segname}, char $\ast$ {\em resid}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z}, float $\ast$ {\em charge}, float $\ast$ {\em radius})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a8}
+
+
+
+
+Definition at line 91 of file pqrplugin.c.
+
+References name.
+
+Referenced by read\_\-pqr\_\-structure.\index{pqrplugin.c@{pqrplugin.c}!open_pqr_read@{open\_\-pqr\_\-read}}
+\index{open_pqr_read@{open\_\-pqr\_\-read}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-pqr\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a12}
+
+
+
+
+Definition at line 167 of file pqrplugin.c.
+
+References pqrdata::fd, pqrdata::natoms, PQR\_\-ATOM, PQR\_\-EOF, PQR\_\-ERROR, PQR\_\-RECORD\_\-LENGTH, and read\_\-pqr\_\-record.\index{pqrplugin.c@{pqrplugin.c}!open_pqr_write@{open\_\-pqr\_\-write}}
+\index{open_pqr_write@{open\_\-pqr\_\-write}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-pqr\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a16}
+
+
+
+
+Definition at line 311 of file pqrplugin.c.
+
+References pqrdata::atomlist, pqrdata::fd, and pqrdata::natoms.\index{pqrplugin.c@{pqrplugin.c}!read_pqr_record@{read\_\-pqr\_\-record}}
+\index{read_pqr_record@{read\_\-pqr\_\-record}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pqr\_\-record (FILE $\ast$ {\em f}, char $\ast$ {\em ret\-Str})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a7}
+
+
+
+
+Definition at line 41 of file pqrplugin.c.
+
+References PQR\_\-ATOM, PQR\_\-EOF, PQR\_\-ERROR, PQR\_\-RECORD\_\-LENGTH, and PQR\_\-UNKNOWN.
+
+Referenced by open\_\-pqr\_\-read, read\_\-pqr\_\-structure, and read\_\-pqr\_\-timestep.\index{pqrplugin.c@{pqrplugin.c}!read_pqr_structure@{read\_\-pqr\_\-structure}}
+\index{read_pqr_structure@{read\_\-pqr\_\-structure}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pqr\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a13}
+
+
+
+
+Definition at line 208 of file pqrplugin.c.
+
+References molfile\_\-atom\_\-t::chain, molfile\_\-atom\_\-t::charge, pqrdata::fd, get\_\-pqr\_\-fields, MOLFILE\_\-CHARGE, MOLFILE\_\-ERROR, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, pqrdata::natoms, PQR\_\-ATOM, PQR\_\-EOF, PQR\_\-ERROR, PQR\_\-RECORD\_\-LENGTH, molfile\_\-atom\_\-t::radius, read\_\-pqr\_\-record, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{pqrplugin.c@{pqrplugin.c}!read_pqr_timestep@{read\_\-pqr\_\-timestep}}
+\index{read_pqr_timestep@{read\_\-pqr\_\-timestep}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pqr\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a14}
+
+
+
+
+Definition at line 257 of file pqrplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, pqrdata::fd, get\_\-pqr\_\-coordinates, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, pqrdata::natoms, PQR\_\-ATOM, PQR\_\-EOF, PQR\_\-ERROR, PQR\_\-RECORD\_\-LENGTH, and read\_\-pqr\_\-record.\index{pqrplugin.c@{pqrplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{pqrplugin_8c_a22}
+
+
+
+
+Definition at line 415 of file pqrplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{pqrplugin.c@{pqrplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{pqrplugin_8c_a20}
+
+
+
+
+Definition at line 406 of file pqrplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{pqrplugin.c@{pqrplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{pqrplugin_8c_a21}
+
+
+
+
+Definition at line 410 of file pqrplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{pqrplugin.c@{pqrplugin.c}!write_pqr_atom@{write\_\-pqr\_\-atom}}
+\index{write_pqr_atom@{write\_\-pqr\_\-atom}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-pqr\_\-atom (FILE $\ast$ {\em fd}, int {\em index}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atom}, float {\em x}, float {\em y}, float {\em z})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a11}
+
+
+
+
+Definition at line 145 of file pqrplugin.c.
+
+References molfile\_\-atom\_\-t::charge, molfile\_\-atom\_\-t::name, molfile\_\-atom\_\-t::radius, molfile\_\-atom\_\-t::resid, and molfile\_\-atom\_\-t::resname.
+
+Referenced by write\_\-pqr\_\-timestep.\index{pqrplugin.c@{pqrplugin.c}!write_pqr_structure@{write\_\-pqr\_\-structure}}
+\index{write_pqr_structure@{write\_\-pqr\_\-structure}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-pqr\_\-structure (void $\ast$ {\em v}, int {\em optflags}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a17}
+
+
+
+
+Definition at line 328 of file pqrplugin.c.
+
+References pqrdata::atomlist, molfile\_\-atom\_\-t::charge, get\_\-atom\_\-radius, MOLFILE\_\-CHARGE, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, pqrdata::natoms, and molfile\_\-atom\_\-t::radius.\index{pqrplugin.c@{pqrplugin.c}!write_pqr_timestep@{write\_\-pqr\_\-timestep}}
+\index{write_pqr_timestep@{write\_\-pqr\_\-timestep}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-pqr\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a18}
+
+
+
+
+Definition at line 349 of file pqrplugin.c.
+
+References pqrdata::atomlist, molfile\_\-timestep\_\-t::coords, pqrdata::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, pqrdata::natoms, and write\_\-pqr\_\-atom.
+
+\subsection{Variable Documentation}
+\index{pqrplugin.c@{pqrplugin.c}!plugin@{plugin}}
+\index{plugin@{plugin}!pqrplugin.c@{pqrplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{pqrplugin_8c_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,         
+  MOLFILE_PLUGIN_TYPE,          
+  "pqr",                        
+  "PQR",                        
+  "Eamon Caddigan",             
+  0,                            
+  1,                            
+  VMDPLUGIN_THREADSAFE,         
+  "pqr",                        
+  open_pqr_read,
+  read_pqr_structure,
+  0,
+  read_pqr_timestep,
+  close_pqr_read,
+  open_pqr_write,
+  write_pqr_structure,
+  write_pqr_timestep,
+  close_pqr_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 385 of file pqrplugin.c.

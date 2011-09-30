@@ -1,0 +1,218 @@
+\section{Read\-PARM  Class Reference}
+\label{classReadPARM}\index{ReadPARM@{Read\-PARM}}
+{\tt \#include $<$Read\-PARM.h$>$}
+
+\subsection*{Public Methods}
+\begin{CompactItemize}
+\item 
+{\bf Read\-PARM} ()
+\item 
+{\bf $\sim$Read\-PARM} (void)
+\item 
+FILE $\ast$ {\bf open\_\-parm\_\-file} (const char $\ast${\bf name})
+\item 
+void {\bf close\_\-parm\_\-file} (FILE $\ast$fileptr)
+\item 
+char $\ast$ {\bf get} (int size)
+\item 
+int {\bf preadln} (FILE $\ast$file, char $\ast$string)
+\item 
+int {\bf readparm} (FILE $\ast$file)
+\item 
+void {\bf get\_\-parm\_\-atom} (int, char $\ast$, char $\ast$, char $\ast$, char $\ast$, int $\ast$, float $\ast$, float $\ast$)
+\item 
+void {\bf get\_\-parm\_\-bond} (int, int from\-Atom[$\,$], int to\-Atom[$\,$])
+\item 
+void {\bf get\_\-hydrogen\_\-bond} (int, int from\-Atom[$\,$], int to\-Atom[$\,$])
+\item 
+int {\bf get\_\-parm\_\-natoms} ()
+\item 
+int {\bf get\_\-parm\_\-nbonds} ()
+\item 
+int {\bf get\_\-parm\_\-box\-Info} ()
+\item 
+int {\bf read\_\-fortran\_\-12I6} (FILE $\ast$fp, int $\ast$data, int count)
+\end{CompactItemize}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+int {\bf popn}
+\item 
+{\bf parmstruct} $\ast$ {\bf prm}
+\end{CompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{ReadPARM@{Read\-PARM}!ReadPARM@{ReadPARM}}
+\index{ReadPARM@{ReadPARM}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Read\-PARM::Read\-PARM ()\hspace{0.3cm}{\tt  [inline]}}\label{classReadPARM_a0}
+
+
+
+
+Definition at line 83 of file Read\-PARM.h.
+
+References popn.\index{ReadPARM@{Read\-PARM}!~ReadPARM@{$\sim$ReadPARM}}
+\index{~ReadPARM@{$\sim$ReadPARM}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}Read\-PARM::$\sim$Read\-PARM (void)\hspace{0.3cm}{\tt  [inline]}}\label{classReadPARM_a1}
+
+
+
+
+Definition at line 84 of file Read\-PARM.h.
+
+\subsection{Member Function Documentation}
+\index{ReadPARM@{Read\-PARM}!close_parm_file@{close\_\-parm\_\-file}}
+\index{close_parm_file@{close\_\-parm\_\-file}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Read\-PARM::close\_\-parm\_\-file (FILE $\ast$ {\em fileptr})}\label{classReadPARM_a3}
+
+
+
+
+Definition at line 213 of file Read\-PARM.h.
+
+Referenced by close\_\-parm\_\-read.\index{ReadPARM@{Read\-PARM}!get@{get}}
+\index{get@{get}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char $\ast$ Read\-PARM::get (int {\em size})}\label{classReadPARM_a4}
+
+
+
+
+Definition at line 236 of file Read\-PARM.h.
+
+Referenced by readparm.\index{ReadPARM@{Read\-PARM}!get_hydrogen_bond@{get\_\-hydrogen\_\-bond}}
+\index{get_hydrogen_bond@{get\_\-hydrogen\_\-bond}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Read\-PARM::get\_\-hydrogen\_\-bond (int, int {\em from\-Atom}[$\,$], int {\em to\-Atom}[$\,$])}\label{classReadPARM_a9}
+
+
+
+
+Definition at line 932 of file Read\-PARM.h.
+
+References parm::Bond\-HAt1, parm::Bond\-HAt2, parm::Nbona, and prm.
+
+Referenced by get\_\-parm\_\-bond.\index{ReadPARM@{Read\-PARM}!get_parm_atom@{get\_\-parm\_\-atom}}
+\index{get_parm_atom@{get\_\-parm\_\-atom}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Read\-PARM::get\_\-parm\_\-atom (int, char $\ast$, char $\ast$, char $\ast$, char $\ast$, int $\ast$, float $\ast$, float $\ast$)}\label{classReadPARM_a7}
+
+
+
+
+Definition at line 874 of file Read\-PARM.h.
+
+References parm::Atom\-Names, parm::Atom\-Sym, parm::Charges, parm::Ipres, parm::Masses, name, parm::Nres, prm, and parm::Res\-Names.
+
+Referenced by read\_\-parm\_\-structure.\index{ReadPARM@{Read\-PARM}!get_parm_bond@{get\_\-parm\_\-bond}}
+\index{get_parm_bond@{get\_\-parm\_\-bond}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Read\-PARM::get\_\-parm\_\-bond (int, int {\em from\-Atom}[$\,$], int {\em to\-Atom}[$\,$])}\label{classReadPARM_a8}
+
+
+
+
+Definition at line 923 of file Read\-PARM.h.
+
+References parm::Bond\-At1, parm::Bond\-At2, get\_\-hydrogen\_\-bond, parm::Nbona, and prm.
+
+Referenced by read\_\-parm\_\-bonds.\index{ReadPARM@{Read\-PARM}!get_parm_boxInfo@{get\_\-parm\_\-boxInfo}}
+\index{get_parm_boxInfo@{get\_\-parm\_\-boxInfo}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::get\_\-parm\_\-box\-Info ()}\label{classReadPARM_a12}
+
+
+
+
+Definition at line 942 of file Read\-PARM.h.
+
+References parm::If\-Box, and prm.
+
+Referenced by read\_\-parm\_\-structure.\index{ReadPARM@{Read\-PARM}!get_parm_natoms@{get\_\-parm\_\-natoms}}
+\index{get_parm_natoms@{get\_\-parm\_\-natoms}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::get\_\-parm\_\-natoms ()}\label{classReadPARM_a10}
+
+
+
+
+Definition at line 938 of file Read\-PARM.h.
+
+References parm::Natom, and prm.
+
+Referenced by open\_\-parm\_\-read.\index{ReadPARM@{Read\-PARM}!get_parm_nbonds@{get\_\-parm\_\-nbonds}}
+\index{get_parm_nbonds@{get\_\-parm\_\-nbonds}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::get\_\-parm\_\-nbonds ()}\label{classReadPARM_a11}
+
+
+
+
+Definition at line 940 of file Read\-PARM.h.
+
+References parm::Nbona, parm::Nbonh, and prm.
+
+Referenced by read\_\-parm\_\-bonds.\index{ReadPARM@{Read\-PARM}!open_parm_file@{open\_\-parm\_\-file}}
+\index{open_parm_file@{open\_\-parm\_\-file}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE $\ast$ Read\-PARM::open\_\-parm\_\-file (const char $\ast$ {\em name})}\label{classReadPARM_a2}
+
+
+
+
+Definition at line 132 of file Read\-PARM.h.
+
+References name, and popn.
+
+Referenced by open\_\-parm\_\-read.\index{ReadPARM@{Read\-PARM}!preadln@{preadln}}
+\index{preadln@{preadln}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::preadln (FILE $\ast$ {\em file}, char $\ast$ {\em string})}\label{classReadPARM_a5}
+
+
+
+
+Definition at line 258 of file Read\-PARM.h.
+
+References MOLFILE\_\-ERROR.
+
+Referenced by readparm.\index{ReadPARM@{Read\-PARM}!read_fortran_12I6@{read\_\-fortran\_\-12I6}}
+\index{read_fortran_12I6@{read\_\-fortran\_\-12I6}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::read\_\-fortran\_\-12I6 (FILE $\ast$ {\em fp}, int $\ast$ {\em data}, int {\em count})}\label{classReadPARM_a13}
+
+
+
+
+Definition at line 950 of file Read\-PARM.h.
+
+References readtoeoln.
+
+Referenced by readparm.\index{ReadPARM@{Read\-PARM}!readparm@{readparm}}
+\index{readparm@{readparm}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::readparm (FILE $\ast$ {\em file})}\label{classReadPARM_a6}
+
+
+
+
+Definition at line 287 of file Read\-PARM.h.
+
+References \_\-REAL, parm::Angle\-At1, parm::Angle\-At2, parm::Angle\-At3, parm::Angle\-HAt1, parm::Angle\-HAt2, parm::Angle\-HAt3, parm::Angle\-HNum, parm::Angle\-Num, parm::Atom\-Names, parm::Atom\-Res, parm::Atom\-Sym, parm::Atom\-Tree, parm::Bond\-At1, parm::Bond\-At2, parm::Bond\-HAt1, parm::Bond\-HAt2, parm::Bond\-HNum, parm::Bond\-Num, parm::Boundary, parm::Box, parm::Charges, parm::Cn1, parm::Cn2, parm::Cno, parm::Cutcap, DBLFMT, parm::Dih\-At1, parm::Dih\-At2, parm::Dih\-At3, parm::Dih\-At4, parm::Dih\-HAt1, parm::Dih\-HAt2, parm::Dih\-HAt3, parm::Dih\-HAt4, parm::Dih\-HNum, parm::Dih\-Num, parm::Excl\-At, get, parm::HB12, parm::HB6, parm::Iac, parm::Iblo, parm::If\-Box, parm::If\-Cap, parm::Ipatm, parm::Ipres, parm::Iptres, parm::ititl, parm::Masses, parm::Mbona, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, parm::Mphia, parm::Mtheta, parm::Nat3, parm::Natcap, parm::Natom, parm::Natyp, parm::Nbona, parm::Nbonh, parm::Nhparm, parm::Nmxrs, parm::Nnb, parm::Nparm, parm::Nphb, parm::Nphia, parm::Nphih, parm::Nptra, parm::Nres, parm::Nspm, parm::Nspsol, parm::Ntheta, parm::Ntheth, parm::Nttyp, parm::Ntype2d, parm::Ntypes, parm::Numang, parm::Numbnd, parm::Phase, parm::Pk, parm::Pn, preadln, prm, read\_\-fortran\_\-12I6, readtoeoln, parm::Req, parm::Res\-Names, parm::Rk, parm::Solty, parm::Teq, parm::Tk, parm::Tree\-Join, parm::Xcap, parm::Ycap, and parm::Zcap.
+
+Referenced by open\_\-parm\_\-read.
+
+\subsection{Member Data Documentation}
+\index{ReadPARM@{Read\-PARM}!popn@{popn}}
+\index{popn@{popn}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Read\-PARM::popn}\label{classReadPARM_m0}
+
+
+
+
+Definition at line 86 of file Read\-PARM.h.
+
+Referenced by open\_\-parm\_\-file, and Read\-PARM.\index{ReadPARM@{Read\-PARM}!prm@{prm}}
+\index{prm@{prm}!ReadPARM@{Read\-PARM}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf parmstruct}$\ast$ Read\-PARM::prm}\label{classReadPARM_m1}
+
+
+
+
+Definition at line 87 of file Read\-PARM.h.
+
+Referenced by get\_\-hydrogen\_\-bond, get\_\-parm\_\-atom, get\_\-parm\_\-bond, get\_\-parm\_\-box\-Info, get\_\-parm\_\-natoms, get\_\-parm\_\-nbonds, and readparm.
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf Read\-PARM.h}\end{CompactItemize}

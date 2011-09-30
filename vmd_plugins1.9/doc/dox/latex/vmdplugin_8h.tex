@@ -1,0 +1,219 @@
+\section{vmdplugin.h File Reference}
+\label{vmdplugin_8h}\index{vmdplugin.h@{vmdplugin.h}}
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf vmdplugin\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf VMDPLUGIN}\ vmdplugin
+\item 
+\#define {\bf xcat}(x, y)\ cat(x, y)
+\item 
+\#define {\bf cat}(x, y)\ x \#\# y
+\item 
+\#define {\bf VMDPLUGIN\_\-API}
+\item 
+\#define {\bf VMDPLUGIN\_\-EXTERN}\ extern VMDPLUGIN\_\-API
+\item 
+\#define {\bf vmdplugin\_\-HEAD}
+\item 
+\#define {\bf vmdplugin\_\-ABIVERSION}\ 9
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef int($\ast$ {\bf vmdplugin\_\-register\_\-cb} )(void $\ast$, {\bf vmdplugin\_\-t} $\ast$)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+VMDPLUGIN\_\-EXTERN int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-EXTERN int {\bf VMDPLUGIN\_\-register} (void $\ast$, {\bf vmdplugin\_\-register\_\-cb})
+\item 
+VMDPLUGIN\_\-EXTERN int {\bf VMDPLUGIN\_\-register\_\-tcl} (void $\ast$, void $\ast$tcl\_\-interp, {\bf vmdplugin\_\-register\_\-cb})
+\item 
+VMDPLUGIN\_\-EXTERN int {\bf VMDPLUGIN\_\-fini} (void)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+ This header must be included by every VMD plugin library. It defines the API for every plugin so that VMD can organize the plugins it finds.
+
+
+
+Definition in file {\bf vmdplugin.h}.
+
+\subsection{Define Documentation}
+\index{vmdplugin.h@{vmdplugin.h}!cat@{cat}}
+\index{cat@{cat}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define cat(x, y)\ x \#\# y}\label{vmdplugin_8h_a2}
+
+
+concatenation macro, joins args x and y together as a single string 
+
+Definition at line 41 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN@{VMDPLUGIN}}
+\index{VMDPLUGIN@{VMDPLUGIN}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\ vmdplugin}\label{vmdplugin_8h_a0}
+
+
+macro defining VMDPLUGIN if it hasn't already been set to the name of  a static plugin that is being compiled. This is the catch-all case. 
+
+Definition at line 36 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!vmdplugin_ABIVERSION@{vmdplugin\_\-ABIVERSION}}
+\index{vmdplugin_ABIVERSION@{vmdplugin\_\-ABIVERSION}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define vmdplugin\_\-ABIVERSION\ 9}\label{vmdplugin_8h_a10}
+
+
+Use this macro to initialize the abiversion member of each plugin 
+
+Definition at line 145 of file vmdplugin.h.
+
+Referenced by VMDPLUGIN\_\-init.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_API@{VMDPLUGIN\_\-API}}
+\index{VMDPLUGIN_API@{VMDPLUGIN\_\-API}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-API}\label{vmdplugin_8h_a7}
+
+
+If we're not compiling on Windows, then this macro is defined empty 
+
+Definition at line 87 of file vmdplugin.h.
+
+Referenced by VMDPLUGIN\_\-fini, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_ERROR@{VMDPLUGIN\_\-ERROR}}
+\index{VMDPLUGIN_ERROR@{VMDPLUGIN\_\-ERROR}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-ERROR\ -1}\label{vmdplugin_8h_a14}
+
+
+Error return code for use in the plugin registration and init functions 
+
+Definition at line 156 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_EXTERN@{VMDPLUGIN\_\-EXTERN}}
+\index{VMDPLUGIN_EXTERN@{VMDPLUGIN\_\-EXTERN}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-EXTERN\ extern VMDPLUGIN\_\-API}\label{vmdplugin_8h_a8}
+
+
+define plugin linkage correctly for both C and C++ based plugins 
+
+Definition at line 94 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-fini\ xcat(VMDPLUGIN, \_\-fini)}\label{vmdplugin_8h_a6}
+
+
+Macro names entry points correctly for static linkage or dynamic loading 
+
+Definition at line 57 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!vmdplugin_HEAD@{vmdplugin\_\-HEAD}}
+\index{vmdplugin_HEAD@{vmdplugin\_\-HEAD}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define vmdplugin\_\-HEAD}\label{vmdplugin_8h_a9}
+
+
+{\bf Value:}
+
+\footnotesize\begin{verbatim}int abiversion; \
+  const char *type; \
+  const char *name; \
+  const char *prettyname; \
+  const char *author; \
+  int majorv; \
+  int minorv; \
+  int is_reentrant;\end{verbatim}\normalsize 
+Macro for creating a struct header used in all plugin structures.
+
+This header should be placed at the top of every plugin API definition  so that it can be treated as a subtype of the base plugin type.
+
+abiversion: Defines the ABI for the base plugin type (not for other plugins) type: A string descriptor of the plugin type. name: A name for the plugin. author: A string identifier, possibly including newlines. Major and minor version.  is\_\-reentrant: Whether this library can be run concurrently with itself. 
+
+Definition at line 122 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-init\ xcat(VMDPLUGIN, \_\-init)}\label{vmdplugin_8h_a5}
+
+
+Macro names entry points correctly for static linkage or dynamic loading 
+
+Definition at line 56 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-register\ xcat(VMDPLUGIN, \_\-register)}\label{vmdplugin_8h_a3}
+
+
+Macro names entry points correctly for static linkage or dynamic loading 
+
+Definition at line 54 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_register_tcl@{VMDPLUGIN\_\-register\_\-tcl}}
+\index{VMDPLUGIN_register_tcl@{VMDPLUGIN\_\-register\_\-tcl}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-register\_\-tcl\ xcat(VMDPLUGIN, \_\-register\_\-tcl)}\label{vmdplugin_8h_a4}
+
+
+Macro names entry points correctly for static linkage or dynamic loading 
+
+Definition at line 55 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_SUCCESS@{VMDPLUGIN\_\-SUCCESS}}
+\index{VMDPLUGIN_SUCCESS@{VMDPLUGIN\_\-SUCCESS}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-SUCCESS\ 0}\label{vmdplugin_8h_a13}
+
+
+Error return code for use in the plugin registration and init functions 
+
+Definition at line 155 of file vmdplugin.h.
+
+Referenced by register\_\-cb, VMDPLUGIN\_\-fini, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_THREADSAFE@{VMDPLUGIN\_\-THREADSAFE}}
+\index{VMDPLUGIN_THREADSAFE@{VMDPLUGIN\_\-THREADSAFE}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-THREADSAFE\ 1}\label{vmdplugin_8h_a12}
+
+
+Use this macro to indicate a plugin's thread-safety at registration time 
+
+Definition at line 150 of file vmdplugin.h.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_THREADUNSAFE@{VMDPLUGIN\_\-THREADUNSAFE}}
+\index{VMDPLUGIN_THREADUNSAFE@{VMDPLUGIN\_\-THREADUNSAFE}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDPLUGIN\_\-THREADUNSAFE\ 0}\label{vmdplugin_8h_a11}
+
+
+Use this macro to indicate a plugin's thread-safety at registration time 
+
+Definition at line 149 of file vmdplugin.h.
+
+Referenced by VMDPLUGIN\_\-init.\index{vmdplugin.h@{vmdplugin.h}!xcat@{xcat}}
+\index{xcat@{xcat}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define xcat(x, y)\ cat(x, y)}\label{vmdplugin_8h_a1}
+
+
+concatenation macro, joins args x and y together as a single string 
+
+Definition at line 39 of file vmdplugin.h.
+
+\subsection{Typedef Documentation}
+\index{vmdplugin.h@{vmdplugin.h}!vmdplugin_register_cb@{vmdplugin\_\-register\_\-cb}}
+\index{vmdplugin_register_cb@{vmdplugin\_\-register\_\-cb}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef int($\ast$ vmdplugin\_\-register\_\-cb)(void $\ast$, {\bf vmdplugin\_\-t} $\ast$)}\label{vmdplugin_8h_a15}
+
+
+Function pointer typedef for register callback functions 
+
+Definition at line 162 of file vmdplugin.h.
+
+Referenced by VMDPLUGIN\_\-register.
+
+\subsection{Function Documentation}
+\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-EXTERN int VMDPLUGIN\_\-fini (void)}\label{vmdplugin_8h_a19}
+
+
+The Fini method is called when the application will no longer use  any plugins in the library. 
+
+Definition at line 565 of file avsplugin.C.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-EXTERN int VMDPLUGIN\_\-init (void)}\label{vmdplugin_8h_a16}
+
+
+Init routine: called the first time the library is loaded by the  application and before any other API functions are referenced. Return 0 on success. 
+
+Definition at line 564 of file avsplugin.C.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-EXTERN int VMDPLUGIN\_\-register (void $\ast$, {\bf vmdplugin\_\-register\_\-cb})}\label{vmdplugin_8h_a17}
+
+
+Allow the library to register plugins with the application. The callback should be called using the passed-in void pointer, which should not be interpreted in any way by the library. Each {\bf vmdplugin\_\-t} {\rm (p.\,\pageref{structvmdplugin__t})} pointer passed to the application should point to statically-allocated or heap-allocated memory and should never be later modified by the plugin. Applications must be permitted to retain only a copy of the the plugin pointer, without making any deep copy of the items in the struct. 
+
+Definition at line 566 of file avsplugin.C.\index{vmdplugin.h@{vmdplugin.h}!VMDPLUGIN_register_tcl@{VMDPLUGIN\_\-register\_\-tcl}}
+\index{VMDPLUGIN_register_tcl@{VMDPLUGIN\_\-register\_\-tcl}!vmdplugin.h@{vmdplugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-EXTERN int VMDPLUGIN\_\-register\_\-tcl (void $\ast$, void $\ast$ {\em tcl\_\-interp}, {\bf vmdplugin\_\-register\_\-cb})}\label{vmdplugin_8h_a18}
+
+
+Allow the library to register Tcl extensions.  This API is optional; if found by dlopen, it will be called after first calling init and register. 

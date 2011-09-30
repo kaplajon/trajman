@@ -1,0 +1,188 @@
+\section{readpdb.h File Reference}
+\label{readpdb_8h}\index{readpdb.h@{readpdb.h}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf PDB\_\-RECORD\_\-LENGTH}\ 80
+\item 
+\#define {\bf PDB\_\-BUFFER\_\-LENGTH}\ 83
+\item 
+\#define {\bf VMDUSECONECTRECORDS}\ 1
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \{ {\bf PDB\_\-HEADER}, 
+{\bf PDB\_\-REMARK}, 
+{\bf PDB\_\-ATOM}, 
+{\bf PDB\_\-CONECT}, 
+{\bf PDB\_\-UNKNOWN}, 
+{\bf PDB\_\-END}, 
+{\bf PDB\_\-EOF}, 
+{\bf PDB\_\-CRYST1}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf read\_\-pdb\_\-record} (FILE $\ast$f, char $\ast$ret\-Str)
+\item 
+void {\bf get\_\-pdb\_\-cryst1} (const char $\ast$record, float $\ast$alpha, float $\ast$beta, float $\ast$gamma, float $\ast$a, float $\ast$b, float $\ast$c)
+\item 
+void {\bf get\_\-pdb\_\-coordinates} (const char $\ast$record, float $\ast$x, float $\ast$y, float $\ast$z, float $\ast$occup, float $\ast$beta)
+\item 
+void {\bf adjust\_\-pdb\_\-field\_\-string} (char $\ast$field)
+\item 
+void {\bf get\_\-pdb\_\-header} (const char $\ast$record, char $\ast$pdbcode, char $\ast$date, char $\ast$classification)
+\item 
+void {\bf get\_\-pdb\_\-conect} (const char $\ast$record, int natoms, int $\ast$idxmap, int $\ast$maxbnum, int $\ast$nbonds, int $\ast$$\ast$from, int $\ast$$\ast$to)
+\item 
+void {\bf get\_\-pdb\_\-fields} (const char $\ast$record, int reclength, int $\ast$serial, char $\ast${\bf name}, char $\ast$resname, char $\ast$chain, char $\ast$segname, char $\ast$resid, char $\ast$insertion, char $\ast$altloc, char $\ast$elementsymbol, float $\ast$x, float $\ast$y, float $\ast$z, float $\ast$occup, float $\ast$beta)
+\item 
+int {\bf write\_\-raw\_\-pdb\_\-record} (FILE $\ast$fd, const char $\ast$recordname, int index, const char $\ast$atomname, const char $\ast$resname, int resid, const char $\ast$insertion, const char $\ast$altloc, const char $\ast$elementsymbol, float x, float y, float z, float occ, float beta, const char $\ast$chain, const char $\ast$segname)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{readpdb.h@{readpdb.h}!PDB_BUFFER_LENGTH@{PDB\_\-BUFFER\_\-LENGTH}}
+\index{PDB_BUFFER_LENGTH@{PDB\_\-BUFFER\_\-LENGTH}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PDB\_\-BUFFER\_\-LENGTH\ 83}\label{readpdb_8h_a1}
+
+
+
+
+Definition at line 26 of file readpdb.h.
+
+Referenced by open\_\-pdb\_\-read, read\_\-next\_\-timestep, read\_\-pdb\_\-record, and read\_\-pdb\_\-structure.\index{readpdb.h@{readpdb.h}!PDB_RECORD_LENGTH@{PDB\_\-RECORD\_\-LENGTH}}
+\index{PDB_RECORD_LENGTH@{PDB\_\-RECORD\_\-LENGTH}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PDB\_\-RECORD\_\-LENGTH\ 80}\label{readpdb_8h_a0}
+
+
+
+
+Definition at line 25 of file readpdb.h.
+
+Referenced by get\_\-pdb\_\-cryst1, and read\_\-pdb\_\-record.\index{readpdb.h@{readpdb.h}!VMDUSECONECTRECORDS@{VMDUSECONECTRECORDS}}
+\index{VMDUSECONECTRECORDS@{VMDUSECONECTRECORDS}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VMDUSECONECTRECORDS\ 1}\label{readpdb_8h_a2}
+
+
+
+
+Definition at line 28 of file readpdb.h.
+
+\subsection{Enumeration Type Documentation}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}\label{readpdb_8h_a19}
+
+
+\begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{PDB_HEADER@{PDB\_\-HEADER}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_HEADER@{PDB\_\-HEADER}}\item[{\em 
+{\em PDB\_\-HEADER}\label{readpdb_8h_a19a3}
+}]\index{PDB_REMARK@{PDB\_\-REMARK}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_REMARK@{PDB\_\-REMARK}}\item[{\em 
+{\em PDB\_\-REMARK}\label{readpdb_8h_a19a4}
+}]\index{PDB_ATOM@{PDB\_\-ATOM}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_ATOM@{PDB\_\-ATOM}}\item[{\em 
+{\em PDB\_\-ATOM}\label{readpdb_8h_a19a5}
+}]\index{PDB_CONECT@{PDB\_\-CONECT}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_CONECT@{PDB\_\-CONECT}}\item[{\em 
+{\em PDB\_\-CONECT}\label{readpdb_8h_a19a6}
+}]\index{PDB_UNKNOWN@{PDB\_\-UNKNOWN}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_UNKNOWN@{PDB\_\-UNKNOWN}}\item[{\em 
+{\em PDB\_\-UNKNOWN}\label{readpdb_8h_a19a7}
+}]\index{PDB_END@{PDB\_\-END}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_END@{PDB\_\-END}}\item[{\em 
+{\em PDB\_\-END}\label{readpdb_8h_a19a8}
+}]\index{PDB_EOF@{PDB\_\-EOF}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_EOF@{PDB\_\-EOF}}\item[{\em 
+{\em PDB\_\-EOF}\label{readpdb_8h_a19a9}
+}]\index{PDB_CRYST1@{PDB\_\-CRYST1}!readpdb.h@{readpdb.h}}\index{readpdb.h@{readpdb.h}!PDB_CRYST1@{PDB\_\-CRYST1}}\item[{\em 
+{\em PDB\_\-CRYST1}\label{readpdb_8h_a19a10}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 31 of file readpdb.h.
+
+\subsection{Function Documentation}
+\index{readpdb.h@{readpdb.h}!adjust_pdb_field_string@{adjust\_\-pdb\_\-field\_\-string}}
+\index{adjust_pdb_field_string@{adjust\_\-pdb\_\-field\_\-string}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void adjust\_\-pdb\_\-field\_\-string (char $\ast$ {\em field})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a14}
+
+
+
+
+Definition at line 171 of file readpdb.h.
+
+Referenced by get\_\-pdb\_\-fields, and get\_\-pdb\_\-header.\index{readpdb.h@{readpdb.h}!get_pdb_conect@{get\_\-pdb\_\-conect}}
+\index{get_pdb_conect@{get\_\-pdb\_\-conect}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-pdb\_\-conect (const char $\ast$ {\em record}, int {\em natoms}, int $\ast$ {\em idxmap}, int $\ast$ {\em maxbnum}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em from}, int $\ast$$\ast$ {\em to})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a16}
+
+
+
+
+Definition at line 207 of file readpdb.h.
+
+Referenced by read\_\-pdb\_\-structure.\index{readpdb.h@{readpdb.h}!get_pdb_coordinates@{get\_\-pdb\_\-coordinates}}
+\index{get_pdb_coordinates@{get\_\-pdb\_\-coordinates}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-pdb\_\-coordinates (const char $\ast$ {\em record}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z}, float $\ast$ {\em occup}, float $\ast$ {\em beta})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a13}
+
+
+
+
+Definition at line 137 of file readpdb.h.
+
+Referenced by get\_\-pdb\_\-fields, and read\_\-next\_\-timestep.\index{readpdb.h@{readpdb.h}!get_pdb_cryst1@{get\_\-pdb\_\-cryst1}}
+\index{get_pdb_cryst1@{get\_\-pdb\_\-cryst1}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-pdb\_\-cryst1 (const char $\ast$ {\em record}, float $\ast$ {\em alpha}, float $\ast$ {\em beta}, float $\ast$ {\em gamma}, float $\ast$ {\em a}, float $\ast$ {\em b}, float $\ast$ {\em c})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a12}
+
+
+
+
+Definition at line 113 of file readpdb.h.
+
+References PDB\_\-RECORD\_\-LENGTH.
+
+Referenced by read\_\-next\_\-timestep.\index{readpdb.h@{readpdb.h}!get_pdb_fields@{get\_\-pdb\_\-fields}}
+\index{get_pdb_fields@{get\_\-pdb\_\-fields}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-pdb\_\-fields (const char $\ast$ {\em record}, int {\em reclength}, int $\ast$ {\em serial}, char $\ast$ {\em name}, char $\ast$ {\em resname}, char $\ast$ {\em chain}, char $\ast$ {\em segname}, char $\ast$ {\em resid}, char $\ast$ {\em insertion}, char $\ast$ {\em altloc}, char $\ast$ {\em elementsymbol}, float $\ast$ {\em x}, float $\ast$ {\em y}, float $\ast$ {\em z}, float $\ast$ {\em occup}, float $\ast$ {\em beta})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a17}
+
+
+
+
+Definition at line 264 of file readpdb.h.
+
+References adjust\_\-pdb\_\-field\_\-string, get\_\-pdb\_\-coordinates, and name.
+
+Referenced by read\_\-pdb\_\-structure.\index{readpdb.h@{readpdb.h}!get_pdb_header@{get\_\-pdb\_\-header}}
+\index{get_pdb_header@{get\_\-pdb\_\-header}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void get\_\-pdb\_\-header (const char $\ast$ {\em record}, char $\ast$ {\em pdbcode}, char $\ast$ {\em date}, char $\ast$ {\em classification})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a15}
+
+
+
+
+Definition at line 187 of file readpdb.h.
+
+References adjust\_\-pdb\_\-field\_\-string.
+
+Referenced by open\_\-pdb\_\-read, and pdb\_\-read.\index{readpdb.h@{readpdb.h}!read_pdb_record@{read\_\-pdb\_\-record}}
+\index{read_pdb_record@{read\_\-pdb\_\-record}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pdb\_\-record (FILE $\ast$ {\em f}, char $\ast$ {\em ret\-Str})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a11}
+
+
+
+
+Definition at line 39 of file readpdb.h.
+
+References PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CONECT, PDB\_\-CRYST1, PDB\_\-END, PDB\_\-EOF, PDB\_\-HEADER, PDB\_\-RECORD\_\-LENGTH, PDB\_\-REMARK, and PDB\_\-UNKNOWN.
+
+Referenced by open\_\-pdb\_\-read, read\_\-next\_\-timestep, and read\_\-pdb\_\-structure.\index{readpdb.h@{readpdb.h}!write_raw_pdb_record@{write\_\-raw\_\-pdb\_\-record}}
+\index{write_raw_pdb_record@{write\_\-raw\_\-pdb\_\-record}!readpdb.h@{readpdb.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-raw\_\-pdb\_\-record (FILE $\ast$ {\em fd}, const char $\ast$ {\em recordname}, int {\em index}, const char $\ast$ {\em atomname}, const char $\ast$ {\em resname}, int {\em resid}, const char $\ast$ {\em insertion}, const char $\ast$ {\em altloc}, const char $\ast$ {\em elementsymbol}, float {\em x}, float {\em y}, float {\em z}, float {\em occ}, float {\em beta}, const char $\ast$ {\em chain}, const char $\ast$ {\em segname})\hspace{0.3cm}{\tt  [static]}}\label{readpdb_8h_a18}
+
+
+
+
+Definition at line 324 of file readpdb.h.
+
+Referenced by write\_\-timestep.

@@ -1,0 +1,147 @@
+\section{molfile\_\-plugin\_\-t  Struct Reference}
+\label{structmolfile__plugin__t}\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+{\tt \#include $<$molfile\_\-plugin.h$>$}
+
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+vmdplugin\_\-HEAD const char $\ast$ {\bf filename\_\-extension}
+\item 
+void $\ast$($\ast$ {\bf open\_\-file\_\-read} )(const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int($\ast$ {\bf read\_\-structure} )(void $\ast$, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int($\ast$ {\bf read\_\-bonds} )(void $\ast$, int $\ast$nbonds, int $\ast$$\ast$from, int $\ast$$\ast$to, float $\ast$$\ast$bondorder)
+\item 
+int($\ast$ {\bf read\_\-next\_\-timestep} )(void $\ast$, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$)
+\item 
+void($\ast$ {\bf close\_\-file\_\-read} )(void $\ast$)
+\item 
+void $\ast$($\ast$ {\bf open\_\-file\_\-write} )(const char $\ast$filepath, const char $\ast${\bf filetype}, int natoms)
+\item 
+int($\ast$ {\bf write\_\-structure} )(void $\ast$, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int($\ast$ {\bf write\_\-timestep} )(void $\ast$, const {\bf molfile\_\-timestep\_\-t} $\ast$)
+\item 
+void($\ast$ {\bf close\_\-file\_\-write} )(void $\ast$)
+\item 
+int($\ast$ {\bf read\_\-volumetric\_\-metadata} )(void $\ast$, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int($\ast$ {\bf read\_\-volumetric\_\-data} )(void $\ast$, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+int($\ast$ {\bf read\_\-rawgraphics} )(void $\ast$, int $\ast$nelem, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$data)
+\item 
+int($\ast$ {\bf read\_\-molecule\_\-metadata} )(void $\ast$, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$metadata)
+\item 
+int($\ast$ {\bf write\_\-bonds} )(void $\ast$, int nbonds, int $\ast$from, int $\ast$to, float $\ast$bondorder)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Main file reader API. Any function in this struct may be NULL if not implemented by the plugin; the application checks this to determine what functionality is present in the plugin. 
+
+
+
+Definition at line 217 of file molfile\_\-plugin.h.
+
+\subsection{Member Data Documentation}
+\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void($\ast$  molfile\_\-plugin\_\-t::close\_\-file\_\-read)(void $\ast$)}\label{structmolfile__plugin__t_m5}
+
+
+Close the file and release all data. The handle cannot be reused. 
+
+Referenced by main, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!close_file_write@{close\_\-file\_\-write}}
+\index{close_file_write@{close\_\-file\_\-write}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void($\ast$  molfile\_\-plugin\_\-t::close\_\-file\_\-write)(void $\ast$)}\label{structmolfile__plugin__t_m9}
+
+
+Close the file and release all data. The handle cannot be reused. \index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!filename_extension@{filename\_\-extension}}
+\index{filename_extension@{filename\_\-extension}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}vmdplugin\_\-HEAD const char$\ast$ molfile\_\-plugin\_\-t::filename\_\-extension}\label{structmolfile__plugin__t_m0}
+
+
+Filename extension for this file type. May be NULL if no filename  extension exists and/or is known. For file types that match several common extensions, list them in a comma separated list such as: \char`\"{}pdb,ent,foo,bar,baz,ban\char`\"{} The comma separated list will be expanded when filename extension matching is performed. If multiple plugins solicit the same filename extensions, the first one tried/checked \char`\"{}wins\char`\"{}. 
+
+Definition at line 232 of file molfile\_\-plugin.h.
+
+Referenced by VMDPLUGIN\_\-init.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!open_file_read@{open\_\-file\_\-read}}
+\index{open_file_read@{open\_\-file\_\-read}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$($\ast$  molfile\_\-plugin\_\-t::open\_\-file\_\-read)(const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)}\label{structmolfile__plugin__t_m1}
+
+
+Try to open the file for reading. Return an opaque handle, or NULL on failure. Set the number of atoms; if the number of atoms cannot be  determined, set natoms to MOLFILE\_\-NUMATOMS\_\-UNKNOWN.  Filetype should be the name under which this plugin was registered; this is provided so that plugins can provide the same function pointer to handle multiple file types. 
+
+Referenced by main, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!open_file_write@{open\_\-file\_\-write}}
+\index{open_file_write@{open\_\-file\_\-write}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$($\ast$  molfile\_\-plugin\_\-t::open\_\-file\_\-write)(const char $\ast$filepath, const char $\ast${\bf filetype}, int natoms)}\label{structmolfile__plugin__t_m6}
+
+
+Open a coordinate file for writing using the given header information. Return an opaque handle, or NULL on failure. The application must specify the number of atoms to be written.  filetype should be the name under which this plugin was registered. \index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_bonds@{read\_\-bonds}}
+\index{read_bonds@{read\_\-bonds}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$ molfile\_\-plugin\_\-t::read\_\-bonds)(void $\ast$, int $\ast$nbonds, int $\ast$$\ast$from, int $\ast$$\ast$to, float $\ast$$\ast$bondorder)}\label{structmolfile__plugin__t_m3}
+
+
+Read bond information for the molecule. On success the arrays from and to should point to the (one-based) indices of bonded atoms. Each unique bond should be specified only once, so file formats that list bonds twice will need post-processing before the results are returned to the caller. If the plugin provides bond information, but the file loaded doesn't  actually contain any bond info, the nbonds parameter should be set to 0 and from/to should be set to NULL to indicate that no bond information was actually present, and automatic bond search should be performed.  If the plugin provides bond order information, the bondorder array will contain the bond order for each from/to pair. If not, the bondorder pointer should be set to NULL, in which case the caller will provide a  default bond order value of 1.0. These arrays must be freed by the plugin in the close\_\-file\_\-read function. This function can be called only after {\bf read\_\-structure} {\rm (p.\,\pageref{structmolfile__plugin__t_m2})}.  Return MOLFILE\_\-SUCCESS if no errors occur. 
+
+Referenced by main, and VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_molecule_metadata@{read\_\-molecule\_\-metadata}}
+\index{read_molecule_metadata@{read\_\-molecule\_\-metadata}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::read\_\-molecule\_\-metadata)(void $\ast$, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$metadata)}\label{structmolfile__plugin__t_m13}
+
+
+Read molecule metadata such as what database (if any) this file/data came from, what the accession code for the database is, textual remarks and other notes pertaining to the contained structure/trajectory/volume and anything else that's informative at the whole file level. \index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::read\_\-next\_\-timestep)(void $\ast$, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$)}\label{structmolfile__plugin__t_m4}
+
+
+Read the next timestep from the file. Return MOLFILE\_\-SUCCESS, or  MOLFILE\_\-EOF on EOF. If the {\bf molfile\_\-timestep\_\-t} {\rm (p.\,\pageref{structmolfile__timestep__t})} argument is NULL, then  the frame should be skipped. Otherwise, the application must prepare  {\bf molfile\_\-timestep\_\-t} {\rm (p.\,\pageref{structmolfile__timestep__t})} by allocating space in coords for the corresponding  number of coordinates.  The natoms parameter exists because some coordinate file formats  (like CRD) cannot determine for themselves how many atoms are in a  timestep; the app must therefore obtain this information elsewhere and provide it to the plugin. 
+
+Referenced by main, and VMDPLUGIN\_\-init.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_rawgraphics@{read\_\-rawgraphics}}
+\index{read_rawgraphics@{read\_\-rawgraphics}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::read\_\-rawgraphics)(void $\ast$, int $\ast$nelem, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$data)}\label{structmolfile__plugin__t_m12}
+
+
+Read raw graphics data stored in this file. Return the number of data elements and the data itself as an array of {\bf molfile\_\-graphics\_\-t} {\rm (p.\,\pageref{structmolfile__graphics__t})} in the  pointer provided by the application. The plugin is responsible for  freeing the data when the file is closed. 
+
+Referenced by VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_structure@{read\_\-structure}}
+\index{read_structure@{read\_\-structure}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$ molfile\_\-plugin\_\-t::read\_\-structure)(void $\ast$, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)}\label{structmolfile__plugin__t_m2}
+
+
+Read molecular structure from the given file handle. atoms is allocated by the caller and points to space for natoms. On success, place atom information in the passed-in pointer.  optflags specifies which optional fields in the atoms will be set by the plugin. 
+
+Referenced by main, VMDPLUGIN\_\-init, and VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_volumetric_data@{read\_\-volumetric\_\-data}}
+\index{read_volumetric_data@{read\_\-volumetric\_\-data}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data)(void $\ast$, int set, float $\ast$datablock, float $\ast$colorblock)}\label{structmolfile__plugin__t_m11}
+
+
+Read the specified volumetric data set into the space pointed to by  datablock. The set is specified with a zero-based index. The space  allocated for the datablock must be equal to xsize $\ast$ ysize $\ast$ zsize. No space will be allocated for colorblock  unless has\_\-color is nonzero; in that case, colorblock should be filled in with three RGB floats per datapoint. 
+
+Referenced by VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!read_volumetric_metadata@{read\_\-volumetric\_\-metadata}}
+\index{read_volumetric_metadata@{read\_\-volumetric\_\-metadata}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata)(void $\ast$, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)}\label{structmolfile__plugin__t_m10}
+
+
+Retrieve metadata pertaining to volumetric datasets in this file. Set nsets to the number of volumetric data sets, and set $\ast$metadata to point to an array of {\bf molfile\_\-volumetric\_\-t} {\rm (p.\,\pageref{structmolfile__volumetric__t})}. The array is owned by the plugin and should be freed by {\bf close\_\-file\_\-read} {\rm (p.\,\pageref{structmolfile__plugin__t_m5})}. The application may call this function any number of times. 
+
+Referenced by VMDPLUGIN\_\-register.\index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!write_bonds@{write\_\-bonds}}
+\index{write_bonds@{write\_\-bonds}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::write\_\-bonds)(void $\ast$, int nbonds, int $\ast$from, int $\ast$to, float $\ast$bondorder)}\label{structmolfile__plugin__t_m14}
+
+
+Write bond information for the molecule. The arrays from and to point to the (one-based) indices of bonded atoms. Each unique bond will be specified only once by the caller.  File formats that list bonds twice will need to emit both the  from/to and to/from versions of each. This function must be called before {\bf write\_\-structure} {\rm (p.\,\pageref{structmolfile__plugin__t_m7})}.  Unlike the {\bf read\_\-bonds} {\rm (p.\,\pageref{structmolfile__plugin__t_m3})} routine, the bondorder information will always be provided (each bondorder can be set to 1 if unknown). Return MOLFILE\_\-SUCCESS if no errors occur. \index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!write_structure@{write\_\-structure}}
+\index{write_structure@{write\_\-structure}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::write\_\-structure)(void $\ast$, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)}\label{structmolfile__plugin__t_m7}
+
+
+Write structure information. Return success. \index{molfile_plugin_t@{molfile\_\-plugin\_\-t}!write_timestep@{write\_\-timestep}}
+\index{write_timestep@{write\_\-timestep}!molfile_plugin_t@{molfile\_\-plugin\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int($\ast$  molfile\_\-plugin\_\-t::write\_\-timestep)(void $\ast$, const {\bf molfile\_\-timestep\_\-t} $\ast$)}\label{structmolfile__plugin__t_m8}
+
+
+Write a timestep to the coordinate file. Return MOLFILE\_\-SUCCESS if no errors occur. If the file contains structure information in each  timestep (like a multi-entry PDB), it will have to cache the information  from the initial calls from write\_\-structure. 
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin.h}\end{CompactItemize}

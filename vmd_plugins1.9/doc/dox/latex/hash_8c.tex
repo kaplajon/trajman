@@ -1,0 +1,153 @@
+\section{hash.c File Reference}
+\label{hash_8c}\index{hash.c@{hash.c}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}hash.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf hash\_\-node\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf HASH\_\-LIMIT}\ 0.5
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef hash\_\-node\_\-t {\bf hash\_\-node\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf hash} (const {\bf hash\_\-t} $\ast$tptr, const char $\ast$key)
+\item 
+VMDEXTERNSTATIC void {\bf hash\_\-init} ({\bf hash\_\-t} $\ast$tptr, int buckets)
+\item 
+void {\bf rebuild\_\-table} ({\bf hash\_\-t} $\ast$tptr)
+\item 
+VMDEXTERNSTATIC int {\bf hash\_\-lookup} (const {\bf hash\_\-t} $\ast$tptr, const char $\ast$key)
+\item 
+VMDEXTERNSTATIC int {\bf hash\_\-insert} ({\bf hash\_\-t} $\ast$tptr, const char $\ast$key, int data)
+\item 
+VMDEXTERNSTATIC int {\bf hash\_\-delete} ({\bf hash\_\-t} $\ast$tptr, const char $\ast$key)
+\item 
+VMDEXTERNSTATIC void {\bf hash\_\-destroy} ({\bf hash\_\-t} $\ast$tptr)
+\item 
+float {\bf alos} ({\bf hash\_\-t} $\ast$tptr)
+\item 
+VMDEXTERNSTATIC char $\ast$ {\bf hash\_\-stats} ({\bf hash\_\-t} $\ast$tptr)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{hash.c@{hash.c}!HASH_LIMIT@{HASH\_\-LIMIT}}
+\index{HASH_LIMIT@{HASH\_\-LIMIT}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define HASH\_\-LIMIT\ 0.5}\label{hash_8c_a0}
+
+
+
+
+Definition at line 27 of file hash.c.
+
+Referenced by hash\_\-insert.
+
+\subsection{Typedef Documentation}
+\index{hash.c@{hash.c}!hash_node_t@{hash\_\-node\_\-t}}
+\index{hash_node_t@{hash\_\-node\_\-t}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct hash\_\-node\_\-t  hash\_\-node\_\-t}\label{hash_8c_a1}
+
+
+hash table node data structure 
+
+\subsection{Function Documentation}
+\index{hash.c@{hash.c}!alos@{alos}}
+\index{alos@{alos}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float alos ({\bf hash\_\-t} $\ast$ {\em tptr})\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_a9}
+
+
+
+
+Definition at line 249 of file hash.c.
+
+References alos, hash\_\-t::bucket, hash\_\-t::entries, hash\_\-node\_\-t::next, and hash\_\-t::size.
+
+Referenced by alos, and hash\_\-stats.\index{hash.c@{hash.c}!hash@{hash}}
+\index{hash@{hash}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int hash (const {\bf hash\_\-t} $\ast$ {\em tptr}, const char $\ast$ {\em key})\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_a2}
+
+
+
+
+Definition at line 42 of file hash.c.
+
+References hash\_\-t::downshift, and hash\_\-t::mask.
+
+Referenced by hash\_\-delete, hash\_\-insert, hash\_\-lookup, and rebuild\_\-table.\index{hash.c@{hash.c}!hash_delete@{hash\_\-delete}}
+\index{hash_delete@{hash\_\-delete}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC int hash\_\-delete ({\bf hash\_\-t} $\ast$, const char $\ast$)}\label{hash_8c_a7}
+
+
+delete an string from the hash table, given its string name 
+
+Definition at line 183 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-node\_\-t::data, hash, HASH\_\-FAIL, hash\_\-node\_\-t::key, hash\_\-node\_\-t::next, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!hash_destroy@{hash\_\-destroy}}
+\index{hash_destroy@{hash\_\-destroy}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC void hash\_\-destroy ({\bf hash\_\-t} $\ast$)}\label{hash_8c_a8}
+
+
+destroy the hash table completely, deallocate memory 
+
+Definition at line 224 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-node\_\-t::next, hash\_\-t::size, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!hash_init@{hash\_\-init}}
+\index{hash_init@{hash\_\-init}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC void hash\_\-init ({\bf hash\_\-t} $\ast$, int)}\label{hash_8c_a3}
+
+
+initialize hash table for first use 
+
+Definition at line 63 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-t::downshift, hash\_\-t::entries, hash\_\-t::mask, hash\_\-t::size, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!hash_insert@{hash\_\-insert}}
+\index{hash_insert@{hash\_\-insert}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC int hash\_\-insert ({\bf hash\_\-t} $\ast$, const char $\ast$, int)}\label{hash_8c_a6}
+
+
+insert a string into the hash table, along with an integer key 
+
+Definition at line 151 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-node\_\-t::data, hash\_\-t::entries, hash, HASH\_\-FAIL, HASH\_\-LIMIT, hash\_\-lookup, hash\_\-node\_\-t::key, hash\_\-node\_\-t::next, rebuild\_\-table, hash\_\-t::size, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!hash_lookup@{hash\_\-lookup}}
+\index{hash_lookup@{hash\_\-lookup}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC int hash\_\-lookup (const {\bf hash\_\-t} $\ast$, const char $\ast$)}\label{hash_8c_a5}
+
+
+lookup a string key in the hash table returning its integer key 
+
+Definition at line 127 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-node\_\-t::data, hash, HASH\_\-FAIL, hash\_\-node\_\-t::key, hash\_\-node\_\-t::next, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!hash_stats@{hash\_\-stats}}
+\index{hash_stats@{hash\_\-stats}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDEXTERNSTATIC char$\ast$ hash\_\-stats ({\bf hash\_\-t} $\ast$)}\label{hash_8c_a10}
+
+
+print hash table vital stats 
+
+Definition at line 270 of file hash.c.
+
+References alos, hash\_\-t::entries, hash\_\-t::size, and VMDEXTERNSTATIC.\index{hash.c@{hash.c}!rebuild_table@{rebuild\_\-table}}
+\index{rebuild_table@{rebuild\_\-table}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void rebuild\_\-table ({\bf hash\_\-t} $\ast$ {\em tptr})\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_a4}
+
+
+
+
+Definition at line 93 of file hash.c.
+
+References hash\_\-t::bucket, hash\_\-t::entries, hash, hash\_\-init, hash\_\-node\_\-t::key, hash\_\-node\_\-t::next, and hash\_\-t::size.
+
+Referenced by hash\_\-insert.

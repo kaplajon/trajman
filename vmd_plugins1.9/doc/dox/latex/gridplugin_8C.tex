@@ -1,0 +1,133 @@
+\section{gridplugin.C File Reference}
+\label{gridplugin_8C}\index{gridplugin.C@{gridplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+{\tt \#include \char`\"{}fortread.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf grid\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-grid\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-grid\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-grid\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-grid\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{gridplugin.C@{gridplugin.C}!close_grid_read@{close\_\-grid\_\-read}}
+\index{close_grid_read@{close\_\-grid\_\-read}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-grid\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{gridplugin_8C_a4}
+
+
+
+
+Definition at line 196 of file gridplugin.C.
+
+References grid\_\-t::fd, and grid\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{gridplugin.C@{gridplugin.C}!open_grid_read@{open\_\-grid\_\-read}}
+\index{open_grid_read@{open\_\-grid\_\-read}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-grid\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{gridplugin_8C_a1}
+
+
+
+
+Definition at line 64 of file gridplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, grid\_\-t::fd, fortread\_\-4, molfile\_\-volumetric\_\-t::has\_\-color, MOLFILE\_\-NUMATOMS\_\-NONE, molfile\_\-volumetric\_\-t::origin, grid\_\-t::swap, swap4\_\-aligned, grid\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{gridplugin.C@{gridplugin.C}!read_grid_data@{read\_\-grid\_\-data}}
+\index{read_grid_data@{read\_\-grid\_\-data}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-grid\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{gridplugin_8C_a3}
+
+
+
+
+Definition at line 162 of file gridplugin.C.
+
+References grid\_\-t::fd, fortread\_\-4, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, grid\_\-t::swap, grid\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{gridplugin.C@{gridplugin.C}!read_grid_metadata@{read\_\-grid\_\-metadata}}
+\index{read_grid_metadata@{read\_\-grid\_\-metadata}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-grid\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{gridplugin_8C_a2}
+
+
+
+
+Definition at line 153 of file gridplugin.C.
+
+References MOLFILE\_\-SUCCESS, and grid\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{gridplugin.C@{gridplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{gridplugin_8C_a6}
+
+
+
+
+Definition at line 221 of file gridplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{gridplugin.C@{gridplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{gridplugin_8C_a5}
+
+
+
+
+Definition at line 220 of file gridplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{gridplugin.C@{gridplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{gridplugin_8C_a7}
+
+
+
+
+Definition at line 222 of file gridplugin.C.
+
+References molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-grid\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, open\_\-grid\_\-read, read\_\-grid\_\-data, read\_\-grid\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{gridplugin.C@{gridplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!gridplugin.C@{gridplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{gridplugin_8C_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,              
+  MOLFILE_PLUGIN_TYPE,               
+  "grid",                            
+  "GRID,UHBD Binary Potential Map",  
+  "Eamon Caddigan",                  
+  0,                                 
+  2,                                 
+  VMDPLUGIN_THREADSAFE,              
+  "grid"                             
+}\end{verbatim}\normalsize 
+
+
+Definition at line 208 of file gridplugin.C.

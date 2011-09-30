@@ -1,0 +1,211 @@
+\section{Read\-PARM7.h File Reference}
+\label{ReadPARM7_8h}\index{ReadPARM7.h@{Read\-PARM7.h}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$sys/stat.h$>$}\par
+{\tt \#include $<$errno.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf parm}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf \_\-REAL}\ float
+\item 
+\#define {\bf DBLFMT}\ \char`\"{}\%f\char`\"{}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef {\bf parm} {\bf parmstruct}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int {\bf read\_\-parm7\_\-flag} (FILE $\ast$file, const char $\ast$flag, const char $\ast$format)
+\item 
+FILE $\ast$ {\bf open\_\-parm7\_\-file} (const char $\ast${\bf name}, int $\ast$as\_\-pipe)
+\item 
+int {\bf parse\_\-parm7\_\-atoms} (const char $\ast$fmt, int natoms, {\bf molfile\_\-atom\_\-t} $\ast$atoms, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-charge} (const char $\ast$fmt, int natoms, {\bf molfile\_\-atom\_\-t} $\ast$atoms, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-mass} (const char $\ast$fmt, int natoms, {\bf molfile\_\-atom\_\-t} $\ast$atoms, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-atype} (const char $\ast$fmt, int natoms, {\bf molfile\_\-atom\_\-t} $\ast$atoms, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-resnames} (const char $\ast$fmt, int nres, char $\ast$resnames, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-respointers} (const char $\ast$fmt, int natoms, {\bf molfile\_\-atom\_\-t} $\ast$atoms, int nres, const char $\ast$resnames, FILE $\ast$file)
+\item 
+int {\bf parse\_\-parm7\_\-bonds} (const char $\ast$fmt, int nbonds, int $\ast$from, int $\ast$to, FILE $\ast$file)
+\item 
+void {\bf close\_\-parm7\_\-file} (FILE $\ast$fileptr, int popn)
+\item 
+{\bf parmstruct} $\ast$ {\bf read\_\-parm7\_\-header} (FILE $\ast$file)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const char $\ast$ {\bf parm7} = \char`\"{}\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d$\backslash$n\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ReadPARM7.h@{Read\-PARM7.h}!_REAL@{\_\-REAL}}
+\index{_REAL@{\_\-REAL}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \_\-REAL\ float}\label{ReadPARM7_8h_a0}
+
+
+
+
+Definition at line 52 of file Read\-PARM7.h.\index{ReadPARM7.h@{Read\-PARM7.h}!DBLFMT@{DBLFMT}}
+\index{DBLFMT@{DBLFMT}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DBLFMT\ \char`\"{}\%f\char`\"{}}\label{ReadPARM7_8h_a1}
+
+
+
+
+Definition at line 53 of file Read\-PARM7.h.
+
+\subsection{Typedef Documentation}
+\index{ReadPARM7.h@{Read\-PARM7.h}!parmstruct@{parmstruct}}
+\index{parmstruct@{parmstruct}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf parm}  parmstruct}\label{ReadPARM7_8h_a2}
+
+
+
+
+\subsection{Function Documentation}
+\index{ReadPARM7.h@{Read\-PARM7.h}!close_parm7_file@{close\_\-parm7\_\-file}}
+\index{close_parm7_file@{close\_\-parm7\_\-file}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-parm7\_\-file (FILE $\ast$ {\em fileptr}, int {\em popn})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a13}
+
+
+
+
+Definition at line 325 of file Read\-PARM7.h.
+
+Referenced by close\_\-parm7\_\-read, and open\_\-parm7\_\-read.\index{ReadPARM7.h@{Read\-PARM7.h}!open_parm7_file@{open\_\-parm7\_\-file}}
+\index{open_parm7_file@{open\_\-parm7\_\-file}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ open\_\-parm7\_\-file (const char $\ast$ {\em name}, int $\ast$ {\em as\_\-pipe})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a5}
+
+
+
+
+Definition at line 110 of file Read\-PARM7.h.
+
+References name.
+
+Referenced by open\_\-parm7\_\-read.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_atoms@{parse\_\-parm7\_\-atoms}}
+\index{parse_parm7_atoms@{parse\_\-parm7\_\-atoms}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-atoms (const char $\ast$ {\em fmt}, int {\em natoms}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a6}
+
+
+
+
+Definition at line 185 of file Read\-PARM7.h.
+
+References molfile\_\-atom\_\-t::name.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_atype@{parse\_\-parm7\_\-atype}}
+\index{parse_parm7_atype@{parse\_\-parm7\_\-atype}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-atype (const char $\ast$ {\em fmt}, int {\em natoms}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a9}
+
+
+
+
+Definition at line 231 of file Read\-PARM7.h.
+
+References molfile\_\-atom\_\-t::type.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_bonds@{parse\_\-parm7\_\-bonds}}
+\index{parse_parm7_bonds@{parse\_\-parm7\_\-bonds}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-bonds (const char $\ast$ {\em fmt}, int {\em nbonds}, int $\ast$ {\em from}, int $\ast$ {\em to}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a12}
+
+
+
+
+Definition at line 299 of file Read\-PARM7.h.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_charge@{parse\_\-parm7\_\-charge}}
+\index{parse_parm7_charge@{parse\_\-parm7\_\-charge}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-charge (const char $\ast$ {\em fmt}, int {\em natoms}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a7}
+
+
+
+
+Definition at line 203 of file Read\-PARM7.h.
+
+References molfile\_\-atom\_\-t::charge.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_mass@{parse\_\-parm7\_\-mass}}
+\index{parse_parm7_mass@{parse\_\-parm7\_\-mass}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-mass (const char $\ast$ {\em fmt}, int {\em natoms}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a8}
+
+
+
+
+Definition at line 217 of file Read\-PARM7.h.
+
+References molfile\_\-atom\_\-t::mass.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_resnames@{parse\_\-parm7\_\-resnames}}
+\index{parse_parm7_resnames@{parse\_\-parm7\_\-resnames}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-resnames (const char $\ast$ {\em fmt}, int {\em nres}, char $\ast$ {\em resnames}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a10}
+
+
+
+
+Definition at line 249 of file Read\-PARM7.h.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!parse_parm7_respointers@{parse\_\-parm7\_\-respointers}}
+\index{parse_parm7_respointers@{parse\_\-parm7\_\-respointers}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int parse\_\-parm7\_\-respointers (const char $\ast$ {\em fmt}, int {\em natoms}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms}, int {\em nres}, const char $\ast$ {\em resnames}, FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a11}
+
+
+
+
+Definition at line 266 of file Read\-PARM7.h.
+
+References molfile\_\-atom\_\-t::resid, and molfile\_\-atom\_\-t::resname.
+
+Referenced by read\_\-parm7\_\-structure.\index{ReadPARM7.h@{Read\-PARM7.h}!read_parm7_flag@{read\_\-parm7\_\-flag}}
+\index{read_parm7_flag@{read\_\-parm7\_\-flag}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-parm7\_\-flag (FILE $\ast$ {\em file}, const char $\ast$ {\em flag}, const char $\ast$ {\em format})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a4}
+
+
+
+
+Definition at line 70 of file Read\-PARM7.h.
+
+Referenced by read\_\-parm7\_\-header.\index{ReadPARM7.h@{Read\-PARM7.h}!read_parm7_header@{read\_\-parm7\_\-header}}
+\index{read_parm7_header@{read\_\-parm7\_\-header}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf parmstruct}$\ast$ read\_\-parm7\_\-header (FILE $\ast$ {\em file})\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a14}
+
+
+
+
+Definition at line 347 of file Read\-PARM7.h.
+
+References parm::If\-Box, parm::If\-Cap, parm::Ifpert, parm::Jparm, parm::Mbona, parm::Mbper, parm::Mdper, parm::Mgper, parm::Mphia, parm::Mptra, parm::Mtheta, parm::Nat3, parm::Natom, parm::Natyp, parm::Nbona, parm::Nbonh, parm::Nbper, parm::Ndper, parm::Ngper, parm::Nmxrs, parm::Nnb, parm::Nparm, parm::Nphb, parm::Nphia, parm::Nphih, parm::Nptra, parm::Nres, parm::Ntheta, parm::Ntheth, parm::Nttyp, parm::Ntype2d, parm::Ntypes, parm::Numang, parm::Numbnd, parm::Numextra, parm7, read\_\-parm7\_\-flag, and parm::title.
+
+Referenced by open\_\-parm7\_\-read.
+
+\subsection{Variable Documentation}
+\index{ReadPARM7.h@{Read\-PARM7.h}!parm7@{parm7}}
+\index{parm7@{parm7}!ReadPARM7.h@{Read\-PARM7.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ parm7 = \char`\"{}\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d\%8d$\backslash$n\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{ReadPARM7_8h_a3}
+
+
+
+
+Definition at line 345 of file Read\-PARM7.h.
+
+Referenced by read\_\-parm7\_\-header.

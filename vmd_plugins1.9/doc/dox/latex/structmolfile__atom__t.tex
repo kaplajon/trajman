@@ -1,0 +1,176 @@
+\section{molfile\_\-atom\_\-t  Struct Reference}
+\label{structmolfile__atom__t}\index{molfile_atom_t@{molfile\_\-atom\_\-t}}
+{\tt \#include $<$molfile\_\-plugin.h$>$}
+
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+char {\bf name} [16]
+\item 
+char {\bf type} [16]
+\item 
+char {\bf resname} [8]
+\item 
+int {\bf resid}
+\item 
+char {\bf segid} [8]
+\item 
+char {\bf chain} [2]
+\item 
+char {\bf altloc} [2]
+\item 
+char {\bf insertion} [2]
+\item 
+float {\bf occupancy}
+\item 
+float {\bf bfactor}
+\item 
+float {\bf mass}
+\item 
+float {\bf charge}
+\item 
+float {\bf radius}
+\item 
+int {\bf atomicnumber}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Per-atom attributes and information. 
+
+
+
+Definition at line 77 of file molfile\_\-plugin.h.
+
+\subsection{Member Data Documentation}
+\index{molfile_atom_t@{molfile\_\-atom\_\-t}!altloc@{altloc}}
+\index{altloc@{altloc}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::altloc[2]}\label{structmolfile__atom__t_m6}
+
+
+optional PDB alternate location code 
+
+Definition at line 87 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-pdb\_\-structure, write\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!atomicnumber@{atomicnumber}}
+\index{atomicnumber@{atomicnumber}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-atom\_\-t::atomicnumber}\label{structmolfile__atom__t_m13}
+
+
+optional element atomic number 
+
+Definition at line 94 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-cube\_\-structure, read\_\-pdb\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, write\_\-bgf\_\-timestep, write\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!bfactor@{bfactor}}
+\index{bfactor@{bfactor}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-atom\_\-t::bfactor}\label{structmolfile__atom__t_m9}
+
+
+optional B-factor value 
+
+Definition at line 90 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-pdb\_\-structure, write\_\-bgf\_\-timestep, write\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!chain@{chain}}
+\index{chain@{chain}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::chain[2]}\label{structmolfile__atom__t_m5}
+
+
+required chain name, or \char`\"{}\char`\"{} 
+
+Definition at line 84 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-car\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm7\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, set\_\-atom\_\-attributes, write\_\-bgf\_\-timestep, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!charge@{charge}}
+\index{charge@{charge}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-atom\_\-t::charge}\label{structmolfile__atom__t_m11}
+
+
+optional charge value 
+
+Definition at line 92 of file molfile\_\-plugin.h.
+
+Referenced by parse\_\-parm7\_\-charge, read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-gamess\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mol2, read\_\-parm\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, write\_\-bgf\_\-timestep, write\_\-mol2\_\-timestep, write\_\-pqr\_\-atom, write\_\-pqr\_\-structure, and write\_\-psf\_\-structure.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!insertion@{insertion}}
+\index{insertion@{insertion}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::insertion[2]}\label{structmolfile__atom__t_m7}
+
+
+optional PDB insertion code 
+
+Definition at line 88 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-pdb\_\-structure, write\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!mass@{mass}}
+\index{mass@{mass}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-atom\_\-t::mass}\label{structmolfile__atom__t_m10}
+
+
+optional mass value 
+
+Definition at line 91 of file molfile\_\-plugin.h.
+
+Referenced by parse\_\-parm7\_\-mass, read\_\-cube\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-psf, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, and write\_\-psf\_\-structure.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!name@{name}}
+\index{name@{name}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::name[16]}\label{structmolfile__atom__t_m0}
+
+
+required atom name string 
+
+Definition at line 79 of file molfile\_\-plugin.h.
+
+Referenced by get\_\-atom\_\-radius, parse\_\-parm7\_\-atoms, read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, set\_\-atom\_\-attributes, write\_\-bgf\_\-timestep, write\_\-mol2\_\-timestep, write\_\-pqr\_\-atom, write\_\-psf\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!occupancy@{occupancy}}
+\index{occupancy@{occupancy}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-atom\_\-t::occupancy}\label{structmolfile__atom__t_m8}
+
+
+optional occupancy value 
+
+Definition at line 89 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-pdb\_\-structure, write\_\-bgf\_\-timestep, write\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!radius@{radius}}
+\index{radius@{radius}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float molfile\_\-atom\_\-t::radius}\label{structmolfile__atom__t_m12}
+
+
+optional radius value 
+
+Definition at line 93 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-cube\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, write\_\-pqr\_\-atom, and write\_\-pqr\_\-structure.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!resid@{resid}}
+\index{resid@{resid}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int molfile\_\-atom\_\-t::resid}\label{structmolfile__atom__t_m3}
+
+
+required integer residue ID 
+
+Definition at line 82 of file molfile\_\-plugin.h.
+
+Referenced by parse\_\-parm7\_\-respointers, read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, set\_\-atom\_\-attributes, write\_\-bgf\_\-timestep, write\_\-mol2\_\-timestep, write\_\-pqr\_\-atom, write\_\-psf\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!resname@{resname}}
+\index{resname@{resname}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::resname[8]}\label{structmolfile__atom__t_m2}
+
+
+required residue name string 
+
+Definition at line 81 of file molfile\_\-plugin.h.
+
+Referenced by parse\_\-parm7\_\-respointers, read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, set\_\-atom\_\-attributes, write\_\-bgf\_\-timestep, write\_\-mol2\_\-timestep, write\_\-pqr\_\-atom, write\_\-psf\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!segid@{segid}}
+\index{segid@{segid}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::segid[8]}\label{structmolfile__atom__t_m4}
+
+
+required segment name string, or \char`\"{}\char`\"{} 
+
+Definition at line 83 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm7\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, write\_\-bgf\_\-timestep, write\_\-psf\_\-structure, and write\_\-timestep.\index{molfile_atom_t@{molfile\_\-atom\_\-t}!type@{type}}
+\index{type@{type}!molfile_atom_t@{molfile\_\-atom\_\-t}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char molfile\_\-atom\_\-t::type[16]}\label{structmolfile__atom__t_m1}
+
+
+required atom type string 
+
+Definition at line 80 of file molfile\_\-plugin.h.
+
+Referenced by get\_\-atom\_\-radius, parse\_\-parm7\_\-atype, read\_\-bgf\_\-structure, read\_\-car\_\-structure\_\-line, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-cube\_\-structure, read\_\-dlpoly\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mdf\_\-structure\_\-line, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mol2, read\_\-molden\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, read\_\-tinker\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, write\_\-bgf\_\-timestep, write\_\-mol2\_\-timestep, write\_\-psf\_\-structure, and write\_\-xyz\_\-timestep.
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin.h}\end{CompactItemize}

@@ -1,0 +1,137 @@
+\section{cpmdplugin.c File Reference}
+\label{cpmdplugin_8c}\index{cpmdplugin.c@{cpmdplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf cpmddata}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-cpmd\_\-read} (const char $\ast$filename, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-cpmd\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-cpmd\_\-timestep} (void $\ast$mydata, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-cpmd\_\-read} (void $\ast$mydata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf cpmdplugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cpmdplugin.c@{cpmdplugin.c}!close_cpmd_read@{close\_\-cpmd\_\-read}}
+\index{close_cpmd_read@{close\_\-cpmd\_\-read}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-cpmd\_\-read (void $\ast$ {\em mydata})\hspace{0.3cm}{\tt  [static]}}\label{cpmdplugin_8c_a4}
+
+
+
+
+Definition at line 164 of file cpmdplugin.c.
+
+References cpmddata::file.\index{cpmdplugin.c@{cpmdplugin.c}!open_cpmd_read@{open\_\-cpmd\_\-read}}
+\index{open_cpmd_read@{open\_\-cpmd\_\-read}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-cpmd\_\-read (const char $\ast$ {\em filename}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{cpmdplugin_8c_a1}
+
+
+
+
+Definition at line 31 of file cpmdplugin.c.
+
+References cpmddata::file, cpmddata::file\_\-name, and cpmddata::numatoms.\index{cpmdplugin.c@{cpmdplugin.c}!read_cpmd_structure@{read\_\-cpmd\_\-structure}}
+\index{read_cpmd_structure@{read\_\-cpmd\_\-structure}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-cpmd\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{cpmdplugin_8c_a2}
+
+
+
+
+Definition at line 83 of file cpmdplugin.c.
+
+References molfile\_\-atom\_\-t::chain, cpmddata::file, cpmddata::file\_\-name, MOLFILE\_\-ERROR, MOLFILE\_\-NOOPTIONS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, cpmddata::numatoms, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, and molfile\_\-atom\_\-t::type.\index{cpmdplugin.c@{cpmdplugin.c}!read_cpmd_timestep@{read\_\-cpmd\_\-timestep}}
+\index{read_cpmd_timestep@{read\_\-cpmd\_\-timestep}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-cpmd\_\-timestep (void $\ast$ {\em mydata}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{cpmdplugin_8c_a3}
+
+
+
+
+Definition at line 123 of file cpmdplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, cpmddata::file, cpmddata::file\_\-name, MOLFILE\_\-ERROR, and MOLFILE\_\-SUCCESS.\index{cpmdplugin.c@{cpmdplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{cpmdplugin_8c_a7}
+
+
+
+
+Definition at line 207 of file cpmdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{cpmdplugin.c@{cpmdplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{cpmdplugin_8c_a5}
+
+
+
+
+Definition at line 198 of file cpmdplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{cpmdplugin.c@{cpmdplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{cpmdplugin_8c_a6}
+
+
+
+
+Definition at line 202 of file cpmdplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{cpmdplugin.c@{cpmdplugin.c}!cpmdplugin@{cpmdplugin}}
+\index{cpmdplugin@{cpmdplugin}!cpmdplugin.c@{cpmdplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} cpmdplugin\hspace{0.3cm}{\tt  [static]}}\label{cpmdplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,
+  MOLFILE_PLUGIN_TYPE,                         
+  "cpmd",                                      
+  "CPMD",                                      
+  "Axel Kohlmeyer, John E. Stone",             
+  0,                                           
+  3,                                           
+  VMDPLUGIN_THREADSAFE,                        
+  "cpmd",
+  open_cpmd_read,
+
+  0,
+  0,
+  read_cpmd_timestep,
+  close_cpmd_read,
+
+  0,
+  0,
+
+  0,
+
+  0
+}\end{verbatim}\normalsize 
+
+
+Definition at line 173 of file cpmdplugin.c.

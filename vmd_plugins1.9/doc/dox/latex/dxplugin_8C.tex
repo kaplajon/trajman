@@ -1,0 +1,161 @@
+\section{dxplugin.C File Reference}
+\label{dxplugin_8C}\index{dxplugin.C@{dxplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf dx\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 85
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+char $\ast$ {\bf dxgets} (char $\ast$s, int n, FILE $\ast$stream)
+\item 
+void $\ast$ {\bf open\_\-dx\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-dx\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-dx\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-dx\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{dxplugin.C@{dxplugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 85}\label{dxplugin_8C_a0}
+
+
+
+
+Definition at line 69 of file dxplugin.C.
+
+Referenced by open\_\-dx\_\-read, and read\_\-dx\_\-data.
+
+\subsection{Function Documentation}
+\index{dxplugin.C@{dxplugin.C}!close_dx_read@{close\_\-dx\_\-read}}
+\index{close_dx_read@{close\_\-dx\_\-read}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-dx\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a6}
+
+
+
+
+Definition at line 269 of file dxplugin.C.
+
+References dx\_\-t::fd, and dx\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{dxplugin.C@{dxplugin.C}!dxgets@{dxgets}}
+\index{dxgets@{dxgets}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ dxgets (char $\ast$ {\em s}, int {\em n}, FILE $\ast$ {\em stream})\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a2}
+
+
+
+
+Definition at line 79 of file dxplugin.C.
+
+Referenced by open\_\-dx\_\-read, and read\_\-dx\_\-data.\index{dxplugin.C@{dxplugin.C}!open_dx_read@{open\_\-dx\_\-read}}
+\index{open_dx_read@{open\_\-dx\_\-read}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-dx\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a3}
+
+
+
+
+Definition at line 99 of file dxplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, dxgets, dx\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, LINESIZE, MOLFILE\_\-NUMATOMS\_\-NONE, dx\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, dx\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{dxplugin.C@{dxplugin.C}!read_dx_data@{read\_\-dx\_\-data}}
+\index{read_dx_data@{read\_\-dx\_\-data}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dx\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a5}
+
+
+
+
+Definition at line 203 of file dxplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, dxgets, dx\_\-t::fd, LINESIZE, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, dx\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{dxplugin.C@{dxplugin.C}!read_dx_metadata@{read\_\-dx\_\-metadata}}
+\index{read_dx_metadata@{read\_\-dx\_\-metadata}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-dx\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a4}
+
+
+
+
+Definition at line 194 of file dxplugin.C.
+
+References MOLFILE\_\-SUCCESS, dx\_\-t::nsets, and dx\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{dxplugin.C@{dxplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{dxplugin_8C_a8}
+
+
+
+
+Definition at line 294 of file dxplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dxplugin.C@{dxplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{dxplugin_8C_a7}
+
+
+
+
+Definition at line 293 of file dxplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{dxplugin.C@{dxplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{dxplugin_8C_a9}
+
+
+
+
+Definition at line 295 of file dxplugin.C.
+
+References close\_\-dx\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-dx\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-dx\_\-data, read\_\-dx\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{dxplugin.C@{dxplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!dxplugin.C@{dxplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{dxplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "dx",                   
+  "DX",                   
+  "Eamon Caddigan",       
+  0,                      
+  6,                      
+  VMDPLUGIN_THREADSAFE,   
+  "dx"                    
+}\end{verbatim}\normalsize 
+
+
+Definition at line 281 of file dxplugin.C.

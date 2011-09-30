@@ -1,0 +1,267 @@
+\section{molfile\_\-plugin.h File Reference}
+\label{molfile__plugin_8h}\index{molfile_plugin.h@{molfile\_\-plugin.h}}
+{\tt \#include \char`\"{}vmdplugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf molfile\_\-atom\_\-t}
+\item 
+struct {\bf molfile\_\-graphics\_\-t}
+\item 
+struct {\bf molfile\_\-metadata\_\-t}
+\item 
+struct {\bf molfile\_\-plugin\_\-t}
+\item 
+struct {\bf molfile\_\-timestep\_\-t}
+\item 
+struct {\bf molfile\_\-volumetric\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf MOLFILE\_\-PLUGIN\_\-TYPE}\ \char`\"{}mol file reader\char`\"{}
+\item 
+\#define {\bf MOLFILE\_\-CONVERTER\_\-PLUGIN\_\-TYPE}\ \char`\"{}mol file converter\char`\"{}
+\item 
+\#define {\bf MOLFILE\_\-SUCCESS}\ 0   /$\ast$$\ast$$<$ succeeded in reading file      $\ast$/
+\item 
+\#define {\bf MOLFILE\_\-EOF}\ -1   /$\ast$$\ast$$<$ end of file                    $\ast$/
+\item 
+\#define {\bf MOLFILE\_\-ERROR}\ -1   /$\ast$$\ast$$<$ error reading/opening a file   $\ast$/
+\item 
+\#define {\bf MOLFILE\_\-NOSTRUCTUREDATA}\ -2   /$\ast$$\ast$$<$ no structure data in this file $\ast$/
+\item 
+\#define {\bf MOLFILE\_\-NUMATOMS\_\-UNKNOWN}\ -1   /$\ast$$\ast$$<$ unknown number of atoms       $\ast$/
+\item 
+\#define {\bf MOLFILE\_\-NUMATOMS\_\-NONE}\ 0   /$\ast$$\ast$$<$ no atoms in this file type    $\ast$/
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum {\bf molfile\_\-graphics\_\-type} \{ {\bf MOLFILE\_\-POINT}, 
+{\bf MOLFILE\_\-TRIANGLE}, 
+{\bf MOLFILE\_\-TRINORM}, 
+{\bf MOLFILE\_\-NORMS}, 
+{\bf MOLFILE\_\-LINE}, 
+{\bf MOLFILE\_\-CYLINDER}, 
+{\bf MOLFILE\_\-CAPCYL}, 
+{\bf MOLFILE\_\-CONE}, 
+{\bf MOLFILE\_\-SPHERE}, 
+{\bf MOLFILE\_\-TEXT}, 
+{\bf MOLFILE\_\-COLOR}, 
+{\bf MOLFILE\_\-TRICOLOR}
+ \}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+ API for C extensions to define a way to load structure, coordinate, trajectory, and volumetric data files
+
+
+
+Definition in file {\bf molfile\_\-plugin.h}.
+
+\subsection{Define Documentation}
+\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_ALTLOC@{MOLFILE\_\-ALTLOC}}
+\index{MOLFILE_ALTLOC@{MOLFILE\_\-ALTLOC}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-ALTLOC\ 0x0040 /$\ast$$\ast$$<$ Multiple conformations present   $\ast$/}\label{molfile__plugin_8h_a15}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 106 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-pdb\_\-structure, and write\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_ATOMICNUMBER@{MOLFILE\_\-ATOMICNUMBER}}
+\index{MOLFILE_ATOMICNUMBER@{MOLFILE\_\-ATOMICNUMBER}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-ATOMICNUMBER\ 0x0080 /$\ast$$\ast$$<$ Atomic element number provided   $\ast$/}\label{molfile__plugin_8h_a16}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 107 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-bgf\_\-read, read\_\-cube\_\-structure, read\_\-pdb\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, and write\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_BFACTOR@{MOLFILE\_\-BFACTOR}}
+\index{MOLFILE_BFACTOR@{MOLFILE\_\-BFACTOR}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-BFACTOR\ 0x0004 /$\ast$$\ast$$<$ B-factor data provided           $\ast$/}\label{molfile__plugin_8h_a11}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 102 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-bgf\_\-read, read\_\-pdb\_\-structure, and write\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_BONDSSPECIAL@{MOLFILE\_\-BONDSSPECIAL}}
+\index{MOLFILE_BONDSSPECIAL@{MOLFILE\_\-BONDSSPECIAL}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-BONDSSPECIAL\ 0x0100 /$\ast$$\ast$$<$ Only non-standard bonds provided $\ast$/}\label{molfile__plugin_8h_a17}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 108 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-pdb\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_CHARGE@{MOLFILE\_\-CHARGE}}
+\index{MOLFILE_CHARGE@{MOLFILE\_\-CHARGE}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-CHARGE\ 0x0010 /$\ast$$\ast$$<$ Atomic charge provided           $\ast$/}\label{molfile__plugin_8h_a13}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 104 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-bgf\_\-read, open\_\-mol2\_\-read, read\_\-car\_\-structure, read\_\-mdf\_\-structure, read\_\-parm7\_\-structure, read\_\-parm\_\-structure, read\_\-pqr\_\-structure, read\_\-psf, and write\_\-pqr\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_CONVERTER_PLUGIN_TYPE@{MOLFILE\_\-CONVERTER\_\-PLUGIN\_\-TYPE}}
+\index{MOLFILE_CONVERTER_PLUGIN_TYPE@{MOLFILE\_\-CONVERTER\_\-PLUGIN\_\-TYPE}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-CONVERTER\_\-PLUGIN\_\-TYPE\ \char`\"{}mol file converter\char`\"{}}\label{molfile__plugin_8h_a1}
+
+
+File converter plugins use the same API but register under a different type so that regular file readers can have priority. 
+
+Definition at line 37 of file molfile\_\-plugin.h.
+
+Referenced by VMDPLUGIN\_\-init.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_EOF@{MOLFILE\_\-EOF}}
+\index{MOLFILE_EOF@{MOLFILE\_\-EOF}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-EOF\ -1   /$\ast$$\ast$$<$ end of file                    $\ast$/}\label{molfile__plugin_8h_a3}
+
+
+
+
+Definition at line 41 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-bgf\_\-timestep, read\_\-car\_\-timestep, read\_\-cube\_\-timestep, read\_\-dlpoly\_\-structure, read\_\-dlpoly\_\-timestep, read\_\-js\_\-timestep, read\_\-mol2\_\-timestep, and read\_\-next\_\-timestep.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_ERROR@{MOLFILE\_\-ERROR}}
+\index{MOLFILE_ERROR@{MOLFILE\_\-ERROR}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-ERROR\ -1   /$\ast$$\ast$$<$ error reading/opening a file   $\ast$/}\label{molfile__plugin_8h_a4}
+
+
+
+
+Definition at line 42 of file molfile\_\-plugin.h.
+
+Referenced by atomic\_\-basis, get\_\-basis, Read\-PARM::preadln, read\_\-amber\_\-cdf\_\-timestep, read\_\-avsfield\_\-data, read\_\-bgf\_\-bonds, read\_\-bgf\_\-structure, read\_\-bgf\_\-timestep, read\_\-bonds, read\_\-brix\_\-data, read\_\-car\_\-structure, read\_\-car\_\-timestep, read\_\-ccp4\_\-data, read\_\-cdf\_\-structure, read\_\-cdf\_\-timestep, read\_\-cor\_\-structure, read\_\-cor\_\-timestep, read\_\-cpmd\_\-structure, read\_\-cpmd\_\-timestep, read\_\-crd\_\-timestep, read\_\-cube\_\-data, read\_\-cube\_\-structure, read\_\-cube\_\-timestep, read\_\-dlpoly\_\-structure, read\_\-dlpoly\_\-timestep, read\_\-dsn6\_\-data, read\_\-dx\_\-data, read\_\-edm\_\-data, read\_\-fs4\_\-data, read\_\-g96\_\-structure, read\_\-g96\_\-timestep, read\_\-grd\_\-data, read\_\-grid\_\-data, read\_\-gro\_\-structure, read\_\-gro\_\-timestep, read\_\-lammps\_\-structure, read\_\-lammps\_\-timestep, read\_\-map\_\-data, read\_\-mdf\_\-bonds, read\_\-mdf\_\-structure, read\_\-mmcif\_\-structure, read\_\-mmcif\_\-timestep, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mmtk\_\-cdf\_\-timestep, read\_\-mol2, read\_\-mol2\_\-bonds, read\_\-mol2\_\-timestep, read\_\-molden\_\-structure, read\_\-next\_\-timestep, read\_\-phi\_\-data, read\_\-plt\_\-data, read\_\-pqr\_\-structure, read\_\-pqr\_\-timestep, read\_\-psf, read\_\-rawgraphics, read\_\-rst\_\-timestep, read\_\-situs\_\-data, read\_\-tinker\_\-structure, read\_\-tinker\_\-timestep, read\_\-trr\_\-timestep, read\_\-uhbd\_\-data, read\_\-xsf\_\-data, read\_\-xsf\_\-structure, read\_\-xsf\_\-timestep, read\_\-xyz\_\-structure, read\_\-xyz\_\-timestep, Read\-PARM::readparm, write\_\-pqr\_\-timestep, write\_\-timestep, and write\_\-trr\_\-timestep.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_INSERTION@{MOLFILE\_\-INSERTION}}
+\index{MOLFILE_INSERTION@{MOLFILE\_\-INSERTION}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-INSERTION\ 0x0001 /$\ast$$\ast$$<$ insertion codes provided         $\ast$/}\label{molfile__plugin_8h_a9}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 100 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-bgf\_\-read, read\_\-pdb\_\-structure, and write\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_MASS@{MOLFILE\_\-MASS}}
+\index{MOLFILE_MASS@{MOLFILE\_\-MASS}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-MASS\ 0x0008 /$\ast$$\ast$$<$ Atomic mass provided             $\ast$/}\label{molfile__plugin_8h_a12}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 103 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-cube\_\-structure, read\_\-parm7\_\-structure, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-psf, read\_\-xsf\_\-structure, and read\_\-xyz\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_NOOPTIONS@{MOLFILE\_\-NOOPTIONS}}
+\index{MOLFILE_NOOPTIONS@{MOLFILE\_\-NOOPTIONS}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-NOOPTIONS\ 0x0000 /$\ast$$\ast$$<$ no optional data                 $\ast$/}\label{molfile__plugin_8h_a8}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 99 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-mol2\_\-read, read\_\-cor\_\-structure, read\_\-cpmd\_\-structure, read\_\-g96\_\-structure, read\_\-gamess\_\-structure, read\_\-gro\_\-structure, read\_\-lammps\_\-structure, read\_\-mmtk\_\-cdf\_\-structure, and read\_\-molden\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_NOSTRUCTUREDATA@{MOLFILE\_\-NOSTRUCTUREDATA}}
+\index{MOLFILE_NOSTRUCTUREDATA@{MOLFILE\_\-NOSTRUCTUREDATA}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-NOSTRUCTUREDATA\ -2   /$\ast$$\ast$$<$ no structure data in this file $\ast$/}\label{molfile__plugin_8h_a5}
+
+
+
+
+Definition at line 43 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-cdf\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_NUMATOMS_NONE@{MOLFILE\_\-NUMATOMS\_\-NONE}}
+\index{MOLFILE_NUMATOMS_NONE@{MOLFILE\_\-NUMATOMS\_\-NONE}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-NUMATOMS\_\-NONE\ 0   /$\ast$$\ast$$<$ no atoms in this file type    $\ast$/}\label{molfile__plugin_8h_a7}
+
+
+
+
+Definition at line 46 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-avsfield\_\-read, open\_\-brix\_\-read, open\_\-ccp4\_\-read, open\_\-cor\_\-file, open\_\-dsn6\_\-read, open\_\-dx\_\-read, open\_\-edm\_\-read, open\_\-fs4\_\-read, open\_\-grd\_\-read, open\_\-grid\_\-read, open\_\-map\_\-read, open\_\-phi\_\-read, open\_\-plt\_\-read, open\_\-psf\_\-read, open\_\-situs\_\-read, open\_\-spider\_\-read, and open\_\-uhbd\_\-read.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_NUMATOMS_UNKNOWN@{MOLFILE\_\-NUMATOMS\_\-UNKNOWN}}
+\index{MOLFILE_NUMATOMS_UNKNOWN@{MOLFILE\_\-NUMATOMS\_\-UNKNOWN}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-NUMATOMS\_\-UNKNOWN\ -1   /$\ast$$\ast$$<$ unknown number of atoms       $\ast$/}\label{molfile__plugin_8h_a6}
+
+
+
+
+Definition at line 45 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-crd\_\-read.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_OCCUPANCY@{MOLFILE\_\-OCCUPANCY}}
+\index{MOLFILE_OCCUPANCY@{MOLFILE\_\-OCCUPANCY}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-OCCUPANCY\ 0x0002 /$\ast$$\ast$$<$ occupancy data provided          $\ast$/}\label{molfile__plugin_8h_a10}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 101 of file molfile\_\-plugin.h.
+
+Referenced by open\_\-bgf\_\-read, read\_\-mdf\_\-structure, read\_\-pdb\_\-structure, and write\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_PLUGIN_TYPE@{MOLFILE\_\-PLUGIN\_\-TYPE}}
+\index{MOLFILE_PLUGIN_TYPE@{MOLFILE\_\-PLUGIN\_\-TYPE}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-PLUGIN\_\-TYPE\ \char`\"{}mol file reader\char`\"{}}\label{molfile__plugin_8h_a0}
+
+
+Define a common plugin type to be used when registering the plugin. 
+
+Definition at line 31 of file molfile\_\-plugin.h.
+
+Referenced by register\_\-cb.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_RADIUS@{MOLFILE\_\-RADIUS}}
+\index{MOLFILE_RADIUS@{MOLFILE\_\-RADIUS}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-RADIUS\ 0x0020 /$\ast$$\ast$$<$ Atomic VDW radius provided       $\ast$/}\label{molfile__plugin_8h_a14}
+
+
+Plugin optional data field availability flag 
+
+Definition at line 105 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-cube\_\-structure, read\_\-pdb\_\-structure, read\_\-pqr\_\-structure, read\_\-xsf\_\-structure, read\_\-xyz\_\-structure, and write\_\-pqr\_\-structure.\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_SUCCESS@{MOLFILE\_\-SUCCESS}}
+\index{MOLFILE_SUCCESS@{MOLFILE\_\-SUCCESS}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MOLFILE\_\-SUCCESS\ 0   /$\ast$$\ast$$<$ succeeded in reading file      $\ast$/}\label{molfile__plugin_8h_a2}
+
+
+
+
+Definition at line 40 of file molfile\_\-plugin.h.
+
+Referenced by read\_\-amber\_\-cdf\_\-timestep, read\_\-avsfield\_\-data, read\_\-avsfield\_\-metadata, read\_\-bgf\_\-bonds, read\_\-bgf\_\-structure, read\_\-bgf\_\-timestep, read\_\-bonds, read\_\-brix\_\-data, read\_\-brix\_\-metadata, read\_\-car\_\-structure, read\_\-car\_\-timestep, read\_\-ccp4\_\-data, read\_\-ccp4\_\-metadata, read\_\-cor\_\-structure, read\_\-cor\_\-timestep, read\_\-cpmd\_\-structure, read\_\-cpmd\_\-timestep, read\_\-crd\_\-timestep, read\_\-cube\_\-data, read\_\-cube\_\-metadata, read\_\-cube\_\-structure, read\_\-cube\_\-timestep, read\_\-dlpoly\_\-structure, read\_\-dlpoly\_\-timestep, read\_\-dsn6\_\-data, read\_\-dsn6\_\-metadata, read\_\-dx\_\-data, read\_\-dx\_\-metadata, read\_\-edm\_\-data, read\_\-edm\_\-metadata, read\_\-fs4\_\-data, read\_\-fs4\_\-metadata, read\_\-g96\_\-structure, read\_\-g96\_\-timestep, read\_\-gamess\_\-structure, read\_\-grd\_\-data, read\_\-grd\_\-metadata, read\_\-grid\_\-data, read\_\-grid\_\-metadata, read\_\-gro\_\-structure, read\_\-gro\_\-timestep, read\_\-js\_\-timestep, read\_\-lammps\_\-timestep, read\_\-map\_\-data, read\_\-map\_\-metadata, read\_\-mdf\_\-bonds, read\_\-mdf\_\-structure, read\_\-mmtk\_\-cdf\_\-structure, read\_\-mmtk\_\-cdf\_\-timestep, read\_\-mol2, read\_\-mol2\_\-bonds, read\_\-mol2\_\-timestep, read\_\-molden\_\-structure, read\_\-molecule\_\-metadata, read\_\-next\_\-timestep, read\_\-orbital\_\-data, read\_\-orbital\_\-metadata, read\_\-parm7\_\-bonds, read\_\-parm7\_\-structure, read\_\-parm\_\-bonds, read\_\-parm\_\-structure, read\_\-pdb\_\-structure, read\_\-phi\_\-data, read\_\-phi\_\-metadata, read\_\-plt\_\-data, read\_\-plt\_\-metadata, read\_\-pqr\_\-structure, read\_\-pqr\_\-timestep, read\_\-psf, read\_\-rawgraphics, read\_\-rst\_\-timestep, read\_\-situs\_\-data, read\_\-situs\_\-metadata, read\_\-spider\_\-data, read\_\-spider\_\-metadata, read\_\-tinker\_\-structure, read\_\-tinker\_\-timestep, read\_\-trr\_\-timestep, read\_\-uhbd\_\-data, read\_\-uhbd\_\-metadata, read\_\-xsf\_\-data, read\_\-xsf\_\-metadata, read\_\-xsf\_\-structure, read\_\-xsf\_\-timestep, read\_\-xyz\_\-structure, read\_\-xyz\_\-timestep, Read\-PARM::readparm, write\_\-bgf\_\-structure, write\_\-bgf\_\-timestep, write\_\-bonds, write\_\-crd\_\-timestep, write\_\-js\_\-timestep, write\_\-mol2\_\-structure, write\_\-mol2\_\-timestep, write\_\-pqr\_\-structure, write\_\-pqr\_\-timestep, write\_\-psf\_\-structure, write\_\-rst\_\-timestep, write\_\-structure, write\_\-timestep, write\_\-trr\_\-timestep, write\_\-xyz\_\-structure, and write\_\-xyz\_\-timestep.
+
+\subsection{Enumeration Type Documentation}
+\index{molfile_plugin.h@{molfile\_\-plugin.h}!molfile_graphics_type@{molfile\_\-graphics\_\-type}}
+\index{molfile_graphics_type@{molfile\_\-graphics\_\-type}!molfile_plugin.h@{molfile\_\-plugin.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum molfile\_\-graphics\_\-type}\label{molfile__plugin_8h_a30}
+
+
+Enumeration of all of the supported graphics objects that can be read from graphics file reader plugins. \begin{Desc}
+\item[Enumeration values:]\par
+\begin{description}
+\index{MOLFILE_POINT@{MOLFILE\_\-POINT}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_POINT@{MOLFILE\_\-POINT}}\item[{\em 
+{\em MOLFILE\_\-POINT}\label{molfile__plugin_8h_a30a18}
+}]\index{MOLFILE_TRIANGLE@{MOLFILE\_\-TRIANGLE}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_TRIANGLE@{MOLFILE\_\-TRIANGLE}}\item[{\em 
+{\em MOLFILE\_\-TRIANGLE}\label{molfile__plugin_8h_a30a19}
+}]\index{MOLFILE_TRINORM@{MOLFILE\_\-TRINORM}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_TRINORM@{MOLFILE\_\-TRINORM}}\item[{\em 
+{\em MOLFILE\_\-TRINORM}\label{molfile__plugin_8h_a30a20}
+}]\index{MOLFILE_NORMS@{MOLFILE\_\-NORMS}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_NORMS@{MOLFILE\_\-NORMS}}\item[{\em 
+{\em MOLFILE\_\-NORMS}\label{molfile__plugin_8h_a30a21}
+}]\index{MOLFILE_LINE@{MOLFILE\_\-LINE}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_LINE@{MOLFILE\_\-LINE}}\item[{\em 
+{\em MOLFILE\_\-LINE}\label{molfile__plugin_8h_a30a22}
+}]\index{MOLFILE_CYLINDER@{MOLFILE\_\-CYLINDER}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_CYLINDER@{MOLFILE\_\-CYLINDER}}\item[{\em 
+{\em MOLFILE\_\-CYLINDER}\label{molfile__plugin_8h_a30a23}
+}]\index{MOLFILE_CAPCYL@{MOLFILE\_\-CAPCYL}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_CAPCYL@{MOLFILE\_\-CAPCYL}}\item[{\em 
+{\em MOLFILE\_\-CAPCYL}\label{molfile__plugin_8h_a30a24}
+}]\index{MOLFILE_CONE@{MOLFILE\_\-CONE}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_CONE@{MOLFILE\_\-CONE}}\item[{\em 
+{\em MOLFILE\_\-CONE}\label{molfile__plugin_8h_a30a25}
+}]\index{MOLFILE_SPHERE@{MOLFILE\_\-SPHERE}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_SPHERE@{MOLFILE\_\-SPHERE}}\item[{\em 
+{\em MOLFILE\_\-SPHERE}\label{molfile__plugin_8h_a30a26}
+}]\index{MOLFILE_TEXT@{MOLFILE\_\-TEXT}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_TEXT@{MOLFILE\_\-TEXT}}\item[{\em 
+{\em MOLFILE\_\-TEXT}\label{molfile__plugin_8h_a30a27}
+}]\index{MOLFILE_COLOR@{MOLFILE\_\-COLOR}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_COLOR@{MOLFILE\_\-COLOR}}\item[{\em 
+{\em MOLFILE\_\-COLOR}\label{molfile__plugin_8h_a30a28}
+}]\index{MOLFILE_TRICOLOR@{MOLFILE\_\-TRICOLOR}!molfile_plugin.h@{molfile\_\-plugin.h}}\index{molfile_plugin.h@{molfile\_\-plugin.h}!MOLFILE_TRICOLOR@{MOLFILE\_\-TRICOLOR}}\item[{\em 
+{\em MOLFILE\_\-TRICOLOR}\label{molfile__plugin_8h_a30a29}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 171 of file molfile\_\-plugin.h.

@@ -1,0 +1,82 @@
+\section{Writing C/C++ based molecule file reader plugins for VMD}\label{molfileplugins}
+
+
+In addition to allowing extensions via the built-in mechanisms of the Tcl and Python languages, VMD also includes its own plugin interface for loading shared object files and dynamic link libraries written in C and C++.
+
+
+
+ \subsubsection*{Main plugin entry points}
+ Compiled plugins work by providing a set of standard enry point functions that VMD is able to lookup via the operating system-specific dynamic linking functions. The three main entry points VMD requires from each plugin are:  \begin{CompactItemize}
+\item 
+VMDPLUGIN\_\-register \item 
+VMDPLUGIN\_\-init \item 
+VMDPLUGIN\_\-fini \end{CompactItemize}
+These three entry points are used to load, verify, initialize, and finalize access to a plugin. The register functions perform  plugin/VMD version compatibility tests, initial linking of  callbacks specific to the type and implementation of the plugin. The VMDPLUGIN\_\-init function is called the first time the plugin is  loaded by VMD, and before any other plugin routines or data are referenced, allowing the plugin to have an opportunity to setup any necessary data  structures etc. The VMDPLUGIN\_\-fini function similarly deallocates any internal plugin resources when a plugin is shutdown and unloaded.
+
+An additional registration entry point is required for plugins which  export new Tcl procedures: \begin{CompactItemize}
+\item 
+VMDPLUGIN\_\-register\_\-tcl \end{CompactItemize}
+
+
+ \subsubsection*{Plugin registration in detail}
+ Plugin registration is probably the main concept one needs to understand in order to fully grasp how the whole system works. The basic concept is identical to the methods commonly used in dynamically registering device drivers in operating system kernels. VMD implements a common interface API  that all plugins conform to. The interface API consists of structures which are populated with the name and version information for a plugin, which type of plugin it is, and a set of type-specific function pointers which are either set to NULL (for unsupported features), or to an approprite function which  VMD must call for a given operation.
+
+
+
+ Since VMD and the plugins it interfaces to must share common data  structures used in the plugin API, one of the first things the plugin system does is to compare version numbers which are hard-coded into the header files that both the interface and the plugins are compiled  against. Whenever the contents or layout of these common interface structures is changed, the version numbers in the header files are  also updated. This gaurantees that the plugins and the plugin interface software are storing the same values in the same locations of these common structures, and that they agree on the semantics of these values. This is not quite enough to gaurantee that all compilers will pack these data structures in exactly the same way, but it does gaurantee that as long as one uses compilers that are otherwise compatible with each other to compile VMD and its plugins that they will work together.
+
+
+
+ Much like a device driver in Unix would register functions for  operations such as open, close, read, write, and ioctl, a VMD plugin provides operations for open, close, read structure, write  structure, read bonds, read coordinates, and various other operations which are specific to the type of plugin. Molecule file plugins support operations and function pointers which are oriented specifically towards manipulating files containing molecular structures and density data. Import graphics plugins on the other hand, only contain operations and functions for reading and writing purely geometric data such as triangles,  spheres, and so on.
+
+
+
+ \subsubsection*{Plugin code development issues}
+ In addition to the general structural requirements that all plugins must conform to, there are also several required code  design practices which are required in order to achieve portability and reliable operation.
+
+
+
+ Plugins written in C++ should avoid using templates entirely. It is difficult to force templates to instantiate correctly in a form usable by a dynamically loadable plugin, particularly across multiple platforms. While it is perfectly reasonable to write code in C++, the code must be self-contained and thus written in a somewhat minimalistic style compared to normal C++ coding practices. In particular, anything that would normally be initialized by the C++ runtime library before {\bf main}() {\rm (p.\,\pageref{main_8c_a3})} would get called in a regular program will fail to operate correctly when used in a plugin, since there's no opportunity for the C++ runtime system to be invoked when a plugin is loaded by VMD. All initialization must happen within the register and init entry points, there can't be any dependencies on automatic  initializations normally provided by the compiler that would be found in a regular program.
+
+
+
+ Another major issue associated with making the plugin interface reliable  involves assuring that memory allocated by the plugin interface (VMD) is  deallocated by the interface (VMD), and that memory allocated by a plugin  is deallocated by the same plugin. This also ensures that compilers with  incompatible memory allocation systems can be used to build plugins that  VMD can still use effectively. This also avoids problems that can occur  with the implementation of memory allocation with dynamic link libraries  on Microsoft Windows with the same compiler, but with different runtime library settings.
+
+
+
+ \subsubsection*{Data structures, flags, and return codes used in molfile plugins}
+ The key data structures used by molfile plugins when communicating with VMD are {\bf molfile\_\-metadata\_\-t} {\rm (p.\,\pageref{structmolfile__metadata__t})}, {\bf molfile\_\-atom\_\-t} {\rm (p.\,\pageref{structmolfile__atom__t})}, {\bf molfile\_\-timestep\_\-t} {\rm (p.\,\pageref{structmolfile__timestep__t})},  {\bf molfile\_\-volumetric\_\-t} {\rm (p.\,\pageref{structmolfile__volumetric__t})}, and {\bf molfile\_\-graphics\_\-t} {\rm (p.\,\pageref{structmolfile__graphics__t})}. Each of these structures is used with matching plugin entry points that operate on the appropriate type of data. These structures consist of elementary strings, integers, and floats, which are easily handled by code written in C, C++, Tcl, and  presumably any other language one might want to use in writing  a VMD plugin. Molecule data flags are stored as integers created by binary ORing  several optional data availability flags together. The flags are used to indicate the presence of optional data fields, and to help VMD  combine newly loaded data with any existing molecular structure already in VMD. Every plugin entry point is expected to return the appropriate  status code based on the results of the attempted reading/writing operations. If no errors occur then MOLFILE\_\-SUCCESS is returned. The symbolic constants MOLFILE\_\-NUMATOMS\_\-NONE and MOLFILE\_\-NUMATOMS\_\-UNKNOWN are used to improve code readability rather than returning 0 or -1 directly.
+
+
+
+ \subsubsection*{Atom naming conventions used by VMD}
+ For various historical reasons, the atom and residue names VMD currently  looks for when analyzing structures and generating representations are  based on the atom and residue names assigned by the PDB.  Current versions of VMD use PDB-like atom names to identify protein and nucleic acid residues, for secondary  structure calculations using the STRIDE program (which takes input  structures in PDB format), and for rendering Cartoon and Ribbon  representations. The atom names that VMD currently looks for and their use are listed explicitly below:
+
+\small\begin{alltt}
+Protein detection (initial structure analysis):
+  CA, C, O, N, OT1, OT2, O1, O2
+  
+Nucleic acid detection (initial structure analysis):
+  O1P, O2P, O3', C3', C4', C5', O5', O3*, C3*, C4*, C5*, O5*
+
+Atom names use when buildign Cartoon/Ribbon reps:
+  CA, O, OT1, P
+
+Residue names VMD looks for when identifying water:
+  H2O, HH0, OHH, HOH, OH2, SOL, WAT, TIP, TIP2, TIP3, TIP4
+
+Residue names VMD looks for when drawing nucleic acids:
+  ADE, CYT, GUA, THY
+\end{alltt}\normalsize 
+
+
+
+
+ \subsubsection*{Example: AMBER Parm reader plugin}
+ The AMBER Parm reader {\bf parmplugin.C} is a plugin for reading structure information (only bond information in this case) into VMD. Private data is stored in a {\bf parmdata} {\rm (p.\,\pageref{structparmdata})} structure, consisting of the file handle, number of atoms, bond arrays, and a pointer to a {\bf Read\-PARM} {\rm (p.\,\pageref{classReadPARM})} structure used by lower level reader code. As with many plugins, the Parm reader plugin was developed using an older generation of VMD molecule file reader code as the starting point. Rather than rewriting the old code from  scratch, the plugin simply wraps the old routines which were well tested and battle proven, with the necessary glue code to make them work within the appropriate molfile plugin entry points. The entry points implemented in the Parm reader are {\bf open\_\-parm\_\-read}() {\rm (p.\,\pageref{parmplugin_8C_a1})}, {\bf read\_\-parm\_\-structure}() {\rm (p.\,\pageref{parmplugin_8C_a2})},  {\bf read\_\-parm\_\-bonds}() {\rm (p.\,\pageref{parmplugin_8C_a3})}, and {\bf close\_\-parm\_\-read}() {\rm (p.\,\pageref{parmplugin_8C_a4})}. The {\bf open\_\-parm\_\-read}() {\rm (p.\,\pageref{parmplugin_8C_a1})} procedure opens the file, allocates the {\bf parmdata} {\rm (p.\,\pageref{structparmdata})} private data handle, and reads metadata, such as the  number of atoms, needed by the subsequent structure reading functions.  The {\bf read\_\-parm\_\-structure}() {\rm (p.\,\pageref{parmplugin_8C_a2})} procedure loops over all atoms reading in the atom names, types, charges, masses, and so on by calling the functions implemented by the older Parm reader code in {\bf Read\-PARM.h}. Bond lists (1-based indexing) are returned by the {\bf read\_\-parm\_\-bonds}() {\rm (p.\,\pageref{parmplugin_8C_a3})}  procedure. Since the Parm reader plugin doesn't provide bond order  information, the bond order pointer is set to NULL. The {\bf close\_\-parm\_\-read}() {\rm (p.\,\pageref{parmplugin_8C_a4})} procedure frees memory and closes the open  Parm file handle, destroying all resources used by the file reading context.
+
+
+
+ \subsubsection*{Example: Situs volumetric grid reader plugin}
+ The Situs plugin {\bf situsplugin.C} is a relatively  simple example of how one can write a volumetric grid reader plugin. The {\bf situs\_\-t} {\rm (p.\,\pageref{structsitus__t})} structure contains private data needed in parsing and interpreting the contents of the Situs grid file. The {\bf open\_\-situs\_\-read}() {\rm (p.\,\pageref{situsplugin_8C_a1})} procedure opens the Situs grid, saves the file handle and some elementary metadata about the file in the {\bf situs\_\-t} {\rm (p.\,\pageref{structsitus__t})} handle, and returns the {\bf situs\_\-t} {\rm (p.\,\pageref{structsitus__t})} handle for use in subsequent calls reading the the volumetric data contained in the file. The {\bf read\_\-situs\_\-metadata}() {\rm (p.\,\pageref{situsplugin_8C_a2})} routine simply reuses the contents of the {\bf situs\_\-t} {\rm (p.\,\pageref{structsitus__t})} structure which was populated when the file was first opened, returning the number of datasets contained in the file and a list of their associated volumetric metadata such as grid size, origin, etc. The {\bf read\_\-situs\_\-data}() {\rm (p.\,\pageref{situsplugin_8C_a3})} procedure loads the Situs grid data into the provided datablock pointer. As you may have already guessed, the {\bf close\_\-situs\_\-read}() {\rm (p.\,\pageref{situsplugin_8C_a4})} procedure closes the open file handles, frees all memory allocation in the private {\bf situs\_\-t} {\rm (p.\,\pageref{structsitus__t})} handle, returning all resources used in that file reading context back to  the operating system. Since the Situs plugin doesn't read any atomic information, all of the function pointers related to atomic data are left NULL by the {\bf VMDPLUGIN\_\-register}() {\rm (p.\,\pageref{vmdplugin_8h_a3})} in {\bf situsplugin.C}.
+

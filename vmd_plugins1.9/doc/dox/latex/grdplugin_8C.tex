@@ -1,0 +1,134 @@
+\section{grdplugin.C File Reference}
+\label{grdplugin_8C}\index{grdplugin.C@{grdplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}endianswap.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf grd\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-grd\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-grd\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-grd\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-grd\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{grdplugin.C@{grdplugin.C}!close_grd_read@{close\_\-grd\_\-read}}
+\index{close_grd_read@{close\_\-grd\_\-read}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-grd\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{grdplugin_8C_a4}
+
+
+
+
+Definition at line 233 of file grdplugin.C.
+
+References grd\_\-t::fd, and grd\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{grdplugin.C@{grdplugin.C}!open_grd_read@{open\_\-grd\_\-read}}
+\index{open_grd_read@{open\_\-grd\_\-read}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-grd\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{grdplugin_8C_a1}
+
+
+
+
+Definition at line 57 of file grdplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, grd\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, MOLFILE\_\-NUMATOMS\_\-NONE, grd\_\-t::ndata, grd\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, grd\_\-t::swap, swap4\_\-aligned, grd\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{grdplugin.C@{grdplugin.C}!read_grd_data@{read\_\-grd\_\-data}}
+\index{read_grd_data@{read\_\-grd\_\-data}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-grd\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{grdplugin_8C_a3}
+
+
+
+
+Definition at line 211 of file grdplugin.C.
+
+References grd\_\-t::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, grd\_\-t::ndata, grd\_\-t::swap, and swap4\_\-aligned.
+
+Referenced by VMDPLUGIN\_\-register.\index{grdplugin.C@{grdplugin.C}!read_grd_metadata@{read\_\-grd\_\-metadata}}
+\index{read_grd_metadata@{read\_\-grd\_\-metadata}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-grd\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{grdplugin_8C_a2}
+
+
+
+
+Definition at line 202 of file grdplugin.C.
+
+References MOLFILE\_\-SUCCESS, grd\_\-t::nsets, and grd\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{grdplugin.C@{grdplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{grdplugin_8C_a6}
+
+
+
+
+Definition at line 258 of file grdplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{grdplugin.C@{grdplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{grdplugin_8C_a5}
+
+
+
+
+Definition at line 257 of file grdplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{grdplugin.C@{grdplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{grdplugin_8C_a7}
+
+
+
+
+Definition at line 259 of file grdplugin.C.
+
+References molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-grd\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, open\_\-grd\_\-read, read\_\-grd\_\-data, read\_\-grd\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{grdplugin.C@{grdplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!grdplugin.C@{grdplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{grdplugin_8C_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                
+  MOLFILE_PLUGIN_TYPE,                 
+  "grd",                               
+  "GRASP,Delphi Binary Potential Map", 
+  "Eamon Caddigan",                    
+  0,                                   
+  5,                                   
+  VMDPLUGIN_THREADSAFE,                
+  "phi,grd"                            
+}\end{verbatim}\normalsize 
+
+
+Definition at line 245 of file grdplugin.C.

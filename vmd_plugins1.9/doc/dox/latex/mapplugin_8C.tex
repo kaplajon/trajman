@@ -1,0 +1,161 @@
+\section{mapplugin.C File Reference}
+\label{mapplugin_8C}\index{mapplugin.C@{mapplugin.C}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf gridmap\_\-t}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf LINESIZE}\ 85
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+char $\ast$ {\bf mapgets} (char $\ast$s, int n, FILE $\ast$stream)
+\item 
+void $\ast$ {\bf open\_\-map\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-map\_\-metadata} (void $\ast$v, int $\ast$nsets, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$metadata)
+\item 
+int {\bf read\_\-map\_\-data} (void $\ast$v, int set, float $\ast$datablock, float $\ast$colorblock)
+\item 
+void {\bf close\_\-map\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mapplugin.C@{mapplugin.C}!LINESIZE@{LINESIZE}}
+\index{LINESIZE@{LINESIZE}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINESIZE\ 85}\label{mapplugin_8C_a0}
+
+
+
+
+Definition at line 35 of file mapplugin.C.
+
+Referenced by open\_\-map\_\-read, and read\_\-map\_\-data.
+
+\subsection{Function Documentation}
+\index{mapplugin.C@{mapplugin.C}!close_map_read@{close\_\-map\_\-read}}
+\index{close_map_read@{close\_\-map\_\-read}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-map\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a6}
+
+
+
+
+Definition at line 187 of file mapplugin.C.
+
+References gridmap\_\-t::fd, and gridmap\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{mapplugin.C@{mapplugin.C}!mapgets@{mapgets}}
+\index{mapgets@{mapgets}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ mapgets (char $\ast$ {\em s}, int {\em n}, FILE $\ast$ {\em stream})\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a2}
+
+
+
+
+Definition at line 45 of file mapplugin.C.
+
+Referenced by open\_\-map\_\-read, and read\_\-map\_\-data.\index{mapplugin.C@{mapplugin.C}!open_map_read@{open\_\-map\_\-read}}
+\index{open_map_read@{open\_\-map\_\-read}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-map\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a3}
+
+
+
+
+Definition at line 67 of file mapplugin.C.
+
+References molfile\_\-volumetric\_\-t::dataname, gridmap\_\-t::fd, molfile\_\-volumetric\_\-t::has\_\-color, LINESIZE, mapgets, MOLFILE\_\-NUMATOMS\_\-NONE, gridmap\_\-t::nsets, molfile\_\-volumetric\_\-t::origin, gridmap\_\-t::vol, molfile\_\-volumetric\_\-t::xaxis, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::yaxis, molfile\_\-volumetric\_\-t::ysize, molfile\_\-volumetric\_\-t::zaxis, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{mapplugin.C@{mapplugin.C}!read_map_data@{read\_\-map\_\-data}}
+\index{read_map_data@{read\_\-map\_\-data}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-map\_\-data (void $\ast$ {\em v}, int {\em set}, float $\ast$ {\em datablock}, float $\ast$ {\em colorblock})\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a5}
+
+
+
+
+Definition at line 160 of file mapplugin.C.
+
+References gridmap\_\-t::fd, LINESIZE, mapgets, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, gridmap\_\-t::vol, molfile\_\-volumetric\_\-t::xsize, molfile\_\-volumetric\_\-t::ysize, and molfile\_\-volumetric\_\-t::zsize.
+
+Referenced by VMDPLUGIN\_\-register.\index{mapplugin.C@{mapplugin.C}!read_map_metadata@{read\_\-map\_\-metadata}}
+\index{read_map_metadata@{read\_\-map\_\-metadata}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-map\_\-metadata (void $\ast$ {\em v}, int $\ast$ {\em nsets}, {\bf molfile\_\-volumetric\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a4}
+
+
+
+
+Definition at line 151 of file mapplugin.C.
+
+References MOLFILE\_\-SUCCESS, gridmap\_\-t::nsets, and gridmap\_\-t::vol.
+
+Referenced by VMDPLUGIN\_\-register.\index{mapplugin.C@{mapplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{mapplugin_8C_a8}
+
+
+
+
+Definition at line 212 of file mapplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{mapplugin.C@{mapplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{mapplugin_8C_a7}
+
+
+
+
+Definition at line 211 of file mapplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{mapplugin.C@{mapplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{mapplugin_8C_a9}
+
+
+
+
+Definition at line 213 of file mapplugin.C.
+
+References molfile\_\-plugin\_\-t::close\_\-file\_\-read, close\_\-map\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, open\_\-map\_\-read, read\_\-map\_\-data, read\_\-map\_\-metadata, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-data, molfile\_\-plugin\_\-t::read\_\-volumetric\_\-metadata, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{mapplugin.C@{mapplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!mapplugin.C@{mapplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{mapplugin_8C_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,   
+  MOLFILE_PLUGIN_TYPE,    
+  "map",                  
+  "Autodock Grid Map",    
+  "Eamon Caddigan",       
+  0,                      
+  5,                      
+  VMDPLUGIN_THREADSAFE,   
+  "map"                   
+}\end{verbatim}\normalsize 
+
+
+Definition at line 199 of file mapplugin.C.

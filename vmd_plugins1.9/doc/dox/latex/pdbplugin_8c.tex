@@ -1,0 +1,233 @@
+\section{pdbplugin.c File Reference}
+\label{pdbplugin_8c}\index{pdbplugin.c@{pdbplugin.c}}
+{\tt \#include \char`\"{}largefiles.h\char`\"{}}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+{\tt \#include \char`\"{}readpdb.h\char`\"{}}\par
+{\tt \#include \char`\"{}periodic\_\-table.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf pdbdata}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define {\bf PDBBAD}(x)\ ((x) $<$ -999.9994f $|$$|$ (x) $>$ 9999.9994f)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-pdb\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-pdb\_\-structure} (void $\ast$mydata, int $\ast$optflags, {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+int {\bf read\_\-bonds} (void $\ast$v, int $\ast$nbonds, int $\ast$$\ast$fromptr, int $\ast$$\ast$toptr, float $\ast$$\ast$bondorder)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-pdb\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-file\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-structure} (void $\ast$v, int optflags, const {\bf molfile\_\-atom\_\-t} $\ast$atoms)
+\item 
+void {\bf write\_\-cryst1} (FILE $\ast$fd, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+int {\bf write\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-write} (void $\ast$v)
+\item 
+int {\bf read\_\-molecule\_\-metadata} (void $\ast$v, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$metadata)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{pdbplugin.c@{pdbplugin.c}!PDBBAD@{PDBBAD}}
+\index{PDBBAD@{PDBBAD}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PDBBAD(x)\ ((x) $<$ -999.9994f $|$$|$ (x) $>$ 9999.9994f)}\label{pdbplugin_8c_a0}
+
+
+
+
+\subsection{Function Documentation}
+\index{pdbplugin.c@{pdbplugin.c}!close_file_write@{close\_\-file\_\-write}}
+\index{close_file_write@{close\_\-file\_\-write}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a11}
+
+
+
+
+Definition at line 549 of file pdbplugin.c.
+
+References pdbdata::atomlist, and pdbdata::fd.\index{pdbplugin.c@{pdbplugin.c}!close_pdb_read@{close\_\-pdb\_\-read}}
+\index{close_pdb_read@{close\_\-pdb\_\-read}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-pdb\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a6}
+
+
+
+
+Definition at line 277 of file pdbplugin.c.
+
+References pdbdata::fd, pdbdata::idxmap, pdbdata::meta, and molfile\_\-metadata\_\-t::remarks.\index{pdbplugin.c@{pdbplugin.c}!open_file_write@{open\_\-file\_\-write}}
+\index{open_file_write@{open\_\-file\_\-write}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-file\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a7}
+
+
+
+
+Definition at line 290 of file pdbplugin.c.
+
+References pdbdata::atomlist, pdbdata::fd, pdbdata::first\_\-frame, and pdbdata::natoms.\index{pdbplugin.c@{pdbplugin.c}!open_pdb_read@{open\_\-pdb\_\-read}}
+\index{open_pdb_read@{open\_\-pdb\_\-read}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-pdb\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a2}
+
+
+
+
+Definition at line 47 of file pdbplugin.c.
+
+References molfile\_\-metadata\_\-t::accession, pdbdata::atomlist, molfile\_\-metadata\_\-t::database, molfile\_\-metadata\_\-t::date, pdbdata::fd, pdbdata::from, get\_\-pdb\_\-header, pdbdata::idxmap, pdbdata::maxbnum, pdbdata::meta, pdbdata::natoms, pdbdata::nbonds, pdbdata::nconect, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CONECT, PDB\_\-END, PDB\_\-EOF, PDB\_\-HEADER, PDB\_\-REMARK, PDB\_\-UNKNOWN, read\_\-pdb\_\-record, molfile\_\-metadata\_\-t::remarklen, molfile\_\-metadata\_\-t::remarks, and pdbdata::to.
+
+Referenced by open\_\-babel\_\-read.\index{pdbplugin.c@{pdbplugin.c}!read_bonds@{read\_\-bonds}}
+\index{read_bonds@{read\_\-bonds}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-bonds (void $\ast$ {\em v}, int $\ast$ {\em nbonds}, int $\ast$$\ast$ {\em fromptr}, int $\ast$$\ast$ {\em toptr}, float $\ast$$\ast$ {\em bondorder})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a4}
+
+
+
+
+Definition at line 198 of file pdbplugin.c.
+
+References pdbdata::from, MOLFILE\_\-SUCCESS, pdbdata::natoms, pdbdata::nbonds, pdbdata::nconect, and pdbdata::to.\index{pdbplugin.c@{pdbplugin.c}!read_molecule_metadata@{read\_\-molecule\_\-metadata}}
+\index{read_molecule_metadata@{read\_\-molecule\_\-metadata}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-molecule\_\-metadata (void $\ast$ {\em v}, {\bf molfile\_\-metadata\_\-t} $\ast$$\ast$ {\em metadata})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a12}
+
+
+
+
+Definition at line 556 of file pdbplugin.c.
+
+References pdbdata::meta, and MOLFILE\_\-SUCCESS.\index{pdbplugin.c@{pdbplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a5}
+
+
+
+
+Definition at line 235 of file pdbplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, molfile\_\-timestep\_\-t::coords, pdbdata::fd, molfile\_\-timestep\_\-t::gamma, get\_\-pdb\_\-coordinates, get\_\-pdb\_\-cryst1, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, pdbdata::natoms, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CRYST1, PDB\_\-END, PDB\_\-EOF, and read\_\-pdb\_\-record.\index{pdbplugin.c@{pdbplugin.c}!read_pdb_structure@{read\_\-pdb\_\-structure}}
+\index{read_pdb_structure@{read\_\-pdb\_\-structure}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-pdb\_\-structure (void $\ast$ {\em mydata}, int $\ast$ {\em optflags}, {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a3}
+
+
+
+
+Definition at line 126 of file pdbplugin.c.
+
+References molfile\_\-atom\_\-t::altloc, molfile\_\-atom\_\-t::atomicnumber, molfile\_\-atom\_\-t::bfactor, molfile\_\-atom\_\-t::chain, pdbdata::fd, pdbdata::from, get\_\-pdb\_\-conect, get\_\-pdb\_\-fields, get\_\-pte\_\-idx\_\-from\_\-string, get\_\-pte\_\-mass, get\_\-pte\_\-vdw\_\-radius, pdbdata::idxmap, molfile\_\-atom\_\-t::insertion, molfile\_\-atom\_\-t::mass, pdbdata::maxbnum, MOLFILE\_\-ALTLOC, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-BFACTOR, MOLFILE\_\-BONDSSPECIAL, MOLFILE\_\-INSERTION, MOLFILE\_\-MASS, MOLFILE\_\-OCCUPANCY, MOLFILE\_\-RADIUS, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, pdbdata::natoms, pdbdata::nbonds, molfile\_\-atom\_\-t::occupancy, PDB\_\-ATOM, PDB\_\-BUFFER\_\-LENGTH, PDB\_\-CONECT, PDB\_\-END, PDB\_\-EOF, molfile\_\-atom\_\-t::radius, read\_\-pdb\_\-record, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, pdbdata::to, and molfile\_\-atom\_\-t::type.\index{pdbplugin.c@{pdbplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{pdbplugin_8c_a15}
+
+
+
+
+Definition at line 600 of file pdbplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{pdbplugin.c@{pdbplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{pdbplugin_8c_a13}
+
+
+
+
+Definition at line 591 of file pdbplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{pdbplugin.c@{pdbplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{pdbplugin_8c_a14}
+
+
+
+
+Definition at line 595 of file pdbplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{pdbplugin.c@{pdbplugin.c}!write_cryst1@{write\_\-cryst1}}
+\index{write_cryst1@{write\_\-cryst1}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void write\_\-cryst1 (FILE $\ast$ {\em fd}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a9}
+
+
+
+
+Definition at line 484 of file pdbplugin.c.
+
+References molfile\_\-timestep\_\-t::A, molfile\_\-timestep\_\-t::alpha, molfile\_\-timestep\_\-t::B, molfile\_\-timestep\_\-t::beta, molfile\_\-timestep\_\-t::C, and molfile\_\-timestep\_\-t::gamma.
+
+Referenced by write\_\-timestep.\index{pdbplugin.c@{pdbplugin.c}!write_structure@{write\_\-structure}}
+\index{write_structure@{write\_\-structure}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-structure (void $\ast$ {\em v}, int {\em optflags}, const {\bf molfile\_\-atom\_\-t} $\ast$ {\em atoms})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a8}
+
+
+
+
+Definition at line 308 of file pdbplugin.c.
+
+References molfile\_\-atom\_\-t::altloc, molfile\_\-atom\_\-t::atomicnumber, pdbdata::atomlist, molfile\_\-atom\_\-t::bfactor, molfile\_\-atom\_\-t::insertion, MOLFILE\_\-ALTLOC, MOLFILE\_\-ATOMICNUMBER, MOLFILE\_\-BFACTOR, MOLFILE\_\-INSERTION, MOLFILE\_\-OCCUPANCY, MOLFILE\_\-SUCCESS, pdbdata::natoms, and molfile\_\-atom\_\-t::occupancy.\index{pdbplugin.c@{pdbplugin.c}!write_timestep@{write\_\-timestep}}
+\index{write_timestep@{write\_\-timestep}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a10}
+
+
+
+
+Definition at line 490 of file pdbplugin.c.
+
+References molfile\_\-atom\_\-t::altloc, molfile\_\-atom\_\-t::atomicnumber, pdbdata::atomlist, molfile\_\-atom\_\-t::bfactor, molfile\_\-atom\_\-t::chain, molfile\_\-timestep\_\-t::coords, pdbdata::fd, pdbdata::first\_\-frame, molfile\_\-atom\_\-t::insertion, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, molfile\_\-atom\_\-t::name, pdbdata::natoms, molfile\_\-atom\_\-t::occupancy, molfile\_\-atom\_\-t::resid, molfile\_\-atom\_\-t::resname, molfile\_\-atom\_\-t::segid, write\_\-cryst1, and write\_\-raw\_\-pdb\_\-record.
+
+\subsection{Variable Documentation}
+\index{pdbplugin.c@{pdbplugin.c}!plugin@{plugin}}
+\index{plugin@{plugin}!pdbplugin.c@{pdbplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{pdbplugin_8c_a1}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,                     
+  MOLFILE_PLUGIN_TYPE,                      
+  "pdb",                                    
+  "PDB",                                    
+  "Justin Gullingsrud, John Stone",         
+  1,                                        
+  11,                                       
+  VMDPLUGIN_THREADSAFE,                     
+  "pdb,ent",                                
+  open_pdb_read,
+  read_pdb_structure,
+  read_bonds,                               
+  read_next_timestep,
+  close_pdb_read,
+  open_file_write,
+  write_structure,
+  write_timestep,
+  close_file_write,
+  0,
+  0,
+  0,
+  read_molecule_metadata, 
+}\end{verbatim}\normalsize 
+
+
+Definition at line 566 of file pdbplugin.c.

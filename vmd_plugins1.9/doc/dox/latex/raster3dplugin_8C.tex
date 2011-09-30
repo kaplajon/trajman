@@ -1,0 +1,141 @@
+\section{raster3dplugin.C File Reference}
+\label{raster3dplugin_8C}\index{raster3dplugin.C@{raster3dplugin.C}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf handle\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-file\_\-read} (const char $\ast$filepath, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+void {\bf next\_\-elem} (int \&n, int \&max, {\bf molfile\_\-graphics\_\-t} $\ast$\&graphics)
+\item 
+int {\bf get\_\-line} (int \&line, char $\ast$buf, int len, FILE $\ast$f)
+\item 
+int {\bf read\_\-rawgraphics} (void $\ast$v, int $\ast$nelem, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$gdata)
+\item 
+void {\bf close\_\-file\_\-read} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} (void)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{raster3dplugin.C@{raster3dplugin.C}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a5}
+
+
+
+
+Definition at line 495 of file raster3dplugin.C.
+
+References handle\_\-t::fd, and handle\_\-t::graphics.
+
+Referenced by VMDPLUGIN\_\-register.\index{raster3dplugin.C@{raster3dplugin.C}!get_line@{get\_\-line}}
+\index{get_line@{get\_\-line}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-line (int \& {\em line}, char $\ast$ {\em buf}, int {\em len}, FILE $\ast$ {\em f})\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a3}
+
+
+
+
+Definition at line 46 of file raster3dplugin.C.
+
+Referenced by read\_\-rawgraphics.\index{raster3dplugin.C@{raster3dplugin.C}!next_elem@{next\_\-elem}}
+\index{next_elem@{next\_\-elem}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void next\_\-elem (int \& {\em n}, int \& {\em max}, {\bf molfile\_\-graphics\_\-t} $\ast$\& {\em graphics})\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a2}
+
+
+
+
+Definition at line 37 of file raster3dplugin.C.
+
+Referenced by read\_\-rawgraphics.\index{raster3dplugin.C@{raster3dplugin.C}!open_file_read@{open\_\-file\_\-read}}
+\index{open_file_read@{open\_\-file\_\-read}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-file\_\-read (const char $\ast$ {\em filepath}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a1}
+
+
+
+
+Definition at line 22 of file raster3dplugin.C.
+
+References handle\_\-t::fd, and handle\_\-t::graphics.
+
+Referenced by VMDPLUGIN\_\-register.\index{raster3dplugin.C@{raster3dplugin.C}!read_rawgraphics@{read\_\-rawgraphics}}
+\index{read_rawgraphics@{read\_\-rawgraphics}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-rawgraphics (void $\ast$ {\em v}, int $\ast$ {\em nelem}, const {\bf molfile\_\-graphics\_\-t} $\ast$$\ast$ {\em gdata})\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a4}
+
+
+
+
+Definition at line 54 of file raster3dplugin.C.
+
+References molfile\_\-graphics\_\-t::data, handle\_\-t::fd, get\_\-line, handle\_\-t::graphics, MOLFILE\_\-COLOR, MOLFILE\_\-CYLINDER, MOLFILE\_\-ERROR, MOLFILE\_\-NORMS, MOLFILE\_\-SPHERE, MOLFILE\_\-SUCCESS, MOLFILE\_\-TRIANGLE, MOLFILE\_\-TRICOLOR, MOLFILE\_\-TRINORM, next\_\-elem, molfile\_\-graphics\_\-t::size, molfile\_\-graphics\_\-t::style, and molfile\_\-graphics\_\-t::type.
+
+Referenced by VMDPLUGIN\_\-register.\index{raster3dplugin.C@{raster3dplugin.C}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{raster3dplugin_8C_a7}
+
+
+
+
+Definition at line 521 of file raster3dplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{raster3dplugin.C@{raster3dplugin.C}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{raster3dplugin_8C_a6}
+
+
+
+
+Definition at line 520 of file raster3dplugin.C.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{raster3dplugin.C@{raster3dplugin.C}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{raster3dplugin_8C_a8}
+
+
+
+
+Definition at line 522 of file raster3dplugin.C.
+
+References close\_\-file\_\-read, molfile\_\-plugin\_\-t::close\_\-file\_\-read, open\_\-file\_\-read, molfile\_\-plugin\_\-t::open\_\-file\_\-read, read\_\-rawgraphics, molfile\_\-plugin\_\-t::read\_\-rawgraphics, VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.
+
+\subsection{Variable Documentation}
+\index{raster3dplugin.C@{raster3dplugin.C}!plugin@{plugin}}
+\index{plugin@{plugin}!raster3dplugin.C@{raster3dplugin.C}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{raster3dplugin_8C_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,  
+  MOLFILE_PLUGIN_TYPE,   
+  "raster3d",            
+  "Raster3d Scene File", 
+  "Justin Gullingsrud",  
+  0,                     
+  1,                     
+  VMDPLUGIN_THREADSAFE,  
+  "r3d"                  
+}\end{verbatim}\normalsize 
+
+
+Definition at line 508 of file raster3dplugin.C.

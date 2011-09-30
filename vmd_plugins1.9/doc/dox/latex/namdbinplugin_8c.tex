@@ -1,0 +1,155 @@
+\section{namdbinplugin.c File Reference}
+\label{namdbinplugin_8c}\index{namdbinplugin.c@{namdbinplugin.c}}
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$limits.h$>$}\par
+{\tt \#include \char`\"{}molfile\_\-plugin.h\char`\"{}}\par
+\subsection*{Compounds}
+\begin{CompactItemize}
+\item 
+struct {\bf namdbinhandle}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void $\ast$ {\bf open\_\-namdbin\_\-read} (const char $\ast$path, const char $\ast${\bf filetype}, int $\ast$natoms)
+\item 
+int {\bf read\_\-next\_\-timestep} (void $\ast$v, int natoms, {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-read} (void $\ast$v)
+\item 
+void $\ast$ {\bf open\_\-namdbin\_\-write} (const char $\ast$path, const char $\ast${\bf filetype}, int natoms)
+\item 
+int {\bf write\_\-timestep} (void $\ast$v, const {\bf molfile\_\-timestep\_\-t} $\ast$ts)
+\item 
+void {\bf close\_\-file\_\-write} (void $\ast$v)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-init} ()
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-register} (void $\ast$v, {\bf vmdplugin\_\-register\_\-cb} cb)
+\item 
+VMDPLUGIN\_\-API int {\bf VMDPLUGIN\_\-fini} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+{\bf molfile\_\-plugin\_\-t} {\bf plugin}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{namdbinplugin.c@{namdbinplugin.c}!close_file_read@{close\_\-file\_\-read}}
+\index{close_file_read@{close\_\-file\_\-read}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-read (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a3}
+
+
+
+
+Definition at line 142 of file namdbinplugin.c.
+
+References namdbinhandle::fd, and namdbinhandle::xyz.\index{namdbinplugin.c@{namdbinplugin.c}!close_file_write@{close\_\-file\_\-write}}
+\index{close_file_write@{close\_\-file\_\-write}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void close\_\-file\_\-write (void $\ast$ {\em v})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a6}
+
+
+
+
+Definition at line 196 of file namdbinplugin.c.
+
+References namdbinhandle::fd.\index{namdbinplugin.c@{namdbinplugin.c}!open_namdbin_read@{open\_\-namdbin\_\-read}}
+\index{open_namdbin_read@{open\_\-namdbin\_\-read}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-namdbin\_\-read (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int $\ast$ {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a1}
+
+
+
+
+Definition at line 40 of file namdbinplugin.c.
+
+References namdbinhandle::fd, namdbinhandle::numatoms, namdbinhandle::wrongendian, and namdbinhandle::xyz.\index{namdbinplugin.c@{namdbinplugin.c}!open_namdbin_write@{open\_\-namdbin\_\-write}}
+\index{open_namdbin_write@{open\_\-namdbin\_\-write}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ open\_\-namdbin\_\-write (const char $\ast$ {\em path}, const char $\ast$ {\em filetype}, int {\em natoms})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a4}
+
+
+
+
+Definition at line 150 of file namdbinplugin.c.
+
+References namdbinhandle::fd, and namdbinhandle::numatoms.\index{namdbinplugin.c@{namdbinplugin.c}!read_next_timestep@{read\_\-next\_\-timestep}}
+\index{read_next_timestep@{read\_\-next\_\-timestep}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int read\_\-next\_\-timestep (void $\ast$ {\em v}, int {\em natoms}, {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a2}
+
+
+
+
+Definition at line 95 of file namdbinplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, namdbinhandle::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, namdbinhandle::numatoms, namdbinhandle::wrongendian, and namdbinhandle::xyz.\index{namdbinplugin.c@{namdbinplugin.c}!VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}}
+\index{VMDPLUGIN_fini@{VMDPLUGIN\_\-fini}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-fini (void)}\label{namdbinplugin_8c_a9}
+
+
+
+
+Definition at line 237 of file namdbinplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{namdbinplugin.c@{namdbinplugin.c}!VMDPLUGIN_init@{VMDPLUGIN\_\-init}}
+\index{VMDPLUGIN_init@{VMDPLUGIN\_\-init}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-init (void)}\label{namdbinplugin_8c_a7}
+
+
+
+
+Definition at line 228 of file namdbinplugin.c.
+
+References VMDPLUGIN\_\-API, and VMDPLUGIN\_\-SUCCESS.\index{namdbinplugin.c@{namdbinplugin.c}!VMDPLUGIN_register@{VMDPLUGIN\_\-register}}
+\index{VMDPLUGIN_register@{VMDPLUGIN\_\-register}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}VMDPLUGIN\_\-API int VMDPLUGIN\_\-register (void $\ast$ {\em v}, {\bf vmdplugin\_\-register\_\-cb} {\em cb})}\label{namdbinplugin_8c_a8}
+
+
+
+
+Definition at line 232 of file namdbinplugin.c.
+
+References VMDPLUGIN\_\-API, vmdplugin\_\-register\_\-cb, and VMDPLUGIN\_\-SUCCESS.\index{namdbinplugin.c@{namdbinplugin.c}!write_timestep@{write\_\-timestep}}
+\index{write_timestep@{write\_\-timestep}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int write\_\-timestep (void $\ast$ {\em v}, const {\bf molfile\_\-timestep\_\-t} $\ast$ {\em ts})\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a5}
+
+
+
+
+Definition at line 167 of file namdbinplugin.c.
+
+References molfile\_\-timestep\_\-t::coords, namdbinhandle::fd, MOLFILE\_\-ERROR, MOLFILE\_\-SUCCESS, and namdbinhandle::numatoms.
+
+\subsection{Variable Documentation}
+\index{namdbinplugin.c@{namdbinplugin.c}!plugin@{plugin}}
+\index{plugin@{plugin}!namdbinplugin.c@{namdbinplugin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf molfile\_\-plugin\_\-t} plugin\hspace{0.3cm}{\tt  [static]}}\label{namdbinplugin_8c_a0}
+
+
+{\bf Initial value:}
+
+\footnotesize\begin{verbatim} {
+  vmdplugin_ABIVERSION,         
+  MOLFILE_PLUGIN_TYPE,          
+  "namdbin",                    
+  "NAMD Binary Coordinates",    
+  "James Phillips, Justin Gullingsrud",  
+  0,                            
+  1,                            
+  VMDPLUGIN_THREADSAFE,         
+  "coor",                       
+  open_namdbin_read,
+  0,
+  0,
+  read_next_timestep,
+  close_file_read,
+  open_namdbin_write,
+  0,
+  write_timestep,
+  close_file_write
+}\end{verbatim}\normalsize 
+
+
+Definition at line 207 of file namdbinplugin.c.
