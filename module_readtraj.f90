@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,7 +19,7 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 module readtraj
     use kinds
     use util
@@ -38,22 +38,17 @@ module readtraj
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
     private :: atomindex_a,atomindex_b
-    
     interface atomindex
         module procedure atomindex_a,atomindex_b
     end interface
-
     type atomdata
         character(kind=1,len=len(atomnames)) :: aname
         real(kind=rk) :: mass,mgratio
     end type atomdata
-
     type(atomdata),allocatable :: atomd(:)
-
     interface operator(.str.)
         module procedure stringconv
     end interface operator(.str.)
-
 contains
 
     subroutine wf_gro(filename,wf,funit)!{{{
@@ -61,7 +56,7 @@ contains
     integer(kind=ik) :: funit,i,j,k,l
         open(funit,file=trim(filename))
         write(funit,*)'frame=',trim(adjustl(wf))
-        write(funit,*)atot
+        write(funit,*)size(coor,2)
         l=1
         do i=1,size(molt)
             do j=1,molt(i)%nmol
@@ -80,7 +75,7 @@ contains
     character(kind=1,len=*) :: filename
     integer(kind=ik) :: funit,i,j,k
         open(funit,file=trim(filename))
-        write(funit,*)atot
+        write(funit,*)size(coor,2)
         write(funit,*)
         do i=1,size(molt)
             do j=1,molt(i)%nmol
@@ -155,21 +150,36 @@ end subroutine reallocinstruct!}}}
 subroutine globals!{{{
     character(kind=1, len=30),allocatable :: defmass(:)
     integer(kind=ik) :: i,ios
-    global_setflags%autofilename=.TRUE.
-    global_setflags%folding=.FALSE.
-    global_setflags%filename=''
-    global_setflags%distbin=100
-    global_setflags%fileprefix='auto_'
-    global_setflags%filesuffix='.out'
-!    global_setflags%writeframe%framenumber=0
-    global_setflags%wftot=0
-    global_setflags%apl=.FALSE.
-    global_setflags%aplgrid=[250,250]
-    global_setflags%leaflet=0
-    global_setflags%whole=.FALSE.
-    global_setflags%centerofmembrane=.FALSE.
-    global_setflags%leaflets_defined=.FALSE.
-    global_setflags%molaverage=.FALSE.
+    if(.NOT.allocated(atomd))then
+        global_setflags%autofilename=.TRUE.
+        global_setflags%folding=.FALSE.
+        global_setflags%filename=''
+        global_setflags%distbin=100
+        global_setflags%fileprefix='auto_'
+        global_setflags%filesuffix='.out'
+    !    global_setflags%writeframe%framenumber=0
+        global_setflags%wftot=0
+        global_setflags%apl=.FALSE.
+        global_setflags%gd=.FALSE.
+        global_setflags%aplgrid=[250,250]
+        global_setflags%leaflet=0
+        global_setflags%whole=.FALSE.
+        global_setflags%centerofmembrane=.FALSE.
+        global_setflags%leaflets_defined=.FALSE.
+        global_setflags%molaverage=.FALSE.
+        global_setflags%tshift=0
+        common_setflags%traj_cscale=1
+        global_setflags%rdf_binsize=0.2
+        global_setflags%xyrdf=.FALSE.
+        global_setflags%zrdf=.FALSE.
+        global_setflags%const%value=0
+        global_setflags%const%switch=.FALSE.
+        global_setflags%Vsnorm=.TRUE.
+        global_setflags%distminmax%switch=.FALSE.
+        global_setflags%scaling%switch=.FALSE.
+
+    end if
+    !maxframes=0;minframe=0
     !if(.NOT.allocated(global_setflags%calc))then
     !    allocate(global_setflags%calc(1))
     !    global_Setflags%calc=''
@@ -228,9 +238,12 @@ end subroutine globals!}}}
             moltype_atom(1,ia)=trim(sdr(1:i-1))
             moltype_atom(2,ia)=trim(adjustl(sdr(i:)))
             read(tunit,*)coor(1:3,ia)
+            !write(*,*)coor(1:3,ia),'COOR'
         end do
             read(tunit,*)box
         !rewind(tunit)
+        coor=coor*10._rk ! Scale to Å (default in .trr files)
+        box=box*10._rk ! Scale to Å (default in .trr files)
         close(tunit)
         rowsperframe=atot+3
         call trajindex(moltype_atom)
@@ -249,22 +262,24 @@ end subroutine globals!}}}
             read(tunit,*)coor(:,ia)
         end do
         read(unit=tunit,fmt=*,iostat=ios)box(:)
+        coor=coor*10._rk ! Scale to Å (default in .trr files)
+        box=box*10._rk ! Scale to Å (default in .trr files)
 
     end function readgro!}}}
 
     function readtrr(fhandle) result(ios) !MOLFILEPLUGIN FROM VMD!{{{
-        integer(kind=4) :: fhandle,stat,natm
+        integer(kind=4) :: fhandle,statf,natm
         integer(kind=ik) :: ios
         real(kind=4) :: bx(6)
         real(kind=4),allocatable :: coorv(:)
         allocate(coorv(atot*3))
         natm=int(atot,4)
-        stat=1
-        call f77_molfile_read_next(fhandle,natm,coorv,bx,stat)
-        coor=reshape(real(coorv,kind(coor)),[3,atot])
+        statf=1
+        call f77_molfile_read_next(fhandle,natm,coorv,bx,statf)
+        coor=reshape(real(coorv,kind(coor)),[3,size(coor,2)],PAD=0._rk*coor)
         box=bx(1:3)
-        if(stat/=0)ios=0 !molfile stat and iostat conversion 
-        if(stat==0)ios=1 !for the frameloop to work as expected.
+        if(statf/=0)ios=0 !molfile stat and iostat conversion 
+        if(statf==0)ios=1 !for the frameloop to work as expected.
     end function readtrr!}}}
 
     subroutine closetraj(funit)!{{{
@@ -272,7 +287,10 @@ end subroutine globals!}}}
         select case(trajtype)
         case('gro')
             close(funit)
-        case('trr')
+        case('trr','dcd','pdb')
+            call f77_molfile_close_read(funit,stat)
+            call f77_molfile_finish
+        case default
             call f77_molfile_close_read(funit,stat)
             call f77_molfile_finish
         end select
@@ -284,7 +302,9 @@ end subroutine globals!}}}
         select case(trajtype)
         case('gro')
             ios=readgro(tunit)
-        case('trr')
+        case('trr','dcd','pdb')
+            ios=readtrr(tunit)
+        case default
             ios=readtrr(tunit)
         end select
     end function readframe        !}}}

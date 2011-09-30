@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,22 +19,26 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 program trajman
     use util
     use kinds
     use input
     use readtraj
     use trajop
+    use statistics
     implicit none
     character(kind=1,len=1),allocatable :: inputrad(:),words(:,:)
     character(kind=1,len=255) :: sysstr,pid,wf,filename
     integer(kind=ik) :: i,j,k,l,m,n,ios,p,frame
     integer(kind=4) :: runit
     integer(kind=8) :: trs,frs
-    integer(kind=4) :: natm,stat
+    integer(kind=4) :: natm,statf
     real(kind=4),allocatable :: coorv(:),bx(:) !MOLFILEPLUGIN FROM VMD
     type(instruct),allocatable :: troptype(:)
+    integer(kind=ik) :: v(1:4),vs(1:4)
+    call RNSTRT(310952_ikr) !init. random seed
+    skipframes=0;maxframes=0
     call arguments(runit)
     call constants
     call globals
@@ -50,7 +54,26 @@ program trajman
     troptype(:)%nmolop=0
     do i=1,size(troptype)
         select case(troptype(i)%findex)
-        case(0,7,9,10)
+        case(0,7,9,10,15,16,17,18,19,20)
+        case(13,22) !RDF
+            j=moltypeofuatom(troptype(i)%atoms(1))
+            k=moltypeofuatom(troptype(i)%atoms(2))
+            select case(troptype(i)%set%leaflet)
+            case(0)!Both
+                l=molt(j)%nmol*molt(k)%nmol
+            case(1)!Lower
+                l=size(molt(j)%lower)*size(molt(k)%lower)
+            case(2)!Upper
+                l=size(molt(j)%upper)*size(molt(k)%upper)
+            end select
+            !if(j==k)l=nint(sqrt(real(l,rk))*(sqrt(real(l,rk))-1))/2
+            if(j==k)l=nint(sqrt(real(l,rk))*(sqrt(real(l,rk))-1)/2)
+            if(troptype(i)%findex==13)allocate(troptype(i)%rdf_pairs(l))
+            if(troptype(i)%findex==22)troptype(i)%nmolop=l
+           ! write(*,*)troptype(i)%nmolop,troptype(i)%findex,j,k,molt(1)%nmol
+           ! stop
+
+                
         case default
             j=moltypeofuatom(troptype(i)%atoms(1))
             select case(troptype(i)%set%leaflet)
@@ -94,42 +117,84 @@ program trajman
             close(42)
             ! Remove temporary files
             ios=system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
-        case('trr')!VMD MOLFILEPLUGIN
-            stat=1
+        case('trr','dcd','pdb')!VMD MOLFILEPLUGIN
+            statf=1
             allocate(coorv(atot*3),bx(6))
             do 
-                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,stat)
-                if(stat==0)exit
+                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
+                if(statf==0)exit
                 maxframes=maxframes+1
             end do
-                call f77_molfile_close_read(tunit,stat)
+                call f77_molfile_close_read(tunit,statf)
                 call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+            deallocate(coorv,bx)
+        case default
+            statf=1
+            allocate(coorv(atot*3),bx(6))
+            do 
+                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
+                if(statf==0)exit
+                maxframes=maxframes+1
+            end do
+                call f77_molfile_close_read(tunit,statf)
+                call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
             deallocate(coorv,bx)
         end select
     end if
     do i=1,size(troptype)
         if(troptype(i)%nmolop*maxframes/=0)then
-            allocate(troptype(i)%datam(troptype(i)%nmolop,maxframes))
+            allocate(troptype(i)%datam(troptype(i)%nmolop,skipframes+1:maxframes))
             troptype(i)%datam=0
+        else
+            select case(troptype(i)%findex)
+            case(13)
+                allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
+                allocate(troptype(i)%datam(1,skipframes+1:maxframes))
+                troptype(i)%rdf_dist=0
+            case(15)
+                allocate(troptype(i)%datam(1,skipframes+1:maxframes))
+                troptype(i)%datam=0
+            case(16)
+                !allocate(troptype(i)%rdf_dist(troptype(i)%set%distbin))
+                !troptype(i)%rdf_dist=0
+                !troptype(i)%rdf_bin=1._rk/troptype(i)%set%distbin
+            case(17,18)
+                allocate(troptype(i)%datam(1,skipframes+1:maxframes))
+                troptype(i)%datam=0
+            end select
         end if
     end do
+    !write(*,*)size(troptype(18)%datam,2),'DATAM';stop
     if(.NOT. common_setflags%silent)then
         write(*,*)"input processing done."
         call summary
-        write(*,'(5X,A19,I6)')'Frames to process: ',maxframes
+        write(*,'(5X,A19,I6,A2,I6)')'Frames to process: '&
+        ,maxframes-skipframes," /",maxframes
     end if
 !###########################FRAME LOOP##################################################    
-    frame=0
+do i=1,skipframes
+    if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
+    char(13),"Skipping frame: ",i!,char(13)     
+    ios=readframe(tunit)
+end do
+if(skipframes/=0.and..NOT.common_setflags%silent)write(*,*)&
+"    Starting calculation on frame: ",trim(adjustl(intstr(skipframes+1)))
+frame=skipframes
     do while (readframe(tunit)==0)! Trajectory processing
         frame=frame+1
-        if(modulo(frame-1,max(maxframes/100,1))==0)then
-            if(.NOT. common_setflags%silent)write(*,'(5X,A10,I3,A2,I6,A)',advance='no')&
-            'Progress: ',nint(real(100*frame,rk)/real(maxframes,rk)),'% ',frame,char(13)
+        if(modulo(frame-skipframes,max((maxframes-skipframes)/100,1))==0.OR.&
+        frame==skipframes+1)then
+            if(.NOT. common_setflags%silent)then
+                write(0,'(A,5X,A10,I3,A2,I6)',advance='no')&
+                char(13),'Progress: ',nint(real(100*(frame-skipframes),rk)/real(maxframes-skipframes,rk)),'% ',frame!,char(13)
+            end if
         end if
         if(global_setflags%whole)call whole
         if(global_setflags%folding)call foldmol
+        meanbox(1:3)=meanbox(1:3)+box
+        meanbox(4)=meanbox(4)+1/(box(1)*box(2)*box(3))
         call procop(troptype,frame) ! CALCULATIONS: Perform instructions on frame
-        if(frame==1)then !Write atomnames and coordinates for the first molecules
+        if(frame==skipframes+1)then !Write atomnames and coordinates for the first molecules
                         !to a .xyz file
             open(37,file='atoms.xyz')
             write(37,*)size(atomnames)
@@ -138,7 +203,9 @@ program trajman
                 select case(trajtype)
                 case('gro')
                     write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
-                case('trr')
+                case('trr','dcd','pdb')
+                    write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+                case default
                     write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
                 end select
             end do
@@ -149,14 +216,15 @@ program trajman
             if(allocated(global_setflags%writeframe) .AND. frame==global_setflags%writeframe(m)%framenumber)then
                 write(wf,*)global_setflags%writeframe(m)%framenumber
                 
-                if(trim(global_setflags%writeframe(m)%outformat)=='gro')then
+                select case(trim(global_setflags%writeframe(m)%outformat))
+                case('gro')
                     filename='frame'//trim(adjustl(wf))//'.gro'
                     call wf_gro(trim(filename),wf,37)
-                else ! Defaults to writing a .xyz file with long atomnames,
+                case('xyz') ! Defaults to writing a .xyz file with long atomnames,
                      ! viewable by gOpenmol.
                     filename='frame'//trim(adjustl(wf))//'.xyz'
                     call wf_xyz(trim(filename),37)
-                end if
+                end select
             end if
         end do !END WRITEFRAME       
         if (frame==maxframes)exit
@@ -168,5 +236,5 @@ program trajman
         write(*,'(5x,A)')'Postprocessing...'
     end if
     call postproc(troptype) ! POSTPROCESSING
-    if(.NOT. common_setflags%silent)write(*,'(5X,A5)')'Done!'
+    if(.NOT. common_setflags%silent)write(*,'(5X,A)')'Done!'
 end program trajman

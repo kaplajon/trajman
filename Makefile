@@ -2,14 +2,14 @@ PROG =	trajman
 
 #---VMD MOLFILE PLUGIN---
 VMD_ARCH = LINUXAMD64
-VMD_PLUGINS = /home/jon/src/vmd-1.8.7.src/plugins
+VMD_PLUGINS = /media/local/jon/src/vmd-1.8.7.src/plugins
 #------------------------
 
 SRCS =	module_input.F90 module_kinds.f90 module_readtraj.f90 \
-	module_trajop.f90 module_util.f90 trajman.f90
+	module_trajop.f90 module_util.f90 module_statistics.f90 trajman.f90 
 
 OBJS =	module_input.o module_apl.o module_version.o module_kinds.o module_readtraj.o module_trajop.o \
-	module_util.o trajman.o 
+	module_util.o module_statistics.o trajman.o 
 
 LIBS =  #/usr/lib64/liblapack.so.3
 
@@ -74,10 +74,11 @@ module_version.f90:
 
 #module_input.o: module_kinds.o module_readtraj.o module_util.o module_version.o
 module_input.o: module_util.o module_version.o module_apl.o module_trajop.o
-module_trajop.o: module_apl.o
-module_readtraj.o module_version.o module_trajop.o module_util.o: module_kinds.o
+module_trajop.o: module_apl.o module_statistics.o
+module_statistics.o: module_util.o module_readtraj.o
+module_readtraj.o module_version.o module_trajop.o module_util.o module_statistics.o: module_kinds.o
 #module_trajop.o: module_kinds.o
 module_readtraj.o: module_util.o 
 module_apl.o: module_readtraj.o
 trajman.o: module_input.o module_kinds.o module_readtraj.o module_trajop.o \
-	module_util.o
+	module_util.o module_statistics.o

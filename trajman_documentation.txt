@@ -1,6 +1,7 @@
 INPUTFILE: SYNTAX
-
-Syntax is one function or setting per line. Blank lines and comments (#) are ignored.
+----------------------------------
+Syntax is one function or setting per line.
+Blank lines and comments (#) are ignored.
 
 
 INPUTFILE: SETTINGS
@@ -21,6 +22,13 @@ be the second non commented line. Only files in the
 .gro and .trr format are supported at the moment.
 Trr-trajectories are recommended for speed.
 
+	cscale R
+
+Specifies in which scale the coordinates are written in the input
+trajectory.
+Examples: .gro files: R=1.e-9 (nm)
+          .trr-files: R=1.e-10 (Å)
+
 	maxframes N
 
 N number of frames to be processed. N=0 means that the
@@ -29,6 +37,10 @@ automatically. WARNING! For trr-files N=0 means that trajman
 cycles through the whole trajectory file, which can take a
 long time depending on the trajectory length.
 Default "0".
+
+	skipframes N
+
+N number of frames will be skipped in the beginning of the trajectory.
 
 	atomnames FILE
 
@@ -45,7 +57,7 @@ to that instead of the default values.
 
 By setting this, molecules that have been broken due to
 periodic boundary conditions, will be made whole again by 
-back folding of atom coordinates.
+folding atom coordinates back to the right side of the box.
 
 	folding
 
@@ -78,8 +90,14 @@ Custom suffix for filenames (char). Default ".out".
 
     	distbin N
 
-Set number of bins, N (int), used for distributions.
+Set number of bins, N (int), used for distributions (rdf:s included).
 Default "100".
+
+	torsion_shift N
+
+Modulo shift, N (int, degrees) for the torsion angle function.
+Default 0: 0,360
+
 
     	cbl R
 
@@ -101,7 +119,7 @@ distribm: writes distributions per molecule
 traj: writes trajectories
 trajm: writes trajectories per molecule
 acorr: writes autocorrelations
-acorrm writes autocorrelations per molecule
+acorrm: writes autocorrelations per molecule
 
     	submoltype NAME startatom endatom
 
@@ -116,14 +134,54 @@ The atoms may come from the same or different molecule types
 
 	aplgrid x y
 
-Define the grid size used in area per lipid calcualtions.
+Define the grid size used in area per lipid calculations.
 
 	leaflets
 
 Define membrane leaflets to be able to separate calculations
 based on which side of the membrane a molecule is situated.
 Needs centerofmembrane and atommasses.
-With arguments:
+
+	rdf_binsize R
+
+Define the binsize for rdf calculations. R is a real number
+in Ångström.
+Example: distbin=100, rdf_binsize=0.2 Å => cutoff=100x0.2 Å = 20 Å
+
+	rdftype [xyz,xy,z]
+
+Set the type of the rdf distribution. z is only valid for the mbl function
+as for now.
+
+	constant R
+
+To set the value of the constant function.
+(Fill your data matrix with a constant real value.)
+
+
+	VS_norm [normal,density]
+
+Set the the VS_norm to density if you want a number density normalization
+(e.g. in combination with "set constant" and z to get an electron density
+distribution).
+
+	distriblimits min max
+
+Set the limits of the distributions. min and max are real.
+
+	scaling [x,y,z,xy,xz,yz,xyz]
+
+Scale your results with some factor. Right now only combinations of box vectors are
+valid. Set scaling without argument to unset.
+
+	slice [Z_in,Z_out,off] lower upper
+
+EXPERIMENTAL: Make a slice of the box with real limits upper and lower. 
+Z_in: Take molecules inside the slice into account
+Z_out: Takew molecules outside the box into account.
+off: turns slicing off
+
+
 
 INPUTFILE: DEFINITIONS
 Usage: define options
@@ -147,13 +205,16 @@ upper,lower: Following calculations will only be performed on
        both: Default. Calculations are performed without leaflet separation.
 Definition of leaflets is mandatory if you're doing area per lipid calculations.
 
+	fold centerofmembrane
+
+Fold the system so that the box origo is at centerofmembrane.
 
 INPUTFILE: FUNCTIONS
 Usage: function options [tag]
 ----------------------------------
 All functions can be tagged by a string at
-the end of the line. The tags are used by
-i.e. corr.
+the end of the line. Tags for the AL function MUST start with a %.
+The tags are used by i.e. corr.
 
 	DA Atom1 Atom2
 
@@ -191,6 +252,14 @@ calc has to be set to distrib and/or distribm.
 	
 Dipolecoupling of Atom1 and Atom2 (typically a C-H vector)
 
+	X,Y,Z Atom1
+
+Extract the X, Y or Z coordinates for selected atom.
+
+	BX,BY,BZ
+
+Extract the box X,Y or Z coordinates.
+
 	average N
 	
 Calculate an average of the following N (int) functions
@@ -210,6 +279,40 @@ and leaflets, and usually a definition of the upper or lower leaflet
 (define leaflet [upper,lower,both]).
 Note that 'define leaflet both' does not calculate a proper area per lipid
 on a bilayer. Use average or combine of upper and lower leaflets instead.
+
+	boxapl moltype
+
+Calculate the area per lipid as x*y/#moltype. No STD as for now... 
+
+	rdf atom1 atom2
+
+Calculate radial distribution functions between atom pairs. The cutoff distance is
+determined by the number of bins (set distbin) and the rdf_binsize (set rdf_binsize).
+
+	VS tag1 tag2
+
+Function with tag "tag1" versus function with tag "tag2"
+(the values of function1 is binned in function2).
+
+	RC tagXa tagYa tagZa tagXb tagYb tagZb
+
+Calculates the rotational correlation function for the vector (Xb,Yb,zb) - (Xa,Ya,Za). 
+For now it calculates the correlation in the second order Legendre polynomial P2. 
+Use the appropriate functions for extracting the component coordinates
+(e.g. "X atomname tag") and use tags for the RC function. Make sure you set 'calc' to
+'acorr' and/or 'acorrm' to get any output.
+
+	CS atom
+
+Set the data matrix to the value set by the "set constant" function. Atom is used
+to get the right nuber of molecules and to distinguish between constants when used
+together with combine and VS and z to get electron density profiles.
+
+	mbl atom1 atom2
+
+Take the distance between atoms in different molecules (e.g. P-P distance in DMPC).
+Can be used in conjunction with "rdftype z" to only take the z component of the
+distance into account (useful in bilayers).
 
 
 TRAJMAN DEFAULT FILES:

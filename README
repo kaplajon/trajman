@@ -34,7 +34,7 @@ Trajman source code can be downloaded with bazaar. Get a recent
 version of bazaar from http://bazaar.canocical.com and issue the 
 following command:
 
-> bzr branch http://people.su.se/~jkapl/trajman trajman
+> bzr co http://people.su.se/~jkapl/trajman trajman
 
 Since the program is in constant development it might be wise
 to check the commit log for suitable revisions and changes.

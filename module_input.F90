@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------
+!---LICENSE-------------------------------------------------------!{{{
 ! This file is part of
 !
 !  Trajman: A MD Trajectory Analysis Tool
@@ -19,7 +19,7 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with Trajman.  If not, see <http://www.gnu.org/licenses/>.
-!-----------------------------------------------------------------
+!-----------------------------------------------------------------!}}}
 module input
     use kinds
     use version
@@ -61,10 +61,17 @@ module input
                 !sure the file is suffixed with capital F or that the compiler
                 !is flagged to use the preprocessor.
                 ctime=CINFO
-                write(*,*)'     Trajman experimental :: ',trim(ctime)
-                write(*,*)'                   Branch :: ',branch
-                write(*,*)'                 Revision :: r',revision,', committed ',revdate
-                write(*,*)'     (c) Jon Kapla, 2009  :: Contact: jon.kapla@mmk.su.se'
+                write(*,*)'      Trajman experimental :: ',trim(ctime)
+                write(*,*)'      Branch :: ',branch
+                write(*,*)'      Revision :: r',revision,', committed ',revdate
+                write(*,*)'      Copyright (c) 2010 Jon Kapla :: Contact: jon.kapla@mmk.su.se'
+                write(*,*)'      --------------------------------------------------------------'
+                write(*,*)'      Trajman comes with NO WARRANTY, to the extent permitted by law.'
+                write(*,*)'      You may redistribute copies of Trajman under the terms of the'
+                write(*,*)'      GNU General Public License.'
+                write(*,*)'      For more information about these matters, see the file named COPYING.'
+                write(*,*)
+
                 stop
             case('-h','--help')
                call print_help 
@@ -108,30 +115,54 @@ module input
 
     subroutine summary!{{{
         integer(kind=ik) :: i
+        character(len=100) :: A,B
+        A=''
+        A="          Molecules Atoms(mol)  Atoms(tot)"
+        if(global_setflags%leaflets_defined)A=trim(A)//'  Upper(mol)  Lower(mol)'
+        B=''
+        B=stringconv([[(' ',i=1,5)],[('-',i=6,len_trim(A))]])
         write(*,*)
         if(.NOT.global_setflags%whole)then
             write(0,*)"     WARNING: Whole not set!"
             write(0,*)"        If you want to make broken molecules"
             write(0,*)"        whole, add 'set whole' to the input."
         end if
-!        if(.NOT.allocated(common_setflags%membrane_moltypes))&
-!        write(0,*)"     WARNING: Center of membrane not set!"
         write(*,*)
-        write(*,'(12X,A31)')"Molecules Atoms(mol) Atoms(tot)"
-        write(*,'(5X,A40)')"----------------------------------------"
+        write(*,*)trim(A)
+        write(*,*)trim(B)
         do i=1,size(molt)
-        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
-        trim(molt(i)%molname),': ',molt(i)%nmol,' ',molt(i)%natoms,&
-        ' ',molt(i)%natoms*molt(i)%nmol
+            write(*,'(5X,A5,A2,I7,2(1A,I11))',advance="no")&
+            trim(molt(i)%molname),': ',molt(i)%nmol,' ',molt(i)%natoms,&
+            ' ',molt(i)%natoms*molt(i)%nmol!,
+            if(global_setflags%leaflets_defined)then
+                write(*,'(2(1A,I11))')' ',size(molt(i)%upper),' ',size(molt(i)%lower)
+            else
+                write(*,*)
+            end if
         end do
-        write(*,'(5X,A40)')"----------------------------------------"
-        write(*,'(5X,A5,A2,I7,1A,I11,1A,I11)')&
-        "Total",': ',sum(molt(:)%nmol),' ',sum(molt(:)%natoms),' ',atot
+        write(*,*)trim(B)
+        write(*,'(5X,A5,A2,I7,2(1A,I11))',advance="no")&
+        "Total",': ',sum(molt(:)%nmol),' ',sum(molt(:)%natoms),' ',size(coor,2)
+        if(global_setflags%leaflets_defined)then
+            write(*,'(2(1A,I11))')' ',sum([(size(molt(i)%upper),i=1,size(molt))]),' ',sum([(size(molt(i)%lower),i=1,size(molt))])
+        else
+            write(*,*)
+        end if
         write(*,*)
-        if(global_setflags%whole)&
-        write(*,*)"     Function Whole is active."
-        if(global_setflags%apl)&
-        write(*,*)"     Area per lipid calculation is enabled."
+        if(global_setflags%whole)write(*,*)"     Function Whole is active."
+        if(global_setflags%apl)write(*,*)"     Area per lipid calculation is enabled."
+        !if(.not.global_setflags%distminmax%switch)write(*,*)"     All or some of the &
+        !distributions have automatic limits.[DEFAULT]"
+        if(global_setflags%distminmax%switch)write(*,*)"     All or some of the &
+        distributions have user defined limits.[NOT DEFAULT]"
+        if(.not.global_setflags%VSnorm)write(*,*)"     All or some of the VS functions are &
+        normalized with binsize and frames.[NOT DEFAULT]"
+        !if(global_setflags%VSnorm)write(*,*)"     All or some of the VS functions are &
+        !normalized with molecules and frames.[DEFAULT]"
+        if(global_setflags%zrdf)write(*,*)'      WARNING! Z-rdf not implemented.'
+        if(global_setflags%zrdf)write(*,*)'      The rdftype z setting works only for MBL!'
+
+        if(skipframes/=0)write(*,*)"     Skipping first ",trim(adjustl(intstr(skipframes)))," frames."
         write(*,*)
     end subroutine summary!}}}
 
@@ -230,7 +261,7 @@ module input
 !        f77_molfile_close_read,f77_molfile_finish
         character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
-        character(kind=1,len=20) :: arg2
+        character(kind=1,len=20) :: arg2,inttest
         character(kind=1,len=200) :: infile
         integer(kind=ik) ::&
         ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
@@ -253,10 +284,14 @@ module input
                 select case(trim(trajtype))
                     case('gro')
                         open(tunit,file=stringconv(trajfile),status='old')
-                    case('trr')!MOLFILEPLUGIN FROM VMD
+                    case('trr','dcd','pdb')!MOLFILEPLUGIN FROM VMD
                         tunit=-1
                         call f77_molfile_init
                         call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+                    case default
+                        tunit=-1
+                        call f77_molfile_init
+                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
                 end select
                 !allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
                 !trajfile=arguments(1:size(trajfile),2)
@@ -306,7 +341,7 @@ module input
                 trajop%findex=7
                 p=1
                 funcstr='CO_'
-            case('dc','DC','dipolecoupling')
+            case('dc','DC','dipolarcoupling')
                 trajop%findex=8
                 p=3
                 funcstr='DC_'
@@ -326,18 +361,90 @@ module input
                 if(.NOT.trajop%set%apl)stop 'AL: Needs apl!'
                 if(.NOT.trajop%set%leaflets_defined)stop 'AL: Needs leaflets!'
                 trajop%findex=11
-                p=size(arguments,2)
+                inttest=trim(stringconv(arguments(:,size(arguments,2))))
+                if (atomindex(trim(stringconv(arguments(:,i+1))),molt(:)%molname,size(molt))&
+                    +atomindex(trim(stringconv(arguments(:,i+1))))==0 .and.&
+                    inttest(1:1)=='%')then
+                    p=size(arguments,2)-1
+                else
+                    p=size(arguments,2)
+                end if
                 funcstr='AL_'
-                
+            case('MI','mi','moi')
+                trajop%findex=12
+                funcstr='MI_'
+                p=2
+            case('RDF','rdf','rf')
+                trajop%findex=13
+!                if(trajop%set%zrdf)write(*,*)'WARNING! Z-rdf not implemented. Works only &
+!                for MBL'
+                funcstr='RF_'
+                p=3
+            case('X','x','Y','y','Z','z')
+                trajop%findex=14
+                select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+                case('X','x')
+                    funcstr='XC_'
+                case('Y','y')
+                    funcstr='YC_'
+                case('Z','z')
+                    funcstr='ZC_'
+                end select
+                p=2
+            case('GD','gd')
+                if(global_setflags%apl)stop 'APL cannot be active'
+                trajop%findex=15
+                funcstr='GD_'
+                p=1
+            case('shuffle_GD')
+                trajop%findex=16
+                funcstr='SH_'
+                p=2
+            case('boxx','bx','BX','boxy','by','BY','boxz','bz','BZ')
+                trajop%findex=17
+                select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+                case('boxx','bx','BX')
+                    funcstr='BX_'
+                case('boxy','by','BY')
+                    funcstr='BY_'
+                case('boxz','bz','BZ')
+                    funcstr='BZ_'
+                end select
+                p=1
+            case('boxapl')
+                trajop%findex=18
+                funcstr='BA_'
+                p=2
+            case('versus','VS','VERSUS')
+                trajop%findex=19
+                funcstr='VS_'
+                p=1
+            case('rotcorr','RC','ROTCORR')
+                trajop%findex=20
+                funcstr='RC_'
+                p=1
+            case('constant','CS')
+                trajop%findex=21
+                funcstr='CS_'
+                if(.not.trajop%set%const%switch)stop 'CS: To use a constant &
+                you need to set it first!'
+                p=2
+            case('mbl','MBL','MB')
+                trajop%findex=22
+                funcstr='MB_'
+                p=3
             case('exit')
                 stop
 
             case default 
-                write(*,*)"Not a valid input, ",":",&
-                trim(stringconv(arguments(:,1))),":"
+                write(*,*)"Not a valid input, ",">",&
+                trim(stringconv(arguments(:,1))),"<"
                 write(*,*)len(trim(stringconv(arguments(:,1)))),size(arguments(:,1)),arguments(:,1)
                 stop
             end select
+            trajop%cv%mean=0
+            trajop%cv%meandev=0
+            trajop%cv%n=0
             !------------------------------------------------------
             if(p>=2)allocate(trajop%atoms(p-1))
             trajop%instructionstring=''
@@ -345,16 +452,26 @@ module input
             trajop%ref=''
                 select case(trajop%findex)
                 case(0,10)
-                case(7)
+                case(7,19,20)
                     select case(size(arguments,2)-1)
                     case(2,3)
                         trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
                         trajop%set%corrindex(2)=trim(adjustl(stringconv(arguments(:,3))))
                         if(size(arguments,2)==4)trajop%ref=trim(stringconv(arguments(:,4)))!TAG the function
                         trajop%instructionstring=trim(funcstr)
+                    case(6,7)
+                        trajop%set%corrindex(1)=trim(stringconv(arguments(:,2)))
+                        trajop%set%corrindex(2)=trim(adjustl(stringconv(arguments(:,3))))
+                        trajop%set%corrindex(3)=trim(adjustl(stringconv(arguments(:,4))))
+                        trajop%set%corrindex(4)=trim(adjustl(stringconv(arguments(:,5))))
+                        trajop%set%corrindex(5)=trim(adjustl(stringconv(arguments(:,6))))
+                        trajop%set%corrindex(6)=trim(adjustl(stringconv(arguments(:,7))))
+                        if(size(arguments,2)==8)trajop%ref=trim(stringconv(arguments(:,8)))!TAG the function
+                        trajop%instructionstring=trim(funcstr)
                     case default
-                        stop 'CORR: Wrong number of arguments.&
-                                Use two CHAR arguments'
+                        stop 'CORR/VS: Wrong number of arguments.&
+                                Use two CHAR arguments for corr or VS, six for&
+                                ROTCORR'
                     end select
                    
                 case(9)
@@ -388,6 +505,7 @@ module input
                         trajop%instructionstring=trim(funcstr)
                         if(size(arguments,2)>1)trajop%ref=trim(stringconv(arguments(:,2)))
                     end if
+                    if(trajop%findex==12)trajop%atoms(1)=molt(trajop%atoms(1))%firstatom !MOI
                 end select
             !------------------------------------------------------
     end subroutine procinp!}}}
@@ -404,15 +522,15 @@ module input
             case('centerofmembrane')
                 trajop%define=1
                 if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
-                if(allocated(trajop%membrane_moltypes))deallocate(trajop%membrane_moltypes)
-                allocate(trajop%membrane_moltypes(size(arguments,2)-2))
-                do i=1,size(trajop%membrane_moltypes)
-                    trajop%membrane_moltypes(i)=atomindex(trim(stringconv(arguments(:,2+i))),molt(:)%molname,size(molt))
+                if(allocated(common_setflags%membrane_moltypes))deallocate(common_setflags%membrane_moltypes)
+                allocate(common_setflags%membrane_moltypes(size(arguments,2)-2))
+                do i=1,size(common_setflags%membrane_moltypes)
+                    common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(arguments(:,2+i))),molt(:)%molname,size(molt))
                 end do
-                call center_of_membrane(trajop%membrane_moltypes)
+                call center_of_membrane(common_setflags%membrane_moltypes)
                 global_setflags%centerofmembrane=.TRUE.
-
             case('atom')
+                allocate(trajop%atoms(1))
                 trajop%define=2
                 trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
                 trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
@@ -434,11 +552,11 @@ module input
                 natoms(size(atomnames))=molt(j)%natoms
                 atomnames(size(atomnames))=trajop%newatom%atomname
                 trajop%atoms(1)=size(atomnames)
-                atot=atot+molt(j)%nmol
+                !atot=atot+molt(j)%nmol
                 shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
-                deallocate(coor)
-                allocate(coor(1:3,atot))
-
+                call reallocatecoor(coor,size(coor,2)+molt(j)%nmol)
+                !deallocate(coor)
+                !allocate(coor(1:3,atot+molt(j)%nmol))
             case('leaflet')
                 trajop%define=3
                 global_setflags%leaflets_defined=.TRUE.
@@ -453,8 +571,16 @@ module input
                         trajop%set%leaflet=2
                         global_setflags%leaflet=2
                 end select
+            case('fold')
+                select case(arg3)
+                case('centerofmembrane')
+                    trajop%define=4
+                    call foldmol('com')
+                end select
+            case default
+                write(*,*)'>',arg3,'< is not a valid for "define"!'
+                stop
             end select
-
     end subroutine define!}}}
 
     subroutine set(args)!arg2,arg3)!{{{
@@ -466,7 +592,6 @@ module input
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
         if(size(args,2)>=4)arg4=trim(stringconv(args(:,4)))
         if(size(args,2)>=5)arg5=trim(stringconv(args(:,5)))
-
         select case(arg2)
             case ('autofilename','AUTOFILENAME','Autofilename')
                 select case(arg3)
@@ -477,11 +602,12 @@ module input
                     case default
                         global_setflags%autofilename=.TRUE.
                 end select
-
             case('maxframes','mf')
                 read(arg3,*,iostat=ios)maxframes
                 if (ios/=0)stop 'SET: maxframes should be of type integer'
-
+            case('skipframes','sf')
+                read(arg3,*,iostat=ios)skipframes
+                if (ios/=0)stop 'SET: skipframes should be of type integer'
             case('atomnames')
                 open(nunit,file=arg3,action='read',status='old',iostat=ios)
                 if(ios/=0)then
@@ -491,13 +617,16 @@ module input
                 endif
                 do i=1,size(atomnames)
                 read(nunit,*,iostat=ios)atomnames(i)
+                if(ANY(atomnames(1:i-1)==atomnames(i)))then
+                    write(*,*)"ERROR ATOMNAMES: The name ",trim(atomnames(i))," is not unique!"
+                    stop
+                end if
                 if(ios/=0)then
                     write(*,*)"ERROR: (",i,")",arg3,ios
                     stop
                 endif
                 end do
                 close(nunit)
-
             case('filename')
                 if(arg3=='off')then
                     global_setflags%filename=''
@@ -505,16 +634,13 @@ module input
                     global_setflags%filename=''
                     global_setflags%filename=arg3
                 endif
-
             case('calc')
-
                 if (allocated(global_setflags%calc))deallocate(global_setflags%calc)
                 allocate(global_setflags%calc(size(args,2)-2))
 
                 do i=1,size(global_setflags%calc)
                     global_setflags%calc(i)=trim(stringconv(args(:,i+2)))
                 end do
-
             case('distbin')
                 read(arg3,*,iostat=ios)global_setflags%distbin
                 if (ios/=0 .OR. global_setflags%distbin<=0)&
@@ -557,12 +683,6 @@ module input
                         endif
                      end do
                 end do
-           ! case('centerofmembrane')
-           !     if(.NOT. global_setflags%folding)stop 'CENTEROFMEMBRANE: Needs folding'
-           !    allocate(common_setflags%membrane_moltypes(size(args,2)-2))
-           !    do i=1,size(common_setflags%membrane_moltypes)
-           !        common_setflags%membrane_moltypes(i)=atomindex(trim(stringconv(args(:,2+i))),molt(:)%molname,size(molt))
-           !    end do
             case('constant_bondlength','cbl')
                 select case(arg3)
                     case('on','ON')
@@ -595,21 +715,22 @@ module input
                     else
                         global_setflags%writeframe(global_setflags%wftot)%outformat='xyz'
                     end if
+                    !write(*,*)trim(global_setflags%writeframe(global_setflags%wftot)%outformat)
                 else
                     write(*,*)'ERROR:SET:writeframe: Needs an integer'
                     stop
                 end if
-            case('area_per_lipid','apl')
+            case('area_per_lipid','apl','griddiff')
                 
                 if(size(args,2)>=3)then
                     call apl_atomlist(args(:,3:))
                     global_setflags%apl=.TRUE.
+                    global_setflags%gd=.FALSE.
+                    if(arg2=='griddiff')global_setflags%apl=.FALSE.
+                    if(arg2=='griddiff')global_setflags%gd=.TRUE.
                 else
                     write(*,*)'SET: Area per lipid: Requires atomnames'
                 end if
-                
-                
-               !allocate(common_setflags%apl_moltypes(size(args,2)-2))
             case('submoltype')
                 call reallocate(molt,size(molt)+1)
                 mols=mols+1
@@ -631,13 +752,11 @@ module input
             case('folding')
                 if(.NOT. allocated(masses))stop 'FOLDING: Needs atom masses'
                 global_setflags%folding=.TRUE.
-
             case('aplgrid')
                 read(arg3,*,iostat=ios)global_setflags%aplgrid(1)
                 if(ios/=0)stop 'SET:aplgrid: Arg1'
                 read(arg4,*,iostat=ios)global_setflags%aplgrid(2)
                 if(ios/=0)stop 'SET:aplgrid: Arg2'
-
             case('leaflets')
                         if(global_setflags%whole)call whole
                         if(global_setflags%folding)call foldmol
@@ -658,10 +777,104 @@ module input
                             end if
                             end do
                         end do
-                        
+                        if(ku==0 .or. kl==0)then
+                            write(*,*)'Upper: ',ku,' Lower: ',kl
+                            stop
+                        end if
             case ('whole')
                 global_setflags%whole=.TRUE.
+            case('torsion_shift','tshift')
+                if(size(args,2)>=2)then
+                    global_setflags%tshift=readint(arg3)
+                else
+                    stop 'SET: Torsion shift needs an integer'
+                end if
+            case('cscale')
+                if(size(args,2)>=2)then
+                    common_setflags%traj_cscale=readreal(arg3)
+                else
+                    stop 'SET: Coordinate scale needs a real number'
+                end if
+            case('rdf_binsize')
+                if(size(args,2)>=2)then
+                    global_setflags%rdf_binsize=readreal(arg3)
+                else
+                    stop 'SET: RDF_Binsize needs a real number'
+                end if
+            case('rdftype')
+                select case(arg3)
+                case('xy')
+                    global_setflags%xyrdf=.TRUE.
+                    global_setflags%zrdf=.FALSE.
+                case('z')
+                    global_setflags%xyrdf=.FALSE.
+                    global_setflags%zrdf=.TRUE.
+                case default
+                    global_setflags%xyrdf=.FALSE.
+                    global_setflags%zrdf=.FALSE.
+                end select
+            case('shuffle_atoms')
+                if(.not.allocated(common_setflags%shuffle_atoms))&
+                allocate(common_setflags%shuffle_atoms(size(args,2)-2))
+                do i=1,size(common_setflags%shuffle_atoms)
+                    common_setflags%shuffle_atoms(i)=atomindex(stringconv(args(:,2+i)))
+                end do
+            case('constant')
+                read(arg3,*,iostat=ios)global_setflags%const%value
+                global_setflags%const%switch=.TRUE.
+                if (ios/=0)stop 'SET: Constant should be of type real'
+            case('VS_norm')
+                select case(arg3)
+                case('normal')
+                    global_setflags%VSnorm=.TRUE.
+                case('density')
+                    global_setflags%VSnorm=.FALSE.
+                case default
+                    stop 'SET: VS_norm: normal or density?'
+                end select
+            case('distriblimits')
+                if(size(args,2)<=3)then
+                    global_setflags%distminmax%switch=.FALSE.
+                else
+                    global_setflags%distminmax%switch=.TRUE.
+                    read(arg3,*,iostat=ios)global_setflags%distminmax%mi
+                    if (ios/=0)stop 'SET: Disttriblimit min should be of type real'
+                    read(arg4,*,iostat=ios)global_setflags%distminmax%ma
+                    if (ios/=0)stop 'SET: Disttriblimit max should be of type real'
+                end if
+            case('scaling')
+                if(size(args,2)>=3)then
+                    global_setflags%scaling%switch=.true.
+                    global_setflags%scaling%typ=arg3
+                    select case(trim(global_setflags%scaling%typ))
+                    case('x','y','z','xy','yx','xz','zx','yz','zy','xyz')
+                    case default
+                        stop 'SCALING: Check input!'
+                    end select
+                else
+                    global_setflags%scaling%typ=''
+                    global_setflags%scaling%switch=.false.
 
+                end if
+            case('slice')
+                global_setflags%slice%switch=.TRUE.
+                select case(arg3)
+                case('Z_in')
+                    global_setflags%slice%typ='Z'
+                case('Z_out')
+                    global_setflags%slice%typ='Z'
+                case('off')
+                    global_setflags%slice%switch=.FALSE.
+                case default
+                    write(*,*)'SLICE: >',arg3,'< Only slicing in Z (Z_in nd Z_out) is implemented!'
+                    stop
+                end select
+                if(size(args,2)==5)then
+                    global_setflags%slice%lower=readreal(arg4)
+                    global_setflags%slice%upper=readreal(arg5)
+                else
+                    stop 'SLICE: Wrong number of arguments!'
+                end if
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'
