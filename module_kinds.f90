@@ -25,7 +25,8 @@ module kinds
     implicit none
     integer(kind=4) ,parameter::ik=4
     integer(kind=ik),parameter :: rk=8,ikr=ik,endf=-1,endr=-2,stdin=5,stdout=6
-    real(kind=rk),parameter :: planck=6.62606896e-34 !Js (33)
+    real(kind=rk),parameter :: planck=6.62606957e-34 !(29) CODATA2010
+ !6.62606896e-34 !Js (33)
     real(kind=rk),protected :: pi,magnetic,hbar!=log(real(cmplx(-1.,0.,rk)**cmplx(0.,-1.,rk)))
 !complex(kind=rk) :: pi
     contains

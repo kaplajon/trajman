@@ -274,7 +274,12 @@ module input
         p=0;funcstr=''
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('init')
-                call initgro(arguments(:,2))
+               select case(trim(stringconv(arguments(index(stringconv(arguments(:,2)),'.',back=.false.)+1:,2))))
+                  case('gro')
+                     call initgro(arguments(:,2))
+                  case default
+                     call initconf(arguments(:,2))
+                  end select
             case('traj')
                 !call initgro(arguments(:,2))
                 allocate(trajfile(len_trim(stringconv(arguments(:,2)))))

@@ -250,6 +250,54 @@ end subroutine globals!}}}
         deallocate(charvec)
     end subroutine initgro!}}}
 
+    subroutine initconf(fname)!{{{
+        ! Bestämmer antalet molekyltyper, atomer och indexering av dessa utifrån
+        ! en frame.
+        character(kind=1,len=1),intent(in) :: fname(:)
+        character(kind=1,len=1),allocatable :: charvec(:)
+   !     character(kind=1,len=11),allocatable :: temp(:)
+        character(kind=1,len=10),allocatable :: moltype_atom(:,:)
+        character(kind=1,len=10) :: sdr
+        integer(kind=ik) :: ios,ia,i
+        real(kind=rk) :: box1,box2
+       !stop 'HEJ'
+        allocate(charvec(1))
+        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+
+        if(ios/=0)then
+                write(*,*)"Error, cannot open ",&
+                "file ",":",trim(stringconv(fname)),":"
+                stop
+        endif
+
+        read(unit=tunit,fmt=*,iostat=ios)
+        if(ios==endf)return
+        read(unit=tunit,fmt=*,iostat=ios)ia,i,atot ! Totala antalet atomer i en frame
+        allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
+        read(unit=tunit,fmt=*,iostat=ios)box(1),box1,box2
+        read(unit=tunit,fmt=*,iostat=ios)box1,box(2),box2
+        read(unit=tunit,fmt=*,iostat=ios)box1,box2,box(3)
+        moltype_atom=''
+        do ia=1,atot
+            read(tunit,*)sdr,i
+            sdr=adjustl(sdr)
+            i=scan(sdr,' ')
+            if(i>10.or.i<1)i=6
+            moltype_atom(1,ia)=trim(sdr(1:i-1))
+            moltype_atom(2,ia)=trim(sdr(1:i-1))!trim(adjustl(sdr(i:)))
+            read(tunit,*)coor(1:3,ia)
+            !write(*,*)coor(1:3,ia),'COOR'
+        end do
+!            read(tunit,*)box
+        !rewind(tunit)
+ !       coor=coor*10._rk ! Scale to Å (default in .trr files)
+ !       box=box*10._rk ! Scale to Å (default in .trr files)
+        close(tunit)
+        rowsperframe=atot*2+5
+        call trajindex(moltype_atom)
+        deallocate(charvec)
+      end subroutine initconf!}}}
+
     function readgro(tunit) result(ios)!{{{
 
         integer(kind=4) :: tunit
