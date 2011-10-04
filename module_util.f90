@@ -32,6 +32,10 @@ module util
         character(kind=1,len=255) :: molname
     end type moltype!}}}
     type(moltype),allocatable :: molt(:)
+    type trjf
+        character(kind=1,len=1),allocatable :: filename(:)
+    end type trjf
+    type(trjf),allocatable :: trajfile(:)
     type write_frame!{{{
         integer(kind=ik) :: framenumber
         character(kind=1,len=3) :: outformat
@@ -99,7 +103,8 @@ module util
     end type instruct!}}}
     interface reallocate
         module procedure &
-        reallocatepointerchar,reallocateint,reallocatemoltype,reallocatewriteframe,reallocatereal
+        reallocatepointerchar,reallocateint,reallocatemoltype,&
+        reallocatewriteframe,reallocatereal,reallocatetrajfile
     end interface
     contains
 
@@ -261,6 +266,21 @@ module util
         
         end if
     end subroutine reallocatemoltype!}}}
+
+    subroutine reallocatetrajfile(v,i)!{{{
+        type(trjf),intent(inout),allocatable :: v(:)
+        type(trjf),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocatetrajfile!}}}
 
     subroutine reallocatewriteframe(v,i)!{{{
         type(write_frame),intent(inout),allocatable :: v(:)
