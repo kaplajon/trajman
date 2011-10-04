@@ -32,6 +32,8 @@ module readtraj
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
     character(kind=1, len=1),allocatable :: trajfile(:)
     character(kind=1,len=3) :: trajtype
+    character(kind=1,len=*), parameter :: dlpoly3histfile='HISTORY'
+    character(kind=1,len=*), parameter :: dlpoly3histtag='dlpoly3hist'
     integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
     integer(kind=4) :: tunit=12!,runit
     integer (kind=ik),allocatable ::&
@@ -252,27 +254,21 @@ end subroutine globals!}}}
 
     subroutine initconf(fname)!{{{
         ! Bestämmer antalet molekyltyper, atomer och indexering av dessa utifrån
-        ! en frame.
+        ! en frame definderad av filen CONFIG från DL_POLY
         character(kind=1,len=1),intent(in) :: fname(:)
-        character(kind=1,len=1),allocatable :: charvec(:)
-   !     character(kind=1,len=11),allocatable :: temp(:)
         character(kind=1,len=10),allocatable :: moltype_atom(:,:)
         character(kind=1,len=10) :: sdr
         integer(kind=ik) :: ios,ia,i
         real(kind=rk) :: box1,box2
-       !stop 'HEJ'
-        allocate(charvec(1))
         open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
-
         if(ios/=0)then
-                write(*,*)"Error, cannot open ",&
-                "file ",":",trim(stringconv(fname)),":"
-                stop
+            write(*,*)"Error, cannot open ",&
+                 "file ",":",trim(stringconv(fname)),":"
+            stop
         endif
-
-        read(unit=tunit,fmt=*,iostat=ios)
+        read(unit=tunit,fmt=*,iostat=ios) ! first line is a comment
         if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)ia,i,atot ! Totala antalet atomer i en frame
+        read(unit=tunit,fmt=*,iostat=ios)ia,i,atot ! atot är det totala antalet atomer i en frame
         allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
         read(unit=tunit,fmt=*,iostat=ios)box(1),box1,box2
         read(unit=tunit,fmt=*,iostat=ios)box1,box(2),box2
@@ -281,22 +277,17 @@ end subroutine globals!}}}
         do ia=1,atot
             read(tunit,*)sdr,i
             sdr=adjustl(sdr)
-            i=scan(sdr,' ')
-            if(i>10.or.i<1)i=6
-            moltype_atom(1,ia)=trim(sdr(1:i-1))
-            moltype_atom(2,ia)=trim(sdr(1:i-1))!trim(adjustl(sdr(i:)))
+            moltype_atom(1,ia)=trim(sdr)//'M'! M means molecule
+            moltype_atom(2,ia)=trim(sdr)//'A'! A means atom
             read(tunit,*)coor(1:3,ia)
-            !write(*,*)coor(1:3,ia),'COOR'
         end do
-!            read(tunit,*)box
-        !rewind(tunit)
- !       coor=coor*10._rk ! Scale to Å (default in .trr files)
- !       box=box*10._rk ! Scale to Å (default in .trr files)
+! unit is already in Ångström
+!       coor=coor*10._rk ! Scale to Å (default in .trr files)
+!       box=box*10._rk ! Scale to Å (default in .trr files)
         close(tunit)
         rowsperframe=atot*2+5
         call trajindex(moltype_atom)
-        deallocate(charvec)
-      end subroutine initconf!}}}
+    end subroutine initconf!}}}
 
     function readgro(tunit) result(ios)!{{{
 

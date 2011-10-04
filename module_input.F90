@@ -264,7 +264,7 @@ module input
         character(kind=1,len=20) :: arg2,inttest
         character(kind=1,len=200) :: infile
         integer(kind=ik) ::&
-        ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
+        ios,i,j,aind1,aind2,aind3,aind4,findex,p
         integer(kind=4) :: natm 
         type(instruct) :: trajop
         call getwords(charvector,arguments)
@@ -281,25 +281,27 @@ module input
                      call initconf(arguments(:,2))
                   end select
             case('traj')
-                !call initgro(arguments(:,2))
                 allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
                 trajfile=arguments(1:size(trajfile),2)
                 infile=stringconv(trajfile)
                 trajtype=trim(infile(scan(infile,'.',BACK=.TRUE.)+1:))
+                if(scan(infile,'.',BACK=.true.)==0)trajtype=trim(infile(scan(infile,'/',BACK=.TRUE.)+1:))
                 select case(trim(trajtype))
                     case('gro')
                         open(tunit,file=stringconv(trajfile),status='old')
                     case('trr','dcd','pdb')!MOLFILEPLUGIN FROM VMD
                         tunit=-1
                         call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trim(trajtype))
+                    case (dlpoly3histfile(1:min(len(dlpoly3histfile),len(trajtype))))
+                        tunit=-1
+                        call f77_molfile_init
+                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),dlpoly3histtag)
                     case default
                         tunit=-1
                         call f77_molfile_init
                         call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
                 end select
-                !allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
-                !trajfile=arguments(1:size(trajfile),2)
 
             case('set','SET')
                 if(trim(stringconv(arguments(:,2)))=='apl')trajop%setapl=.TRUE.

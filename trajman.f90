@@ -128,6 +128,17 @@ program trajman
                 call f77_molfile_close_read(tunit,statf)
                 call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
             deallocate(coorv,bx)
+         case(dlpoly3histfile(1:min(len(dlpoly3histfile),len(trajtype))))
+            statf=1
+            allocate(coorv(atot*3),bx(6))
+            do 
+                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
+                if(statf==0)exit
+                maxframes=maxframes+1
+            end do
+                call f77_molfile_close_read(tunit,statf)
+                call f77_molfile_open_read(tunit,natm,stringconv(trajfile),dlpoly3histtag)
+            deallocate(coorv,bx)
         case default
             statf=1
             allocate(coorv(atot*3),bx(6))
