@@ -277,21 +277,30 @@ module input
                 call initgro(arguments(:,2))
             case('traj')
                 !call initgro(arguments(:,2))
-                allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
-                trajfile=arguments(1:size(trajfile),2)
-                infile=stringconv(trajfile)
+                    call &
+                    reallocate(trajfile,merge(size(trajfile),0,allocated(trajfile))+1)
+                    !write(*,*)size(trajfile),'SIZE TRJF'
+                    call reallocate(tunit,merge(size(tunit),0,allocated(tunit))+1)
+                    !write(*,*)size(tunit),'SIZE TUNIT'
+                i=size(trajfile)
+                tunit(size(tunit))=tunit(size(tunit-1))+1
+                if(size(tunit)==1)tunit(size(tunit))=12
+                allocate(trajfile(i)%filename(len_trim(stringconv(arguments(:,2)))))
+                trajfile(i)%filename=arguments(1:size(trajfile(i)%filename),2)
+                infile=stringconv(trajfile(i)%filename)
                 trajtype=trim(infile(scan(infile,'.',BACK=.TRUE.)+1:))
                 select case(trim(trajtype))
                     case('gro')
-                        open(tunit,file=stringconv(trajfile),status='old')
+                        open(tunit(size(tunit)),file=stringconv(trajfile(i)%filename),status='old')
                     case('trr','dcd','pdb')!MOLFILEPLUGIN FROM VMD
-                        tunit=-1
-                        call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
+                        tunit(size(tunit))=-1
+                        if(size(tunit)==1)call f77_molfile_init
+                        call f77_molfile_open_read(tunit(size(tunit)),natm,stringconv(trajfile(i)%filename),trajtype)
+                     !   write(*,*)tunit,'TUNIT'
                     case default
-                        tunit=-1
-                        call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
+                        tunit(size(tunit))=-1
+                        if(size(tunit)==1)call f77_molfile_init
+                        call f77_molfile_open_read(tunit(size(tunit)),natm,stringconv(trajfile(i)%filename),'auto')
                 end select
                 !allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
                 !trajfile=arguments(1:size(trajfile),2)

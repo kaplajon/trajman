@@ -30,10 +30,10 @@ module readtraj
     character(kind=1, len=11),allocatable :: temp(:)
     character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
-    character(kind=1, len=1),allocatable :: trajfile(:)
+   ! character(kind=1, len=1),allocatable :: trajfile(:)
     character(kind=1,len=3) :: trajtype
     integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
-    integer(kind=4) :: tunit=12!,runit
+    integer(kind=4),allocatable :: tunit(:)!=12!,runit
     integer (kind=ik),allocatable ::&
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
@@ -41,6 +41,10 @@ module readtraj
     interface atomindex
         module procedure atomindex_a,atomindex_b
     end interface
+!    type trjf
+!        character(kind=1,len=1),allocatable :: filename(:)
+!    end type trjf
+!    type(trjf),allocatable :: trajfile(:)
     type atomdata
         character(kind=1,len=len(atomnames)) :: aname
         real(kind=rk) :: mass,mgratio
@@ -217,7 +221,9 @@ end subroutine globals!}}}
         integer(kind=ik) :: ios,ia,i
        !stop 'HEJ'
         allocate(charvec(1))
-        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+        allocate(tunit(1))
+        tunit=12
+        open(unit=tunit(1),file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
 
         if(ios/=0)then
                 write(*,*)"Error, cannot open ",&
@@ -225,43 +231,54 @@ end subroutine globals!}}}
                 stop
         endif
 
-        read(unit=tunit,fmt=*,iostat=ios)
+        read(unit=tunit(1),fmt=*,iostat=ios)
         if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)atot ! Totala antalet atomer i en frame
+        read(unit=tunit(1),fmt=*,iostat=ios)atot ! Totala antalet atomer i en frame
         allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
         moltype_atom=''
         do ia=1,atot
-            read(tunit,"(5x,A10,5x)",advance='no')sdr
+            read(tunit(1),"(5x,A10,5x)",advance='no')sdr
             sdr=adjustl(sdr)
             i=scan(sdr,' ')
             if(i>10.or.i<1)i=6
             moltype_atom(1,ia)=trim(sdr(1:i-1))
             moltype_atom(2,ia)=trim(adjustl(sdr(i:)))
-            read(tunit,*)coor(1:3,ia)
+            read(tunit(1),*)coor(1:3,ia)
             !write(*,*)coor(1:3,ia),'COOR'
         end do
-            read(tunit,*)box
+            read(tunit(1),*)box
         !rewind(tunit)
         coor=coor*10._rk ! Scale to Å (default in .trr files)
         box=box*10._rk ! Scale to Å (default in .trr files)
-        close(tunit)
+        close(tunit(1))
         rowsperframe=atot+3
         call trajindex(moltype_atom)
         deallocate(charvec)
+        deallocate(tunit)
     end subroutine initgro!}}}
 
-    function readgro(tunit) result(ios)!{{{
+    function readgro(fhandle) result(i)!{{{
 
-        integer(kind=4) :: tunit
-        integer(kind=ik) :: ios,ia
-        read(unit=tunit,fmt=*,iostat=ios)
-        if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)atot
+        integer(kind=4) :: fhandle
+        integer(kind=ik) :: i,ios,ia
+        read(unit=fhandle,fmt=*,iostat=ios)
+        select case(ios)
+        case(0)
+            i=ios
+        case(endf)
+            if(fhandle==tunit(size(tunit)))then
+                i=1 !for the frameloop to work as expected.
+            else
+                i=2
+            end if
+        end select
+        if(i==1)return
+        read(unit=fhandle,fmt=*,iostat=ios)atot
         do ia=1,atot
-            read(unit=tunit,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
-            read(tunit,*)coor(:,ia)
+            read(unit=fhandle,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
+            read(unit=fhandle,fmt=*,iostat=ios)coor(:,ia)
         end do
-        read(unit=tunit,fmt=*,iostat=ios)box(:)
+        read(unit=fhandle,fmt=*,iostat=ios)box(:)
         coor=coor*10._rk ! Scale to Å (default in .trr files)
         box=box*10._rk ! Scale to Å (default in .trr files)
 
@@ -278,8 +295,16 @@ end subroutine globals!}}}
         call f77_molfile_read_next(fhandle,natm,coorv,bx,statf)
         coor=reshape(real(coorv,kind(coor)),[3,size(coor,2)],PAD=0._rk*coor)
         box=bx(1:3)
-        if(statf/=0)ios=0 !molfile stat and iostat conversion 
-        if(statf==0)ios=1 !for the frameloop to work as expected.
+        select case(statf)
+        case(0)
+            if(fhandle==tunit(size(tunit)))then
+                ios=1 !for the frameloop to work as expected.
+            else
+                ios=2
+            end if
+        case default
+            ios=0 !molfile stat and iostat conversion 
+        end select
     end function readtrr!}}}
 
     subroutine closetraj(funit)!{{{
@@ -289,10 +314,10 @@ end subroutine globals!}}}
             close(funit)
         case('trr','dcd','pdb')
             call f77_molfile_close_read(funit,stat)
-            call f77_molfile_finish
+            if(funit==tunit(size(tunit)))call f77_molfile_finish
         case default
             call f77_molfile_close_read(funit,stat)
-            call f77_molfile_finish
+            if(funit==tunit(size(tunit)))call f77_molfile_finish
         end select
     end subroutine closetraj!}}}
 

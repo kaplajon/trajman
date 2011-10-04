@@ -96,14 +96,17 @@ program trajman
     if(maxframes==0)then
         select case(trajtype)
         case('gro')
+            !Sum the number of frames of all trajfiles
+            j=0
+            do i=1,size(trajfile)
             p=getpid() ! Returns pid of the running instance of trajman
             write(pid,*)p
             !Make a system call to stat to get filesize of trajectory file
-            write(sysstr,*)'stat -c%s '//stringconv(trajfile)//' >',trim(adjustl(pid)),'trsize'
+            write(sysstr,*)'stat -c%s '//stringconv(trajfile(i)%filename)//' >',trim(adjustl(pid)),'trsize'
             ios=system(trim(sysstr))
             !Make a system call to extract one frame from trajectory file (based on
             !rowsperframe)
-            write(sysstr,*)'tail ',-rowsperframe,' ',stringconv(trajfile),' >',trim(adjustl(pid)),'oneframe'
+            write(sysstr,*)'tail ',-rowsperframe,' ',stringconv(trajfile(i)%filename),' >',trim(adjustl(pid)),'oneframe'
             ios=system(trim(sysstr))
             ! Make a system call to get the size of one frame
             sysstr='stat -c%s '//trim(adjustl(pid))//'oneframe >>'//trim(adjustl(pid))//'trsize'
@@ -112,32 +115,52 @@ program trajman
             open(42,file=trim(adjustl(pid))//'trsize')
             read(42,*)trs
             read(42,*)frs
-            maxframes=(trs-mod(trs,frs))/frs+nint(real(mod(trs,frs),8)/real(frs,8))
+            j=((trs-mod(trs,frs))/frs+nint(real(mod(trs,frs),8)/real(frs,8)))
+            maxframes=maxframes+j
             if(trs==0)maxframes=0
             close(42)
             ! Remove temporary files
             ios=system('rm '//trim(adjustl(pid))//'trsize '//trim(adjustl(pid))//'oneframe')
+            if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
+           char(13),"Counting frames: ",j!,char(13)     
+            write(*,*)stringconv(trajfile(i)%filename)
+            end do
+            
         case('trr','dcd','pdb')!VMD MOLFILEPLUGIN
             statf=1
             allocate(coorv(atot*3),bx(6))
-            do 
-                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
-                if(statf==0)exit
-                maxframes=maxframes+1
+            do i=1,size(tunit)
+                j=0
+                do 
+                    call f77_molfile_read_next(tunit(i),int(atot,4),coorv,bx,statf)
+                    if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
+                    char(13),"Counting frames: ",j!,char(13)     
+                    if(statf==0)exit
+                    maxframes=maxframes+1
+                    j=j+1
+                end do
+                write(*,*)stringconv(trajfile(i)%filename)
+                call f77_molfile_close_read(tunit(i),statf)
+                call f77_molfile_open_read(tunit(i),natm,stringconv(trajfile(i)%filename),trajtype)
             end do
-                call f77_molfile_close_read(tunit,statf)
-                call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trajtype)
             deallocate(coorv,bx)
         case default
             statf=1
             allocate(coorv(atot*3),bx(6))
-            do 
-                call f77_molfile_read_next(tunit,int(atot,4),coorv,bx,statf)
-                if(statf==0)exit
-                maxframes=maxframes+1
+            do i=1,size(tunit)
+                j=0
+                do 
+                    call f77_molfile_read_next(tunit(i),int(atot,4),coorv,bx,statf)
+                    if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
+                    char(13),"Counting frames: ",j!,char(13)     
+                    if(statf==0)exit
+                    maxframes=maxframes+1
+                    j=j+1
+                end do
+                write(*,*)stringconv(trajfile(i)%filename)
+                call f77_molfile_close_read(tunit(i),statf)
+                call f77_molfile_open_read(tunit(i),natm,stringconv(trajfile(i)%filename),'auto')
             end do
-                call f77_molfile_close_read(tunit,statf)
-                call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
             deallocate(coorv,bx)
         end select
     end if
@@ -172,15 +195,24 @@ program trajman
         ,maxframes-skipframes," /",maxframes
     end if
 !###########################FRAME LOOP##################################################    
-do i=1,skipframes
+j=1;i=0
+do !i=1,skipframes
+    if(i==skipframes)exit
+    i=i+1
     if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
-    char(13),"Skipping frame: ",i!,char(13)     
-    ios=readframe(tunit)
+    char(13),"Skipping frame: ",i!,char(13) 
+    ios=readframe(tunit(j))
+    if(ios==2)then
+        j=j+1 ! Change file!
+        i=i-1 ! Rewind the counter so that we get the last frame
+    end if
 end do
 if(skipframes/=0.and..NOT.common_setflags%silent)write(*,*)&
 "    Starting calculation on frame: ",trim(adjustl(intstr(skipframes+1)))
 frame=skipframes
-    do while (readframe(tunit)==0)! Trajectory processing
+    do k=j,size(tunit) !Loop over trajectory files
+    do while (readframe(tunit(k))/=2)! Trajectory processing, frameloop
+   ! write(*,*)tunit(k),'TUNIT'
         frame=frame+1
         if(modulo(frame-skipframes,max((maxframes-skipframes)/100,1))==0.OR.&
         frame==skipframes+1)then
@@ -228,9 +260,13 @@ frame=skipframes
             end if
         end do !END WRITEFRAME       
         if (frame==maxframes)exit
-        end do
+        end do ! Frameloop
+        if(frame==maxframes)exit
+        end do ! Trajectory file loop
 !#######################################################################################
-    call closetraj(tunit)
+    do i=1,size(tunit)
+        call closetraj(tunit(i))
+    end do
     if(.NOT. common_setflags%silent)then
         write(*,*)
         write(*,'(5x,A)')'Postprocessing...'
