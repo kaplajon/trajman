@@ -1,0 +1,533 @@
+------------------------------------------------------------
+revno: 20
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Wed 2011-10-05 10:43:49 +0200
+message:
+  Added file type error test. Not allowed to mix.
+------------------------------------------------------------
+revno: 19 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Tue 2011-10-04 23:04:32 +0200
+message:
+  Merged with the trajsplit branch.
+    ------------------------------------------------------------
+    revno: 18.1.1
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: trajsplit
+    timestamp: Tue 2011-10-04 23:02:48 +0200
+    message:
+      First attempt to read trajectory files in a sequential way. Seems to work.
+------------------------------------------------------------
+revno: 18 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Mon 2011-10-03 11:29:13 +0200
+message:
+  Turned off some debugging flags
+    ------------------------------------------------------------
+    revno: 7.1.51
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2011-09-30 15:55:58 +0200
+    message:
+      changed some debugging flags in the molfile_plugins to minimize output
+------------------------------------------------------------
+revno: 17
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Fri 2011-09-30 15:56:37 +0200
+message:
+  Changed README
+------------------------------------------------------------
+revno: 16 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Fri 2011-09-30 15:35:48 +0200
+message:
+  Merged the area-per-lipid branch.
+    ------------------------------------------------------------
+    revno: 7.1.50
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2011-09-30 15:33:35 +0200
+    message:
+      Since the license seems to allow it, I added the vmd molfile_plugin to the source tree.
+------------------------------------------------------------
+revno: 15 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Fri 2011-09-30 11:30:38 +0200
+message:
+  Merged branches
+    ------------------------------------------------------------
+    revno: 7.1.49
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2011-09-30 11:27:17 +0200
+    message:
+      Added some documentation. Not the best but at least some.
+    ------------------------------------------------------------
+    revno: 7.1.48
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2011-09-30 10:54:35 +0200
+    message:
+      Made trajman handle all trajectory formats that VMD can handle. Still only .gro as init.
+    ------------------------------------------------------------
+    revno: 7.1.47
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2011-09-09 10:48:28 +0200
+    message:
+      Back folding of molecules part of the centerofmembrane now seems to work. The error was due to different units in .gro init and .trr traj.
+    ------------------------------------------------------------
+    revno: 7.1.46
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2011-09-08 13:44:50 +0200
+    message:
+      ugly hacking
+    ------------------------------------------------------------
+    revno: 7.1.45
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2011-09-08 10:53:34 +0200
+    message:
+      Some ugly hacks to get things to work. Go back a few revs if youre unsure. :P
+    ------------------------------------------------------------
+    revno: 7.1.44
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Tue 2011-08-16 14:12:39 +0200
+    message:
+      Added error handling of the Versus function. Now it will do nothing and print a warning if the number of molecules (or frames) differ.
+    ------------------------------------------------------------
+    revno: 7.1.43
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2011-08-11 10:48:45 +0200
+    message:
+      Added a rotational correlation function, RC. Updated documentation with details
+    ------------------------------------------------------------
+    revno: 7.1.42
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Mon 2011-08-08 18:13:23 +0200
+    message:
+      Updated documentation a bit
+    ------------------------------------------------------------
+    revno: 7.1.41
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Mon 2011-08-08 17:58:47 +0200
+    message:
+      Working VS function. Hopefully not so many other forgotten issues... :P
+    ------------------------------------------------------------
+    revno: 7.1.40
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Mon 2011-06-20 12:24:04 +0200
+    message:
+      Functional state before adding function of function
+    ------------------------------------------------------------
+    revno: 7.1.39
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2011-04-28 09:35:31 +0200
+    message:
+      Various changes. Some bugfixes, some workarounds.
+    ------------------------------------------------------------
+    revno: 7.1.38
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-12-21 10:33:12 +0100
+    message:
+      Added some error checks
+    ------------------------------------------------------------
+    revno: 7.1.37
+    committer: Jon Kapla <WINADSU\jkapl@mmkjkapla>
+    branch nick: area-per-lipid
+    timestamp: Mon 2010-10-11 11:58:44 +0200
+    message:
+      Added functions for extracting box coordinates. Updated documentation.
+    ------------------------------------------------------------
+    revno: 7.1.36
+    committer: Jon Kapla <WINADSU\jkapl@mmkjkapla>
+    branch nick: area-per-lipid
+    timestamp: Thu 2010-09-30 18:02:37 +0200
+    message:
+      Updated a segfault caused by apl and griddiff
+    ------------------------------------------------------------
+    revno: 7.1.35
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-09-28 16:16:33 +0200
+    message:
+      Added module_statistics.f90
+    ------------------------------------------------------------
+    revno: 7.1.34
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-09-28 16:08:11 +0200
+    message:
+      New changes, some things are not finished yet e.g. griddiff and shuffle.
+    ------------------------------------------------------------
+    revno: 7.1.33
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-09-07 14:15:30 +0200
+    message:
+      Trajman in a somewhat working state. Much is going on, be careful about what you do and get out\!
+    ------------------------------------------------------------
+    revno: 7.1.32
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-29 12:54:39 +0200
+    message:
+      some small changes to the README
+    ------------------------------------------------------------
+    revno: 7.1.31
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-29 12:03:50 +0200
+    message:
+      more code cleanup: removed some debugging write statements
+    ------------------------------------------------------------
+    revno: 7.1.30
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-29 10:32:43 +0200
+    message:
+      code cleanups
+    ------------------------------------------------------------
+    revno: 7.1.29
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-22 16:44:40 +0200
+    message:
+      Committing changes for remote work
+------------------------------------------------------------
+revno: 14 [merge]
+committer: Jon Kapla <jon@tanning>
+branch nick: trajman
+timestamp: Fri 2010-06-18 12:15:07 +0200
+message:
+  Remerged license information.
+    ------------------------------------------------------------
+    revno: 7.1.28
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Fri 2010-06-18 12:14:46 +0200
+    message:
+      Changed license information.
+------------------------------------------------------------
+revno: 13 [merge]
+committer: Jon Kapla <jon@tanning>
+branch nick: trajman
+timestamp: Fri 2010-06-18 12:05:44 +0200
+message:
+  Merged license information.
+    ------------------------------------------------------------
+    revno: 7.1.27
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Fri 2010-06-18 12:04:52 +0200
+    message:
+      Added license information in case of redistribution.
+------------------------------------------------------------
+revno: 12 [merge]
+committer: Jon Kapla <jon@tanning>
+branch nick: trajman
+timestamp: Fri 2010-06-18 10:34:21 +0200
+message:
+  Merged with area per lipid branch.
+    ------------------------------------------------------------
+    revno: 7.1.26
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Thu 2010-06-17 16:02:21 +0200
+    message:
+      Updated documentation. Updated README.
+    ------------------------------------------------------------
+    revno: 7.1.25
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Thu 2010-06-17 15:59:27 +0200
+    message:
+      *APL output now working. Use writeframe with format apl!
+      *Did some code cleanup.
+    ------------------------------------------------------------
+    revno: 7.1.24
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-06-16 17:48:44 +0200
+    message:
+      Added ability to tag functions
+      Corr now selects functions by tag.
+      New combine functions in addition to average.
+      New calc options distribm, trajm and acorrm for output per molecule.
+      Corr depends on calc distrib and/or calc distribm for output other than Pearson
+      coefficient.
+      TODO! APL output still not functioning since change of leaflet handling!
+    ------------------------------------------------------------
+    revno: 7.1.23
+    committer: Jon Kapla <jon@kapla.se>
+    branch nick: area-per-lipid
+    timestamp: Sun 2010-06-13 14:02:40 +0200
+    message:
+      Added README
+    ------------------------------------------------------------
+    revno: 7.1.22
+    committer: Jon Kapla <jon@kapla.se>
+    branch nick: area-per-lipid
+    timestamp: Sun 2010-06-13 00:39:11 +0200
+    message:
+      Some minor fixes.
+    ------------------------------------------------------------
+    revno: 7.1.21
+    committer: Jon Kapla <jon@kapla.se>
+    branch nick: area-per-lipid
+    timestamp: Sat 2010-06-12 12:07:51 +0200
+    message:
+      Change Makefile to reflect the new
+      VMD molfile_plugin dependency. Make sure to set VMD_ARCH and VMD_PLUGINS in
+      the Makefile or directly at compile time:
+      make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=/path/to/vmd/plugins
+    ------------------------------------------------------------
+    revno: 7.1.20
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Sat 2010-06-12 11:09:33 +0200
+    message:
+      Added support for .trr files.
+      Added a new init function to initialize with a .gro frame
+      before reading the trajectory in .trr or .gro format.
+    ------------------------------------------------------------
+    revno: 7.1.19
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-08 15:31:08 +0200
+    message:
+      Bugfixes: Whole is not shifting everything anymore. Crash when not using set calc fixed.
+      Documentation updated with the newly added define functions
+    ------------------------------------------------------------
+    revno: 7.1.18
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-06-08 15:07:10 +0200
+    message:
+      Leaflet handling is working. Average of leaflets can be done. Correlation of average is not working. Some bugfixing, alot more to be fixed though.
+------------------------------------------------------------
+revno: 11 [merge]
+committer: Jon Kapla <jon@tanning>
+branch nick: trajman
+timestamp: Wed 2010-06-02 10:19:55 +0200
+message:
+  Merged changes from the Area per lipid branch
+    ------------------------------------------------------------
+    revno: 7.1.17
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Mon 2010-05-31 15:56:55 +0200
+    message:
+      Added command line option -s, --silent, that turns output to terminal off.
+    ------------------------------------------------------------
+    revno: 7.1.16
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Mon 2010-05-31 14:35:24 +0200
+    message:
+      added some things about leaflets in documentation
+    ------------------------------------------------------------
+    revno: 7.1.15
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Sun 2010-05-30 12:06:59 +0200
+    message:
+      Added ability to separate calculations based on which leaflet on a
+      bilayer the molecules are situated. The APL routine is using it's own
+      implementation of the same functionality as for now.
+      TODO: Change the APL routine to use the new leaflet function. Update documentation
+    ------------------------------------------------------------
+    revno: 7.1.14
+    committer: Jon Kapla <jon@kapla.se>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-05-19 10:09:26 +0200
+    message:
+      some changes to average file write statements
+    ------------------------------------------------------------
+    revno: 7.1.13
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-05-18 23:41:45 +0200
+    message:
+      okynnescommit
+    ------------------------------------------------------------
+    revno: 7.1.12
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-05-12 18:01:04 +0200
+    message:
+      Some cleanup and additions to documentation. Now weekend.
+    ------------------------------------------------------------
+    revno: 7.1.11
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-05-12 15:16:49 +0200
+    message:
+      APL is now in a working state.
+      * New set function, apl, defines a membrane surface from specified atoms.
+      * New function, AL, calculates area per lipid for specified atoms (from the same molecule type) from which trajectories, distributions etc. can be calculated.
+      * New setfunction aplgrid defines the gridsize used for area calculations.
+      * Setfunction writeframe modified to  write out files with the area per lipid grids (two different formats).
+      EXAMPLES:
+      set apl atom1 atom2 ...
+      set aplgrid gridx gridy
+      set writeframe framenumber
+      set writeframe framenumber2
+      AL atom1
+      AL atom2
+      AL atom1 atom2 (if they belong to the same molecule)
+    ------------------------------------------------------------
+    revno: 7.1.10
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Mon 2010-05-10 16:28:22 +0200
+    message:
+      APL in a working state. Not near finished though.
+    ------------------------------------------------------------
+    revno: 7.1.9
+    committer: Jon Kapla <jon@kapla.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2010-05-06 13:23:27 +0200
+    message:
+      from laptop
+    ------------------------------------------------------------
+    revno: 7.1.8
+    committer: Jon Kapla <jon@tanning>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-05-04 14:48:30 +0200
+    message:
+      Rebinding the local checkout
+    ------------------------------------------------------------
+    revno: 7.1.7
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-03-24 22:34:49 +0100
+    message:
+      Some progress with APL. Working grid based tesselation. Committing for remote work.
+    ------------------------------------------------------------
+    revno: 7.1.6
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Sun 2010-03-21 00:00:32 +0100
+    message:
+      Comitted apl progress for remote work.
+------------------------------------------------------------
+revno: 10
+committer: Jon Kapla <jon@tanning>
+branch nick: trajman
+timestamp: Tue 2010-05-04 15:15:23 +0200
+message:
+  rebind
+------------------------------------------------------------
+revno: 9 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Tue 2010-03-16 17:00:27 +0100
+message:
+  Merged some changes from the area-per-lipid branch
+    ------------------------------------------------------------
+    revno: 7.1.5
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-03-16 16:58:45 +0100
+    message:
+      Did some code cleanup, removing old commented stuff...
+    ------------------------------------------------------------
+    revno: 7.1.4
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Tue 2010-03-16 11:06:28 +0100
+    message:
+      Added ability to choose .gro format for the output of writeframe. The xyz-format is still default
+------------------------------------------------------------
+revno: 8 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Fri 2010-03-12 16:03:54 +0100
+message:
+  Merged the Bazaar version handling from the area-per-lipid branch
+    ------------------------------------------------------------
+    revno: 7.1.3
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Fri 2010-03-12 15:59:22 +0100
+    message:
+      Fixed some issues with the Bazaar version handling and the Makefile
+    ------------------------------------------------------------
+    revno: 7.1.2
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Thu 2010-03-11 09:17:06 +0100
+    message:
+      versionstest
+    ------------------------------------------------------------
+    revno: 7.1.1
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: area-per-lipid
+    timestamp: Wed 2010-03-10 14:20:56 +0100
+    message:
+      Added version handling to the Makefile. New: automatically creates module_version.f90 from bazaar info
+------------------------------------------------------------
+revno: 7
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Wed 2010-02-10 14:39:06 +0100
+message:
+  Updated documentation with respect to new set function 'submolecule' and new function 'define atom'.
+  Added some comments in sourcecode for clarity.
+------------------------------------------------------------
+revno: 6
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Mon 2010-02-08 22:02:31 +0100
+message:
+  code cleanup
+------------------------------------------------------------
+revno: 5
+committer: Jon Kapla <jon@kapla.se>
+branch nick: trajman
+timestamp: Mon 2010-02-08 21:49:32 +0100
+message:
+  cleaned out some ugly debugging leftovers
+------------------------------------------------------------
+revno: 4
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Mon 2010-02-08 21:28:21 +0100
+message:
+  Added ability to define submolecules as groups of atoms in the original molecules. Added function to define new atoms as center of mass of a submolecule. For now only one new atom per submolecule will work.
+------------------------------------------------------------
+revno: 3
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Mon 2010-02-08 10:57:55 +0100
+message:
+  Cleaned some debug write statements. Fully working state of trajman.
+------------------------------------------------------------
+revno: 2
+committer: Jon Kapla <jon@kapla.se>
+branch nick: trajman
+timestamp: Fri 2010-02-05 15:56:44 +0100
+message:
+  testing commit from remote location
+------------------------------------------------------------
+revno: 1
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: dev
+timestamp: Fri 2010-02-05 14:23:24 +0100
+message:
+  Initial import of trajman
