@@ -262,7 +262,7 @@ module input
         character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2,inttest
-        character(kind=1,len=200) :: infile
+        character(kind=1,len=200) :: infile,infilebefore
         integer(kind=ik) ::&
         ios,i,j,aind1,aind2,aind3,aind4,findex,p!,trajop(:,:)
         integer(kind=4) :: natm 
@@ -289,6 +289,13 @@ module input
                 trajfile(i)%filename=arguments(1:size(trajfile(i)%filename),2)
                 infile=stringconv(trajfile(i)%filename)
                 trajtype=trim(infile(scan(infile,'.',BACK=.TRUE.)+1:))
+                if(i-1>0)then 
+                    ! Check that the filetypes are the same, otherwise stop
+                    infilebefore=stringconv(trajfile(i-1)%filename)
+                    if(trajtype/=trim(infilebefore(scan(infilebefore,'.',BACK=.TRUE.)+1:)))then
+                        stop 'TRAJ: MIXED FILETYPES!'
+                    end if
+                end if
                 select case(trim(trajtype))
                     case('gro')
                         open(tunit(size(tunit)),file=stringconv(trajfile(i)%filename),status='old')
