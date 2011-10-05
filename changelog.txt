@@ -1,4 +1,64 @@
 ------------------------------------------------------------
+revno: 22 [merge]
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Wed 2011-10-05 13:59:55 +0200
+message:
+  Merged with trajsplit. Changes from Baltzar. See bzr log -n0.
+    ------------------------------------------------------------
+    revno: 18.1.3 [merge]
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: trajsplit
+    timestamp: Wed 2011-10-05 13:56:52 +0200
+    message:
+      Merged Baltzars changes.
+       +HISTORY trajectory support (use HISTORY file as init).
+       +Changes in the RDF routine.
+       +Updated Plancks constant.
+       
+        ------------------------------------------------------------
+        revno: 17.1.4 [merge]
+        committer: Baltzar Stevensson <baltzar.stevensson@mmk.su.se>
+        branch nick: trajman
+        timestamp: Wed 2011-10-05 12:27:12 +0200
+        message:
+          merged with main, enabled multiple trajectories
+        ------------------------------------------------------------
+        revno: 17.1.3
+        committer: Baltzar Stevensson <baltzar.stevensson@mmk.su.se>
+        branch nick: trajman
+        timestamp: Wed 2011-10-05 11:04:18 +0200
+        message:
+          enabled full format of HISTORY, inithist
+        ------------------------------------------------------------
+        revno: 17.1.2 [merge]
+        committer: Baltzar Stevensson <baltzar.stevensson@mmk.su.se>
+        branch nick: trajman
+        timestamp: Tue 2011-10-04 16:19:00 +0200
+        message:
+          added dlpoly3hist functionality
+        ------------------------------------------------------------
+        revno: 17.1.1
+        committer: Baltzar Stevensson <baltzar.stevensson@mmk.su.se>
+        branch nick: trajman
+        timestamp: Mon 2011-10-03 13:24:14 +0200
+        message:
+          enable HISTORY, CONFIG
+    ------------------------------------------------------------
+    revno: 18.1.2 [merge]
+    committer: Jon Kapla <jon.kapla@mmk.su.se>
+    branch nick: trajsplit
+    timestamp: Wed 2011-10-05 13:17:22 +0200
+    message:
+      Merged with dev.
+------------------------------------------------------------
+revno: 21
+committer: Jon Kapla <jon.kapla@mmk.su.se>
+branch nick: trajman
+timestamp: Wed 2011-10-05 13:58:58 +0200
+message:
+  Added file changelog.txt to store the commit log.
+------------------------------------------------------------
 revno: 20
 committer: Jon Kapla <jon.kapla@mmk.su.se>
 branch nick: trajman
