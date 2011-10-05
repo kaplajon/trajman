@@ -30,12 +30,12 @@ module readtraj
     character(kind=1, len=11),allocatable :: temp(:)
     character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
-    character(kind=1, len=1),allocatable :: trajfile(:)
+   ! character(kind=1, len=1),allocatable :: trajfile(:)
     character(kind=1,len=3) :: trajtype
     character(kind=1,len=*), parameter :: dlpoly3histfile='HISTORY'
     character(kind=1,len=*), parameter :: dlpoly3histtag='dlpoly3hist'
     integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
-    integer(kind=4) :: tunit=12!,runit
+    integer(kind=4),allocatable :: tunit(:)!=12!,runit
     integer (kind=ik),allocatable ::&
     natoms(:),nmolsatoms(:),shift(:),moltypeofuatom(:)
     real(rk) :: director(1:3)=[0._rk,0._rk,1._rk],centerofmembrane(1:3)=0
@@ -43,6 +43,10 @@ module readtraj
     interface atomindex
         module procedure atomindex_a,atomindex_b
     end interface
+!    type trjf
+!        character(kind=1,len=1),allocatable :: filename(:)
+!    end type trjf
+!    type(trjf),allocatable :: trajfile(:)
     type atomdata
         character(kind=1,len=len(atomnames)) :: aname
         real(kind=rk) :: mass,mgratio
@@ -219,7 +223,9 @@ end subroutine globals!}}}
         integer(kind=ik) :: ios,ia,i
        !stop 'HEJ'
         allocate(charvec(1))
-        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+        allocate(tunit(1))
+        tunit=12
+        open(unit=tunit(1),file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
 
         if(ios/=0)then
                 write(*,*)"Error, cannot open ",&
@@ -227,100 +233,124 @@ end subroutine globals!}}}
                 stop
         endif
 
-        read(unit=tunit,fmt=*,iostat=ios)
+        read(unit=tunit(1),fmt=*,iostat=ios)
         if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)atot ! Totala antalet atomer i en frame
+        read(unit=tunit(1),fmt=*,iostat=ios)atot ! Totala antalet atomer i en frame
         allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
         moltype_atom=''
         do ia=1,atot
-            read(tunit,"(5x,A10,5x)",advance='no')sdr
+            read(tunit(1),"(5x,A10,5x)",advance='no')sdr
             sdr=adjustl(sdr)
             i=scan(sdr,' ')
             if(i>10.or.i<1)i=6
             moltype_atom(1,ia)=trim(sdr(1:i-1))
             moltype_atom(2,ia)=trim(adjustl(sdr(i:)))
-            read(tunit,*)coor(1:3,ia)
+            read(tunit(1),*)coor(1:3,ia)
             !write(*,*)coor(1:3,ia),'COOR'
         end do
-            read(tunit,*)box
+            read(tunit(1),*)box
         !rewind(tunit)
         coor=coor*10._rk ! Scale to Å (default in .trr files)
         box=box*10._rk ! Scale to Å (default in .trr files)
-        close(tunit)
+        close(tunit(1))
         rowsperframe=atot+3
         call trajindex(moltype_atom)
         deallocate(charvec)
+        deallocate(tunit)
     end subroutine initgro!}}}
 
-    subroutine inithist(fname)!{{{
+    subroutine inithist(fname,frames)!{{{
         ! Bestämmer antalet molekyltyper, atomer och indexering av dessa utifrån
         ! en frame definderad av filen HISTORY från DL_POLY
         character(kind=1,len=1),intent(in) :: fname(:)
+        integer(kind=ik), optional :: frames
         character(kind=1,len=10),allocatable :: moltype_atom(:,:)
         character(kind=1,len=10) :: sdr
         integer(kind=ik) :: ios,ia,i,iframe
         real(kind=rk) :: boxvec(3,3)
         character(kind=1,len=72) :: header
-        integer(kind=ik) :: keytrj,imcon,megatm,frame,records,iatm
+        integer(kind=ik) :: keytrj,imcon,megatm,frame,records,iatm,nstep
         character(kind=1,len=8) :: atmnam,timestep
         real(kind=rk) :: weight,charge,rsd,velocity(1:3),forces(1:3),tstep,time
-        open(unit=tunit,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+        if(present(frames))then
+           open(unit=11,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+           read(unit=11,fmt=*,iostat=ios)header
+           if(ios==endf)return
+           read(unit=11,fmt=*,iostat=ios)keytrj,imcon,megatm,frame,records
+           frames=frame
+           close(unit=11)
+           return
+        end if
+        allocate(tunit(1))
+        tunit(1)=12
+        open(unit=tunit(1),file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
         if(ios/=0)then
             write(*,*)"Error, cannot open ",&
                  "file ",":",trim(stringconv(fname)),":"
             stop
         endif
-        read(unit=tunit,fmt=*,iostat=ios)header
+        read(unit=tunit(1),fmt=*,iostat=ios)header
         if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)keytrj,imcon,megatm,frame,records
+        read(unit=tunit(1),fmt=*,iostat=ios)keytrj,imcon,megatm,frame,records
         if(imcon/=1)write(*,*)"Warning, trajectory has not an orthorombic symmetry"
         atot=megatm
         allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
-        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
-        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
-        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
+        read(tunit(1),fmt=*)timestep,nstep,megatm,keytrj,imcon,tstep,time
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
         box(1)=boxvec(1,1)
         box(2)=boxvec(2,2)
         box(3)=boxvec(3,3)
         moltype_atom=''
         do ia=1,atot
-            read(tunit,*)atmnam,iatm,weight,charge,rsd
+            read(tunit(1),*)atmnam,iatm,weight,charge,rsd
             sdr=''
             sdr=adjustl(atmnam)
             moltype_atom(1,ia)=trim(sdr)//'M'! M means molecule
             moltype_atom(2,ia)=trim(sdr)
-            read(tunit,*)coor(1:3,ia)! unit is already in Ångström
-            if(keytrj>=1)read(tunit,*)velocity(1:3)
-            if(keytrj>=2)read(tunit,*)forces(1:3)
+            read(tunit(1),*)coor(1:3,ia)! unit is already in Ångström
+            if(keytrj>=1)read(tunit(1),*)velocity(1:3)
+            if(keytrj>=2)read(tunit(1),*)forces(1:3)
         end do
 ! the rest of the HISTORY file has the following format:
-!        read(tunit,*)timestep,nstep,megatm,keytrj,imcon,tstep,time
-!        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
-!        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
-!        read(unit=tunit,fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
+!        read(tunit(1),*)timestep,nstep,megatm,keytrj,imcon,tstep,time
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
 !        do iframe=1,frame
 !           do ia=1,megatm
-!              read(tunit,*)coor(1:3,ia)! unit is already in Ångström
-!            if(keytrj>=1)read(tunit,*)velocity(1:3)
-!            if(keytrj>=2)read(tunit,*)forces(1:3)
+!              read(tunit(1),*)coor(1:3,ia)! unit is already in Ångström
+!            if(keytrj>=1)read(tunit(1),*)velocity(1:3)
+!            if(keytrj>=2)read(tunit(1),*)forces(1:3)
 !           end do
 !        end do
-        close(tunit)
+        close(tunit(1))
+        deallocate(tunit)
         call trajindex(moltype_atom)
     end subroutine inithist!}}}
 
-    function readgro(tunit) result(ios)!{{{
-
-        integer(kind=4) :: tunit
-        integer(kind=ik) :: ios,ia
-        read(unit=tunit,fmt=*,iostat=ios)
-        if(ios==endf)return
-        read(unit=tunit,fmt=*,iostat=ios)atot
+    function readgro(fhandle) result(i)!{{{
+        integer(kind=4) :: fhandle
+        integer(kind=ik) :: i,ios,ia
+        read(unit=fhandle,fmt=*,iostat=ios)
+        select case(ios)
+        case(0)
+            i=ios
+        case(endf)
+            if(fhandle==tunit(size(tunit)))then
+                i=1 !for the frameloop to work as expected.
+            else
+                i=2
+            end if
+        end select
+        if(i==1)return
+        read(unit=fhandle,fmt=*,iostat=ios)atot
         do ia=1,atot
-            read(unit=tunit,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
-            read(tunit,*)coor(:,ia)
+            read(unit=fhandle,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
+            read(unit=fhandle,fmt=*,iostat=ios)coor(:,ia)
         end do
-        read(unit=tunit,fmt=*,iostat=ios)box(:)
+        read(unit=fhandle,fmt=*,iostat=ios)box(:)
         coor=coor*10._rk ! Scale to Å (default in .trr files)
         box=box*10._rk ! Scale to Å (default in .trr files)
 
@@ -337,8 +367,16 @@ end subroutine globals!}}}
         call f77_molfile_read_next(fhandle,natm,coorv,bx,statf)
         coor=reshape(real(coorv,kind(coor)),[3,size(coor,2)],PAD=0._rk*coor)
         box=bx(1:3)
-        if(statf/=0)ios=0 !molfile stat and iostat conversion 
-        if(statf==0)ios=1 !for the frameloop to work as expected.
+        select case(statf)
+        case(0)
+            if(fhandle==tunit(size(tunit)))then
+                ios=1 !for the frameloop to work as expected.
+            else
+                ios=2
+            end if
+        case default
+            ios=0 !molfile stat and iostat conversion 
+        end select
     end function readtrr!}}}
 
     subroutine closetraj(funit)!{{{
@@ -348,10 +386,10 @@ end subroutine globals!}}}
             close(funit)
         case('trr','dcd','pdb')
             call f77_molfile_close_read(funit,stat)
-            call f77_molfile_finish
+            if(funit==tunit(size(tunit)))call f77_molfile_finish
         case default
             call f77_molfile_close_read(funit,stat)
-            call f77_molfile_finish
+            if(funit==tunit(size(tunit)))call f77_molfile_finish
         end select
     end subroutine closetraj!}}}
 

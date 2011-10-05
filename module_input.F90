@@ -262,9 +262,9 @@ module input
         character(kind=1,len=1),allocatable ::charvector(:),arguments(:,:)
         character(kind=1,len=3) :: funcstr
         character(kind=1,len=20) :: arg2,inttest
-        character(kind=1,len=200) :: infile
+        character(kind=1,len=2000) :: infile,infilebefore
         integer(kind=ik) ::&
-        ios,i,aind1,aind2,aind3,aind4,findex,p
+        ios,i,j,aind1,aind2,aind3,aind4,findex,p
         integer(kind=4) :: natm 
         type(instruct) :: trajop
         call getwords(charvector,arguments)
@@ -274,9 +274,9 @@ module input
         p=0;funcstr=''
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
             case('init')
-               i=scan(stringconv(arguments(:,2)),'.',BACK=.TRUE.)
-               i=merge(scan(stringconv(arguments(:,2)),'/',BACK=.TRUE.),i,i==0)
-               select case(trim(stringconv(arguments(i+1:,2))))
+               j=scan(stringconv(arguments(:,2)),'.',BACK=.TRUE.)
+               j=merge(scan(stringconv(arguments(:,2)),'/',BACK=.TRUE.),j,j==0)
+               select case(trim(stringconv(arguments(j+1:,2))))
                   case('gro')
                      call initgro(arguments(:,2))
                   case(dlpoly3histfile)
@@ -285,27 +285,45 @@ module input
                      stop 'INIT: unknown fileformat'
                end select
             case('traj')
-                allocate(trajfile(len_trim(stringconv(arguments(:,2)))))
-                trajfile=arguments(1:size(trajfile),2)
-                infile=stringconv(trajfile)
-                i=scan(infile,'.',BACK=.TRUE.)
-                i=merge(scan(infile,'/',BACK=.TRUE.),i,i==0)
-                trajtype=trim(infile(i+1:))
+                    call reallocate(trajfile,merge(size(trajfile),0,allocated(trajfile))+1)
+                    !write(*,*)size(trajfile),'SIZE TRJF'
+                    call reallocate(tunit,merge(size(tunit),0,allocated(tunit))+1)
+                    !write(*,*)size(tunit),'SIZE TUNIT'
+                i=size(trajfile)
+                tunit(size(tunit))=tunit(size(tunit-1))+1
+                if(size(tunit)==1)tunit(size(tunit))=12
+                allocate(trajfile(i)%filename(len_trim(stringconv(arguments(:,2)))))
+                trajfile(i)%filename=arguments(1:size(trajfile(i)%filename),2)
+                infile=stringconv(trajfile(i)%filename)
+                j=scan(infile,'.',BACK=.TRUE.)
+                j=merge(scan(infile,'/',BACK=.TRUE.),j,j==0)
+                trajtype=trim(infile(j+1:))
+                if(i-1>0)then 
+                    ! Check that the filetypes are the same, otherwise stop
+                    infilebefore=stringconv(trajfile(i-1)%filename)
+                    j=scan(infilebefore,'.',BACK=.TRUE.)
+                    j=merge(scan(infilebefore,'/',BACK=.TRUE.),j,j==0)
+                    if(trajtype/=trim(infilebefore(j+1:j&
+                         +min(len_trim(infilebefore(j+1:)),len(trajtype)))))then
+                        stop 'TRAJ: MIXED FILETYPES!'
+                    end if
+                end if
                 select case(trim(trajtype))
                     case('gro')
-                        open(tunit,file=stringconv(trajfile),status='old')
+                        open(tunit(size(tunit)),file=stringconv(trajfile(i)%filename),status='old')
                     case('trr','dcd','pdb')!MOLFILEPLUGIN FROM VMD
-                        tunit=-1
-                        call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),trim(trajtype))
+                        tunit(size(tunit))=-1
+                        if(size(tunit)==1)call f77_molfile_init
+                        call f77_molfile_open_read(tunit(size(tunit)),natm,stringconv(trajfile(i)%filename),trajtype)
+                     !   write(*,*)tunit,'TUNIT'
                     case(dlpoly3histfile(1:min(len(dlpoly3histfile),len(trajtype))))
-                        tunit=-1
-                        call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),dlpoly3histtag)
+                        tunit(size(tunit))=-1
+                        if(size(tunit)==1)call f77_molfile_init
+                        call f77_molfile_open_read(tunit(size(tunit)),natm,stringconv(trajfile(i)%filename),dlpoly3histtag)
                     case default
-                        tunit=-1
-                        call f77_molfile_init
-                        call f77_molfile_open_read(tunit,natm,stringconv(trajfile),'auto')
+                        tunit(size(tunit))=-1
+                        if(size(tunit)==1)call f77_molfile_init
+                        call f77_molfile_open_read(tunit(size(tunit)),natm,stringconv(trajfile(i)%filename),'auto')
                 end select
 
             case('set','SET')

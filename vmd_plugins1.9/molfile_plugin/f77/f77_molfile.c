@@ -190,10 +190,10 @@ void FNAME(f77_molfile_open_read)(int4 *handle, int4 *natoms,
     
     ftype = f77strdup(intype, len_it);
     f77trim(ftype,len_it);
-            
+#if F77TESTME            
     fprintf(stderr, " %s: trying for: %s/%d, %s/%d\n", 
             __FUNCTION__, fname, len_if, ftype, len_it);
-
+#endif
     plugin = NULL;
     /* determine plugin type automatically */
     if(0 == strncmp(intype, "auto", 4)) {
@@ -212,13 +212,14 @@ void FNAME(f77_molfile_open_read)(int4 *handle, int4 *natoms,
 
         for (i=0; (i<numplugins) && plugin==NULL; ++i) {
 #if F77TESTME
-            fprintf(stderr, " tying filename extension: %s\n",
+            fprintf(stderr, " trying filename extension: %s\n",
                     plugin_list[i]->filename_extension);
 #endif
             if (0 == strcmp(plugin_list[i]->filename_extension, fext)) {
-                fprintf(stderr, " using plugin: %s\n", 
+#if F77TESTME
+		fprintf(stderr, " using plugin: %s\n", 
                         plugin_list[i]->prettyname);
-                
+#endif
                 plugin = plugin_list[i];
             }
         }
@@ -232,12 +233,14 @@ void FNAME(f77_molfile_open_read)(int4 *handle, int4 *natoms,
         
         for (i=0; (i<numplugins) && (plugin==NULL); ++i) {
 #if F77TESTME
-            fprintf(stderr, " tying plugin type: %s\n",
+            fprintf(stderr, " trying plugin type: %s\n",
                     plugin_list[i]->name);
 #endif
             if (0 == strcmp(plugin_list[i]->name, ftype)) {
+#if F77TESTME
                 fprintf(stderr, " using plugin: %s\n", 
                         plugin_list[i]->prettyname);
+#endif
                 plugin = plugin_list[i];
             }
         }
