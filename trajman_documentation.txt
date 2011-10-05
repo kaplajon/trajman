@@ -12,15 +12,20 @@ set
 	init FILE
 
 The file for trajectory initialization. Must be at least
-one frame and in .gro format. This setting must be the first
-noncommented line in the input file.
+one frame and in .gro format (EXCEPTION: if you're using HISTORY files
+then use one HISTORY as init).
+This setting must be the first noncommented line in the input file.
 
 	traj FILE
 
 Set the trajectory file. This setting must
-be the second non commented line. Only files in the
-.gro and .trr format are supported at the moment.
-Trr-trajectories are recommended for speed.
+be the second non commented line.
+GROMOS87 (.gro) trajectories are read using a native routine.
+All formats supported in the VMD molfile_plugin should work in trajman
+as well (the limitation is the init file where only .gro is supported).
+Binary trajectories are recommended for speed.
+
+Use more than one 'traj' line to treat several trajectory files as one.
 
 	cscale R
 
@@ -33,7 +38,7 @@ Examples: .gro files: R=1.e-9 (nm)
 
 N number of frames to be processed. N=0 means that the
 trajectory will be examined to get the number of frames
-automatically. WARNING! For trr-files N=0 means that trajman
+automatically. WARNING! For non .gro N=0 means that trajman
 cycles through the whole trajectory file, which can take a
 long time depending on the trajectory length.
 Default "0".
