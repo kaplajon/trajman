@@ -500,17 +500,21 @@ module trajop
             instr%rdf_bin=(ma-mi)/real(size(instr%rdf_dist,1),rk)
             numberdensity=(size(instr%rdf_pairs)/product(modbox(1:3))) 
             do i=1,size(instr%rdf_pairs)
-                bi=int((instr%rdf_pairs(i)-mi)/instr%rdf_bin+1._rk)
+                bi=int((instr%rdf_pairs(i)-mi)/instr%rdf_bin+1.5_rk)
                 if(instr%set%xyrdf)then
-                    bvol=2*pi*((mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin)*instr%rdf_bin)
+                    bvol=2*pi*((mi+(real(bi,rk)-1._rk)*instr%rdf_bin)*instr%rdf_bin)
+                    if(bi==1)bvol=(instr%rdf_bin)**2*pi/4._rk
+                    ! special integration domain for the first point
                 else
-                    bvol=(4*pi*((mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin)**2+instr%rdf_bin**2/12._rk))*instr%rdf_bin
+                    bvol=(4*pi*((mi+(real(bi,rk)-1._rk)*instr%rdf_bin)**2+instr%rdf_bin**2/12._rk))*instr%rdf_bin
+                    if(bi==1)bvol=(instr%rdf_bin)**3*pi/6._rk
+                    ! special integration domain for the first point
                     !if(instr%set%zrdf)bvol=instr%rdf_bin**2 !ZRDF
                 end if
 
                 if(bi<=0.or.bi>size(instr%rdf_dist,1))then
                 else
-                    instr%rdf_dist(bi)=instr%rdf_dist(bi)+1/(bvol*numberdensity*(maxframes-skipframes))
+                    instr%rdf_dist(bi)=instr%rdf_dist(bi)+1._rk/(bvol*numberdensity*(maxframes-skipframes))
                     !&
                     !((4*pi*((mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin)**2+instr%rdf_bin**2/12._rk))&
                     !*instr%rdf_bin*(maxframes-skipframes)*(size(instr%rdf_pairs)/product(modbox(1:3))))
@@ -518,15 +522,14 @@ module trajop
             end do
         else !.not.present(frame)
             !Skriv ut distribution till disk
-                x=mi+(real(1,rk)-1._rk)*instr%rdf_bin
-                write(instr%set%ounit,*)x,instr%rdf_dist(1)
+!                x=mi+(real(1,rk)-1._rk)*instr%rdf_bin
+!                write(instr%set%ounit,*)x,instr%rdf_dist(1)
             do bi=1,size(instr%rdf_dist,1)
-                x=mi+(real(bi,rk)-0.5_rk)*instr%rdf_bin
-                !x=mi+(real(bi,rk)-1._rk)*instr%rdf_bin
+                x=mi+(real(bi,rk)-1._rk)*instr%rdf_bin
                 write(instr%set%ounit,*)x,instr%rdf_dist(bi)
             end do
-                x=mi+(real(size(instr%rdf_dist,1),rk)-1._rk)*instr%rdf_bin
-                write(instr%set%ounit,*)x,instr%rdf_dist(size(instr%rdf_dist,1))
+!                x=mi+(real(size(instr%rdf_dist,1),rk)-1._rk)*instr%rdf_bin
+!                write(instr%set%ounit,*)x,instr%rdf_dist(size(instr%rdf_dist,1))
                 write(instr%set%ounit,*)
                 if(allocated(instr%rdf_dist))deallocate(instr%rdf_dist)
                 if(allocated(instr%rdf_pairs))deallocate(instr%rdf_pairs)

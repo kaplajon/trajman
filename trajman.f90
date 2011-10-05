@@ -139,11 +139,23 @@ program trajman
                     maxframes=maxframes+1
                     j=j+1
                 end do
-                write(*,*)stringconv(trajfile(i)%filename)
+                if(.NOT. common_setflags%silent)write(*,*)stringconv(trajfile(i)%filename)
                 call f77_molfile_close_read(tunit(i),statf)
                 call f77_molfile_open_read(tunit(i),natm,stringconv(trajfile(i)%filename),trajtype)
             end do
             deallocate(coorv,bx)
+         case(dlpoly3histfile(1:min(len(dlpoly3histfile),len(trajtype))))
+            statf=1
+            maxframes=0
+            do i=1,size(tunit)
+               call inithist(trajfile(i)%filename,j)
+               maxframes=maxframes+j
+               if(.NOT. common_setflags%silent)then
+                  write(0,"(A,5x,A15,I6)",advance="no")&
+                       char(13),"Counting frames: ",j
+                  write(0,*)stringconv(trajfile(i)%filename)
+               end if
+            end do
         case default
             statf=1
             allocate(coorv(atot*3),bx(6))
@@ -157,7 +169,7 @@ program trajman
                     maxframes=maxframes+1
                     j=j+1
                 end do
-                write(*,*)stringconv(trajfile(i)%filename)
+                if(.NOT. common_setflags%silent)write(*,*)stringconv(trajfile(i)%filename)
                 call f77_molfile_close_read(tunit(i),statf)
                 call f77_molfile_open_read(tunit(i),natm,stringconv(trajfile(i)%filename),'auto')
             end do
