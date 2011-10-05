@@ -32,6 +32,8 @@ module readtraj
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
    ! character(kind=1, len=1),allocatable :: trajfile(:)
     character(kind=1,len=3) :: trajtype
+    character(kind=1,len=*), parameter :: dlpoly3histfile='HISTORY'
+    character(kind=1,len=*), parameter :: dlpoly3histtag='dlpoly3hist'
     integer (kind=ik) :: mols=0,nunit=13,atot,rowsperframe!,tunit=12
     integer(kind=4),allocatable :: tunit(:)!=12!,runit
     integer (kind=ik),allocatable ::&
@@ -257,8 +259,78 @@ end subroutine globals!}}}
         deallocate(tunit)
     end subroutine initgro!}}}
 
-    function readgro(fhandle) result(i)!{{{
+    subroutine inithist(fname,frames)!{{{
+        ! Bestämmer antalet molekyltyper, atomer och indexering av dessa utifrån
+        ! en frame definderad av filen HISTORY från DL_POLY
+        character(kind=1,len=1),intent(in) :: fname(:)
+        integer(kind=ik), optional :: frames
+        character(kind=1,len=10),allocatable :: moltype_atom(:,:)
+        character(kind=1,len=10) :: sdr
+        integer(kind=ik) :: ios,ia,i,iframe
+        real(kind=rk) :: boxvec(3,3)
+        character(kind=1,len=72) :: header
+        integer(kind=ik) :: keytrj,imcon,megatm,frame,records,iatm,nstep
+        character(kind=1,len=8) :: atmnam,timestep
+        real(kind=rk) :: weight,charge,rsd,velocity(1:3),forces(1:3),tstep,time
+        if(present(frames))then
+           open(unit=11,file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+           read(unit=11,fmt=*,iostat=ios)header
+           if(ios==endf)return
+           read(unit=11,fmt=*,iostat=ios)keytrj,imcon,megatm,frame,records
+           frames=frame
+           close(unit=11)
+           return
+        end if
+        allocate(tunit(1))
+        tunit(1)=12
+        open(unit=tunit(1),file=trim(stringconv(fname)),position='rewind',status='old',iostat=ios)
+        if(ios/=0)then
+            write(*,*)"Error, cannot open ",&
+                 "file ",":",trim(stringconv(fname)),":"
+            stop
+        endif
+        read(unit=tunit(1),fmt=*,iostat=ios)header
+        if(ios==endf)return
+        read(unit=tunit(1),fmt=*,iostat=ios)keytrj,imcon,megatm,frame,records
+        if(imcon/=1)write(*,*)"Warning, trajectory has not an orthorombic symmetry"
+        atot=megatm
+        allocate(moltype_atom(2,atot),coor(1:3,atot),box(1:3))
+        read(tunit(1),fmt=*)timestep,nstep,megatm,keytrj,imcon,tstep,time
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
+        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
+        box(1)=boxvec(1,1)
+        box(2)=boxvec(2,2)
+        box(3)=boxvec(3,3)
+        moltype_atom=''
+        do ia=1,atot
+            read(tunit(1),*)atmnam,iatm,weight,charge,rsd
+            sdr=''
+            sdr=adjustl(atmnam)
+            moltype_atom(1,ia)=trim(sdr)//'M'! M means molecule
+            moltype_atom(2,ia)=trim(sdr)
+            read(tunit(1),*)coor(1:3,ia)! unit is already in Ångström
+            if(keytrj>=1)read(tunit(1),*)velocity(1:3)
+            if(keytrj>=2)read(tunit(1),*)forces(1:3)
+        end do
+! the rest of the HISTORY file has the following format:
+!        read(tunit(1),*)timestep,nstep,megatm,keytrj,imcon,tstep,time
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,1),boxvec(2,1),boxvec(3,1)
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,2),boxvec(2,2),boxvec(3,2)
+!        read(unit=tunit(1),fmt=*,iostat=ios)boxvec(1,3),boxvec(2,3),boxvec(3,3)
+!        do iframe=1,frame
+!           do ia=1,megatm
+!              read(tunit(1),*)coor(1:3,ia)! unit is already in Ångström
+!            if(keytrj>=1)read(tunit(1),*)velocity(1:3)
+!            if(keytrj>=2)read(tunit(1),*)forces(1:3)
+!           end do
+!        end do
+        close(tunit(1))
+        deallocate(tunit)
+        call trajindex(moltype_atom)
+    end subroutine inithist!}}}
 
+    function readgro(fhandle) result(i)!{{{
         integer(kind=4) :: fhandle
         integer(kind=ik) :: i,ios,ia
         read(unit=fhandle,fmt=*,iostat=ios)
