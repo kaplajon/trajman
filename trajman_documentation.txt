@@ -282,8 +282,11 @@ If more than one atom is given, all additional atoms need to
 belong to the same molecule type as the first.Needs setting apl
 and leaflets, and usually a definition of the upper or lower leaflet
 (define leaflet [upper,lower,both]).
-Note that 'define leaflet both' does not calculate a proper area per lipid
+NOTE1: 'define leaflet both' does not calculate a proper area per lipid
 on a bilayer. Use average or combine of upper and lower leaflets instead.
+NOTE2: If you get spikes in your distributions it is due to effects of the 
+discreteness imposed by the grid. Make sure to use a big enough grid and
+also adjust the binsize to reflect the grid size better.
 
 	boxapl moltype
 

@@ -210,6 +210,7 @@ module util
     character(len=40) :: str
     write(str,*)i
     end function realstr!}}}
+
     subroutine reallocateint(vector,n)!{{{
         integer(kind=ik),allocatable,intent(inout) :: vector(:)
         integer(kind=ik),allocatable :: copy(:)

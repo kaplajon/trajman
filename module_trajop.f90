@@ -711,7 +711,7 @@ module trajop
         real(kind=rk),allocatable :: dist(:),distmol(:,:),molentropy(:)
         save indold,dist,distmol,mi,bin
 
-        if(ind>indold)then
+        if(ind/=indold)then
             !if(allocated(dist))deallocate(dist);
             allocate(dist(instr%set%distbin))
             !if(allocated(distmol)deallocate(distmol);
@@ -1206,9 +1206,9 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 k=k+1
                 com=center_of_molecule(i,imol)
                 !if(allocated(molt(i)%upper))shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
-                shift(:)=(com(:)-centers(:,k))-mymodulo(com(:)-centers(:,k),box(:))
+                shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
                 do l=molt(i)%firstatom,molt(i)%lastatom
-                    coor(:,cind(l,imol))=coor(:,cind(l,imol))-shift(:)
+                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-shift(3)
                 end do
                 !if(allocated(molt(i)%upper))centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centers(:,k)=center_of_molecule(i,imol)!com-shift
