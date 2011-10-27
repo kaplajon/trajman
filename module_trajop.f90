@@ -44,27 +44,27 @@ module trajop
                 if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
             end if
         end if
-        teta=acos(dot_product(normalize(getatom(b,imol)-getatom(a,imol)),dir))*180._rk/pi
+        teta=acos(dot_product(normalize(atom(b)%coor(:,imol)-atom(a)%coor(:,imol)),dir))*180._rk/pi
     end function dirangle!}}}
 
     function valenceangle(a,b,c,imol) result(teta)!{{{
         ! Angle a-b against a-c in degrees
         real(kind=rk) :: teta
         integer(kind=ik) :: a,b,c,imol
-        teta=acos(dot_product(normalize(getatom(a,imol)-getatom(b,imol))&
-                ,normalize(getatom(a,imol)-getatom(c,imol))))*180._rk/pi
+        teta=acos(dot_product(normalize(atom(a)%coor(:,imol)-atom(b)%coor(:,imol))&
+                ,normalize(atom(a)%coor(:,imol)-atom(c)%coor(:,imol))))*180._rk/pi
     end function valenceangle!}}}
 
     function torsionangle(a,b,c,d,imol) result(teta)!{{{
         ! Torsion angle: a-b-c-d in degrees 
         real(kind=rk) :: Vba(1:3),Vcd(1:3),Vcb(1:3),teta,teta2
         integer(kind=ik) :: a,b,c,d,imol
-        Vcb=normalize(getatom(b,imol) - getatom(c,imol))
+        Vcb=normalize(atom(b)%coor(:,imol) - atom(c)%coor(:,imol))
         Vba = normalize(cross_product( &
-                        cross_product(getatom(a,imol) - getatom(b,imol) ,Vcb) &
+                        cross_product(atom(a)%coor(:,imol) - atom(b)%coor(:,imol) ,Vcb) &
                         , Vcb))
         Vcd = normalize(cross_product( &
-                        cross_product(getatom(d,imol) - getatom(c,imol) ,Vcb) &
+                        cross_product(atom(d)%coor(:,imol) - atom(c)%coor(:,imol) ,Vcb) &
                         ,Vcb))
         !teta = modulo(atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi,360._rk)
         teta = atan2(dot_product(Vcb,cross_product(Vcd,Vba)),dot_product(Vba,Vcd)) * 180._rk / pi
@@ -77,7 +77,7 @@ module trajop
         real(kind=rk) :: c,vector(1:3),ac(3),bc(3)!,com(3)
         if(present(jmol))then
         if(present(instr).AND.instr%findex==13)then
-            vector=mymodulo(getatom(b,jmol)-getatom(a,imol),box)
+            vector=mymodulo(atom(b)%coor(:,jmol)-atom(a)%coor(:,imol),box)
         else
            ! write(*,*)getatom(b,jmol)
            ! write(*,*)getatom(a,imol)
@@ -86,8 +86,8 @@ module trajop
            
          !   if(any(imol==molt(moltypeofuatom(a))%upper).neqv.any(jmol==molt(moltypeofuatom(b))%upper)&
          !   .or.any(imol==molt(moltypeofuatom(a))%lower).neqv.any(jmol==molt(moltypeofuatom(b))%lower))then
-            ac=getatom(a,imol)
-            bc=getatom(b,jmol)
+            ac=atom(a)%coor(:,imol)
+            bc=atom(b)%coor(:,jmol)
           !  if(ac(3)<0._rk)then
           !      if(any(imol==molt(moltypeofuatom(a))%upper))ac(3)=box(3)-ac(3)
           !      if(any(imol==molt(moltypeofuatom(a))%lower))ac(3)=ac(3)
@@ -109,7 +109,7 @@ module trajop
         if(present(instr).AND.instr%set%zrdf)vector(1:2)=0._rk
         c=sqrt(sum(vector**2))
         else
-        vector=getatom(b,imol)-getatom(a,imol)
+        vector=atom(b)%coor(:,imol)-atom(a)%coor(:,imol)
         c = sqrt(sum(vector**2))
         end if
     end function bond_length!}}}
@@ -118,7 +118,7 @@ module trajop
         integer(kind=ik) :: a,imol
         real(kind=rk) :: dir(3),distance
         dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
-        distance=dot_product(getatom(a,imol)-centerofmembrane,dir)
+        distance=dot_product(atom(a)%coor(:,imol)-centerofmembrane,dir)
     end function distance_com!}}}
 
     function order_parameter(a,b,imol) result(c)!{{{
@@ -135,11 +135,52 @@ module trajop
         com=center_of_molecule(a,imol)
         c=0
         do i=molt(a)%firstatom,molt(a)%lastatom
-            c=c+sum((getatom(i,imol)-com)**2)*masses(i) 
+            c=c+sum((atom(i)%coor(:,imol)-com)**2)*masses(i) 
         end do
             c=c*(common_setflags%traj_cscale/1.e-9_rk)**2
     end function imoi!}}}
 
+    function center_of_mass(atoms,imol,a) result(center)
+        integer(kind=ik) :: atoms(:),i,imol
+        real(kind=rk) :: center(3),massweight,mass
+        logical,optional :: a
+        mass=1;massweight=0;center=0
+        do i=1,size(atoms)
+            if(.not.present(a))mass=masses(i)
+            center=center+(atom(atoms(i))%coor(:,imol)*mass)
+            massweight=massweight+mass
+        end do
+        center=center/massweight
+    end function center_of_mass 
+
+    subroutine add_hydrogen(helpers,hcoor,imol,func,bondlength,theta)
+        integer(kind=ik),intent(in) :: helpers(:),func,imol
+        real(kind=rk) ::&
+        v1(3),v2(3),v3(3),v4(3),v5(3),u(3),bondlength,thetal
+        real(kind=rk),intent(inout) :: hcoor(:)
+        real(kind=rk),optional :: theta
+        if(.not.present(theta) .and. func==2)stop 'CH2x needs rotation angle'
+        select case(func)
+        case(1) ! CH
+            v1=center_of_mass(helpers(2:),imol,.true.)
+            v2=atom(helpers(1))%coor(:,imol)
+            v3=bondlength*normalize((v2-v1))+v2
+            hcoor=v3
+        case(2) !CH double bond
+        case(3) !CH2
+            thetal=theta*pi/180._rk
+            v1=atom(helpers(1))%coor(:,imol)
+            v3=atom(helpers(2))%coor(:,imol)
+            v4=atom(helpers(3))%coor(:,imol)
+            v5=normalize(cross_product(v3-v1,v4-v1))
+            u=normalize(v3-v4)
+            !call vector_rotate_3d(v5,u,theta*pi/180._rk,hcoor)
+            hcoor(1:3) =  cos ( thetal ) * v5(1:3) + sin ( thetal ) * cross_product(u,v5)!<Up>(normal2(1:3) )
+            hcoor=bondlength*normalize(hcoor)+v1
+        case(4) !CH3
+            stop 'Add CH3 hydrogen'
+        end select
+    end subroutine add_hydrogen
     subroutine procop(instr,frame)!{{{
     ! Processing of operations from input
         integer(kind=ik) :: imol,jmol,i,j,k,l,m,frame,steps
@@ -219,14 +260,80 @@ module trajop
                         call center_of_membrane(common_setflags%membrane_moltypes)
                         !write(42,*)frame,centerofmembrane
                      case(2) !ATOM
-                        select case(instr(i)%newatom%from_mol_prop)
-                        case('com','center_of_mass')
+                        do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                            select case(instr(i)%newatom%atype)
+                            case('com','center_of_mass')
                             ! Define atom from center of mass of a defined submolecule.
-                            do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
-                                coor(:,cind(instr(i)%atoms(1),imol))=&
-                                center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
-                            end do
-                        end select
+                               ! coor(:,cind(instr(i)%atoms(1),imol))=&
+                               atom(instr(i)%atoms(1))%coor(:,imol)=&
+                                center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
+                            case('CH1')
+                                call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,1,instr(i)%set%ch_bondlength)
+                            case('CH1db')
+                                call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,2,instr(i)%set%ch_bondlength)
+                           ! case('CH2rx','CH2sx')
+                           !     write(*,*)
+                           !     do j=-100,100
+                           !     teta=valenceangle(&
+                           !     instr(i)%newatom%helpers(1),&
+                           !     instr(i)%newatom%helpers(2),&
+                           !     instr(i)%newatom%helpers(3),imol)
+                           !     teta=teta+real(j,rk)/100*20
+                           !     select case(instr(i)%newatom%atype)
+                           !     case('CH2rx')
+                           !         call add_hydrogen(instr(i)%newatom%helpers,&
+                           !     atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
+                           !     !    call add_hydrogen([instr(i)%newatom%helpers(1),&
+                           !     !    instr(i)%newatom%helpers(3),instr(i)%newatom%helpers(2)],&
+                           !     !atom(instr(i+1)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
+                           !    ! case('CH2s')
+                           !       !  call add_hydrogen(instr(i+1)%newatom%helpers,&
+                           !     !atom(instr(i+1)%atoms(1))%coor(:,imol),imol,3,instr(i+1)%set%ch_bondlength,teta+(180._rk-teta)/2)
+                           !     end select
+                           !     if(imol==1)&
+                           !     write(71,*)teta,&
+                           !     valenceangle(instr(i)%newatom%helpers(1),&
+                           !     instr(i)%newatom%helpers(2),instr(i)%newatom%helpers(3),imol), &
+                           !     (valenceangle(instr(i)%newatom%helpers(1),&
+                           !     instr(i)%newatom%helpers(2),instr(i)%newatom%helpers(3),imol)-acos(-1._rk/3)*180/pi)**2, &
+                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
+                           !     !instr(i)%newatom%helpers(2),size(atom)-1,imol)-acos(-1._rk/3)*180/pi)**2, &
+                           !     (valenceangle(instr(i)%newatom%helpers(1),&
+                           !     instr(i)%newatom%helpers(2),size(atom),imol)-acos(-1._rk/3)*180/pi)**2, &
+                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
+                           !     !instr(i)%newatom%helpers(3),size(atom)-1,imol)-acos(-1._rk/3)*180/pi)**2, &
+                           !     (valenceangle(instr(i)%newatom%helpers(1),&
+                           !     instr(i)%newatom%helpers(3),size(atom),imol)-acos(-1._rk/3)*180/pi)**2
+                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
+                           !     !size(atom)-1,size(atom),imol)-acos(-1._rk/3)*180/pi)**2
+                           !     do k=1,3
+                           !     if(imol==1)write(70,*)atom(instr(i)%newatom%helpers(k))%coor(:,imol)
+                           !     end do
+                           !     !write(70,*)atom(size(atom)-1)%coor(:,imol),atom(instr(i)%atoms(1))%coor(:,imol) 
+                           !     if(imol==1)write(70,*)atom(size(atom))%coor(:,imol),atom(instr(i)%atoms(1))%coor(:,imol)
+
+                           !     end do
+                           !    ! stop
+                                case('CH2r','CH2s')
+                                teta=126.1_rk-0.175_rk*valenceangle(&
+                                instr(i)%newatom%helpers(1),&
+                                instr(i)%newatom%helpers(2),&
+                                instr(i)%newatom%helpers(3),imol)
+                                select case(instr(i)%newatom%atype)
+                                case('CH2r')
+                                    call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
+                                case('CH2s')
+                                    call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,teta+(180._rk-teta)/2)
+                                end select
+                            case('CH3')
+                                call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,4,instr(i)%set%ch_bondlength)
+                            end select
+                        end do
                      case(3) !LEAFLET
                             !if(global_setflags%apl)call apl_grid(instr(i))
                             if(global_setflags%apl .OR. global_setflags%gd)call apl_grid(instr(i))
@@ -252,27 +359,27 @@ module trajop
                 case(12) ! ISOTROPIC MOMENT OF INERTIA
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
-                        instr(i)%datam(jmol,frame)=imoi(moltypeofuatom(instr(i)%atoms(1)),imol)
+                        instr(i)%datam(jmol,frame)=imoi(atom(instr(i)%atoms(1))%moltype,imol)
                     end do
                 case(13) ! RADIAL DISTRIBUTION FUNCTION (RDF, g(r))
                     l=0
                     instr(i)%rdf_pairs=0
-                    moltest=(moltypeofuatom(instr(i)%atoms(1))==moltypeofuatom(instr(i)%atoms(2)))
+                    moltest=(atom(instr(i)%atoms(1))%moltype==atom(instr(i)%atoms(2))%moltype)
                     select case(instr(i)%set%leaflet)!{{{
                     case(0)!Both
-                        do j=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                        do j=1,molt(atom(instr(i)%atoms(1))%moltype)%nmol
                             imol=j
-                            do k=merge(j+1,1,moltest),molt(moltypeofuatom(instr(i)%atoms(2)))%nmol
+                            do k=merge(j+1,1,moltest),molt(atom(instr(i)%atoms(2))%moltype)%nmol
                                 jmol=k
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                             end do
                         end do
                     case(1)!Lower
-                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%lower)
-                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%lower(j)
-                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%lower)
-                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%lower(k)
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%lower)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%lower(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%lower)
+                                jmol=molt(atom(instr(i)%atoms(2))%moltype)%lower(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                                 !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
@@ -280,9 +387,9 @@ module trajop
                         end do
                     case(2)!Upper
 
-                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%upper)
-                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%upper(j)
-                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%upper)
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%upper)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%upper(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%upper)
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
@@ -295,7 +402,7 @@ module trajop
                 case(14) !XYZ
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
-                        v=[getatom(instr(i)%atoms(1),imol)]
+                        v=[atom(instr(i)%atoms(1))%coor(:,imol)]
                         select case(instr(i)%instructionstring(1:1))
                         case('X')
                             instr(i)%datam(jmol,frame)=v(1)
@@ -319,6 +426,7 @@ module trajop
                     end do
 
                 case(16) ! shuffle_GD
+                    stop 'SHUFFLE (16): atomshuffle is still using coor. FIX!!'
                     allocate(grid1(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))!{{{
                     allocate(grid2(1:instr(i)%set%aplgrid(1),1:instr(i)%set%aplgrid(2)))
 !                    if(.not.allocated(instr(i)%rdf_dist))then
@@ -329,8 +437,8 @@ module trajop
                     do j=1,steps
                         call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,1,cindexes_l)
                         call atomshuffle(common_setflags%shuffle_atoms,instr(i)%atoms,2,cindexes_u)
-                        call countmol(cindexes_l,grid1)
-                        call countmol(cindexes_u,grid2)
+                    !    call countmol(cindexes_l,grid1) ! DISABLED DUE TO NEW HANDLING OF COORDINATES!!!
+                    !    call countmol(cindexes_u,grid2) ! DISABLED DUE TO NEW HANDLING OF COORDINATES!!!
                     if(.not.allocated(instr(i)%rdf_dist))then
                         allocate(instr(i)%rdf_dist(-sum(grid1):sum(grid1)))
                         instr(i)%rdf_dist=0
@@ -382,12 +490,12 @@ module trajop
                     end do
                 case(22) !MBL distance between atoms in different molecules
                     l=0!{{{
-                    moltest=(moltypeofuatom(instr(i)%atoms(1))==moltypeofuatom(instr(i)%atoms(2)))
+                    moltest=(atom(instr(i)%atoms(1))%moltype==atom(instr(i)%atoms(2))%moltype)
                     select case(instr(i)%set%leaflet)
                     case(0)!Both
-                        do j=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
+                        do j=1,molt(atom(instr(i)%atoms(1))%moltype)%nmol
                             imol=j
-                            do k=merge(j+1,1,moltest),molt(moltypeofuatom(instr(i)%atoms(2)))%nmol
+                            do k=merge(j+1,1,moltest),molt(atom(instr(i)%atoms(2))%moltype)%nmol
                                 jmol=k
                                 l=l+1
                                 !write(*,*)l,size(instr(i)%datam,1)
@@ -395,10 +503,10 @@ module trajop
                             end do
                         end do
                     case(1)!Lower
-                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%lower)
-                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%lower(j)
-                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%lower)
-                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%lower(k)
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%lower)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%lower(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%lower)
+                                jmol=molt(atom(instr(i)%atoms(2))%moltype)%lower(k)
                                 l=l+1
                                 instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                                 !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
@@ -406,10 +514,10 @@ module trajop
                         end do
                     case(2)!Upper
 
-                        do j=1,size(molt(moltypeofuatom(instr(i)%atoms(1)))%upper)
-                            imol=molt(moltypeofuatom(instr(i)%atoms(1)))%upper(j)
-                            do k=merge(j+1,1,moltest),size(molt(moltypeofuatom(instr(i)%atoms(2)))%upper)
-                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%upper)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%upper(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%upper)
+                                jmol=molt(atom(instr(i)%atoms(2))%moltype)%upper(k)
                                 l=l+1
                                 instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
                                 !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
@@ -424,7 +532,7 @@ module trajop
                 allocate(instr(i)%set%slice%bintest(instr(i)%nmolop,skipframes+1:maxframes))
                 do jmol=1,instr(i)%nmolop
                     imol=instr(i)%molind(jmol)
-                    v=center_of_molecule(moltypeofuatom(instr(i)%atoms(1)),imol)
+                    v=center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
                     select case(instr(i)%set%slice%typ)
                     case('Z_out')
                     if(v(3)<=instr(i)%set%slice%lower.or.v(3)>=instr(i)%set%slice%upper)then
@@ -609,6 +717,7 @@ module trajop
         !write(*,*)string2
         string2=trim(adjustl(string))//" framedev. "//trim(string2)
     end function slice_average!}}}
+
     function test_var(vector) result(var)!{{{
         real(kind=rk) :: vector(:),vector2(size(vector)),var,mean
         integer(kind=ik) :: imol
@@ -906,8 +1015,8 @@ module trajop
 !            dist=dist/sum(dist(1:300)*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**2,bi=1,300)])
 !dist(301:)=0._rk
 !isoentropy=sum(norm(1:300))/((4*pi*(mi+300._rk*bin)**3)/3)
-isoentropy=(size(molt(moltypeofuatom(instr%atoms(1)))%upper)&
-+size(molt(moltypeofuatom(instr%atoms(2)))%upper))/(box(1)*box(2)*box(3))*1001
+isoentropy=(size(molt(atom(instr%atoms(1))%moltype)%upper)&
++size(molt(atom(instr%atoms(2))%moltype)%upper))/(box(1)*box(2)*box(3))*1001
 dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**2,bi=1,300)])
 
             !Skriv ut distribution till disk
@@ -1206,9 +1315,9 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 k=k+1
                 com=center_of_molecule(i,imol)
                 !if(allocated(molt(i)%upper))shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
-                shift(3)=(com(3)-centers(3,k))-mymodulo(com(3)-centers(3,k),box(3))
+                shift(:)=(com(:)-centers(:,k))-mymodulo(com(:)-centers(:,k),box(:))
                 do l=molt(i)%firstatom,molt(i)%lastatom
-                    coor(3,cind(l,imol))=coor(3,cind(l,imol))-shift(3)
+                    atom(l)%coor(:,imol)=atom(l)%coor(:,imol)-shift(:)
                 end do
                 !if(allocated(molt(i)%upper))centers(:,k)=center_of_molecule(i,imol)!com-shift
                 centers(:,k)=center_of_molecule(i,imol)!com-shift
@@ -1227,9 +1336,10 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         ! Fold back atoms that are outside the box
         do i=1,size(molt)
             do imol=1,molt(i)%nmol
-                com=getatom(molt(i)%firstatom,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                com=atom(molt(i)%firstatom)%coor(:,imol) !center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
                 do k=molt(i)%firstatom,molt(i)%lastatom
-                    coor(:,cind(k,imol))=com+mymodulo(coor(:,cind(k,imol))-com(:),box(:))
+                   ! coor(:,cind(k,imol))=com+mymodulo(coor(:,cind(k,imol))-com(:),box(:))
+                   atom(k)%coor(:,imol)=com+mymodulo(atom(k)%coor(:,imol)-com(:),box(:))
                 end do
             end do
         end do
@@ -1249,7 +1359,8 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         if(ALL(i/=common_setflags%membrane_moltypes))shift=com(j)-mymodulo(com(j),box(j))
                         shift=shift+centerofmembrane(j)
                         do k=molt(i)%firstatom,molt(i)%lastatom
-                            coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                          !  coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                          atom(k)%coor(j,imol)=atom(k)%coor(j,imol)-shift
                         end do
                     end do
                 else ! Fold back molecules that are outside the box
@@ -1258,7 +1369,8 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                         shift=com(j)-modulo(com(j),box(j))
                         if(abs(shift)>box(j)/2._rk)then
                             do k=molt(i)%firstatom,molt(i)%lastatom
-                                coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                          !      coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                                 atom(k)%coor(j,imol)=atom(k)%coor(j,imol)-shift
                             end do
                         end if
                     end do
@@ -1272,7 +1384,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 end if
             end do
         end do
-        if(present(a))centerofmembrane=0
+        if(present(a))centerofmembrane=0._rk
     end subroutine foldmol!}}}
 
     function totalmoi(umol,imol) result(m)!{{{
@@ -1281,7 +1393,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         m=0
         com=center_of_molecule(umol,imol)
         do i=molt(umol)%firstatom,molt(umol)%lastatom
-            m=m+sum((getatom(i,imol)-com)**2)*(masses(i))
+            m=m+sum((atom(i)%coor(:,imol)-com)**2)*(masses(i))
         end do
         
     end function totalmoi!}}}
@@ -1336,7 +1448,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
     do i=molt(j)%firstatom,molt(j)%lastatom
     
-        ri=getatom(i,imol)-com
+        ri=atom(i)%coor(:,imol)-com
         Ixx=Ixx+masses(i)*(ri(2)**2+ri(3)**2)
         Iyy=Iyy+masses(i)*(ri(1)**2+ri(3)**2)
         Izz=Izz+masses(i)*(ri(1)**2+ri(2)**2)

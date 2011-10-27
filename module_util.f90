@@ -25,7 +25,7 @@ module util
 !    use readtraj
 !    use input
     implicit none
-    integer(kind=ik) :: maxframes,skipframes
+    integer(kind=ik) :: maxframes,skipframes,atomsdefined
     type moltype!{{{
         integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         integer(kind=ik),allocatable :: upper(:),lower(:)
@@ -36,6 +36,13 @@ module util
         character(kind=1,len=1),allocatable :: filename(:)
     end type trjf
     type(trjf),allocatable :: trajfile(:)
+    type uatoms!{{{
+        character(kind=1,len=255) :: aname
+        character(kind=1,len=255) :: mname
+        integer(kind=ik) :: moltype
+        real (kind=rk),allocatable :: coor(:,:)
+    end type!}}}
+    type(uatoms),allocatable :: atom(:)
     type write_frame!{{{
         integer(kind=ik) :: framenumber
         character(kind=1,len=3) :: outformat
@@ -63,7 +70,7 @@ module util
     type setflags!{{{
         logical ::&
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
-        molaverage,xyrdf,zrdf,VSnorm
+        molaverage,xyrdf,zrdf,VSnorm,foldcenterofmembrane
         integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
         type(write_frame),allocatable :: writeframe(:)
@@ -72,10 +79,12 @@ module util
         type(scaletype) :: scaling
         type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
-        real(kind=rk) :: constant_bl,rdf_binsize
+        real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize
     end type setflags!}}}
     type natom!{{{
-        character(kind=1,len=100) :: atomname,from_mol_prop,molecule
+        character(kind=1,len=100) :: atomname,atype,molecule
+        real(kind=rk) :: angle,bl
+        integer(kind=ik),allocatable :: helpers(:)
     end type natom!}}}
     type setcommon!{{{
         logical :: silent,centerofmembrane
@@ -268,6 +277,21 @@ module util
         end if
     end subroutine reallocatemoltype!}}}
 
+    subroutine reallocateatom(v,i)!{{{
+        type(uatoms),intent(inout),allocatable :: v(:)
+        type(uatoms),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocateatom!}}}
+
     subroutine reallocatetrajfile(v,i)!{{{
         type(trjf),intent(inout),allocatable :: v(:)
         type(trjf),allocatable ::copy(:)
@@ -338,4 +362,150 @@ end function strvecindex!}}}
         read(str,*)r
     end function readreal!}}}
 
+function r8vec_norm ( n, a )!{{{
+
+!*****************************************************************************80
+!
+!! R8VEC_NORM returns the L2 norm of an R8VEC.
+!
+!  Discussion:
+!
+!    An R8VEC is a vector of R8's.
+!
+!    The vector L2 norm is defined as:
+!
+!      R8VEC_NORM = sqrt ( sum ( 1 <= I <= N ) A(I)**2 ).
+!
+!  Licensing:
+!
+!    This code is distributed under the GNU LGPL license. 
+!
+!  Modified:
+!
+!    21 August 2010
+!
+!  Author:
+!
+!    John Burkardt
+!
+!  Parameters:
+!
+!    Input, integer ( kind = 4 ) N, the number of entries in A.
+!
+!    Input, real ( kind = 8 ) A(N), the vector whose L2 norm is desired.
+!
+!    Output, real ( kind = 8 ) R8VEC_NORM, the L2 norm of A.
+!
+  implicit none
+
+  integer ( kind = ik ) n
+
+  real    ( kind = rk ) a(n)
+  real    ( kind = rk ) r8vec_norm
+
+  r8vec_norm = sqrt ( sum ( a(1:n)**2 ) )
+
+  return
+end function r8vec_norm!}}}
+
+subroutine vector_rotate_3d ( v1, axis, angle, v2 )!{{{
+
+!*****************************************************************************80
+!
+!! VECTOR_ROTATE_3D rotates a vector around an axis vector in 3D.
+!
+!  Discussion:
+!
+!    Thanks to Cody Farnell for correcting some errors in a previous
+!    version of this routine!
+!
+!  Licensing:
+!
+!    This code is distributed under the GNU LGPL license. 
+!
+!  Modified:
+!
+!    28 August 2010
+!
+!  Author:
+!
+!    John Burkardt
+!
+!  Parameters:
+!
+!    Input, real ( kind = 8 ) V1(3), the vector to be rotated.
+!
+!    Input, real ( kind = 8 ) AXIS(3), the vector about which the
+!    rotation is to be carried out.
+!
+!    Input, real ( kind = 8 ) ANGLE, the angle, in radians, of the rotation
+!    to be carried out.
+!
+!    Output, real ( kind = 8 ) V2(3), the rotated vector.
+!
+  implicit none
+
+  real    ( kind = rk ) angle
+  real    ( kind = rk ) axis(3)
+  real    ( kind = rk ) dot
+  real    ( kind = rk ) norm
+  real    ( kind = rk ) norm_vn
+  real    ( kind = rk ) normal2(3)
+!  real    ( kind = 8 ) r8vec_norm
+  real    ( kind = rk ) v1(3)
+  real    ( kind = rk ) v2(3)
+  real    ( kind = rk ) vn(3)
+  real    ( kind = rk ) vp(3)
+  real    ( kind = rk ) vr(3)
+!
+!  Compute the length of the rotation axis.
+!
+  norm = r8vec_norm ( 3, axis )
+
+  if ( norm == 0.0_rk ) then
+    v2(1:3) = v1(1:3)
+    return
+  end if
+!
+!  Compute the dot product of the vector and the (unit) rotation axis.
+!
+  dot = dot_product ( v1(1:3), axis(1:3) ) / norm
+!
+!  Compute the parallel component of the vector.
+!
+  vp(1:3) = dot * axis(1:3) / norm
+!
+!  Compute the normal component of the vector.
+!
+  vn(1:3) = v1(1:3) - vp(1:3)
+
+  norm_vn = r8vec_norm ( 3, vn )
+
+  if ( norm == 0.0_rk ) then
+    v2(1:3) = vp(1:3)
+    return
+  end if
+
+  vn(1:3) = vn(1:3) / norm_vn
+!
+!  Compute a second vector, lying in the plane, perpendicular
+!  to V1 and VN, and forming a right-handed system.
+!
+  normal2(1) = axis(2) * vn(3) - axis(3) * vn(2)
+  normal2(2) = axis(3) * vn(1) - axis(1) * vn(3)
+  normal2(3) = axis(1) * vn(2) - axis(2) * vn(1)
+
+  norm = r8vec_norm ( 3, normal2 )
+  normal2(1:3) = normal2(1:3) / norm
+!
+!  Rotate the normal component by the angle.
+!
+!  v2(1:3) = ( cos ( angle ) * v1(1:3) + sin ( angle ) * cross_product(v1,axis)!<Up>(normal2(1:3) )
+!
+!  The rotated vector is the parallel component plus the rotated component.
+!
+ 
+
+  return
+end subroutine vector_rotate_3d !}}}
 end module util

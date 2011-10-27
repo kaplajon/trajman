@@ -560,16 +560,27 @@ module input
                 call center_of_membrane(common_setflags%membrane_moltypes)
                 global_setflags%centerofmembrane=.TRUE.
             case('atom')
+                atomsdefined=atomsdefined+1
                 allocate(trajop%atoms(1))
                 trajop%define=2
                 trajop%newatom%atomname=trim(stringconv(arguments(:,3)))
-                trajop%newatom%from_mol_prop=trim(stringconv(arguments(:,4)))
+                trajop%newatom%atype=trim(stringconv(arguments(:,4)))
                 trajop%newatom%molecule=trim(stringconv(arguments(:,5)))
-                ! This indexing works for one and only one atom per
-                ! submolecule!
+                if(size(arguments,2)>5)then
+                   ! trajop%newatom%angle=readreal(trim(stringconv(arguments(:,6))))
+                    do i=6,size(arguments,2)
+                        if(i==6)allocate(trajop%newatom%helpers(1))
+                        j=size(trajop%newatom%helpers)
+                        if(i>6) call reallocate(trajop%newatom%helpers,j+1)
+                        trajop%newatom%helpers(size(trajop%newatom%helpers))=atomindex(trim(stringconv(arguments(:,i))))
+                        if(trajop%newatom%helpers(size(trajop%newatom%helpers))==0)then
+                            write(*,*)'DEFINE: atom: helpers: >',trim(stringconv(arguments(:,i))),'<' 
+                            stop
+                        end if
+                    end do
+                end if
                 ! Reallocate indexing vectors to add one atom:
                 call reallocatechar(atomnames,size(atomnames)+1)
-                call reallocate(shift,size(shift)+1)
                 call reallocate(natoms,size(natoms)+1)
                 call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
                 call reallocate(masses,size(masses)+1)
@@ -582,11 +593,11 @@ module input
                 natoms(size(atomnames))=molt(j)%natoms
                 atomnames(size(atomnames))=trajop%newatom%atomname
                 trajop%atoms(1)=size(atomnames)
-                !atot=atot+molt(j)%nmol
-                shift(i)=sum(molt(1:j-1)%nmol*molt(1:j-1)%natoms)+i-sum(molt(1:j)%natoms)
-                call reallocatecoor(coor,size(coor,2)+molt(j)%nmol)
-                !deallocate(coor)
-                !allocate(coor(1:3,atot+molt(j)%nmol))
+                call reallocateatom(atom,size(atom)+1)
+                atom(size(atom))%aname=trajop%newatom%atomname
+                atom(size(atom))%mname=molt(j)%molname
+                atom(size(atom))%moltype=j
+                allocate(atom(size(atom))%coor(3,molt(j)%nmol))
             case('leaflet')
                 trajop%define=3
                 global_setflags%leaflets_defined=.TRUE.
@@ -604,6 +615,7 @@ module input
             case('fold')
                 select case(arg3)
                 case('centerofmembrane')
+                    global_setflags%foldcenterofmembrane=.TRUE.
                     trajop%define=4
                     call foldmol('com')
                 end select
@@ -617,6 +629,7 @@ module input
         character(kind=1,len=1) :: args(:,:)
         character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
         integer(kind=ik) :: i,j,p,ios,imol,kl,ku
+        real(kind=rk) :: v(3)
         arg2='';arg3='';arg4='';arg5=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
@@ -796,19 +809,34 @@ module input
                         do i=1,size(molt)
                         kl=0;ku=0
                             do imol=1,molt(i)%nmol
-                            if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) < 0._rk)then
-                                kl=kl+1
-                                call reallocate(molt(i)%lower,kl)
-                                molt(i)%lower(kl)=imol
-                            else if(dot_product(center_of_molecule(i,imol)-centerofmembrane,director) > 0._rk)then
-                                ku=ku+1
-                                call reallocate(molt(i)%upper,ku)
-                                molt(i)%upper(ku)=imol
+                            if(.not.global_setflags%foldcenterofmembrane)then
+                                if(dot_product(center_of_molecule(i,imol)&
+                                -centerofmembrane,director) < 0._rk)then
+                                    kl=kl+1
+                                    call reallocate(molt(i)%lower,kl)
+                                    molt(i)%lower(kl)=imol
+                                else if(dot_product(center_of_molecule(i,imol)&
+                                -centerofmembrane,director) > 0._rk)then
+                                    ku=ku+1
+                                    call reallocate(molt(i)%upper,ku)
+                                    molt(i)%upper(ku)=imol
+                                end if
+                            else
+                                v=center_of_molecule(i,imol)
+                                if(v(3)-centerofmembrane(3) < 0._rk)then
+                                    kl=kl+1
+                                    call reallocate(molt(i)%lower,kl)
+                                    molt(i)%lower(kl)=imol
+                                else if(v(3)-centerofmembrane(3) > 0._rk)then
+                                    ku=ku+1
+                                    call reallocate(molt(i)%upper,ku)
+                                    molt(i)%upper(ku)=imol
+                                end if
                             end if
                             end do
                         end do
                         if(ku==0 .or. kl==0)then
-                            write(*,*)'Upper: ',ku,' Lower: ',kl
+                            write(*,*)'SET: LEAFLETS: Upper: ',ku,' Lower: ',kl
                             stop
                         end if
             case ('whole')
@@ -905,6 +933,8 @@ module input
                 else
                     stop 'SLICE: Wrong number of arguments!'
                 end if
+            case('ch_bondlength')
+                global_setflags%ch_bondlength=readreal(arg3)
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

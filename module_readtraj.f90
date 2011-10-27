@@ -68,7 +68,7 @@ contains
             do j=1,molt(i)%nmol
                 do k=molt(i)%firstatom,molt(i)%lastatom
                     !write(*,'(i5,a5,a10,i5,3F10.7)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
-                    write(funit,'(i5,2a5,i5,3F8.3)')j,molt(i)%molname,atomnames(k),l,getatom(k,j)
+                    write(funit,'(i5,2a5,i5,3F8.3)')j,molt(i)%molname,atom(k)%aname,l,atom(k)%coor(:,j)
                     l=l+1
                 end do
             end do
@@ -86,7 +86,7 @@ contains
         do i=1,size(molt)
             do j=1,molt(i)%nmol
                 do k=molt(i)%firstatom,molt(i)%lastatom
-                    write(funit,*)atomnames(k),10*getatom(k,j)
+                    write(funit,*)atom(k)%aname,10*atom(k)%coor(:,j)
                 end do
             end do
         end do
@@ -102,6 +102,7 @@ subroutine reallocinstruct(v,i)!{{{
         allocate(copy(i))
         copy(1:j)=v(1:j)
         call move_alloc(copy,v)
+        if(allocated(copy))deallocate(copy)
     else
         allocate(v(i))
     end if
@@ -171,6 +172,7 @@ subroutine globals!{{{
         global_setflags%leaflet=0
         global_setflags%whole=.FALSE.
         global_setflags%centerofmembrane=.FALSE.
+        global_setflags%foldcenterofmembrane=.FALSE.
         global_setflags%leaflets_defined=.FALSE.
         global_setflags%molaverage=.FALSE.
         global_setflags%tshift=0
@@ -183,6 +185,7 @@ subroutine globals!{{{
         global_setflags%Vsnorm=.TRUE.
         global_setflags%distminmax%switch=.FALSE.
         global_setflags%scaling%switch=.FALSE.
+        global_setflags%ch_bondlength=1.09_rk
 
     end if
     !maxframes=0;minframe=0
@@ -346,6 +349,8 @@ end subroutine globals!}}}
         end select
         if(i==1)return
         read(unit=fhandle,fmt=*,iostat=ios)atot
+        if(allocated(coor))stop 'READGRO: Coor is already allocated, why?'
+        allocate(coor(1:3,atot))
         do ia=1,atot
             read(unit=fhandle,fmt='(20x)',iostat=ios,advance='no')!coor(:,ia)
             read(unit=fhandle,fmt=*,iostat=ios)coor(:,ia)
@@ -365,6 +370,8 @@ end subroutine globals!}}}
         natm=int(atot,4)
         statf=1
         call f77_molfile_read_next(fhandle,natm,coorv,bx,statf)
+        if(allocated(coor))stop 'READTRR: Coor is already allocated, why?'
+        allocate(coor(1:3,atot))
         coor=reshape(real(coorv,kind(coor)),[3,size(coor,2)],PAD=0._rk*coor)
         box=bx(1:3)
         select case(statf)
@@ -394,7 +401,7 @@ end subroutine globals!}}}
     end subroutine closetraj!}}}
 
     function readframe(tunit) result(ios)!{{{
-        integer(kind=ik) :: ios
+        integer(kind=ik) :: ios,i,j
         integer(kind=4) :: tunit
         select case(trajtype)
         case('gro')
@@ -404,6 +411,13 @@ end subroutine globals!}}}
         case default
             ios=readtrr(tunit)
         end select
+        do i=1,size(atom)-atomsdefined
+            do j=1,molt(atom(i)%moltype)%nmol
+                atom(i)%coor(:,j)=getatom(i,j)
+            end do
+        end do
+        ! Make sure everything uses the new coordinate handling
+        deallocate(coor) 
     end function readframe        !}}}
 
     pure function stringconv(vector) result(string)!{{{
@@ -459,6 +473,7 @@ end subroutine globals!}}}
 
         integer (kind=ik),intent(in) :: aindex,imol
         real (kind=rk) :: acoor(1:3)
+        !if(.not.allocated(coor))stop 'getatom: coor is not allocated!'
 
         acoor(1:3)=coor(1:3,cind(aindex,imol))
         
@@ -536,8 +551,6 @@ end subroutine globals!}}}
         molt(j)%natoms=natomsoftype(j)
         !write(*,*)molt(j)%molname
         end do
-        
-        
 
         temp=atomnames;temp2=moltypenames
         deallocate(atomnames,moltypenames)
@@ -546,7 +559,19 @@ end subroutine globals!}}}
         deallocate(temp,temp2,temp3,natomsoftype,moltype_atom)
 !        allocate(masses(size(atomnames)),mgratios(size(atomnames)))
 !        masses=0;mgratios=0
-
+        !Get away from this harsh indexing by storing coordinates in a new type
+        allocate(atom(size(atomnames)))
+        do i=1,size(atom)
+            j=moltypeofuatom(i)
+            allocate(atom(i)%coor(3,molt(j)%nmol))
+            atom(i)%aname=atomnames(i)
+            atom(i)%mname=molt(j)%molname
+            atom(i)%moltype=j
+            do j=1,size(atom(i)%coor,2)
+                atom(i)%coor(:,j)=getatom(i,j)
+            end do
+        end do
+        deallocate(coor) ! To make sure everything uses the new coordinate handling
     end subroutine trajindex!}}}
 
     pure function center_of_molecule(umol,imol) result(centerofmolecule)!{{{
@@ -556,7 +581,7 @@ end subroutine globals!}}}
         centerofmolecule=0
         j=umol
         do i=molt(j)%firstatom,molt(j)%lastatom
-            centerofmolecule=centerofmolecule+getatom(i,imol)*masses(i)
+            centerofmolecule=centerofmolecule+atom(i)%coor(:,imol)*masses(i)
         end do
         centerofmolecule=centerofmolecule/sum(masses(molt(j)%firstatom:molt(j)%lastatom))
        ! write(*,*)centerofmolecule,sum(masses(molt(j)%firstatom:molt(j)%lastatom))

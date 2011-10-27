@@ -192,10 +192,10 @@ INPUTFILE: DEFINITIONS
 Usage: define options
 ----------------------------------
 define
-	atom NAME SUBMOLPROP SUBMOL
+	atom NAME SUBMOLPROP MOL,SUBMOL
 
 Define a new atom with name, NAME, from a property (SUBMOLPROP)
-of a defined submolecule (SUBMOL). SUBMOLPROP can for now only
+of a defined molecule or submolecule (SUBMOL). SUBMOLPROP can for now only
 be set to 'com', which is the center of mass of the submolecule.
 
     	centerofmembrane molecule1 ...
