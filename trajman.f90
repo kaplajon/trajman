@@ -39,6 +39,7 @@ program trajman
     integer(kind=ik) :: v(1:4),vs(1:4)
     call RNSTRT(310952_ikr) !init. random seed
     skipframes=0;maxframes=0
+    atomsdefined=0
     call arguments(runit)
     call constants
     call globals
@@ -56,8 +57,8 @@ program trajman
         select case(troptype(i)%findex)
         case(0,7,9,10,15,16,17,18,19,20)
         case(13,22) !RDF
-            j=moltypeofuatom(troptype(i)%atoms(1))
-            k=moltypeofuatom(troptype(i)%atoms(2))
+            j=atom(troptype(i)%atoms(1))%moltype
+            k=atom(troptype(i)%atoms(2))%moltype
             select case(troptype(i)%set%leaflet)
             case(0)!Both
                 l=molt(j)%nmol*molt(k)%nmol
@@ -75,7 +76,7 @@ program trajman
 
                 
         case default
-            j=moltypeofuatom(troptype(i)%atoms(1))
+            j=atom(troptype(i)%atoms(1))%moltype
             select case(troptype(i)%set%leaflet)
                 case(0)
                     call reallocate(troptype(i)%molind,molt(j)%nmol)
@@ -246,11 +247,11 @@ frame=skipframes
             do i=1,size(atomnames)
                 select case(trajtype)
                 case('gro')
-                    write(37,*)atomnames(i),10*coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+                    write(37,*)trim(atom(i)%aname),10*atom(i)%coor(:,1)
                 case('trr','dcd','pdb')
-                    write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+                    write(37,*)trim(atom(i)%aname),atom(i)%coor(:,1)
                 case default
-                    write(37,*)atomnames(i),coor(1:3,cind(atomindex(atomnames(i),atomnames,size(atomnames)),1_ik))
+                    write(37,*)trim(atom(i)%aname),atom(i)%coor(:,1)
                 end select
             end do
             close(37)

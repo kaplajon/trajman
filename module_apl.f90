@@ -51,103 +51,7 @@ module apl
                 apl_atoms_invmol(k)=imol
             end do
         end do
-!        i=size(apl_atoms)
-!        if(allocated(apl_both))deallocate(apl_both,apl_both_inv,apl_both_invmol)
-!        if(allocated(apl_lower))deallocate(apl_lower,apl_lower_inv,apl_lower_invmol)
-!        if(allocated(apl_upper))deallocate(apl_upper,apl_upper_inv,apl_upper_invmol)
-!        allocate(apl_both(i),apl_both_inv(i),apl_both_invmol(i))
-!        allocate(apl_lower(i),apl_lower_inv(i),apl_lower_invmol(i))
-!        allocate(apl_upper(i),apl_upper_inv(i),apl_upper_invmol(i))
-!        kl=0;ku=0
-!                apl_both=apl_atoms
-!                apl_both_invmol=apl_atoms_invmol
-!                apl_both_inv=[(i,i=1,size(apl_atoms))]
-!                do i=1,size(apl_atoms)
-!                    if(dot_product(center_of_molecule(moltypeofuatom(apl_atoms_invatom(i))&
-!                    ,apl_atoms_invmol(i))-centerofmembrane,director)<0._rk)then
-!                        kl=kl+1
-!                        apl_lower(kl)=apl_atoms(i)
-!                        apl_lower_invmol(kl)=apl_atoms_invmol(i)
-!                        apl_lower_inv(kl)=i
-!                    else
-!                        ku=ku+1
-!                        apl_upper(ku)=apl_atoms(i)
-!                        apl_upper_invmol(ku)=apl_atoms_invmol(i)
-!                        apl_upper_inv(ku)=i
-!                    end if
-!                end do
-!        call reallocate(apl_lower,kl)
-!        call reallocate(apl_lower_inv,kl)
-!        call reallocate(apl_lower_invmol,kl)
-!        call reallocate(apl_upper,ku)
-!        call reallocate(apl_upper_inv,ku)
-!        call reallocate(apl_upper_invmol,ku)
-
     end subroutine apl_atomlist!}}}
-
-!    subroutine apl_grid_old(instr)!{{{
-!        type(instruct) :: instr
-!        real(kind=rk) :: rmin
-!        integer(kind=ik) ::i,j,kl,ku,dmpc,mgdg,g
-!        i=size(apl_atoms)
-!        if(allocated(apl_side))deallocate(apl_side,apl_side_inv,apl_side_invmol)
-!        allocate(apl_side(i),apl_side_inv(i),apl_side_invmol(i))
-!        kl=0;ku=0;dmpc=0;mgdg=0
-!        select case(instr%set%leaflet)
-!            case(0) !BOTH
-!                apl_side=apl_atoms
-!                apl_side_invmol=apl_atoms_invmol
-!                apl_side_inv=[(i,i=1,size(apl_atoms))]
-!                kl=size(apl_atoms)
-!            case(1) !LOWER
-!                do i=1,size(apl_atoms)
-!                    if(dot_product(center_of_molecule(moltypeofuatom(apl_atoms_invatom(i))&
-!                    ,apl_atoms_invmol(i))-centerofmembrane,director)<0._rk)then
-!                        kl=kl+1
-!                        apl_side(kl)=apl_atoms(i)
-!                        apl_side_invmol(kl)=apl_atoms_invmol(i)
-!                        apl_side_inv(kl)=i
-!                    end if
-!                end do
-!            case(2) !UPPER
-!                do i=1,size(apl_atoms)
-!                    if(dot_product(center_of_molecule(moltypeofuatom(apl_atoms_invatom(i))&
-!                    ,apl_atoms_invmol(i))-centerofmembrane,director)>0._rk)then
-!                        kl=kl+1
-!                        apl_side(kl)=apl_atoms(i)
-!                        apl_side_invmol(kl)=apl_atoms_invmol(i)
-!                        apl_side_inv(kl)=i
-!                    end if
-!                end do
-!            end select
-!        call reallocate(apl_side,kl)
-!        call reallocate(apl_side_inv,kl)
-!        call reallocate(apl_side_invmol,kl)
-!        if(allocated(grid))deallocate(grid)
-!        allocate(grid(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
-!        do i=1,size(grid,2)
-!            do j=1,size(grid,1)
-!                grid(j,i)=nneighbour(j,i,apl_side,apl_side_inv)
-!            end do
-!        end do
-!       contains
-!
-!       function nneighbour(a,b,apl_side,apl_side_inv) result(k)
-!           integer(kind=ik) :: a,b,i,k,apl_side(:),apl_side_inv(:)
-!           real(kind=rk) :: gridcoor(2),r2,rmin
-!           gridcoor=[(box(1)/real(size(grid,1),rk))*real(a,rk),(box(2)/real(size(grid,2),rk))*real(b,rk)]
-!           rmin=huge(rmin)
-!           k=-1
-!           do i=1,size(apl_side)
-!              r2=sum(mymodulo(coor(1:2,apl_side(i)) -&
-!               gridcoor,box(1:2))**2)
-!               if(r2<rmin)then
-!                   rmin=r2
-!                   k=apl_side_inv(i)
-!               end if
-!           end do
-!       end function nneighbour
-!    end subroutine apl_grid_old!}}}
 
     subroutine apl_grid(instr)!{{{
         type(instruct) :: instr
@@ -193,64 +97,48 @@ module apl
             allocate(grid_both(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             do i=1,size(grid_both,2)
                 do j=1,size(grid_both,1)
-                    grid_both(j,i)=nneighbour(j,i,apl_both,apl_both_inv,grid_both)
+                    grid_both(j,i)=nneighbour(j,i,apl_both_invmol,apl_both_inv,grid_both)
                 end do
             end do
             if(allocated(grid_lower))deallocate(grid_lower)
             allocate(grid_lower(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             do i=1,size(grid_lower,2)
                 do j=1,size(grid_lower,1)
-                    grid_lower(j,i)=nneighbour(j,i,apl_lower,apl_lower_inv,grid_lower)
+                    grid_lower(j,i)=nneighbour(j,i,apl_lower_invmol,apl_lower_inv,grid_lower)
                 end do
             end do
             if(allocated(grid_upper))deallocate(grid_upper)
             allocate(grid_upper(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             do i=1,size(grid_upper,2)
                 do j=1,size(grid_upper,1)
-                    grid_upper(j,i)=nneighbour(j,i,apl_upper,apl_upper_inv,grid_upper)
+                    grid_upper(j,i)=nneighbour(j,i,apl_upper_invmol,apl_upper_inv,grid_upper)
                 end do
             end do
         case(.FALSE.)
             if(allocated(grid_both))deallocate(grid_both)
             allocate(grid_both(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             grid=>grid_both
-            call countmol(apl_both,grid)
+            call countmol(apl_both_inv,apl_both_invmol,grid)
             if(allocated(grid_lower))deallocate(grid_lower)
             allocate(grid_lower(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             grid=>grid_lower
-            call countmol(apl_lower,grid)
+            call countmol(apl_lower_inv,apl_lower_invmol,grid)
             if(allocated(grid_upper))deallocate(grid_upper)
             allocate(grid_upper(1:instr%set%aplgrid(1),1:instr%set%aplgrid(2)))
             grid=>grid_upper
-            call countmol(apl_upper,grid)
+            call countmol(apl_upper_inv,apl_upper_invmol,grid)
         end select
 
        contains
-!       subroutine countmol(apl_side,g)
-!           integer(kind=ik) :: apl_side(:),i&
-!           ,ma1,mi1,ma2,mi2,bi1,bi2
-!           integer(kind=ik) :: g(:,:)
-!           real(kind=rk) :: bin1,bin2
-!           g=0
-!           ma1=box(1);mi1=0
-!           ma2=box(2);mi2=0
-!           bin1=(ma1-mi1)/real(size(g,1),rk)
-!           bin2=(ma2-mi2)/real(size(g,2),rk)
-!           do i=1,size(apl_side)
-!               bi1=modulo(int((coor(1,apl_side(i))-mi1)/bin1+1._rk)-1,size(g,1))+1
-!               bi2=modulo(int((coor(2,apl_side(i))-mi2)/bin2+1._rk)-1,size(g,2))+1
-!               g(bi1,bi2)=g(bi1,bi2)+1
-!           end do
-!       end subroutine countmol
-       function nneighbour(a,b,apl_side,apl_side_inv,grid) result(k)
-           integer(kind=ik) :: a,b,i,k,apl_side(:),apl_side_inv(:)
+       function nneighbour(a,b,apl_side_invmol,apl_side_inv,grid) result(k)
+           integer(kind=ik) :: a,b,i,k,apl_side_invmol(:),apl_side_inv(:)
            integer(kind=ik),allocatable :: grid(:,:)
            real(kind=rk) :: gridcoor(2),r2,rmin
            gridcoor=[(box(1)/real(size(grid,1),rk))*real(a,rk),(box(2)/real(size(grid,2),rk))*real(b,rk)]
            rmin=huge(rmin)
            k=-1
-           do i=1,size(apl_side)
-              r2=sum(mymodulo(coor(1:2,apl_side(i)) -&
+           do i=1,size(apl_side_inv)
+              r2=sum(mymodulo(atom(apl_side_inv(i))%coor(1:2,apl_side_invmol(i)) -&
                gridcoor,box(1:2))**2)
                if(r2<rmin)then
                    rmin=r2
@@ -260,8 +148,8 @@ module apl
        end function nneighbour
     end subroutine apl_grid!}}}
 
-    subroutine countmol(apl_side,g)!{{{
-           integer(kind=ik) :: apl_side(:),i&
+    subroutine countmol(apl_side_inv,apl_side_invmol,g)!{{{
+           integer(kind=ik) :: apl_side_inv(:),apl_side_invmol(:),i&
            ,ma1,mi1,ma2,mi2,bi1,bi2
            integer(kind=ik) :: g(:,:)
            real(kind=rk) :: bin1,bin2
@@ -270,9 +158,9 @@ module apl
            ma2=box(2);mi2=0
            bin1=(ma1-mi1)/real(size(g,1),rk)
            bin2=(ma2-mi2)/real(size(g,2),rk)
-           do i=1,size(apl_side)
-               bi1=modulo(int((coor(1,apl_side(i))-mi1)/bin1+1._rk)-1,size(g,1))+1
-               bi2=modulo(int((coor(2,apl_side(i))-mi2)/bin2+1._rk)-1,size(g,2))+1
+           do i=1,size(apl_side_inv)
+               bi1=modulo(int(((atom(apl_side_inv(i))%coor(1,apl_side_invmol(i))-mi1)/bin1+1._rk))-1,size(g,1))+1
+               bi2=modulo(int(((atom(apl_side_inv(i))%coor(2,apl_side_invmol(i))-mi2)/bin2+1._rk))-1,size(g,2))+1
                g(bi1,bi2)=g(bi1,bi2)+1
            end do
     end subroutine countmol!}}}
@@ -352,7 +240,7 @@ module apl
         do j=1,size(grid,2)
             do i=1,size(v1)
                 v1(i)=apl_atoms_invmol(grid(i,j))
-                v2(i)=moltypeofuatom(apl_atoms_invatom(grid(i,j)))
+                v2(i)=atom(apl_atoms_invatom(grid(i,j)))%moltype
                 write(43,*)i,j,v1(i),v2(i)
                 v1(i)=v1(i)+sum(molt(1:v2(i)-1)%nmol)
             end do
