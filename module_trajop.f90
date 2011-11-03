@@ -155,6 +155,7 @@ module trajop
 
     subroutine add_hydrogen(helpers,hcoor,imol,func,bondlength,theta)
         integer(kind=ik),intent(in) :: helpers(:),func,imol
+        integer(kind=ik) :: i
         real(kind=rk) ::&
         v1(3),v2(3),v3(3),v4(3),v5(3),u(3),bondlength,thetal
         real(kind=rk),intent(inout) :: hcoor(:)
@@ -162,21 +163,26 @@ module trajop
         if(.not.present(theta) .and. func==2)stop 'CH2x needs rotation angle'
         select case(func)
         case(1) ! CH
-            v1=center_of_mass(helpers(2:),imol,.true.)
-            v2=atom(helpers(1))%coor(:,imol)
-            v3=bondlength*normalize((v2-v1))+v2
-            hcoor=v3
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=0._rk
+            do i=2,size(helpers)
+            v2=v2+normalize(atom(helpers(i))%coor(:,imol)-v1)
+            end do
+            v2=v2/(size(helpers)-1)+v1
+            hcoor=bondlength*normalize(v1-v2)+v1
+           
         case(2) !CH double bond
         case(3) !CH2
             thetal=theta*pi/180._rk
+            thetal=109.47_rk*pi/180._rk
             v1=atom(helpers(1))%coor(:,imol)
-            v3=atom(helpers(2))%coor(:,imol)
-            v4=atom(helpers(3))%coor(:,imol)
-            v5=normalize(cross_product(v3-v1,v4-v1))
+            v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
+            v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            v4=v1-(v2+v3)/2
             u=normalize(v3-v4)
             !call vector_rotate_3d(v5,u,theta*pi/180._rk,hcoor)
-            hcoor(1:3) =  cos ( thetal ) * v5(1:3) + sin ( thetal ) * cross_product(u,v5)!<Up>(normal2(1:3) )
-            hcoor=bondlength*normalize(hcoor)+v1
+            !hcoor(1:3) =  cos ( thetal ) * v5(1:3) + sin ( thetal ) * cross_product(u,v5)!<Up>(normal2(1:3) )
+            hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
         case(4) !CH3
             stop 'Add CH3 hydrogen'
         end select

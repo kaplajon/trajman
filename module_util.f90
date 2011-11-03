@@ -508,4 +508,30 @@ subroutine vector_rotate_3d ( v1, axis, angle, v2 )!{{{
 
   return
 end subroutine vector_rotate_3d !}}}
+
+function v2q(v,theta) result(q)
+!Create a quaternion from the vector v and angle theta
+real(kind=rk),intent(in) :: v(:),theta ! Rad
+real(kind=rk) :: q(4)
+q=[cos(theta/2),sin(theta/2)*normalize(v)]
+end function v2q
+
+function RV(q) result(m)
+!Rotational matrix: B.Stevensson et. al. 2011
+real(kind=rk),intent(in) :: q(:) !quat
+real(kind=rk) :: m(3,3) !quat
+!First col
+m(1,1)=q(1)**2+q(2)**2-q(3)**2-q(4)**2
+m(2,1)=2*(q(2)*q(3)+q(1)*q(4))
+m(3,1)=2*(q(2)*q(4)-q(1)*q(3))
+!Second col
+m(1,2)=2*(q(2)*q(3)-q(1)*q(4))
+m(2,2)=q(1)**2-q(2)**2+q(3)**2-q(4)**2
+m(3,2)=2*(q(3)*q(4)+q(1)*q(2))
+!Third col
+m(1,3)=2*(q(2)*q(4)+q(1)*q(3))
+m(2,3)=2*(q(3)*q(4)-q(1)*q(2))
+m(3,3)=q(1)**2-q(2)**2-q(3)**2+q(4)**2
+end function RV
+
 end module util
