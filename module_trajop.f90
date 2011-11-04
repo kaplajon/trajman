@@ -174,15 +174,17 @@ module trajop
         case(2) !CH double bond
         case(3) !CH2
             thetal=theta*pi/180._rk
-            thetal=109.47_rk*pi/180._rk
+            !thetal=54.735_rk*pi/180._rk
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
-            v4=v1-(v2+v3)/2
-            u=normalize(v3-v4)
+            v4=normalize(cross_product(v3,v2))
+            u=normalize(v2-v3)
+            v4=normalize(cross_product(v4,u))
             !call vector_rotate_3d(v5,u,theta*pi/180._rk,hcoor)
             !hcoor(1:3) =  cos ( thetal ) * v5(1:3) + sin ( thetal ) * cross_product(u,v5)!<Up>(normal2(1:3) )
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
+            
         case(4) !CH3
             stop 'Add CH3 hydrogen'
         end select
@@ -279,50 +281,11 @@ module trajop
                             case('CH1db')
                                 call add_hydrogen(instr(i)%newatom%helpers,&
                                 atom(instr(i)%atoms(1))%coor(:,imol),imol,2,instr(i)%set%ch_bondlength)
-                           ! case('CH2rx','CH2sx')
-                           !     write(*,*)
-                           !     do j=-100,100
-                           !     teta=valenceangle(&
-                           !     instr(i)%newatom%helpers(1),&
-                           !     instr(i)%newatom%helpers(2),&
-                           !     instr(i)%newatom%helpers(3),imol)
-                           !     teta=teta+real(j,rk)/100*20
-                           !     select case(instr(i)%newatom%atype)
-                           !     case('CH2rx')
-                           !         call add_hydrogen(instr(i)%newatom%helpers,&
-                           !     atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
-                           !     !    call add_hydrogen([instr(i)%newatom%helpers(1),&
-                           !     !    instr(i)%newatom%helpers(3),instr(i)%newatom%helpers(2)],&
-                           !     !atom(instr(i+1)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
-                           !    ! case('CH2s')
-                           !       !  call add_hydrogen(instr(i+1)%newatom%helpers,&
-                           !     !atom(instr(i+1)%atoms(1))%coor(:,imol),imol,3,instr(i+1)%set%ch_bondlength,teta+(180._rk-teta)/2)
-                           !     end select
-                           !     if(imol==1)&
-                           !     write(71,*)teta,&
-                           !     valenceangle(instr(i)%newatom%helpers(1),&
-                           !     instr(i)%newatom%helpers(2),instr(i)%newatom%helpers(3),imol), &
-                           !     (valenceangle(instr(i)%newatom%helpers(1),&
-                           !     instr(i)%newatom%helpers(2),instr(i)%newatom%helpers(3),imol)-acos(-1._rk/3)*180/pi)**2, &
-                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
-                           !     !instr(i)%newatom%helpers(2),size(atom)-1,imol)-acos(-1._rk/3)*180/pi)**2, &
-                           !     (valenceangle(instr(i)%newatom%helpers(1),&
-                           !     instr(i)%newatom%helpers(2),size(atom),imol)-acos(-1._rk/3)*180/pi)**2, &
-                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
-                           !     !instr(i)%newatom%helpers(3),size(atom)-1,imol)-acos(-1._rk/3)*180/pi)**2, &
-                           !     (valenceangle(instr(i)%newatom%helpers(1),&
-                           !     instr(i)%newatom%helpers(3),size(atom),imol)-acos(-1._rk/3)*180/pi)**2
-                           !     !(valenceangle(instr(i)%newatom%helpers(1),&
-                           !     !size(atom)-1,size(atom),imol)-acos(-1._rk/3)*180/pi)**2
-                           !     do k=1,3
-                           !     if(imol==1)write(70,*)atom(instr(i)%newatom%helpers(k))%coor(:,imol)
-                           !     end do
-                           !     !write(70,*)atom(size(atom)-1)%coor(:,imol),atom(instr(i)%atoms(1))%coor(:,imol) 
-                           !     if(imol==1)write(70,*)atom(size(atom))%coor(:,imol),atom(instr(i)%atoms(1))%coor(:,imol)
-
-                           !     end do
-                           !    ! stop
-                                case('CH2r','CH2s')
+                            case('CH2r','CH2s')
+                                ! The following papers explain the choice of
+                                ! theta:
+                                !(1) MASTRYUKOV, V.; OSINA, E. Journal of Molecular Structure. 1977, 36, 127-132.
+                                !(2) Dakkouri, M. Journal of Molecular Structure. 1997, 413-414, 133-152.
                                 teta=126.1_rk-0.175_rk*valenceangle(&
                                 instr(i)%newatom%helpers(1),&
                                 instr(i)%newatom%helpers(2),&
@@ -330,10 +293,10 @@ module trajop
                                 select case(instr(i)%newatom%atype)
                                 case('CH2r')
                                     call add_hydrogen(instr(i)%newatom%helpers,&
-                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,(180._rk-teta)/2)
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,teta/2._rk)
                                 case('CH2s')
                                     call add_hydrogen(instr(i)%newatom%helpers,&
-                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,teta+(180._rk-teta)/2)
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,-1._rk*teta/2._rk)
                                 end select
                             case('CH3')
                                 call add_hydrogen(instr(i)%newatom%helpers,&
