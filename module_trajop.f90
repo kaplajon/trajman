@@ -160,7 +160,7 @@ module trajop
         v1(3),v2(3),v3(3),v4(3),v5(3),u(3),bondlength,thetal
         real(kind=rk),intent(inout) :: hcoor(:)
         real(kind=rk),optional :: theta
-        if(.not.present(theta) .and. func==2)stop 'CH2x needs rotation angle'
+        if(.not.present(theta) .and. func==3)stop 'CH2x needs rotation angle'
         select case(func)
         case(1) ! CH
             v1=atom(helpers(1))%coor(:,imol)
@@ -170,23 +170,50 @@ module trajop
             end do
             v2=v2/(size(helpers)-1)+v1
             hcoor=bondlength*normalize(v1-v2)+v1
-           
         case(2) !CH double bond
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
+            v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            thetal=pi*(2-valenceangle(helpers(1),&
+                    helpers(2),&
+                    helpers(3),imol)/180._rk)/2
+            u=normalize(cross_product(v2,v3))
+            ! RV returns a rotational 3x3 matrix from a quarternion
+            ! v2q turns a vector into a quaternion with angle theta
+            ! Rotate by matrix multiplication RV*V3 where V3 is rotated
+            hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v3))+v1
         case(3) !CH2
             thetal=theta*pi/180._rk
-            !thetal=54.735_rk*pi/180._rk
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
             v4=normalize(cross_product(v3,v2))
             u=normalize(v2-v3)
-            v4=normalize(cross_product(v4,u))
-            !call vector_rotate_3d(v5,u,theta*pi/180._rk,hcoor)
-            !hcoor(1:3) =  cos ( thetal ) * v5(1:3) + sin ( thetal ) * cross_product(u,v5)!<Up>(normal2(1:3) )
+            v4=normalize(cross_product(v4,u)) ! The vector to be rotated theta/2
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
-            
-        case(4) !CH3
-            stop 'Add CH3 hydrogen'
+        case(4) !CH3e
+            thetal=109.47_rk*pi/180._rk    
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
+            v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            u=normalize(cross_product(v3,v2))
+            hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v2))+v1
+        case(5) !CH3r
+            thetal=120._rk*pi/180._rk
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=atom(helpers(2))%coor(:,imol)
+            v3=atom(helpers(3))%coor(:,imol) !First hydrogen CH3e
+            u=normalize(v2-v1) ! C-C bond to rotate around
+            v4=normalize(v3-v1) 
+            hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
+        case(6) !CH3s
+            thetal=-120._rk*pi/180._rk
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=atom(helpers(2))%coor(:,imol)
+            v3=atom(helpers(3))%coor(:,imol) !First hydrogen, CH3e
+            u=normalize(v2-v1) ! C-C bond to rotate around
+            v4=normalize(v3-v1)
+            hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
         end select
     end subroutine add_hydrogen
     subroutine procop(instr,frame)!{{{
@@ -219,8 +246,6 @@ module trajop
                         instr(i)%datam(jmol,frame)=modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
                         ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
                         +real(instr(i)%set%tshift,rk)
-                        !if(instr(i)%datam(jmol,frame)>0._rk)write(66,*)frame,imol,instr(i)%datam(jmol,frame)
-                        
                     end do
                 case(4) !BOND LENGTH
                     do jmol=1,instr(i)%nmolop
@@ -233,11 +258,6 @@ module trajop
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
                         instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
-                       ! write(*,*)
-                       ! write(*,*)imol,instr(i)%atoms(1),trim(atomnames(instr(i)%atoms(1))),getatom(instr(i)%atoms(2),imol)
-
-                       ! write(*,*)imol,instr(i)%atoms(2),trim(atomnames(instr(i)%atoms(2))),getatom(instr(i)%atoms(2),imol)
-                       ! stop
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
                     do jmol=1,instr(i)%nmolop
@@ -258,7 +278,6 @@ module trajop
                         *(mgratios(instr(i)%atoms(1))*mgratios(instr(i)%atoms(2))*hbar/(2*pi))&
                         *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)&
                         *(bl*common_setflags%traj_cscale)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
-                        !write(*,*)instr(i)%datam(jmol,frame),common_setflags%traj_cscale
                     end do
                  case(9) ! AVERAGE
                         ! Everything is handled in subroutine postproc
@@ -266,13 +285,11 @@ module trajop
                      select case(instr(i)%define)!{{{
                      case(1) !CENTEROFMEMBRANE
                         call center_of_membrane(common_setflags%membrane_moltypes)
-                        !write(42,*)frame,centerofmembrane
                      case(2) !ATOM
                         do imol=1,molt(moltypeofuatom(instr(i)%atoms(1)))%nmol
                             select case(instr(i)%newatom%atype)
                             case('com','center_of_mass')
                             ! Define atom from center of mass of a defined submolecule.
-                               ! coor(:,cind(instr(i)%atoms(1),imol))=&
                                atom(instr(i)%atoms(1))%coor(:,imol)=&
                                 center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
                             case('CH1')
@@ -296,15 +313,20 @@ module trajop
                                 atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,teta/2._rk)
                                 case('CH2s')
                                     call add_hydrogen(instr(i)%newatom%helpers,&
-                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,-1._rk*teta/2._rk)
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,3,instr(i)%set%ch_bondlength,-teta/2._rk)
                                 end select
-                            case('CH3')
+                            case('CH3e')
                                 call add_hydrogen(instr(i)%newatom%helpers,&
                                 atom(instr(i)%atoms(1))%coor(:,imol),imol,4,instr(i)%set%ch_bondlength)
+                            case('CH3r')
+                                call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,5,instr(i)%set%ch_bondlength)
+                            case('CH3s')
+                                call add_hydrogen(instr(i)%newatom%helpers,&
+                                atom(instr(i)%atoms(1))%coor(:,imol),imol,6,instr(i)%set%ch_bondlength)
                             end select
                         end do
                      case(3) !LEAFLET
-                            !if(global_setflags%apl)call apl_grid(instr(i))
                             if(global_setflags%apl .OR. global_setflags%gd)call apl_grid(instr(i))
                      case(4)
                          call foldmol('com')
@@ -312,18 +334,11 @@ module trajop
                  case(11) ! AREA PER LIPID
                      call apl_calc(instr(i),frame)
                      if(allocated(global_setflags%writeframe))then
-                      !   write(*,*)'writeframe allocated'
-                        ! write(*,*)ANY(instr(i)%set%writeframe(:)%framenumber==frame),&
-                        ! instr(i)%set%writeframe(strvecindex(instr(i)%set%writeframe(:)%outformat,'apl'))%framenumber
-                     !if(ANY(instr(i)%set%writeframe(:)%framenumber==frame)&
-                     !.AND.ANY(instr(i)%set%writeframe(strvecindex(instr(i)%set%writeframe(:)%outformat,'apl'))%framenumber&
-                     !==frame))then
                         do j=1,size(instr(i)%set%writeframe)
                         if(trim(instr(i)%set%writeframe(j)%outformat)=='apl'&
                         .AND.instr(i)%set%writeframe(j)%framenumber==frame)&
                         call apl_matrix_out(frame,instr(i))
                         end do
-                    !end if
                     end if
                 case(12) ! ISOTROPIC MOMENT OF INERTIA
                     do jmol=1,instr(i)%nmolop
@@ -351,7 +366,6 @@ module trajop
                                 jmol=molt(atom(instr(i)%atoms(2))%moltype)%lower(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
-                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
                             end do
                         end do
                     case(2)!Upper
@@ -362,7 +376,6 @@ module trajop
                                 jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
                                 l=l+1
                                 instr(i)%rdf_pairs(l)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
-                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
                             end do
                         end do
                     end select!}}}
@@ -478,7 +491,6 @@ module trajop
                                 jmol=molt(atom(instr(i)%atoms(2))%moltype)%lower(k)
                                 l=l+1
                                 instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
-                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(66,*)frame,imol,jmol
                             end do
                         end do
                     case(2)!Upper
@@ -489,7 +501,6 @@ module trajop
                                 jmol=molt(atom(instr(i)%atoms(2))%moltype)%upper(k)
                                 l=l+1
                                 instr(i)%datam(l,frame)=bond_length(instr(i)%atoms(1),instr(i)%atoms(2),imol,jmol,instr(i)) !%set%xyrdf)
-                                !if(instr(i)%rdf_pairs(l)<.3_rk)write(67,*)frame,imol,jmol,instr(i)%rdf_pairs(l)
                             end do
                         end do
                     end select!}}}

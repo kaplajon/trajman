@@ -247,7 +247,7 @@ frame=skipframes
             do i=1,size(atomnames)
                 select case(trajtype)
                 case('gro')
-                    write(37,*)trim(atom(i)%aname),10*atom(i)%coor(:,1)
+                    write(37,*)trim(atom(i)%aname),atom(i)%coor(:,1)
                 case('trr','dcd','pdb')
                     write(37,*)trim(atom(i)%aname),atom(i)%coor(:,1)
                 case default
