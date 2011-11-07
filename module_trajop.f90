@@ -166,19 +166,23 @@ module trajop
             v1=atom(helpers(1))%coor(:,imol)
             v2=0._rk
             do i=2,size(helpers)
+            ! Center of the nomalized vectors
             v2=v2+normalize(atom(helpers(i))%coor(:,imol)-v1)
             end do
+            ! Normalize by number and shift it back to v1
             v2=v2/(size(helpers)-1)+v1
             hcoor=bondlength*normalize(v1-v2)+v1
         case(2) !CH double bond
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            ! thetal is the angle 2pi - C-C-C devided by 2
+            ! to ensure equal (C-C-H) angles from both directions
             thetal=pi*(2-valenceangle(helpers(1),&
                     helpers(2),&
                     helpers(3),imol)/180._rk)/2
             u=normalize(cross_product(v2,v3))
-            ! RV returns a rotational 3x3 matrix from a quarternion
+            ! RV returns a rotational 3x3 matrix from a quaternion
             ! v2q turns a vector into a quaternion with angle theta
             ! Rotate by matrix multiplication RV*V3 where V3 is rotated
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v3))+v1
@@ -187,12 +191,16 @@ module trajop
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            ! Perpendicular to the C-C-C plane
             v4=normalize(cross_product(v3,v2))
-            u=normalize(v2-v3)
-            v4=normalize(cross_product(v4,u)) ! The vector to be rotated theta/2
+            ! Vector to rotate around. In the plane.
+            u=normalize(v2-v3) 
+            ! The vector to be rotated theta/2, perpendicular to u and v4
+            v4=normalize(cross_product(v4,u))
+            ! Rotate the new v4 around u by thetal 
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
         case(4) !CH3e
-            thetal=109.47_rk*pi/180._rk    
+            thetal=acos(-1._rk/3) ! 109.47 deg in radians
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
@@ -202,7 +210,7 @@ module trajop
             thetal=120._rk*pi/180._rk
             v1=atom(helpers(1))%coor(:,imol)
             v2=atom(helpers(2))%coor(:,imol)
-            v3=atom(helpers(3))%coor(:,imol) !First hydrogen CH3e
+            v3=atom(helpers(3))%coor(:,imol) !First hydrogen added by CH3e
             u=normalize(v2-v1) ! C-C bond to rotate around
             v4=normalize(v3-v1) 
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
@@ -210,7 +218,7 @@ module trajop
             thetal=-120._rk*pi/180._rk
             v1=atom(helpers(1))%coor(:,imol)
             v2=atom(helpers(2))%coor(:,imol)
-            v3=atom(helpers(3))%coor(:,imol) !First hydrogen, CH3e
+            v3=atom(helpers(3))%coor(:,imol) !First hydrogen added by CH3e
             u=normalize(v2-v1) ! C-C bond to rotate around
             v4=normalize(v3-v1)
             hcoor=bondlength*normalize(matmul(RV(v2q(u,thetal)),v4))+v1
