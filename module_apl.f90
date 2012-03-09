@@ -46,7 +46,8 @@ module apl
         do i=1,size(atoms,2)
             do imol=1,molt(moltypeofuatom(atomindex(trim(stringconv(atoms(:,i))))))%nmol
                 k=k+1
-                apl_atoms(k)=cind(atomindex(trim(stringconv(atoms(:,i)))),imol)
+               ! apl_atoms(k)=cind(atomindex(trim(stringconv(atoms(:,i)))),imol)
+                apl_atoms(k)=imol !cind(atomindex(trim(stringconv(atoms(:,i)))),imol)
                 apl_atoms_invatom(k)=atomindex(trim(stringconv(atoms(:,i))))
                 apl_atoms_invmol(k)=imol
             end do

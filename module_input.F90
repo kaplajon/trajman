@@ -544,7 +544,7 @@ module input
         type(instruct) :: trajop
         character(kind=1,len=1) :: arguments(:,:)
         character(kind=1,len=size(arguments,1)) :: arg2,arg3,arg4
-        integer(kind=ik) :: i,j
+        integer(kind=ik) :: i,j,p
         if(size(arguments,2)>=2)arg2=trim(stringconv(arguments(:,2)))
         if(size(arguments,2)>=3)arg3=trim(stringconv(arguments(:,3)))
         if(size(arguments,2)>=4)arg4=trim(stringconv(arguments(:,4)))
@@ -584,14 +584,30 @@ module input
                 call reallocate(natoms,size(natoms)+1)
                 call reallocate(moltypeofuatom,size(moltypeofuatom)+1)
                 call reallocate(masses,size(masses)+1)
+                call reallocate(mgratios,size(mgratios)+1)
                 ! Handle the indexing for the new atom:
-                masses(size(masses))=1._rk
+                atomnames(size(atomnames))=trajop%newatom%atomname
+                !write(*,*)atomnames(size(atomnames)),' name'
+
+                do i=1,size(atomd)
+                    p=len_trim(atomd(i)%aname)
+                 !   write(*,*)p,' p',atomd(i)%aname(1:p)==atomnames(size(atomnames))(1:p)
+                    if(atomd(i)%aname(1:p)==atomnames(size(atomnames))(1:p))then
+                        masses(size(masses))=atomd(i)%mass
+                        mgratios(size(mgratios))=atomd(i)%mgratio
+                        exit
+                    else
+                        masses(size(masses))=1._rk
+                        mgratios(size(mgratios))=0
+                    end if
+                end do
+                write(*,*)mgratios(size(atomnames)),' mgr'
                 i=size(atomnames)
                 j=atomindex(trim(trajop%newatom%molecule),molt(:)%molname,size(molt))
                 moltypeofuatom(i)=j
                 molt(j)%natoms=molt(j)%natoms+1
                 natoms(size(atomnames))=molt(j)%natoms
-                atomnames(size(atomnames))=trajop%newatom%atomname
+                !atomnames(size(atomnames))=trajop%newatom%atomname
                 trajop%atoms(1)=size(atomnames)
                 call reallocateatom(atom,size(atom)+1)
                 atom(size(atom))%aname=trajop%newatom%atomname
@@ -834,6 +850,12 @@ module input
                                 end if
                             end if
                             end do
+                            if(.not.allocated(molt(i)%upper))then
+                                allocate(molt(i)%upper(0))
+                            end if
+                            if(.not.allocated(molt(i)%lower))then
+                                allocate(molt(i)%lower(0))
+                            end if
                         end do
                         if(ku==0 .or. kl==0)then
                             write(*,*)'SET: LEAFLETS: Upper: ',ku,' Lower: ',kl
