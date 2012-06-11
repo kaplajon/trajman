@@ -35,7 +35,7 @@ module trajop
 
     function dirangle(a,b,imol) result(teta)!{{{
         ! Angle: a-b  against director in degrees
-        real(kind=rk) :: teta,dir(3)
+        real(kind=rk) :: teta,dir(3),xtz
         integer(kind=ik) :: a,b,imol
         !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
             dir=director
@@ -44,7 +44,11 @@ module trajop
                 if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
             end if
         end if
-        teta=acos(dot_product(normalize(atom(b)%coor(:,imol)-atom(a)%coor(:,imol)),dir))*180._rk/pi
+        xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),dir)
+        teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+        ! teta=(atom(b)%coor(3,imol)-atom(a)%coor(3,imol))/sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
+        !write(300,*)teta,imol,atom(b)%coor(3,imol),atom(a)%coor(3,imol),sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
+       ! teta=acos(dot_product(normalize(atom(b)%coor(:,imol)-atom(a)%coor(:,imol)),dir))*180._rk/pi
     end function dirangle!}}}
 
     function valenceangle(a,b,c,imol) result(teta)!{{{
@@ -239,8 +243,10 @@ module trajop
                 case(1) !DIRECTOR ANGLE
                     do jmol=1,instr(i)%nmolop
                         imol=instr(i)%molind(jmol)
+                        !instr(i)%datam(jmol,frame)=&
+                        !cos((pi/180._rk)*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
                         instr(i)%datam(jmol,frame)=&
-                        cos(pi/180._rk*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
+                        cos((pi/180._rk)*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
                     end do
                 case(2) !VALENCE ANGLE
                     do jmol=1,instr(i)%nmolop
@@ -469,6 +475,14 @@ module trajop
                             instr(i)%datam(1,frame)=box(2)
                         case('BZ')
                             instr(i)%datam(1,frame)=box(3)
+                        case('XY')
+                            instr(i)%datam(1,frame)=box(1)*box(2)
+                        case('XZ')
+                            instr(i)%datam(1,frame)=box(1)*box(3)
+                        case('YZ')
+                            instr(i)%datam(1,frame)=box(2)*box(3)
+                        case('BV')
+                            instr(i)%datam(1,frame)=box(1)*box(2)*box(3)
                     end select
                 case(18)
                     instr(i)%datam(1,frame)=(box(1)*box(2))/(molt(instr(i)%atoms(1))%nmol/2._rk)
@@ -522,14 +536,14 @@ module trajop
                     imol=instr(i)%molind(jmol)
                     v=center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
                     select case(instr(i)%set%slice%typ)
-                    case('Z_out')
+                    case('Z_ou')
                     if(v(3)<=instr(i)%set%slice%lower.or.v(3)>=instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
                     end if
                     case('Z_in')
-                    if(v(3)>=instr(i)%set%slice%lower.or.v(3)<=instr(i)%set%slice%upper)then
+                    if(v(3)>=instr(i)%set%slice%lower.and.v(3)<=instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
@@ -669,8 +683,8 @@ module trajop
             meant(imol)=sum(datam(imol,:))/real(size(datam,2),rk)
         end do
         mean=sum(meant)/real(size(meant),rk)
-        if(size(datam,1)==1)then !Added 2011-08-31
-            var=sum((datam(:,2)-mean)**2)/real(size(datam,2)-1,rk)
+        if(size(datam,1)==1)then !Added 2011-08-31: Corrected 120329
+            var=sum((datam(1,:)-mean)**2)/real(size(datam,2)-1,rk)
         else
             var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
         end if
@@ -801,7 +815,7 @@ module trajop
 
     subroutine distrib(instr,ind,calcind)!{{{
         type(instruct),intent(inout) :: instr
-        integer(kind=ik) :: bi,i,j,ind,calcind,indold=0
+        integer(kind=ik) :: bi,i,j,k,l,ind,calcind,indold=0
         !integer(kind=ik),optional :: ounit
         real(kind=rk) :: vec(size(instr%datam))
         real(kind=rk) :: mi,ma,x,bin,dp,dpm,isoentropy
@@ -842,6 +856,7 @@ module trajop
             bin=(ma-mi)/real(size(dist),rk)
             dp=1._rk/(real(size(vec),rk)*bin)
             dpm=1._rk/(real(size(instr%datam,2),rk)*bin)
+            k=0;l=1
             do i=1,size(vec)
                 bi=int((vec(i)-mi)/bin+1._rk)
                 if(bi==size(dist)+1)bi=size(dist)

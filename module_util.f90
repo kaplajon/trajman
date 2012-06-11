@@ -62,7 +62,7 @@ module util
     end type!}}}
     type slicetype!{{{
         !real(kind=rk) ::
-        character(kind=1,len=1) :: typ
+        character(kind=1,len=4) :: typ
         real(kind=rk) :: upper,lower
         logical :: switch
         logical,allocatable :: bintest(:,:)

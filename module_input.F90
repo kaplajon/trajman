@@ -430,7 +430,7 @@ module input
                 trajop%findex=16
                 funcstr='SH_'
                 p=2
-            case('boxx','bx','BX','boxy','by','BY','boxz','bz','BZ')
+            case('boxx','bx','BX','boxy','by','BY','boxz','bz','BZ','BXBY','BXBZ','BYBZ','BXBYBZ')
                 trajop%findex=17
                 select case(trim(stringconv(arguments(:,1)))) ! Arg 1
                 case('boxx','bx','BX')
@@ -439,6 +439,14 @@ module input
                     funcstr='BY_'
                 case('boxz','bz','BZ')
                     funcstr='BZ_'
+                case('BXBY')
+                    funcstr='XY_'
+                case('BXBZ')
+                    funcstr='XZ_'
+                case('BYBZ')
+                    funcstr='YZ_'
+                case('BXBYBZ')
+                    funcstr='BV_'
                 end select
                 p=1
             case('boxapl')
@@ -940,9 +948,9 @@ module input
                 global_setflags%slice%switch=.TRUE.
                 select case(arg3)
                 case('Z_in')
-                    global_setflags%slice%typ='Z'
+                    global_setflags%slice%typ=arg3
                 case('Z_out')
-                    global_setflags%slice%typ='Z'
+                    global_setflags%slice%typ=arg3
                 case('off')
                     global_setflags%slice%switch=.FALSE.
                 case default

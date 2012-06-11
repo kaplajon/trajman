@@ -265,6 +265,14 @@ Extract the X, Y or Z coordinates for selected atom.
 
 Extract the box X,Y or Z coordinates.
 
+	BXBY,BXBZ,BYBZ
+
+Extract the area of the corresponding box axes (XY_,XZ_,YZ_).
+
+	BXBYBZ
+
+Extract the box volume (BV_)
+
 	average N
 	
 Calculate an average of the following N (int) functions
