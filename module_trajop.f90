@@ -537,14 +537,16 @@ module trajop
                     v=center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
                     select case(instr(i)%set%slice%typ)
                     case('Z_ou')
-                    if(v(3)<=instr(i)%set%slice%lower.or.v(3)>=instr(i)%set%slice%upper)then
+                    if(v(3)<instr(i)%set%slice%lower.or.v(3)>instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                    write(23,*)v,imol
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
                     end if
                     case('Z_in')
                     if(v(3)>=instr(i)%set%slice%lower.and.v(3)<=instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                    write(24,*)v,imol
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
                     end if
@@ -555,7 +557,7 @@ module trajop
             end if
 
             if(instr(i)%set%scaling%switch .and. allocated(instr(i)%datam))then
-                scaling=0
+                scaling=1
                 select case(trim(instr(i)%set%scaling%typ))
                 ! Scale the function results with the box in different ways
                 case('xy','yx')
@@ -570,8 +572,13 @@ module trajop
                 case('y');scaling=1._rk/box(2)
                 case('z');scaling=1._rk/box(3)
                 end select
+                if(scaling/=1)instr(i)%datam(:,frame)=instr(i)%datam(:,frame)*scaling
+                select case(trim(instr(i)%set%scaling%typ))
+                case('sub')
+                    instr(i)%datam(:,frame)=instr(i)%datam(:,frame)-instr(i)%set%scaling%val
+                end select
+
                 !write(*,*)i,frame,scaling,trim(instr(i)%set%scaling%typ),instr(i)%instructionstring,instr(i)%findex
-                instr(i)%datam(:,frame)=instr(i)%datam(:,frame)*scaling
                 !write(*,*)i,frame,scaling
             end if
     end do 

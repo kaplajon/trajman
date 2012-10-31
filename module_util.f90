@@ -58,6 +58,7 @@ module util
     type scaletype!{{{
         !real(kind=rk) ::
         character(kind=1,len=3) :: typ
+        real(kind=rk) :: val
         logical :: switch
     end type!}}}
     type slicetype!{{{

@@ -127,14 +127,17 @@ program trajman
             write(*,*)stringconv(trajfile(i)%filename)
             end do
             
-        case('trr','dcd','pdb')!VMD MOLFILEPLUGIN
+        case('trr','xtc','dcd','pdb')!VMD MOLFILEPLUGIN
             statf=1
             allocate(coorv(atot*3),bx(6))
+            open(42,file="framecount.dat")
             do i=1,size(tunit)
                 j=0
                 do 
                     call f77_molfile_read_next(tunit(i),int(atot,4),coorv,bx,statf)
                     if(.NOT. common_setflags%silent)write(0,"(A,5x,A15,I6)",advance="no")&
+                    char(13),"Counting frames: ",j!,char(13)     
+                    write(42,"(A,5x,A15,I6)",advance="no")&
                     char(13),"Counting frames: ",j!,char(13)     
                     if(statf==0)exit
                     maxframes=maxframes+1
@@ -144,6 +147,8 @@ program trajman
                 call f77_molfile_close_read(tunit(i),statf)
                 call f77_molfile_open_read(tunit(i),natm,stringconv(trajfile(i)%filename),trajtype)
             end do
+            write(42,*)"FRAMES: ",trim(intstr(maxframes))
+            close(42)
             deallocate(coorv,bx)
          case(dlpoly3histfile(1:min(len(dlpoly3histfile),len(trajtype))))
             statf=1

@@ -936,6 +936,8 @@ module input
                     global_setflags%scaling%typ=arg3
                     select case(trim(global_setflags%scaling%typ))
                     case('x','y','z','xy','yx','xz','zx','yz','zy','xyz')
+                    case('sub')
+                        global_setflags%scaling%val=readreal(arg4)
                     case default
                         stop 'SCALING: Check input!'
                     end select
