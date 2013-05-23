@@ -26,6 +26,7 @@ module util
 !    use input
     implicit none
     integer(kind=ik) :: maxframes,skipframes,atomsdefined
+    character(kind=1, len=11),allocatable :: atomnames(:)
     type moltype!{{{
         integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         integer(kind=ik),allocatable :: upper(:),lower(:)
@@ -64,8 +65,8 @@ module util
     type slicetype!{{{
         !real(kind=rk) ::
         character(kind=1,len=4) :: typ
-        real(kind=rk) :: upper,lower
-        logical :: switch
+        real(kind=rk) :: upper,lower,upper2,lower2
+        logical :: switch,switch2
         logical,allocatable :: bintest(:,:)
     end type!}}}
     type setflags!{{{
@@ -93,8 +94,15 @@ module util
         integer(kind=ik),allocatable :: membrane_moltypes(:),shuffle_atoms(:)
         !integer(kind=ik),allocatable :: membrane_moltypes(:)
     end type!}}}
+    
     type(setcommon) :: common_setflags
     type(setflags) :: global_setflags
+
+    type atomdata
+        character(kind=1,len=len(atomnames)) :: aname
+        real(kind=rk) :: mass,mgratio
+    end type atomdata
+    type(atomdata),allocatable :: atomd(:)
     type calcval!{{{
         real(kind=rk) :: mean,meandev,entropy,entropymutual,pearsoncoeff
         integer(kind=ik) :: n
@@ -114,7 +122,8 @@ module util
     interface reallocate
         module procedure &
         reallocatepointerchar,reallocateint,reallocatemoltype,&
-        reallocatewriteframe,reallocatereal,reallocatetrajfile
+        reallocatewriteframe,reallocatereal,reallocatetrajfile,&
+        reallocateatomd
     end interface
     contains
 
@@ -277,6 +286,22 @@ module util
         
         end if
     end subroutine reallocatemoltype!}}}
+
+
+    subroutine reallocateatomd(v,i)!{{{
+        type(atomdata),intent(inout),allocatable :: v(:)
+        type(atomdata),allocatable ::copy(:)
+        integer(kind=ik) :: i,j
+        if (allocated(v))then
+            j=min(i,size(v))
+            allocate(copy(i))
+            copy(1:j)=v(1:j)
+            call move_alloc(copy,v)
+        else
+            allocate(v(i))
+        
+        end if
+    end subroutine reallocateatomd!}}}
 
     subroutine reallocateatom(v,i)!{{{
         type(uatoms),intent(inout),allocatable :: v(:)

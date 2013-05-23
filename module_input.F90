@@ -471,6 +471,9 @@ module input
                 trajop%findex=22
                 funcstr='MB_'
                 p=3
+            !case('tagaverage','tagcombine')
+            !    trajop%findex=23
+!
             case('exit')
                 stop
 
@@ -651,14 +654,16 @@ module input
 
     subroutine set(args)!arg2,arg3)!{{{
         character(kind=1,len=1) :: args(:,:)
-        character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5
+        character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5,arg6,arg7
         integer(kind=ik) :: i,j,p,ios,imol,kl,ku
         real(kind=rk) :: v(3)
-        arg2='';arg3='';arg4='';arg5=''
+        arg2='';arg3='';arg4='';arg5='';arg6='';arg7=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
         if(size(args,2)>=3)arg3=trim(stringconv(args(:,3)))
         if(size(args,2)>=4)arg4=trim(stringconv(args(:,4)))
         if(size(args,2)>=5)arg5=trim(stringconv(args(:,5)))
+        if(size(args,2)>=6)arg6=trim(stringconv(args(:,6)))
+        if(size(args,2)>=7)arg7=trim(stringconv(args(:,7)))
         select case(arg2)
             case ('autofilename','AUTOFILENAME','Autofilename')
                 select case(arg3)
@@ -722,18 +727,22 @@ module input
                 if(ios==0)then
                     !Läs in atommassor från fil:
                     j=size(atomd)
+                    !write(*,*)size(atomd),'SIZE ATOMD'
                     i=j
                     !Räkna rader i filen
                     do while(ios/=endf)
                       read(nunit,*,iostat=ios)
                       i=i+1
                     end do
-                    allocate(atomd(i))
+                    call reallocate(atomd,i-1)
+                    !write(*,*)i,size(atomd),' SIZE atomdrealloc'
                     call globals
                     i=j+1
-                    
+                    rewind(nunit)
+                    ios=0
                     do while(ios/=endf)
                       read(nunit,*,iostat=ios)atomd(i)%aname,atomd(i)%mass,atomd(i)%mgratio
+                      !write(*,*)atomd(i)%aname,atomd(i)%mass,atomd(i)%mgratio,'TESTREAD'
                       if(ios>0)stop 'Cannot read atom masses'
                       i=i+1
                     end do
@@ -747,8 +756,12 @@ module input
                         if(atomd(i)%aname(1:p)==atomnames(j)(1:p))then
                             masses(j)=atomd(i)%mass
                             mgratios(j)=atomd(i)%mgratio
+                            !write(*,*)'AMASS ',masses(j),mgratios(j),atomd(i)%aname,atomnames(j)(1:p)
                         endif
                      end do
+                end do
+                do i=1,size(masses)
+                write(*,*)'AMASS ',masses(i),mgratios(i),atomnames(i)
                 end do
             case('constant_bondlength','cbl')
                 select case(arg3)
@@ -947,7 +960,7 @@ module input
 
                 end if
             case('slice')
-                global_setflags%slice%switch=.TRUE.
+                !global_setflags%slice%switch=.TRUE.
                 select case(arg3)
                 case('Z_in')
                     global_setflags%slice%typ=arg3
@@ -955,13 +968,23 @@ module input
                     global_setflags%slice%typ=arg3
                 case('off')
                     global_setflags%slice%switch=.FALSE.
+                    global_setflags%slice%switch2=.FALSE.
                 case default
-                    write(*,*)'SLICE: >',arg3,'< Only slicing in Z (Z_in nd Z_out) is implemented!'
+                    write(*,*)'SLICE: >',arg3,'< Only slicing in Z (Z_in and Z_out) is implemented!'
                     stop
                 end select
                 if(size(args,2)==5)then
+                    global_setflags%slice%switch=.TRUE.
+                    global_setflags%slice%switch2=.FALSE.
                     global_setflags%slice%lower=readreal(arg4)
                     global_setflags%slice%upper=readreal(arg5)
+                else if(size(args,2)==7)then
+                    global_setflags%slice%switch=.TRUE.
+                    global_setflags%slice%switch2=.TRUE.
+                    global_setflags%slice%lower=readreal(arg4)
+                    global_setflags%slice%upper=readreal(arg5)
+                    global_setflags%slice%lower2=readreal(arg6)
+                    global_setflags%slice%upper2=readreal(arg7)
                 else
                     stop 'SLICE: Wrong number of arguments!'
                 end if

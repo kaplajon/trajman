@@ -28,7 +28,7 @@ module readtraj
     !f77_molfile_close_read,f77_molfile_finish
     real (kind=rk),allocatable :: coor(:,:),box(:),masses(:),mgratios(:)
     character(kind=1, len=11),allocatable :: temp(:)
-    character(kind=1, len=11),allocatable :: atomnames(:)
+!    character(kind=1, len=11),allocatable :: atomnames(:)
    ! character(kind=1, len=5),allocatable :: moltypenames(:)
    ! character(kind=1, len=1),allocatable :: trajfile(:)
     character(kind=1,len=3) :: trajtype
@@ -47,11 +47,11 @@ module readtraj
 !        character(kind=1,len=1),allocatable :: filename(:)
 !    end type trjf
 !    type(trjf),allocatable :: trajfile(:)
-    type atomdata
-        character(kind=1,len=len(atomnames)) :: aname
-        real(kind=rk) :: mass,mgratio
-    end type atomdata
-    type(atomdata),allocatable :: atomd(:)
+!    type atomdata
+!        character(kind=1,len=len(atomnames)) :: aname
+!        real(kind=rk) :: mass,mgratio
+!    end type atomdata
+!    type(atomdata),allocatable :: atomd(:)
     interface operator(.str.)
         module procedure stringconv
     end interface operator(.str.)
@@ -186,7 +186,8 @@ subroutine globals!{{{
         global_setflags%distminmax%switch=.FALSE.
         global_setflags%scaling%switch=.FALSE.
         global_setflags%ch_bondlength=1.09_rk
-
+        global_setflags%slice%switch=.FALSE.
+        global_setflags%slice%switch2=.FALSE.
     end if
     !maxframes=0;minframe=0
     !if(.NOT.allocated(global_setflags%calc))then

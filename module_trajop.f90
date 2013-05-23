@@ -532,6 +532,10 @@ module trajop
             ! SLICE THE BOX AND CHECK MOLECULES IN THE SLICE
                 if(.not.allocated(instr(i)%set%slice%bintest))&
                 allocate(instr(i)%set%slice%bintest(instr(i)%nmolop,skipframes+1:maxframes))
+                !write(*,*)
+                !write(*,*)size(instr(i)%set%slice%bintest,2),skipframes+1,maxframes,size(instr(i)%datam,2),frame, &
+                !    instr(i)%set%slice%upper,instr(i)%set%slice%lower,instr(i)%set%slice%upper2,instr(i)%set%slice%lower2
+                
                 do jmol=1,instr(i)%nmolop
                     imol=instr(i)%molind(jmol)
                     v=center_of_molecule(atom(instr(i)%atoms(1))%moltype,imol)
@@ -539,14 +543,22 @@ module trajop
                     case('Z_ou')
                     if(v(3)<instr(i)%set%slice%lower.or.v(3)>instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
-                    write(23,*)v,imol
+                        write(23,*)v,imol
+                    else if(instr(i)%set%slice%switch2.and.(v(3)<instr(i)%set%slice%lower2.or.v(3)>instr(i)%set%slice%upper2))then 
+                        instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                        write(23,*)v,imol
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
                     end if
                     case('Z_in')
                     if(v(3)>=instr(i)%set%slice%lower.and.v(3)<=instr(i)%set%slice%upper)then
                         instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
-                    write(24,*)v,imol
+                        write(24,*)v,imol,' 1st',instr(i)%set%slice%switch,instr(i)%set%slice%switch2
+                    else if(instr(i)%set%slice%switch2.and.(v(3)>=instr(i)%set%slice%lower2 &
+                        .and.v(3)<=instr(i)%set%slice%upper2))then
+                        instr(i)%set%slice%bintest(jmol,frame)=.TRUE.
+                        !write(24,*)
+                        write(24,*)v,imol,' 2nd',instr(i)%set%slice%switch,instr(i)%set%slice%switch2
                     else
                         instr(i)%set%slice%bintest(jmol,frame)=.FALSE.
                     end if
@@ -708,17 +720,21 @@ module trajop
         character(len=24) :: string
         character(len=300) :: string2
         integer(kind=ik) :: frame,i
-        real(kind=rk) :: meant(1:size(instr%datam,2)),mean,meandev,var
+        real(kind=rk) :: meant(1:size(instr%datam,2)),countt(1:size(instr%datam,2)),mean,meandev,var
         do frame=1,size(instr%datam,2)
             meant(frame)=&
             sum(instr%datam(:,skipframes+frame),MASK=instr%set%slice%bintest(:,skipframes+frame))&
             /real(count(instr%set%slice%bintest(:,skipframes+frame)),rk)
+            countt(frame)=real(count(instr%set%slice%bintest(:,skipframes+frame)),rk)
         end do
-        mean=sum(meant)/real(size(meant),rk)
+        mean=sum(instr%datam(:,:),MASK=instr%set%slice%bintest(:,:))/real(count(instr%set%slice%bintest),rk)
+        !mean=sum(meant)/real(size(meant),rk)
         !if(size(datam,1)==1)then !Added 2011-08-31
         !    var=sum((datam(:,2)-mean)**2)/real(size(datam,2)-1,rk)
         !else
-            var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
+            !var=sum((instr%datam(:,:)-mean)**2,MASK=instr%set%slice%bintest(:,:))/real(count(instr%set%slice%bintest)-1,rk)
+            var=sum(countt(:)*(meant(:)-mean)**2)/(sum(countt)-1)
+            !var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
         !end if
         meandev=sqrt(var/real(size(meant),rk))
         string=getmeanwithdev(mean,sqrt(var))
@@ -751,7 +767,8 @@ module trajop
                 if(k>=instr(ind)%average_count)exit
             endif
         end do
-        allocate(instr(ind)%datam(mols,size(instr(j)%datam,2)))
+        !allocate(instr(ind)%datam(mols,size(instr(j)%datam,2))) 
+        allocate(instr(ind)%datam(mols,lbound(instr(j)%datam,2):ubound(instr(j)%datam,2))) ! Changed to lbound and ubound 2013-05-13
         else ! AVERAGE
         allocate(instr(ind)%datam(size(instr(lastind)%datam,1),size(instr(lastind)%datam,2)))!*instr(ind)%average_count))
         end if
@@ -1377,17 +1394,35 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                     com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
                     do j=1,3
                         shift=com(j)-modulo(com(j),box(j))
+ !                       write(*,*)shift,' SHIFT', box(j)
                         if(abs(shift)>box(j)/2._rk)then
                             do k=molt(i)%firstatom,molt(i)%lastatom
                           !      coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
                                  atom(k)%coor(j,imol)=atom(k)%coor(j,imol)-shift
                             end do
                         end if
+                        com=center_of_molecule(i,imol) !Ändrade molt(i)%firstatom till i
+                        shift=com(j)-modulo(com(j),box(j))
+                        
+                        !Molecules outside the box are shifted twice due to
+                        !precision problems
+                        if(abs(shift)>box(j)/2._rk)then
+                       !     write(*,*)shift,com(j)
+                            do k=molt(i)%firstatom,molt(i)%lastatom
+                          !      coor(j,cind(k,imol))=coor(j,cind(k,imol))-shift
+                                 atom(k)%coor(j,imol)=atom(k)%coor(j,imol)-shift
+                            end do
+
+                        end if
                     end do
                     if(.not.present(a))then
                         com=center_of_molecule(i,imol)
                         if(com(3)<0 .OR. com(3)>box(3))then
-                            write(*,*)com,'COM'
+                            write(*,*)
+                            write(*,*)'FOLDMOL: ',molt(i)%molname,'SHIFT= ',shift
+                            write(*,*)'FOLDMOL: ',i,' I',imol,' IMOL'
+                            write(*,*)'FOLDMOL: ',com,'COM'
+                            write(*,*)'FOLDMOL: ',box,'BOX'
                             stop
                         end if
                     end if
@@ -1520,7 +1555,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
 
     subroutine postproc(instr)!{{{
         type(instruct) :: instr(:)
-        integer(kind=ik) :: ounit,ios,i,j,k,m,n,corr(6)!1,corr2
+        integer(kind=ik) :: ounit,ios,i,j,k,m,n,s,corr(6)!1,corr2
         real(kind=rk) :: a,mean,meandev,var
         character(kind=1,len=len(global_setflags%filename)) :: filename
         character(len=24) :: string
@@ -1636,6 +1671,49 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                 end if
                call instruction_average(instr,i,j)
                instr(i)%findex=instr(j)%findex
+              ! Inherit slices
+              if(instr(j)%set%slice%switch)then
+                  if(.not.allocated(instr(i)%set%slice%bintest))then
+                      if(instr(i)%set%molaverage)then !COMBINE
+                          s=0;j=i;k=0
+                          do
+                          j=j+1
+                          if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
+                              s=s+size(instr(j)%set%slice%bintest,1)
+                              k=k+1
+                              if(k>=instr(i)%average_count)exit
+                          endif
+                          end do
+                          allocate( &
+                             ! instr(i)%set%slice%bintest(instr(j)%nmolop+instr(j)%nmolop,skipframes+1:maxframes))
+                              instr(i)%set%slice%bintest(s,skipframes+1:maxframes))
+                      else !AVERAGE
+                          allocate( &
+                              instr(i)%set%slice%bintest(instr(j)%nmolop,skipframes+1:maxframes))
+                      end if
+                   end if
+                 if(instr(i)%set%molaverage)then !COMBINE
+                 j=i;k=0;s=1
+                 do 
+                     j=j+1
+                     if(instr(j)%findex/=0 .AND. instr(j)%findex/=10)then
+                             s=s+size(instr(j)%set%slice%bintest,1)
+                             instr(i)%set%slice%bintest(s-size(instr(j)%set%slice%bintest,1):s,:)=instr(j)%set%slice%bintest
+                         k=k+1
+                         if(k>=instr(i)%average_count)exit
+                     endif
+                 end do
+                 else ! AVERAGE
+                     instr(i)%set%slice%bintest=instr(j)%set%slice%bintest
+                 end if
+                 instr(i)%set%slice%switch=instr(j)%set%slice%switch
+                 instr(i)%set%slice%switch2=instr(j)%set%slice%switch2
+                 instr(i)%set%slice%upper=instr(j)%set%slice%upper
+                 instr(i)%set%slice%lower=instr(j)%set%slice%lower
+                 instr(i)%set%slice%upper2=instr(j)%set%slice%upper2
+                 instr(i)%set%slice%lower2=instr(j)%set%slice%lower2
+              end if
+              !write(*,*)size(instr(i)%set%slice%bintest,1),'SIZE'
 
             case default ! DEFAULT
 
