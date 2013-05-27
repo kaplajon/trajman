@@ -471,9 +471,23 @@ module input
                 trajop%findex=22
                 funcstr='MB_'
                 p=3
-            !case('tagaverage','tagcombine')
-            !    trajop%findex=23
-!
+            case('tagaverage','tagcombine','tagsum')
+                if(trim(stringconv(arguments(:,1)))=='tagcombine')then
+                    trajop%set%molaverage=.TRUE.
+                    funcstr='MA_'
+                elseif(trim(stringconv(arguments(:,1)))=='tagaverage')then
+                    funcstr='AV_'
+                else
+                    trajop%set%instructionsum=.TRUE.
+                    funcstr='SU_'
+                end if
+                trajop%findex=23
+                p=2 !function+number of tags
+            case('deallocate','dealloc')
+                trajop%findex=24
+                funcstr=''
+                p=1
+
             case('exit')
                 stop
 
@@ -528,7 +542,35 @@ module input
                         stop
                     endif
                     if(size(arguments,2)>p)trajop%ref=trim(stringconv(arguments(:,p+1)))
-
+                case(23) !Tagaverage,tagcombine
+                    trajop%average_count=readint(trim(stringconv(arguments(:,p))))
+                    !read(arg2,*,iostat=ios)trajop%average_count
+                    if(.not.allocated(trajop%set%averagetags))&
+                        allocate(trajop%set%averagetags(trajop%average_count))
+                    do i=1,trajop%average_count
+                        trajop%set%averagetags(i)=trim(adjustl(stringconv(arguments(:,p+i))))
+                    end do
+                    if(size(arguments,2)>(p+trajop%average_count))then
+                        trajop%ref=trim(stringconv(arguments(:,p+trajop%average_count+1))) !TAG
+                    else
+                        write(*,*)"ERROR:TAGAVERAGE:TAGCOMBINE:TAGSUM:"
+                        write(*,*)"You need to name the function with a tag!"
+                        stop
+                    end if
+                    trajop%instructionstring=funcstr//'tags_'//trim(trajop%ref)!//':_'//&
+                    !    trim(stringconv(arguments(:,p+1)))//'--'//&
+                    !    trim(stringconv(arguments(:,p+trajop%average_count)))
+                   ! write(*,*)trajop%instructionstring
+                   ! stop
+                case(24) !DEALLOCATE INSTR
+                    if((size(arguments,2)-p)<= 0)then
+                        write(*,*)'ERROR INPUT:DEALLOCATE: tags missing?'
+                        stop
+                    end if
+                    allocate(trajop%set%dealloctags(size(arguments,2)-p))
+                    do i=1,size(trajop%set%dealloctags)
+                        trajop%set%dealloctags(i)=trim(stringconv(arguments(:,p+i)))
+                    end do
                 case default
                     if(p>=2)then
                         do i=1,p-1

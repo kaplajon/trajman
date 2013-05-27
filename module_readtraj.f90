@@ -175,6 +175,7 @@ subroutine globals!{{{
         global_setflags%foldcenterofmembrane=.FALSE.
         global_setflags%leaflets_defined=.FALSE.
         global_setflags%molaverage=.FALSE.
+        global_setflags%instructionsum=.FALSE.
         global_setflags%tshift=0
         common_setflags%traj_cscale=1
         global_setflags%rdf_binsize=0.2
