@@ -293,7 +293,7 @@ module trajop
                         *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)&
                         *(bl*common_setflags%traj_cscale)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
                     end do
-                 case(9) ! AVERAGE
+                 case(9,23) ! AVERAGE
                         ! Everything is handled in subroutine postproc
                  case(10) !DEFINE
                      select case(instr(i)%define)!{{{
@@ -791,6 +791,35 @@ module trajop
         if(.NOT.instr(ind)%set%molaverage)instr(ind)%datam=instr(ind)%datam/instr(ind)%average_count
        ! instr(ind)%datam=instr(ind)%datam/real(instr(ind)%average_count,rk)
     end subroutine instruction_average!}}}
+
+    subroutine tagaverage(instr,ind,inds)!{{{
+        type(instruct),intent(inout) :: instr(:)
+        integer(kind=ik) :: ounit,ind,j,k,inds(:),mols
+        mols=0
+        if(instr(ind)%set%molaverage)then !COMBINE
+        do j=1,size(inds)
+            mols=mols+instr(inds(j))%nmolop
+        end do
+        allocate(instr(ind)%datam(mols,lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2))) ! Changed to lbound and ubound 2013-05-13
+        else ! AVERAGE
+        allocate(instr(ind)%datam(size(instr(inds(1))%datam,1),lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2)))
+        end if
+        mols=1
+        instr(ind)%datam=0
+        do j=1,size(inds)
+                if(instr(ind)%set%molaverage)then
+                    mols=mols+instr(inds(j))%nmolop
+                    instr(ind)%datam(mols-instr(inds(j))%nmolop:mols,:)=instr(inds(j))%datam
+                    if(j==size(inds))instr(ind)%nmolop=mols
+                else
+                    instr(ind)%datam=(instr(ind)%datam+instr(inds(j))%datam)!/real(instr(ind)%average_count,rk)!(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
+                    if(j==size(inds))instr(ind)%nmolop=instr(inds(j))%nmolop
+                end if
+        end do
+        if(.NOT.(instr(ind)%set%molaverage .OR. instr(ind)%set%instructionsum))&
+            instr(ind)%datam=instr(ind)%datam/instr(ind)%average_count
+       ! instr(ind)%datam=instr(ind)%datam/real(instr(ind)%average_count,rk)
+    end subroutine tagaverage!}}}
 
     function getmeanwithdev(mean,meandev) result(str)!{{{
         implicit none ! write mean with meandeviation in a compact form.
@@ -1556,6 +1585,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
     subroutine postproc(instr)!{{{
         type(instruct) :: instr(:)
         integer(kind=ik) :: ounit,ios,i,j,k,m,n,s,corr(6)!1,corr2
+        integer(kind=ik),allocatable :: tagindexes(:)
         real(kind=rk) :: a,mean,meandev,var
         character(kind=1,len=len(global_setflags%filename)) :: filename
         character(len=24) :: string
@@ -1714,7 +1744,33 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                  instr(i)%set%slice%lower2=instr(j)%set%slice%lower2
               end if
               !write(*,*)size(instr(i)%set%slice%bintest,1),'SIZE'
-
+            case(23) !TAGAVERAGE,TAGCOMBINE
+                allocate(tagindexes(instr(i)%average_count))
+                do j=1,instr(i)%average_count
+                    tagindexes(j)=strvecindex(instr(:)%ref,instr(i)%set%averagetags(j))
+                end do
+                if(instr(i)%set%filename/='')then
+                    instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%set%filename)
+                    instr(i)%set%ounit=nunit
+                        
+                else
+                    if(instr(i)%set%autofilename)then
+                        instr(i)%set%filename=trim(instr(i)%set%fileprefix)//trim(instr(i)%instructionstring)
+                        instr(i)%set%ounit=nunit
+                    else
+                        instr(i)%set%ounit=stdout
+                        filename="stdout"
+                    end if
+                end if
+                call tagaverage(instr,i,tagindexes)
+                instr(i)%findex=instr(tagindexes(1))%findex
+                deallocate(tagindexes)
+            case(24) !DEALLOCATE
+                do j=1,size(instr(i)%set%dealloctags)
+                    k=strvecindex(instr(:)%ref,trim(instr(i)%set%dealloctags(j)))
+                    deallocate(instr(k)%datam)
+                    instr(k)%findex=0
+                end do
             case default ! DEFAULT
 
                     if(instr(i)%set%filename/='')then
@@ -1735,7 +1791,7 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
         do i=1,size(instr) ! Loop över instruktionsrader
             avfilename=trim(instr(i)%set%fileprefix)//'averages'//trim(instr(i)%set%filesuffix)
             select case(instr(i)%findex)
-                case(0,7,10,19,20,21)
+                case(0,7,10,19,20,21,24)
                 case default
                     if(allocated(instr(i)%set%calc))then
                     do j=1,size(instr(i)%set%calc) ! Loop över postberäkningar
