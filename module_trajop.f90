@@ -797,12 +797,21 @@ module trajop
         integer(kind=ik) :: ounit,ind,j,k,inds(:),mols
         mols=0
         if(instr(ind)%set%molaverage)then !COMBINE
-        do j=1,size(inds)
-            mols=mols+instr(inds(j))%nmolop
-        end do
-        allocate(instr(ind)%datam(mols,lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2))) ! Changed to lbound and ubound 2013-05-13
+            do j=1,size(inds)
+                mols=mols+instr(inds(j))%nmolop
+            end do
+            allocate(instr(ind)%datam(mols,lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2))) ! Changed to lbound and ubound 2013-05-13
+            if(all(instr(inds(:))%set%slice%switch))then ! Inherit slices
+                allocate(&
+                    instr(ind)%set%slice%bintest(mols,lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2)))
+            end if
         else ! AVERAGE
-        allocate(instr(ind)%datam(size(instr(inds(1))%datam,1),lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2)))
+            allocate(instr(ind)%datam(size(instr(inds(1))%datam,1),lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2)))
+            if(all(instr(inds(:))%set%slice%switch))then ! Inherit slices
+                allocate(&
+                    instr(ind)%set%slice%bintest(&
+                    size(instr(inds(1))%datam,1),lbound(instr(inds(1))%datam,2):ubound(instr(inds(1))%datam,2)))
+            end if
         end if
         mols=1
         instr(ind)%datam=0
@@ -810,10 +819,18 @@ module trajop
                 if(instr(ind)%set%molaverage)then
                     mols=mols+instr(inds(j))%nmolop
                     instr(ind)%datam(mols-instr(inds(j))%nmolop:mols,:)=instr(inds(j))%datam
+                    if(all(instr(inds(:))%set%slice%switch))then ! Inherit slices
+                        instr(ind)%set%slice%bintest(mols-instr(inds(j))%nmolop:mols,:)=instr(inds(j))%set%slice%bintest
+                    end if
                     if(j==size(inds))instr(ind)%nmolop=mols
                 else
                     instr(ind)%datam=(instr(ind)%datam+instr(inds(j))%datam)!/real(instr(ind)%average_count,rk)!(:,size(instr(j)%datam,2)*(k-1)+1:size(instr(j)%datam,2)*k)=instr(j)%datam
-                    if(j==size(inds))instr(ind)%nmolop=instr(inds(j))%nmolop
+                    if(j==size(inds))then
+                        instr(ind)%nmolop=instr(inds(j))%nmolop
+                        if(all(instr(inds(:))%set%slice%switch))then ! Inherit slices
+                            instr(ind)%set%slice%bintest=instr(inds(j))%set%slice%bintest
+                        end if
+                    end if
                 end if
         end do
         if(.NOT.(instr(ind)%set%molaverage .OR. instr(ind)%set%instructionsum))&
