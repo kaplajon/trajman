@@ -526,6 +526,35 @@ module trajop
                             end do
                         end do
                     end select!}}}
+
+                case(25) !KARPLUS 3J
+                    do jmol=1,instr(i)%nmolop
+                        imol=instr(i)%molind(jmol)
+                        select case(instr(i)%set%karplus_fnc)
+                            case(1)
+                                !3J = E + Acos(theta)+ Bcos(2*theta)+ Csin(theta) + Dsin(2*theta)
+                                !Serrianni 2005
+                                teta=(modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                                ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                instr(i)%datam(jmol,frame)=&
+                                    instr(i)%set%karplus_params(1)*cos(teta)&
+                                    +instr(i)%set%karplus_params(2)*cos(2*teta)&
+                                    +instr(i)%set%karplus_params(3)*sin(teta)&
+                                    +instr(i)%set%karplus_params(4)*sin(2*teta)&
+                                    +instr(i)%set%karplus_params(5)
+                            case(2)
+                                !3J = A(cos(teta + D))**2 + Bcos(teta + D) + C
+                                !Säwén 2010, DOI: 10.1039/c003958f eq.(9)                             
+                                teta=(modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                                ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                instr(i)%datam(jmol,frame)=&
+                                    instr(i)%set%karplus_params(1)*((cos(teta-instr(i)%set%karplus_params(4)*pi/180._rk))**2)&
+                                    +instr(i)%set%karplus_params(2)*cos(teta-instr(i)%set%karplus_params(4)*pi/180._rk)&
+                                    +instr(i)%set%karplus_params(3)
+                        end select
+                    end do
             end select
 
             if(instr(i)%set%slice%switch .and. allocated(instr(i)%datam))then

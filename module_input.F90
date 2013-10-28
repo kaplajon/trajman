@@ -487,7 +487,13 @@ module input
                 trajop%findex=24
                 funcstr=''
                 p=1
-
+            case('karplus')
+                if(.NOT.global_setflags%karplus)&
+                stop 'KP: Needs five karplus_params!&
+            <set karplus_params A B C D E>'
+                trajop%findex=25
+                funcstr='KP_'
+                p=5
             case('exit')
                 stop
 
@@ -1032,6 +1038,18 @@ module input
                 end if
             case('ch_bondlength')
                 global_setflags%ch_bondlength=readreal(arg3)
+            case('karplus_fnc')
+                global_setflags%karplus_fnc=readint(arg3)
+            case('karplus_params')
+                !Acos²(theta+D)+Bcos(theta+D)+Csin(theta+D)+E
+                global_setflags%karplus=.TRUE.
+                if(global_setflags%karplus_fnc==0) &
+                    stop 'karplus_params need karplus_fnc'
+                global_setflags%karplus_params(1)=readreal(arg3) !A
+                global_setflags%karplus_params(2)=readreal(arg4) !B
+                global_setflags%karplus_params(3)=readreal(arg5) !C
+                global_setflags%karplus_params(4)=readreal(arg6) !D
+                if(global_setflags%karplus_fnc==1)global_setflags%karplus_params(5)=readreal(arg7) !E
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

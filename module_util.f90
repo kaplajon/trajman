@@ -72,8 +72,9 @@ module util
     type setflags!{{{
         logical ::&
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
-        molaverage,instructionsum,xyrdf,zrdf,VSnorm,foldcenterofmembrane
-        integer(kind=ik) :: distbin,ounit,wftot,aplgrid(2),leaflet,tshift
+        molaverage,instructionsum,xyrdf,zrdf,VSnorm,foldcenterofmembrane,karplus
+        integer(kind=ik) :: &
+        distbin,ounit,wftot,aplgrid(2),leaflet,tshift,karplus_fnc
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
         character(kind=1,len=255),allocatable :: averagetags(:),dealloctags(:)
         type(write_frame),allocatable :: writeframe(:)
@@ -82,7 +83,7 @@ module util
         type(scaletype) :: scaling
         type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
-        real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize
+        real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize,karplus_params(5)
     end type setflags!}}}
     type natom!{{{
         character(kind=1,len=100) :: atomname,atype,molecule
