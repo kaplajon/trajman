@@ -27,6 +27,7 @@ module util
     implicit none
     integer(kind=ik) :: maxframes,skipframes,atomsdefined
     character(kind=1, len=11),allocatable :: atomnames(:)
+    character(kind=1, len=3),allocatable :: groupres(:)
     type moltype!{{{
         integer(kind=ik) :: firstatom,lastatom,nmol,natoms
         integer(kind=ik),allocatable :: upper(:),lower(:)

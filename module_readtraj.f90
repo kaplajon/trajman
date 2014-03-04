@@ -490,14 +490,25 @@ end subroutine globals!}}}
         character(kind=1,len=10),allocatable ::&
         temp2(:),temp3(:),moltype_atom(:,:)
         integer(kind=ik),allocatable :: natomsoftype(:),nmols(:)
-        character(kind=1, len=5),allocatable :: moltypenames(:)
+        character(kind=1, len=5),allocatable :: moltypenames(:),test(:)
         integer(kind=ik) :: ia,i,j,atoms=0       
-        allocate(atomnames(atot),moltypenames(atot),temp(atot),temp2(atot),temp3(atot))
+        allocate(atomnames(atot),moltypenames(atot),temp(atot),temp2(atot),temp3(atot),test(3))
         atomnames="";moltypenames="";temp="";temp2="";temp3=""
+test=['OME','0LB','3YB']
+!write(*,*)test
+!        do i=1,atot
+!        write(*,*)moltype_atom(1,i),moltype_atom(2,i)
+!        enddo
+!        stop
         do ia=1,atot
 
             uatom=""
             uatom=trim(moltype_atom(2,ia))//"_"//trim(adjustl(moltype_atom(1,ia))) ! Sätter unikt atomnamn
+            if(allocated(groupres))then
+                if(ANY(groupres(1:size(groupres)-1)==trim(moltype_atom(1,ia))))then
+                    moltype_atom(1,ia)=trim(groupres(size(groupres)))
+                end if
+            end if
              ! Alla atomnamn i traj (atot)
             temp(ia)=uatom
              ! Alla förekomster av molekyltyp i traj (atot) 

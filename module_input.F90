@@ -273,6 +273,13 @@ module input
         trajop%setapl=.FALSE.
         p=0;funcstr=''
         select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+            case('groupres')
+                !call reallocate(groupres,merge(size(groupres),0,allocated(groupres))+1)
+                allocate(groupres(size(arguments,2)-1))
+                do i=1,size(groupres)
+                    groupres(i)=trim(stringconv(arguments(:,1+i)))
+                    write(*,*)groupres(i)
+                enddo
             case('init')
                j=scan(stringconv(arguments(:,2)),'.',BACK=.TRUE.)
                j=merge(scan(stringconv(arguments(:,2)),'/',BACK=.TRUE.),j,j==0)
