@@ -371,10 +371,29 @@ module input
                 trajop%findex=7
                 p=1
                 funcstr='CO_'
-            case('dc','DC','dipolarcoupling')
+            case('dc','DC','dipolarcoupling','d0','d1','d2','d3','d4','d5')
                 trajop%findex=8
                 p=3
-                funcstr='DC_'
+                select case(trim(stringconv(arguments(:,1)))) ! Arg 1
+                case('d1')
+                    funcstr='D1_'
+                    trajop%dpctype=1
+                case('d2')
+                    funcstr='D2_'
+                    trajop%dpctype=2
+                case('d3')
+                    funcstr='D3_'
+                    trajop%dpctype=3
+                case('d4')
+                    funcstr='D4_'
+                    trajop%dpctype=4
+                case('d5')
+                    funcstr='D5_'
+                    trajop%dpctype=5
+                case default
+                    funcstr='DC_'
+                    trajop%dpctype=0
+                end select
             case('average','combine')
                 if(trim(stringconv(arguments(:,1)))=='combine')then
                     trajop%set%molaverage=.TRUE.
@@ -1050,6 +1069,15 @@ module input
                 global_setflags%karplus_params(3)=readreal(arg5) !C
                 global_setflags%karplus_params(4)=readreal(arg6) !D
                 if(global_setflags%karplus_fnc==1)global_setflags%karplus_params(5)=readreal(arg7) !E
+            case('coorsys')
+                if(size(args,2)<5)stop 'COORSYS needs 3 helper atoms'
+                if(.not.allocated(global_setflags%coorsys_helpers))&
+                    allocate(global_setflags%coorsys_helpers(size(args,2)-2))
+                global_setflags%coorsys=.TRUE.
+                global_setflags%coorsys_helpers(1)=atomindex(arg3)
+                global_setflags%coorsys_helpers(2)=atomindex(arg4)
+                global_setflags%coorsys_helpers(3)=atomindex(arg5)
+
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

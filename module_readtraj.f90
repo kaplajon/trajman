@@ -191,6 +191,7 @@ subroutine globals!{{{
         global_setflags%slice%switch2=.FALSE.
         global_setflags%karplus=.FALSE.
         global_setflags%karplus_fnc=0
+        global_setflags%coorsys=.FALSE.
     end if
     !maxframes=0;minframe=0
     !if(.NOT.allocated(global_setflags%calc))then

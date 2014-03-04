@@ -33,10 +33,10 @@ module trajop
     
     contains
 
-    function dirangle(a,b,imol) result(teta)!{{{
+    function dirangle(a,b,imol,angletype) result(teta)!{{{
         ! Angle: a-b  against director in degrees
-        real(kind=rk) :: teta,dir(3),xtz
-        integer(kind=ik) :: a,b,imol
+        real(kind=rk) :: teta,dir(3),xtz,xyz(3,3)
+        integer(kind=ik) :: a,b,imol,angletype
         !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
             dir=director
         if(global_setflags%centerofmembrane)then
@@ -44,8 +44,21 @@ module trajop
                 if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
             end if
         end if
-        xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),dir)
-        teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+        if(global_setflags%coorsys)xyz=coorsys(global_setflags%coorsys_helpers,imol)
+        select case(angletype)
+            case(0)
+                xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),dir)
+                teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+            case(1) !x
+                xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),xyz(:,1))
+                teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(xyz(:,1)**2)-xtz**2)),xtz)*180._rk/pi
+            case(2) !y
+                xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),xyz(:,2))
+                teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(xyz(:,2)**2)-xtz**2)),xtz)*180._rk/pi
+            case(3) !z
+                xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),xyz(:,3))
+                teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(xyz(:,3)**2)-xtz**2)),xtz)*180._rk/pi
+        end select
         ! teta=(atom(b)%coor(3,imol)-atom(a)%coor(3,imol))/sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
         !write(300,*)teta,imol,atom(b)%coor(3,imol),atom(a)%coor(3,imol),sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
        ! teta=acos(dot_product(normalize(atom(b)%coor(:,imol)-atom(a)%coor(:,imol)),dir))*180._rk/pi
@@ -125,11 +138,34 @@ module trajop
         distance=dot_product(atom(a)%coor(:,imol)-centerofmembrane,dir)
     end function distance_com!}}}
 
-    function order_parameter(a,b,imol) result(c)!{{{
-        integer(kind=ik) :: a,b,imol
-        real(kind=rk) :: c
-        c=1.5_rk*cos(pi/180._rk*&
-        dirangle(a,b,imol))**2-0.5
+    function order_parameter(a,b,imol,dpctype) result(c)!{{{
+        integer(kind=ik) :: a,b,imol,dpctype
+        real(kind=rk) :: c,radconv
+        radconv=pi/180._rk
+        select case(dpctype)
+        case(0)
+                c=1.5_rk*cos(radconv*&
+                dirangle(a,b,imol,0))**2-0.5
+        case(1)
+                c=1.5_rk*cos(radconv*&
+                dirangle(a,b,imol,3))**2-0.5
+        case(2)
+                c=0.5_rk*(&
+                    (cos(radconv*dirangle(a,b,imol,1))**2)-&
+                    (cos(radconv*dirangle(a,b,imol,2))**2))
+        case(3)
+                c=2._rk*(&
+                    (cos(radconv*dirangle(a,b,imol,1)))*&
+                    (cos(radconv*dirangle(a,b,imol,2))))
+        case(4)
+                c=2._rk*(&
+                    (cos(radconv*dirangle(a,b,imol,1)))*&
+                    (cos(radconv*dirangle(a,b,imol,3))))
+        case(5)
+                c=2._rk*(&
+                    (cos(radconv*dirangle(a,b,imol,2)))*&
+                    (cos(radconv*dirangle(a,b,imol,3))))
+        end select
 
     end function order_parameter!}}}
 
@@ -156,6 +192,28 @@ module trajop
         end do
         center=center/massweight
     end function center_of_mass 
+
+    function coorsys(helpers,imol) result(vectors)
+        integer(kind=ik) :: helpers(:),imol
+        real(kind=rk) :: v1(3),v2(3),v3(3),x(3),y(3),z(3),thetal,vectors(3,3)
+            v1=atom(helpers(1))%coor(:,imol)
+            v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
+            v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
+            ! thetal is the angle 2pi - C-C-C devided by 2
+            ! to ensure equal (C-C-H) angles from both directions
+            thetal=pi*(2-valenceangle(helpers(1),&
+                    helpers(2),&
+                    helpers(3),imol)/180._rk)/2
+            x=normalize(atom(helpers(2))%coor(:,imol)-atom(helpers(3))%coor(:,imol))
+            y=normalize(cross_product(v2,v3))
+            ! RV returns a rotational 3x3 matrix from a quaternion
+            ! v2q turns a vector into a quaternion with angle theta
+            ! Rotate by matrix multiplication RV*V3 where V3 is rotated
+            z=normalize(matmul(RV(v2q(y,thetal)),v3))
+            vectors(:,1)=x
+            vectors(:,2)=y
+            vectors(:,3)=z
+    end function coorsys
 
     subroutine add_hydrogen(helpers,hcoor,imol,func,bondlength,theta)
         integer(kind=ik),intent(in) :: helpers(:),func,imol
@@ -246,7 +304,7 @@ module trajop
                         !instr(i)%datam(jmol,frame)=&
                         !cos((pi/180._rk)*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
                         instr(i)%datam(jmol,frame)=&
-                        cos((pi/180._rk)*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol))
+                        cos((pi/180._rk)*dirangle(instr(i)%atoms(1),instr(i)%atoms(2),imol,0))
                     end do
                 case(2) !VALENCE ANGLE
                     do jmol=1,instr(i)%nmolop
@@ -271,7 +329,7 @@ module trajop
                         imol=instr(i)%molind(jmol)
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
-                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)
+                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol,0)
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
                     do jmol=1,instr(i)%nmolop
@@ -290,8 +348,8 @@ module trajop
                         end if
                         instr(i)%datam(jmol,frame) =-(magnetic/(4*pi))&
                         *(mgratios(instr(i)%atoms(1))*mgratios(instr(i)%atoms(2))*hbar/(2*pi))&
-                        *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol)&
-                        *(bl*common_setflags%traj_cscale)**(-3)/1000.!(1e-9 for meters and 1000 for kHz) 
+                        *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol,instr(i)%dpctype)&
+                        *(bl*common_setflags%traj_cscale)**(-3) !(1e-9 for meters and 1000 for kHz) 
                     end do
                  case(9,23) ! AVERAGE
                         ! Everything is handled in subroutine postproc
@@ -895,7 +953,7 @@ module trajop
         decdiff=ceiling(-log(meandev)/log(10._rk),ik)+1_ik
         select case(decdiff)
         case(:-1_ik)
-           str(1:11)='unit is NaN'
+           str(1:11)='NaN'
            return
         case(0_ik:9_ik)
            ffmtstr='(F00.0) '

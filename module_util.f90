@@ -72,7 +72,7 @@ module util
     type setflags!{{{
         logical ::&
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
-        molaverage,instructionsum,xyrdf,zrdf,VSnorm,foldcenterofmembrane,karplus
+        molaverage,instructionsum,xyrdf,zrdf,VSnorm,foldcenterofmembrane,karplus,coorsys
         integer(kind=ik) :: &
         distbin,ounit,wftot,aplgrid(2),leaflet,tshift,karplus_fnc
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
@@ -83,6 +83,7 @@ module util
         type(scaletype) :: scaling
         type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
+        integer(kind=ik),allocatable :: coorsys_helpers(:)
         real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize,karplus_params(5)
     end type setflags!}}}
     type natom!{{{
@@ -110,7 +111,7 @@ module util
         integer(kind=ik) :: n
     end type calcval!}}}
     type instruct!{{{
-        integer(kind=ik) :: findex,nmolop,average_count,define!atoms_bak(20),
+        integer(kind=ik) :: findex,nmolop,average_count,define,dpctype!atoms_bak(20),
         integer(kind=ik),allocatable ::&
         atoms(:),apl_side(:),molind(:)!,membrane_moltypes(:)
         logical :: setapl
