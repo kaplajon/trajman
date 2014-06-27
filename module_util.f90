@@ -84,7 +84,8 @@ module util
         type(scaletype) :: scaling
         type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
-        integer(kind=ik),allocatable :: coorsys_helpers(:)
+        integer(kind=ik),allocatable :: &
+        coorsys_helpers(:),sph1(:),sph2(:),spt1(:),spt2(:)
         real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize,karplus_params(5)
     end type setflags!}}}
     type natom!{{{

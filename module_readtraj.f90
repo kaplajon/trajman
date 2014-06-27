@@ -494,7 +494,7 @@ end subroutine globals!}}}
         integer(kind=ik) :: ia,i,j,atoms=0       
         allocate(atomnames(atot),moltypenames(atot),temp(atot),temp2(atot),temp3(atot),test(3))
         atomnames="";moltypenames="";temp="";temp2="";temp3=""
-test=['OME','0LB','3YB']
+!test=['OME','0LB','3YB']
 !write(*,*)test
 !        do i=1,atot
 !        write(*,*)moltype_atom(1,i),moltype_atom(2,i)

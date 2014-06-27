@@ -519,7 +519,16 @@ module input
             <set karplus_params A B C D E>'
                 trajop%findex=25
                 funcstr='KP_'
-                p=5
+                select case(global_setflags%karplus_fnc)
+                case(3,4)
+                    p=9
+                case default
+                    p=5
+                end select
+            case('SP','sp','splay')
+                trajop%findex=26
+                funcstr='SP_'
+                p=3
             case('exit')
                 stop
 
@@ -730,6 +739,7 @@ module input
         character(kind=1,len=1) :: args(:,:)
         character(kind=1,len=size(args,1)) :: arg2,arg3,arg4,arg5,arg6,arg7
         integer(kind=ik) :: i,j,p,ios,imol,kl,ku
+        integer(kind=ik),allocatable :: helpers(:)
         real(kind=rk) :: v(3)
         arg2='';arg3='';arg4='';arg5='';arg6='';arg7=''
         if(size(args,2)>=2)arg2=trim(stringconv(args(:,2)))
@@ -1075,7 +1085,8 @@ module input
                 global_setflags%karplus_params(2)=readreal(arg4) !B
                 global_setflags%karplus_params(3)=readreal(arg5) !C
                 global_setflags%karplus_params(4)=readreal(arg6) !D
-                if(global_setflags%karplus_fnc==1)global_setflags%karplus_params(5)=readreal(arg7) !E
+                !if(global_setflags%karplus_fnc==1)global_setflags%karplus_params(5)=readreal(arg7) !E
+                global_setflags%karplus_params(5)=readreal(arg7) !E
             case('coorsys')
                 if(size(args,2)<5)stop 'COORSYS needs 3 helper atoms'
                 if(.not.allocated(global_setflags%coorsys_helpers))&
@@ -1084,7 +1095,29 @@ module input
                 global_setflags%coorsys_helpers(1)=atomindex(arg3)
                 global_setflags%coorsys_helpers(2)=atomindex(arg4)
                 global_setflags%coorsys_helpers(3)=atomindex(arg5)
-
+            case('sph1','sph2','spt1','spt2')
+                ! Helper atoms for the splay and tilt function (SP)
+                if(.not.allocated(helpers))&
+                    allocate(helpers(size(args,2)-2))
+                do i=1,size(helpers)
+                    helpers(i)=atomindex(trim(stringconv(args(:,i+2))))
+                end do
+                select case(arg2)
+                case('sph1')
+                    call reallocate(global_setflags%sph1,size(helpers))
+                    global_setflags%sph1=helpers
+                case('sph2')
+                    call reallocate(global_setflags%sph2,size(helpers))
+                    global_setflags%sph2=helpers
+                case('spt1')
+                    call reallocate(global_setflags%spt1,size(helpers))
+                    global_setflags%spt1=helpers
+                case('spt2')
+                    call reallocate(global_setflags%spt2,size(helpers))
+                    global_setflags%spt2=helpers
+                end select
+                deallocate(helpers)
+                
             case default
                 if(size(args,2)>=2)then
                     write(*,*)'SET: >',trim(arg2),'<  is not a valid argument'

@@ -201,15 +201,16 @@ module trajop
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
             ! thetal is the angle 2pi - C-C-C devided by 2
             ! to ensure equal (C-C-H) angles from both directions
-            thetal=pi*(2-valenceangle(helpers(1),&
-                    helpers(2),&
-                    helpers(3),imol)/180._rk)/2
+            !thetal=pi*(2-valenceangle(helpers(1),&
+            !        helpers(2),&
+            !        helpers(3),imol)/180._rk)/2
             x=normalize(atom(helpers(2))%coor(:,imol)-atom(helpers(3))%coor(:,imol))
             y=normalize(cross_product(v2,v3))
             ! RV returns a rotational 3x3 matrix from a quaternion
             ! v2q turns a vector into a quaternion with angle theta
             ! Rotate by matrix multiplication RV*V3 where V3 is rotated
-            z=normalize(matmul(RV(v2q(y,thetal)),v3))
+            !z=normalize(matmul(RV(v2q(y,thetal)),v3))
+            z=normalize(cross_product(x,y))
             vectors(:,1)=x
             vectors(:,2)=y
             vectors(:,3)=z
@@ -292,7 +293,9 @@ module trajop
         integer(kind=ik),allocatable ::&
         cindexes_l(:),cindexes_u(:),grid1(:,:),grid2(:,:)
         logical :: moltest
-        real(kind=rk) :: teta,bl,v(3),x,scaling
+        real(kind=rk) :: &
+        teta,omega,bl,v(3),x,scaling,head1(3),head2(3),tail1(3),tail2(3),molvector1(3) &
+        ,molvector2(3),dir(3),xtz
         type(instruct) :: instr(:)
           do i=1,size(instr)
             select case(instr(i)%findex)
@@ -611,8 +614,206 @@ module trajop
                                     instr(i)%set%karplus_params(1)*((cos(teta-instr(i)%set%karplus_params(4)*pi/180._rk))**2)&
                                     +instr(i)%set%karplus_params(2)*cos(teta-instr(i)%set%karplus_params(4)*pi/180._rk)&
                                     +instr(i)%set%karplus_params(3)
+                            case(3)
+                                !2J(H6R, H6S)=A*cos(2*omega)+Bcos(2*theta)-C 
+                                ! Från GW 140516, "...från tidigare JOC studie"
+                                if(size(instr(i)%atoms)/= 8)stop 'KARPLUS: You need input &
+                                for two dihedrals: A1 A2 A3 A4 B1 B2 B3 B4'
+                                omega=(modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                                ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                teta=(modulo(torsionangle(instr(i)%atoms(5),instr(i)%atoms(6)&
+                                ,instr(i)%atoms(7),instr(i)%atoms(8),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                instr(i)%datam(jmol,frame)=&
+                                    instr(i)%set%karplus_params(1)*cos(omega)&
+                                    +instr(i)%set%karplus_params(2)*cos(2*teta)&
+                                    +instr(i)%set%karplus_params(3)
+                            case(4)
+                                !2J(H6R,H6S) =
+                                !A*cos(omega)+B*cos(2*omega)+C*cos(theta)+D*cos(2*theta)+E
+                                !Thibaudeau et. al, JACS 2004.
+                                !DOI:10.1021/ja0306718
+                                if(size(instr(i)%atoms)/= 8)stop 'KARPLUS: You need input &
+                                for two dihedrals: A1 A2 A3 A4 B1 B2 B3 B4'
+                                omega=(modulo(torsionangle(instr(i)%atoms(1),instr(i)%atoms(2)&
+                                ,instr(i)%atoms(3),instr(i)%atoms(4),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                teta=(modulo(torsionangle(instr(i)%atoms(5),instr(i)%atoms(6)&
+                                ,instr(i)%atoms(7),instr(i)%atoms(8),imol)-real(instr(i)%set%tshift,rk),360._rk)&
+                                +real(instr(i)%set%tshift,rk))*pi/180._rk
+                                instr(i)%datam(jmol,frame)=&
+                                    instr(i)%set%karplus_params(1)*cos(omega)&
+                                    +instr(i)%set%karplus_params(2)*cos(2*omega)&
+                                    +instr(i)%set%karplus_params(3)*cos(teta)&
+                                    +instr(i)%set%karplus_params(4)*cos(2*teta)&
+                                    +instr(i)%set%karplus_params(5)
                         end select
                     end do
+                case(26) ! Splay and Tilt
+                    l=0
+                    instr(i)%rdf_pairs=0
+                    moltest=instr(i)%atoms(1)==instr(i)%atoms(2)
+                    select case(instr(i)%set%leaflet)!{{{
+                    case(0)!Both
+                        do j=1,molt(instr(i)%atoms(1))%nmol
+                            imol=j
+                            do k=merge(j+1,1,moltest),molt(instr(i)%atoms(2))%nmol
+                                jmol=k
+                                head1=center_of_mass(instr(i)%set%sph1,imol)
+                                !head1=(atom(instr(i)%set%sph1(1))%coor(:,imol)+atom(instr(i)%set%sph1(2))%coor(:,imol))/2
+                                head2=center_of_mass(instr(i)%set%sph2,jmol)
+                                !head2=(atom(instr(i)%set%sph2(1))%coor(:,jmol)+atom(instr(i)%set%sph2(2))%coor(:,jmol))/2
+                                tail1=center_of_mass(instr(i)%set%spt1,imol)
+                                tail2=center_of_mass(instr(i)%set%spt2,jmol)
+                                dir=director
+                                m=0
+                                if(global_setflags%centerofmembrane)then
+                                    if(global_setflags%leaflets_defined)then
+                                        if(ANY(imol==molt(instr(i)%atoms(1))%lower))dir=-1._rk*director
+                                    end if
+                                end if
+                                xtz=dot_product(normalize(head1-tail1),dir)
+                                teta=atan2(sqrt(abs(sum((normalize(head1-tail1))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                if(teta<10._rk)then
+                                    m=1
+                                    !write(*,*)teta,'TETA1'
+                                else
+                                    dir=director
+                                    if(global_setflags%centerofmembrane)then
+                                        if(global_setflags%leaflets_defined)then
+                                            if(ANY(jmol==molt(instr(i)%atoms(2))%lower))dir=-1._rk*director
+                                        end if
+                                    end if
+                                    xtz=dot_product(normalize(head2-tail2),dir)
+                                    teta=atan2(sqrt(abs(sum((normalize(head2-tail2))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                    if(teta<10._rk)m=1
+                                    !write(*,*)teta,'TETA2'
+                                end if
+                                !Tilt angle not more than 10 deg
+                                if(m==1)then
+                                    !Nearest neighbour
+                                    if(sqrt(sum(mymodulo(center_of_molecule(instr(i)%atoms(2),jmol)&
+                                        -center_of_molecule(instr(i)%atoms(1),imol),box)**2))<10._rk)then
+                                        l=l+1
+                                        molvector1=normalize(head1-tail1)
+                                        molvector2=normalize(head2-tail2)
+                                        teta=acos(dot_product(molvector1,molvector2))*180._rk/pi !Splay angle
+                                        !teta=dot_product(molvector1,molvector2) !Splay angle
+                                        call reallocatereal(instr(i)%rdf_pairs,l)
+                                        instr(i)%rdf_pairs(l)=teta
+                                    end if
+                                end if
+                            end do
+                        end do
+                    case(1)!Lower
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%lower)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%lower(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%lower)
+                                jmol=molt(atom(instr(i)%atoms(2))%moltype)%lower(k)
+                                !l=l+1
+                                !head1=center_of_mass(instr(i)%set%sph1,imol)
+                                head1=(atom(instr(i)%set%sph1(1))%coor(:,imol)+atom(instr(i)%set%sph1(2))%coor(:,imol))/2
+                                !head2=center_of_mass(instr(i)%set%sph2,jmol)
+                                head2=(atom(instr(i)%set%sph2(1))%coor(:,jmol)+atom(instr(i)%set%sph2(2))%coor(:,jmol))/2
+                                tail1=center_of_mass(instr(i)%set%spt1,imol)
+                                tail2=center_of_mass(instr(i)%set%spt2,jmol)
+                                dir=director*(-1._rk)
+                                m=0
+                                !if(global_setflags%centerofmembrane)then
+                                !    if(global_setflags%leaflets_defined)then
+                                !        if(ANY(imol==molt(instr(i)%atoms(1))%lower))dir=-1._rk*director
+                                !    end if
+                                !end if
+                                xtz=dot_product(normalize(head1-tail1),dir)
+                                teta=atan2(sqrt(abs(sum((normalize(head1-tail1))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                if(teta<10._rk)then
+                                    m=1
+                                    !write(*,*)teta,'TETA1'
+                                else
+                                    !dir=director
+                                    !if(global_setflags%centerofmembrane)then
+                                    !    if(global_setflags%leaflets_defined)then
+                                    !        if(ANY(jmol==molt(instr(i)%atoms(2))%lower))dir=-1._rk*director
+                                    !    end if
+                                    !end if
+                                    xtz=dot_product(normalize(head2-tail2),dir)
+                                    teta=atan2(sqrt(abs(sum((normalize(head2-tail2))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                    if(teta<10._rk)m=1
+                                    !write(*,*)teta,'TETA2'
+                                end if
+                                !Tilt angle not more than 10 deg
+                                if(m==1)then
+                                    !Nearest neighbour
+                                    if(sqrt(sum(mymodulo(center_of_molecule(instr(i)%atoms(2),jmol)&
+                                        -center_of_molecule(instr(i)%atoms(1),imol),box)**2))<10._rk)then
+                                        l=l+1
+                                        molvector1=normalize(head1-tail1)
+                                        molvector2=normalize(head2-tail2)
+                                        teta=acos(dot_product(molvector1,molvector2))*180._rk/pi !Splay angle
+                                        !teta=dot_product(molvector1,molvector2) !Splay angle
+                                        call reallocatereal(instr(i)%rdf_pairs,l)
+                                        instr(i)%rdf_pairs(l)=teta
+                                    end if
+                                end if
+                            end do
+                        end do
+                    case(2)!Upper
+
+                        do j=1,size(molt(atom(instr(i)%atoms(1))%moltype)%upper)
+                            imol=molt(atom(instr(i)%atoms(1))%moltype)%upper(j)
+                            do k=merge(j+1,1,moltest),size(molt(atom(instr(i)%atoms(2))%moltype)%upper)
+                                jmol=molt(moltypeofuatom(instr(i)%atoms(2)))%upper(k)
+                                !l=l+1
+                                head1=center_of_mass(instr(i)%set%sph1,imol)
+                                !head1=(atom(instr(i)%set%sph1(1))%coor(:,imol)+atom(instr(i)%set%sph1(2))%coor(:,imol))/2
+                                head2=center_of_mass(instr(i)%set%sph2,jmol)
+                                !head2=(atom(instr(i)%set%sph2(1))%coor(:,jmol)+atom(instr(i)%set%sph2(2))%coor(:,jmol))/2
+                                tail1=center_of_mass(instr(i)%set%spt1,imol)
+                                tail2=center_of_mass(instr(i)%set%spt2,jmol)
+                                dir=director
+                                m=0
+                                !if(global_setflags%centerofmembrane)then
+                                !    if(global_setflags%leaflets_defined)then
+                                !        if(ANY(imol==molt(instr(i)%atoms(1))%lower))dir=-1._rk*director
+                                !    end if
+                                !end if
+                                xtz=dot_product(normalize(head1-tail1),dir)
+                                teta=atan2(sqrt(abs(sum((normalize(head1-tail1))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                if(teta<10._rk)then
+                                    m=1
+                                    !write(*,*)teta,'TETA1'
+                                else
+                                !    dir=director
+                                !    if(global_setflags%centerofmembrane)then
+                                !        if(global_setflags%leaflets_defined)then
+                                !            if(ANY(jmol==molt(instr(i)%atoms(2))%lower))dir=-1._rk*director
+                                !        end if
+                                !    end if
+                                    xtz=dot_product(normalize(head2-tail2),dir)
+                                    teta=atan2(sqrt(abs(sum((normalize(head2-tail2))**2)*sum(dir**2)-xtz**2)),xtz)*180._rk/pi
+                                    if(teta<10._rk)m=1
+                                    !write(*,*)teta,'TETA2'
+                                end if
+                                !Tilt angle not more than 10 deg
+                                if(m==1)then
+                                    !Nearest neighbour
+                                    if(sqrt(sum(mymodulo(center_of_molecule(instr(i)%atoms(2),jmol)&
+                                        -center_of_molecule(instr(i)%atoms(1),imol),box)**2))<10._rk)then
+                                        l=l+1
+                                        molvector1=normalize(head1-tail1)
+                                        molvector2=normalize(head2-tail2)
+                                        teta=acos(dot_product(molvector1,molvector2))*180._rk/pi !Splay angle
+                                        !teta=dot_product(molvector1,molvector2) !Splay angle
+                                        call reallocatereal(instr(i)%rdf_pairs,l)
+                                        instr(i)%rdf_pairs(l)=teta
+                                    end if
+                                end if
+                            end do
+                        end do
+                    end select!}}}
+                    call splay_distrib(instr(i),frame)
+                    instr(i)%datam(1,frame)=sum(instr(i)%rdf_pairs)
             end select
 
             if(instr(i)%set%slice%switch .and. allocated(instr(i)%datam))then
@@ -696,6 +897,51 @@ module trajop
         !var=sum((meant(:)-mean)**2)/real(size(meant)-1,rk)
         meandev=sqrt(var/real(size(meant),rk))
     end function std!}}}
+
+    subroutine splay_distrib(instr,frame)!{{{
+        type(instruct),intent(inout) :: instr
+        integer(kind=ik) :: bi,i,j
+        integer(kind=ik),optional :: frame
+        real(kind=rk) :: mi,ma,x,y,dp,bvol,numberdensity,modbox(3)
+            mi=0._rk
+            ma=180._rk
+        if(present(frame))then
+            modbox=box
+            if(trajtype=='gro')then !Rescale distances to ångström
+                instr%rdf_pairs=instr%rdf_pairs*10._rk
+                modbox=modbox*10._rk
+            end if
+            instr%rdf_bin=(ma-mi)/real(size(instr%rdf_dist,1),rk)
+            numberdensity=size(instr%rdf_pairs)*instr%rdf_bin
+            do i=1,size(instr%rdf_pairs)
+                bi=int((instr%rdf_pairs(i)-mi)/instr%rdf_bin+1_rk)
+                if(bi==size(instr%rdf_dist)+1)bi=size(instr%rdf_dist)
+                if(bi<=0.or.bi>size(instr%rdf_dist,1))then
+                else
+                    instr%rdf_dist(bi)=instr%rdf_dist(bi)+1._rk/(numberdensity*(maxframes-skipframes))
+                end if
+            end do
+        else !.not.present(frame)
+            !Skriv ut distribution till disk
+            !x=mi
+            !y=-log(instr%rdf_dist(bi)/sin(x*pi/180._rk))
+            !x=acos(x)*180._rk/pi
+            write(instr%set%ounit,*)x,instr%rdf_dist(1),y
+            do bi=1,size(instr%rdf_dist,1)
+                x=mi+(real(bi,rk)-.5_rk)*instr%rdf_bin
+                y=-log(instr%rdf_dist(bi)/sin(x*pi/180._rk))
+                !x=acos(x)*180._rk/pi
+                write(instr%set%ounit,*)x,instr%rdf_dist(bi),y
+            end do
+            !x=ma
+            !y=-log(instr%rdf_dist(bi)/sin(x*pi/180._rk))
+            !x=acos(x)*180._rk/pi
+            !write(instr%set%ounit,*)x,instr%rdf_dist(size(instr%rdf_dist)),y
+                write(instr%set%ounit,*)
+                if(allocated(instr%rdf_dist))deallocate(instr%rdf_dist)
+                if(allocated(instr%rdf_pairs))deallocate(instr%rdf_pairs)
+        end if !present(frame)
+    end subroutine splay_distrib!}}}
 
     subroutine rdf_distrib(instr,frame)!{{{
         type(instruct),intent(inout) :: instr
@@ -1913,9 +2159,12 @@ dist(1:300)=dist(1:300)/(isoentropy)!*bin*4*pi*[((mi+(real(bi,rk)-0.5_rk)*bin)**
                                 write(0,'(A10)',advance="no")'distrib'
                                 write(0,'(A)',advance="no")' '//trim(instr(i)%instructionstring)
                                 !write(*,*)'I',i,instr(i)%datam
-                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16.AND.instr(i)%findex/=15)call distrib(instr(i),i,j)
+                                if(instr(i)%findex/=13.AND.instr(i)%findex/=16.AND.instr(i)%findex/=15.AND.instr(i)%findex/=26)&
+                                    call distrib(instr(i),i,j)
                                 if(instr(i)%findex==13.AND.trim(instr(i)%set%calc(j))=='distrib')&
                                 call rdf_distrib(instr(i))
+                                if(instr(i)%findex==26.AND.trim(instr(i)%set%calc(j))=='distrib')&
+                                call splay_distrib(instr(i))
                                 if(instr(i)%findex==16.OR.instr(i)%findex==15.AND.trim(instr(i)%set%calc(j))=='distrib')&
                                 call write_distrib(instr(i))
                             case('traj','trajm')
