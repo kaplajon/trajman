@@ -33,10 +33,11 @@ module trajop
     
     contains
 
-    function dirangle(a,b,imol,angletype) result(teta)!{{{
+    function dirangle(a,b,imol,angletype,coorsys_helpers,coorsys_type) result(teta)!{{{
         ! Angle: a-b  against director in degrees
         real(kind=rk) :: teta,dir(3),xtz,xyz(3,3)
         integer(kind=ik) :: a,b,imol,angletype
+        integer(kind=ik),optional :: coorsys_helpers(:),coorsys_type
         !dir=director*sign(1._rk,dot_product(center_of_molecule(moltypeofuatom(a),imol)-centerofmembrane,director))
             dir=director
         if(global_setflags%centerofmembrane)then
@@ -44,7 +45,13 @@ module trajop
                 if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
             end if
         end if
-        if(global_setflags%coorsys)xyz=coorsys(global_setflags%coorsys_helpers,global_setflags%coorsys_type,imol)
+        if(angletype/=0 .and. present(coorsys_helpers) .and. present(coorsys_type))then
+            xyz=coorsys(coorsys_helpers,coorsys_type,imol)
+        else
+            if(angletype/=0 .and..not.present(coorsys_helpers) .and..not.present(coorsys_type))&
+                stop 'DIRANGLE: You need a proper molecular coordinate system'
+        end if
+
         select case(angletype)
             case(0)
                 xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),dir)
@@ -58,6 +65,8 @@ module trajop
             case(3) !z
                 xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),xyz(:,3))
                 teta=atan2(sqrt(abs(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2)*sum(xyz(:,3)**2)-xtz**2)),xtz)*180._rk/pi
+            case default
+                stop 'DIRANGLE: not a valid angle type'
         end select
         ! teta=(atom(b)%coor(3,imol)-atom(a)%coor(3,imol))/sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
         !write(300,*)teta,imol,atom(b)%coor(3,imol),atom(a)%coor(3,imol),sqrt(sum((atom(b)%coor(:,imol)-atom(a)%coor(:,imol))**2))
@@ -138,34 +147,41 @@ module trajop
         distance=dot_product(atom(a)%coor(:,imol)-centerofmembrane,dir)
     end function distance_com!}}}
 
-    function order_parameter(a,b,imol,dpctype) result(c)!{{{
+    function order_parameter(a,b,imol,dpctype,coorsys_helpers,coorsys_type) result(c)!{{{
         integer(kind=ik) :: a,b,imol,dpctype
+        integer(kind=ik),optional :: coorsys_helpers(:),coorsys_type
         real(kind=rk) :: c,radconv
         radconv=pi/180._rk
-        select case(dpctype)
-        case(0)
+        if(present(coorsys_helpers) .and. present(coorsys_type))then
+            select case(dpctype)
+                case(0)
+                    c=1.5_rk*cos(radconv*&
+                    dirangle(a,b,imol,0,coorsys_helpers,coorsys_type))**2-0.5
+                case(1)
+                    c=1.5_rk*cos(radconv*&
+                    dirangle(a,b,imol,3,coorsys_helpers,coorsys_type))**2-0.5
+                case(2)
+                    c=0.5_rk*(&
+                        (cos(radconv*dirangle(a,b,imol,1,coorsys_helpers,coorsys_type))**2)-&
+                        (cos(radconv*dirangle(a,b,imol,2,coorsys_helpers,coorsys_type))**2))
+                case(3)
+                    c=2._rk*(&
+                        (cos(radconv*dirangle(a,b,imol,1,coorsys_helpers,coorsys_type)))*&
+                        (cos(radconv*dirangle(a,b,imol,2,coorsys_helpers,coorsys_type))))
+                case(4)
+                    c=2._rk*(&
+                        (cos(radconv*dirangle(a,b,imol,1,coorsys_helpers,coorsys_type)))*&
+                        (cos(radconv*dirangle(a,b,imol,3,coorsys_helpers,coorsys_type))))
+                case(5)
+                    c=2._rk*(&
+                        (cos(radconv*dirangle(a,b,imol,2,coorsys_helpers,coorsys_type)))*&
+                        (cos(radconv*dirangle(a,b,imol,3,coorsys_helpers,coorsys_type))))
+            end select
+        else
                 c=1.5_rk*cos(radconv*&
                 dirangle(a,b,imol,0))**2-0.5
-        case(1)
-                c=1.5_rk*cos(radconv*&
-                dirangle(a,b,imol,3))**2-0.5
-        case(2)
-                c=0.5_rk*(&
-                    (cos(radconv*dirangle(a,b,imol,1))**2)-&
-                    (cos(radconv*dirangle(a,b,imol,2))**2))
-        case(3)
-                c=2._rk*(&
-                    (cos(radconv*dirangle(a,b,imol,1)))*&
-                    (cos(radconv*dirangle(a,b,imol,2))))
-        case(4)
-                c=2._rk*(&
-                    (cos(radconv*dirangle(a,b,imol,1)))*&
-                    (cos(radconv*dirangle(a,b,imol,3))))
-        case(5)
-                c=2._rk*(&
-                    (cos(radconv*dirangle(a,b,imol,2)))*&
-                    (cos(radconv*dirangle(a,b,imol,3))))
-        end select
+        end if
+
 
     end function order_parameter!}}}
 
@@ -339,7 +355,7 @@ module trajop
                         imol=instr(i)%molind(jmol)
                         !instr(i)%datam(imol,frame)=1.5_rk*cos(pi/180._rk*&
                         !dirangle(instr( Ti)%atoms(1),instr(i)%atoms(2),imol))**2-0.5
-                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol,0)
+                        instr(i)%datam(jmol,frame)=order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol,instr(i)%dpctype)
                     end do
                 case(6) ! DISTANCE CENTER OF MEMBRANE
                     do jmol=1,instr(i)%nmolop
@@ -358,7 +374,8 @@ module trajop
                         end if
                         instr(i)%datam(jmol,frame) =-(magnetic/(4*pi))&
                         *(mgratios(instr(i)%atoms(1))*mgratios(instr(i)%atoms(2))*hbar/(2*pi))&
-                        *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),imol,instr(i)%dpctype)&
+                        *order_parameter(instr(i)%atoms(1),instr(i)%atoms(2),&
+                        imol,instr(i)%dpctype,instr(i)%set%coorsys_helpers,instr(i)%set%coorsys_type)&
                         *(bl*common_setflags%traj_cscale)**(-3) !(1e-9 for meters and 1000 for kHz) 
                     end do
                  case(9,23) ! AVERAGE

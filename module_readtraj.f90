@@ -193,7 +193,7 @@ subroutine globals!{{{
         global_setflags%karplus_fnc=0
         global_setflags%coorsys=.FALSE.
         global_setflags%coorsys_type=1
-        global_setflags%dpctype=0
+        !global_setflags%dpctype=0
         global_setflags%coorsys_helpers=0
     end if
     !maxframes=0;minframe=0

@@ -366,6 +366,7 @@ module input
 
             case('orderparameter','Sv','SV')
                 trajop%findex=5
+                trajop%dpctype=0
                 p=3
                 funcstr='SV_'
             case('membraneposition','MP')
