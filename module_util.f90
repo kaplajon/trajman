@@ -75,7 +75,7 @@ module util
         autofilename,cbl_switch,folding,apl,gd,whole,leaflets_defined,centerofmembrane,&
         molaverage,instructionsum,xyrdf,zrdf,VSnorm,foldcenterofmembrane,karplus,coorsys
         integer(kind=ik) :: &
-        distbin,ounit,wftot,aplgrid(2),leaflet,tshift,karplus_fnc
+        distbin,ounit,wftot,aplgrid(2),leaflet,tshift,karplus_fnc,coorsys_type,coorsys_helpers(3)
         character(kind=1,len=255) :: filename,fileprefix,filesuffix,corrindex(6)
         character(kind=1,len=255),allocatable :: averagetags(:),dealloctags(:)
         type(write_frame),allocatable :: writeframe(:)
@@ -85,7 +85,7 @@ module util
         type(slicetype) :: slice
         character(kind=1,len=100),allocatable :: calc(:)
         integer(kind=ik),allocatable :: &
-        coorsys_helpers(:),sph1(:),sph2(:),spt1(:),spt2(:)
+        sph1(:),sph2(:),spt1(:),spt2(:)
         real(kind=rk) :: constant_bl,ch_bondlength,rdf_binsize,karplus_params(5)
     end type setflags!}}}
     type natom!{{{

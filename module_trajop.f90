@@ -44,7 +44,7 @@ module trajop
                 if(ANY(imol==molt(moltypeofuatom(a))%lower))dir=-1._rk*director
             end if
         end if
-        if(global_setflags%coorsys)xyz=coorsys(global_setflags%coorsys_helpers,imol)
+        if(global_setflags%coorsys)xyz=coorsys(global_setflags%coorsys_helpers,global_setflags%coorsys_type,imol)
         select case(angletype)
             case(0)
                 xtz=dot_product(atom(b)%coor(:,imol)-atom(a)%coor(:,imol),dir)
@@ -193,24 +193,31 @@ module trajop
         center=center/massweight
     end function center_of_mass 
 
-    function coorsys(helpers,imol) result(vectors)
-        integer(kind=ik) :: helpers(:),imol
+    function coorsys(helpers,coorsys_type,imol) result(vectors)
+        integer(kind=ik) :: helpers(:),imol,coorsys_type
         real(kind=rk) :: v1(3),v2(3),v3(3),x(3),y(3),z(3),thetal,vectors(3,3)
             v1=atom(helpers(1))%coor(:,imol)
             v2=normalize(atom(helpers(2))%coor(:,imol)-v1)
             v3=normalize(atom(helpers(3))%coor(:,imol)-v1)
-            ! thetal is the angle 2pi - C-C-C devided by 2
-            ! to ensure equal (C-C-H) angles from both directions
-            !thetal=pi*(2-valenceangle(helpers(1),&
-            !        helpers(2),&
-            !        helpers(3),imol)/180._rk)/2
-            x=normalize(atom(helpers(2))%coor(:,imol)-atom(helpers(3))%coor(:,imol))
-            y=normalize(cross_product(v2,v3))
-            ! RV returns a rotational 3x3 matrix from a quaternion
-            ! v2q turns a vector into a quaternion with angle theta
-            ! Rotate by matrix multiplication RV*V3 where V3 is rotated
-            !z=normalize(matmul(RV(v2q(y,thetal)),v3))
-            z=normalize(cross_product(x,y))
+            select case(coorsys_type)
+            case(1)
+                ! thetal is the angle 2pi - C-C-C devided by 2
+                ! to ensure equal (C-C-H) angles from both directions
+                !thetal=pi*(2-valenceangle(helpers(1),&
+                !        helpers(2),&
+                !        helpers(3),imol)/180._rk)/2
+                x=normalize(atom(helpers(2))%coor(:,imol)-atom(helpers(3))%coor(:,imol))
+                y=normalize(cross_product(v2,v3))
+                ! RV returns a rotational 3x3 matrix from a quaternion
+                ! v2q turns a vector into a quaternion with angle theta
+                ! Rotate by matrix multiplication RV*V3 where V3 is rotated
+                !z=normalize(matmul(RV(v2q(y,thetal)),v3))
+                z=normalize(cross_product(x,y))
+            case(2)
+                z=v2
+                y=cross_product(z,v3)
+                x=cross_product(z,y)
+            end select
             vectors(:,1)=x
             vectors(:,2)=y
             vectors(:,3)=z

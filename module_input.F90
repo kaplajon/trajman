@@ -1089,12 +1089,14 @@ module input
                 global_setflags%karplus_params(5)=readreal(arg7) !E
             case('coorsys')
                 if(size(args,2)<5)stop 'COORSYS needs 3 helper atoms'
-                if(.not.allocated(global_setflags%coorsys_helpers))&
-                    allocate(global_setflags%coorsys_helpers(size(args,2)-2))
+                !if(.not.allocated(global_setflags%coorsys_helpers))&
+                !    allocate(global_setflags%coorsys_helpers(size(args,2)-2))
                 global_setflags%coorsys=.TRUE.
                 global_setflags%coorsys_helpers(1)=atomindex(arg3)
                 global_setflags%coorsys_helpers(2)=atomindex(arg4)
                 global_setflags%coorsys_helpers(3)=atomindex(arg5)
+            case('coorsys_type')
+                global_setflags%coorsys_type=readint(arg3)
             case('sph1','sph2','spt1','spt2')
                 ! Helper atoms for the splay and tilt function (SP)
                 if(.not.allocated(helpers))&
