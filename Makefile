@@ -32,7 +32,7 @@ LDFLAGS        = $(VMD_PLUGINS)/molfile_plugin/f77/f77_molfile.o -L$(VMD_PLUGINS
 LDLIBS         = -lmolfile_plugin $(NETCDFLDFLAGS) $(TCLLDFLAGS) -lstdc++ -ldl
 
 #LDFLAGS = 
-ifeq ("$(shell echo $(git log --max-count=1|grep commit))","$(shell if [ -f module_version.f90 ];then sed -ne "/^.commit.*/p" module_version.f90|cut -c 2-;else echo '0';fi)")
+ifeq ("$(shell echo $$(git log --max-count=1|grep commit))","$(shell if [ -f module_version.f90 ];then sed -ne "/^.commit.*/p" module_version.f90|cut -c 2-;else echo '0';fi)")
 A := 
     else
 A := $(shell if [ -f module_version.f90 ];then rm module_version.f90;fi)

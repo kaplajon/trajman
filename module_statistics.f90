@@ -3,7 +3,7 @@
 !
 !  Trajman: A MD Trajectory Analysis Tool
 !
-!  Copyright (C) 2010, Jon Kapla, jon.kapla@mmk.su.se
+!  Copyright (C) 2010-2014, Jon Kapla, jon.kapla@mmk.su.se
 !  Department of Material and Environmental Chemistry,
 !  Stockholm University
 !

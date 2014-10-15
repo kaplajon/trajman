@@ -3,9 +3,7 @@
 !
 !  Trajman: A MD Trajectory Analysis Tool
 !
-!  Copyright (C) 2010, Jon Kapla, jon.kapla@mmk.su.se
-!  Department of Material and Environmental Chemistry,
-!  Stockholm University
+!  Copyright (C) 2010-2014, Jon Kapla, kaplajon@gmail.com
 !
 ! Trajman is free software: you can redistribute it and/or modify
 ! it under the terms of the GNU General Public License as published by
@@ -30,16 +28,14 @@ for other use as well.
 
 Get Trajman source code:
 
-Trajman source code can be downloaded with bazaar. Get a recent
-version of bazaar from http://bazaar.canocical.com and issue the 
-following command:
+Trajman source code can be downloaded with git:
 
-> bzr branch http://people.su.se/~jkapl/trajman trajman
+> git clone git@github.com:kaplajon/trajman.git
 
 Since the program is in constant development it might be wise
 to check the commit log for suitable revisions and changes.
 
-> bzr log -n0
+> git log
 
 Dependencies:
 
@@ -61,7 +57,7 @@ Compile vmd plugins (Please read the license file in the
 vmd_plugins1.9 dir):
 
 > cd vmd_plugins1.9
-> make LINUXAMD64 TCLINC=-I/usr/include/tcl TCLLIB=-F/usr/lib
+> make LINUXAMD64 TCLINC=-I/usr/include/tcl8.5 TCLLIB=-F/usr/lib
 > cd molfile_plugin/f77
 > make ARCH=LINUXAMD64 FC=gfortran TCLLIB=-L/usr/lib NETCDFLIB=-L/usr/lib TCLLDFLAGS=-ltcl8.5 f77_molfile.o
 
