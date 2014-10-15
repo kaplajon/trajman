@@ -32,7 +32,7 @@ LDFLAGS        = $(VMD_PLUGINS)/molfile_plugin/f77/f77_molfile.o -L$(VMD_PLUGINS
 LDLIBS         = -lmolfile_plugin $(NETCDFLDFLAGS) $(TCLLDFLAGS) -lstdc++ -ldl
 
 #LDFLAGS = 
-ifeq ("$(shell bzr version-info --custom --template="{revno}")","$(shell if [ -f module_version.f90 ];then sed -ne "/^.[0-9][0-9]*[0-9]*/p" module_version.f90|cut -c 2-5;else echo '0';fi)")
+ifeq ("$(shell echo $(git log --max-count=1|grep commit))","$(shell if [ -f module_version.f90 ];then sed -ne "/^.commit.*/p" module_version.f90|cut -c 2-;else echo '0';fi)")
 A := 
     else
 A := $(shell if [ -f module_version.f90 ];then rm module_version.f90;fi)
@@ -71,8 +71,8 @@ clean:
 
 module_version.f90:
 	@echo $(B)
-	bzr version-info --custom --template="!{revno}\nmodule version\n    use kinds\n    character(kind=1,len=*),parameter :: branch=\"{branch_nick}\",revision=\"{revno}\",revdate=\"{date}\"\nend module version\n" >module_version.f90
-	bzr log -n0 > changelog.txt
+	echo $(shell echo ""\!"$$(git log --max-count=1|grep commit)\nmodule version\n    use kinds\n    character(kind=1,len=*),parameter :: branch=\"$$(git branch|awk '{print $2}')\",revision=\"$$(git log --max-count=1|grep commit)\",&\nrevdate=\"$$(git log --max-count=1|grep Date|cut -d ' ' -f 4-)\"\nend module version\n" >module_version.f90)
+	git log > changelog.txt
 
 #module_input.o: module_kinds.o module_readtraj.o module_util.o module_version.o
 module_input.o: module_util.o module_version.o module_apl.o module_trajop.o

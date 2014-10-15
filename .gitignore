@@ -1,4 +1,10 @@
 module_version.f90
 module_version.o
+changelog.txt
+*.o
+*.so
+*.mod
+*~
+*.a
 version.mod
 trajman

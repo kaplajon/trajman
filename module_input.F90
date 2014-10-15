@@ -63,7 +63,8 @@ module input
                 ctime=CINFO
                 write(*,*)'      Trajman experimental :: ',trim(ctime)
                 write(*,*)'      Branch :: ',branch
-                write(*,*)'      Revision :: r',revision,', committed ',revdate
+                write(*,*)'      Revision :: ',revision
+                write(*,*)'      Committed ',revdate
                 write(*,*)'      Copyright (c) 2010 Jon Kapla :: Contact: jon.kapla@mmk.su.se'
                 write(*,*)'      --------------------------------------------------------------'
                 write(*,*)'      Trajman comes with NO WARRANTY, to the extent permitted by law.'
