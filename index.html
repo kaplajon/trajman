@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Trajman : Trajman is a linux based molecular dynamics trajectory analysis tool written in fortran. It is mainly aimed towards analysis of simulations of model lipid membranes, but can easily be adopted for other use as well.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Trajman</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/kaplajon/trajman">View on GitHub</a>
+
+          <h1 id="project_title">Trajman</h1>
+          <h2 id="project_tagline">Trajman is a linux based molecular dynamics trajectory analysis tool written in fortran. It is mainly aimed towards analysis of simulations of model lipid membranes, but can easily be adopted for other use as well.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/kaplajon/trajman/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/kaplajon/trajman/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
+
+<p><strong>Copyright (C) 2010-2014, Jon Kapla, <a href="mailto:kaplajon@gmail.com">kaplajon@gmail.com</a></strong></p>
+
+<p>Trajman is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.</p>
+
+<p>Trajman is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License
+ along with Trajman.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+
+<h1>
+<a name="installation-instructions" class="anchor" href="#installation-instructions"><span class="octicon octicon-link"></span></a>Installation instructions</h1>
+
+<h2>
+<a name="get-trajman-source-code" class="anchor" href="#get-trajman-source-code"><span class="octicon octicon-link"></span></a>Get Trajman source code</h2>
+
+<p>Trajman source code can be downloaded with git:</p>
+
+<blockquote>
+<p>&gt; git clone <a href="mailto:git@github.com">git@github.com</a>:kaplajon/trajman.git</p>
+</blockquote>
+
+<p>Since the program is in constant development it might be wise
+to check the commit log for suitable revisions and changes.</p>
+
+<blockquote>
+<p>&gt; git log</p>
+</blockquote>
+
+<h2>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>Trajman needs the Visual Molecular Dynamics molfile_plugin to
+be functional. There is a version of the molfile_plugin 
+in the trajman build dir. You have also the possibility to 
+download and build the latest version from:</p>
+
+<p><a href="http://www.ks.uiuc.edu/Research/vmd/">http://www.ks.uiuc.edu/Research/vmd/</a></p>
+
+<p>Make sure you also compile the fortran c wrapper located in 
+the molfile_plugin/f77 folder.</p>
+
+<p>For dependencies of the vmd plugins, please see the vmd homepage.</p>
+
+<p>You need gfortran to build the trajman binary.</p>
+
+<h2>
+<a name="build-example" class="anchor" href="#build-example"><span class="octicon octicon-link"></span></a>Build example:</h2>
+
+<p>Compile vmd plugins (Please read the license file in the
+vmd_plugins1.9 dir):</p>
+
+<blockquote>
+<p>&gt; cd vmd_plugins1.9</p>
+
+<p>&gt; make LINUXAMD64 TCLINC=-I/usr/include/tcl8.5 TCLLIB=-F/usr/lib</p>
+
+<p>&gt; cd molfile_plugin/f77</p>
+
+<p>&gt; make ARCH=LINUXAMD64 FC=gfortran TCLLIB=-L/usr/lib NETCDFLIB=-L/usr/lib TCLLDFLAGS=-ltcl8.5 f77_molfile.o</p>
+</blockquote>
+
+<p>When you have VMD plugins compiled. Compile trajman by telling
+make where your VMD plugins are situated, and what archflag you
+used. Note that you need gfortran. Here's a 64-bit example:</p>
+
+<blockquote>
+<p>&gt; make VMD_ARCH=LINUXAMD64 VMD_PLUGINS=vmd_plugins1.9/</p>
+</blockquote>
+
+<p>(or set the environment variables in the Makefile directly and use 'make')</p>
+
+<p>For more information about usage, run:</p>
+
+<blockquote>
+<p>&gt; ./trajman -h</p>
+</blockquote>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Trajman maintained by <a href="https://github.com/kaplajon">kaplajon</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
