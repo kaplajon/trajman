@@ -49,7 +49,12 @@ http://www.ks.uiuc.edu/Research/vmd/
 Make sure you also compile the fortran c wrapper located in 
 the molfile_plugin/f77 folder.
 
-For dependencies of the vmd plugins, please see the vmd homepage.
+For more information about of the vmd plugins, please see the vmd homepage.
+
+In ubuntu the following command should pull all dependencies needed for
+the trajman build including git and gfortran:
+
+> sudo apt-get install tcl8.5-dev libnetcdf-dev build-essential gfortran git
 
 BUILD EXAMPLE:
 
